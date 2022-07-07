@@ -198,6 +198,7 @@ $RECYCLE.BIN/
 *.idea
 
 # application.properties
-application.properties
+src/main/resources/application.properties
 # redis.properties
-redis.properties
+src/main/resources/redis.properties
+
