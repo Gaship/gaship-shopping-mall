@@ -1,4 +1,4 @@
-package com.example.gashipshoppingmall;
+package shop.gaship.gashipshoppingmall;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.example.gashipshoppingmall;
+package shop.gaship.gashipshoppingmall;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
