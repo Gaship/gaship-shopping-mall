@@ -193,3 +193,11 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/maven,macos,windows,intellij+iml,java
+
+#.idea
+*.idea
+
+# application.properties
+application.properties
+# redis.properties
+redis.properties
