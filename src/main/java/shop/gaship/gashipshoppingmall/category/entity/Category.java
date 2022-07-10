@@ -42,4 +42,16 @@ public class Category {
     @OneToMany(mappedBy = "upperCategory")
     private List<Category> lowerCategories;
 
+    /**
+     * methodName : updateCategory
+     * author : 김보민
+     * description : 카테고리 엔티티 내부 값 변경
+     *
+     * @param name update name
+     * @return category
+     */
+    public Category updateCategory(String name) {
+        this.name = name;
+        return this;
+    }
 }

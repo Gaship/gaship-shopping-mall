@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
+import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -38,7 +41,7 @@ class CategoryControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void postCategoryCreate() throws Exception{
+    void postCategory() throws Exception {
         CategoryCreateRequest request = new CategoryCreateRequest("카테고리", 1, null);
 
         doNothing().when(categoryService).createCategory(request);
@@ -51,5 +54,27 @@ class CategoryControllerTest {
                 .andDo(print());
 
         verify(categoryService).createCategory(request);
+    }
+
+    @Test
+    void putCategory() throws Exception {
+        Integer categoryNo = 1;
+        CategoryModifyRequest request = new CategoryModifyRequest("수정 카테고리");
+
+        doNothing().when(categoryService).modifyCategory(categoryNo, request);
+
+        mockMvc.perform(put("/categories/{categoryNo}", categoryNo)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNoContent())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
+
+        verify(categoryService).modifyCategory(categoryNo, request);
+    }
+
+    @Test
+    void deleteCategory() {
+
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,11 +53,6 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void updateCategory() {
-
-    }
-
-    @Test
     void deleteCategory() {
 
     }
@@ -66,12 +63,24 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void findCategoriesByLevel() {
+    void findAllByLevel() {
 
     }
 
     @Test
-    void findCategory() {
+    void findById() {
+        Integer categoryNo = 1;
+        Category category = Category.builder()
+                .no(categoryNo)
+                .name("카테고리")
+                .level(1)
+                .upperCategory(null)
+                .build();
 
+        categoryRepository.save(category);
+
+        Optional<Category> foundCategory = categoryRepository.findById(categoryNo);
+
+        assertThat(foundCategory).contains(category);
     }
 }

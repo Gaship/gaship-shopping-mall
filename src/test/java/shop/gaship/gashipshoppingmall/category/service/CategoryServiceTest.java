@@ -9,9 +9,11 @@ import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -63,5 +65,26 @@ class CategoryServiceTest {
         assertThatThrownBy(() -> categoryService.createCategory(request)).isInstanceOf(CategoryNotFoundException.class);
 
         verify(categoryRepository).findById(request.getUpperCategoryNo());
+    }
+
+    @Test
+    void modifyCategorySuccess() {
+        Integer categoryNo = 1;
+        CategoryModifyRequest request = new CategoryModifyRequest("수정 카테고리");
+        Category category = Category.builder()
+                .no(categoryNo)
+                .name("카테고리")
+                .level(1)
+                .upperCategory(null)
+                .build();
+
+        when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(category));
+
+        categoryService.modifyCategory(categoryNo, request);
+
+        assertThat(category.getName()).isEqualTo(request.getName());
+
+        verify(categoryRepository).findById(categoryNo);
+        verify(categoryRepository).save(category);
     }
 }

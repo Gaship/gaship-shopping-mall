@@ -7,6 +7,7 @@ import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 
 import java.util.Objects;
@@ -50,5 +51,20 @@ public class DefaultCategoryService implements CategoryService {
                 .build();
 
         categoryRepository.save(category);
+    }
+
+    /**
+     * methodName : modifyCategory
+     * author : 김보민
+     * description : 카테고리 수정
+     *
+     * @param request category modify request
+     */
+    @Transactional
+    @Override
+    public void modifyCategory(Integer categoryNo, CategoryModifyRequest request) {
+        Category category = categoryRepository.findById(categoryNo).orElseThrow(CategoryNotFoundException::new);
+
+        categoryRepository.save(category.updateCategory(request.getName()));
     }
 }

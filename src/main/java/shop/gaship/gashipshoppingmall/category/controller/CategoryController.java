@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
+import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 
 /**
@@ -38,6 +39,25 @@ public class CategoryController {
         categoryService.createCategory(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
+    }
+
+    /**
+     * methodName : putCategory
+     * author : 김보민
+     * description : 카테고리 put 요청 매핑
+     *
+     * @param categoryNo category no
+     * @param request category modify request
+     * @return response entity
+     */
+    @PutMapping("/{categoryNo}")
+    public ResponseEntity<Void> putCategory(@PathVariable("categoryNo") Integer categoryNo,
+                                            @RequestBody CategoryModifyRequest request) {
+        categoryService.modifyCategory(categoryNo, request);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
