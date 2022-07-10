@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
@@ -86,5 +87,20 @@ class CategoryServiceTest {
 
         verify(categoryRepository).findById(categoryNo);
         verify(categoryRepository).save(category);
+    }
+
+    @Test
+    void getCategoryDto() {
+        Integer categoryNo = 1;
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setNo(categoryNo);
+        categoryDto.setName("카테고리");
+        categoryDto.setLevel(1);
+
+        when(categoryRepository.findCategoryById(categoryNo)).thenReturn(Optional.of(categoryDto));
+
+        assertThat(categoryService.getCategory(categoryNo)).isEqualTo(categoryDto);
+
+        verify(categoryRepository).findCategoryById(categoryNo);
     }
 }

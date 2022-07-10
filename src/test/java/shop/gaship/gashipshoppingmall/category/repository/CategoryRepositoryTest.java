@@ -1,16 +1,18 @@
 package shop.gaship.gashipshoppingmall.category.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.repository
@@ -31,21 +33,28 @@ class CategoryRepositoryTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @Test
-    void saveCategory() {
-        Category upperCategory = Category.builder()
+    private Category upperCategory;
+    private Category category;
+
+    @BeforeEach
+    void setUp() {
+        upperCategory = Category.builder()
                 .name("상위 카테고리")
                 .level(1)
                 .upperCategory(null)
                 .build();
 
-        Category category = Category.builder()
+        category = Category.builder()
                 .name("카테고리")
                 .level(2)
                 .upperCategory(upperCategory)
                 .build();
+    }
 
+    @Test
+    void saveCategory() {
         Category savedCategory = categoryRepository.save(category);
+
         assertThat(savedCategory.getName()).isEqualTo(category.getName());
         assertThat(savedCategory.getLevel()).isEqualTo(category.getLevel());
         assertThat(savedCategory.getUpperCategory().getName()).isEqualTo(upperCategory.getName());
@@ -53,34 +62,25 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void deleteCategory() {
-
-    }
-
-    @Test
-    void findAllCategories() {
-
-    }
-
-    @Test
-    void findAllByLevel() {
-
-    }
-
-    @Test
     void findById() {
-        Integer categoryNo = 1;
-        Category category = Category.builder()
-                .no(categoryNo)
-                .name("카테고리")
-                .level(1)
-                .upperCategory(null)
-                .build();
+        Category savedCategory = categoryRepository.save(category);
 
-        categoryRepository.save(category);
-
-        Optional<Category> foundCategory = categoryRepository.findById(categoryNo);
+        Optional<Category> foundCategory = categoryRepository.findById(savedCategory.getNo());
 
         assertThat(foundCategory).contains(category);
+    }
+
+    @Test
+    void findDtoById() {
+        Category savedCategory = categoryRepository.save(category);
+
+        Optional<CategoryDto> categoryDto = categoryRepository.findCategoryById(savedCategory.getNo());
+
+        assertThat(categoryDto).isPresent();
+        assertThat(categoryDto.get().getNo()).isEqualTo(savedCategory.getNo());
+        assertThat(categoryDto.get().getName()).isEqualTo(savedCategory.getName());
+        assertThat(categoryDto.get().getLevel()).isEqualTo(savedCategory.getLevel());
+        assertThat(categoryDto.get().getUpperCategoryNo()).isEqualTo(savedCategory.getUpperCategory().getNo());
+        assertThat(categoryDto.get().getUpperCategoryName()).isEqualTo(savedCategory.getUpperCategory().getName());
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
@@ -60,5 +61,21 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
+    }
+
+
+    /**
+     * methodName : getCategory
+     * author : 김보민
+     * description : 카테고리 단건 get 요청 매핑
+     *
+     * @param categoryNo category no
+     * @return response entity
+     */
+    @GetMapping("/{categoryNo}")
+    public ResponseEntity<CategoryDto> getCategory(@PathVariable("categoryNo") Integer categoryNo) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(categoryService.getCategory(categoryNo));
     }
 }

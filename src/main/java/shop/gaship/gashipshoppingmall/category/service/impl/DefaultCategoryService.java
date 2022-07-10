@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.category.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
@@ -58,6 +59,7 @@ public class DefaultCategoryService implements CategoryService {
      * author : 김보민
      * description : 카테고리 수정
      *
+     * @param categoryNo category no
      * @param request category modify request
      */
     @Transactional
@@ -66,5 +68,17 @@ public class DefaultCategoryService implements CategoryService {
         Category category = categoryRepository.findById(categoryNo).orElseThrow(CategoryNotFoundException::new);
 
         categoryRepository.save(category.updateCategory(request.getName()));
+    }
+
+    /**
+     * methodName : getCategory
+     * author : 김보민
+     * description : 카테고리 단건 조회
+     *
+     * @param categoryNo category no
+     */
+    @Override
+    public CategoryDto getCategory(Integer categoryNo) {
+        return categoryRepository.findCategoryById(categoryNo).orElseThrow(CategoryNotFoundException::new);
     }
 }

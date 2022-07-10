@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.service;
 
+import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 
@@ -18,4 +19,6 @@ public interface CategoryService {
     void createCategory(CategoryCreateRequest request);
 
     void modifyCategory(Integer categoryNo, CategoryModifyRequest request);
+
+    CategoryDto getCategory(Integer categoryNo);
 }
