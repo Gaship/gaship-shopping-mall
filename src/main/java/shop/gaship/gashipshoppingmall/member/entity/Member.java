@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.entity;
 
+import com.google.common.base.Objects;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -9,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,4 +62,37 @@ public class Member {
 
     @Column(name = "register_datetime", nullable = false)
     private LocalDateTime registerDateTime;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Member member = (Member) o;
+        return Objects.equal(memberNo, member.memberNo) &&
+            Objects.equal(recommendMemberNo, member.recommendMemberNo) &&
+            Objects.equal(statusNo, member.statusNo) &&
+            Objects.equal(gradeNo, member.gradeNo) &&
+            Objects.equal(email, member.email) &&
+            Objects.equal(password, member.password) &&
+            Objects.equal(phoneNumber, member.phoneNumber) &&
+            Objects.equal(name, member.name) &&
+            Objects.equal(birthDate, member.birthDate) &&
+            Objects.equal(nickName, member.nickName) &&
+            Objects.equal(gender, member.gender) &&
+            Objects.equal(totalPurchaseAmount, member.totalPurchaseAmount) &&
+            Objects.equal(nextRenewalGradeDate, member.nextRenewalGradeDate) &&
+            Objects.equal(registerDateTime, member.registerDateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(memberNo, recommendMemberNo, statusNo, gradeNo, email, password,
+            phoneNumber, name, birthDate, nickName, gender, totalPurchaseAmount,
+            nextRenewalGradeDate,
+            registerDateTime);
+    }
 }
