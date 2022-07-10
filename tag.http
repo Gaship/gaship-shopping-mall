@@ -1,0 +1,36 @@
+### 태그 생성
+POST http://localhost:7071/admin/1/tags HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "고풍스러운"
+}
+###
+POST http://localhost:7071/admin/1/tags HTTP/1.1
+Content-Type: application/json
+
+{
+"title": "가풍스러운"
+}
+###
+PUT http://localhost:7071/admin/1/tags/4 HTTP/1.1
+Content-Type: application/json
+
+{
+"title": "좆같은"
+}
+
+###
+PUT http://localhost:7071/admin/1/tags/2 HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "우아한ㅇ"
+}
+###
+GET http://localhost:7071/admin/1/tags?page=0&size=5&sort=title HTTP/1.1
+###
+GET http://localhost:7071/admin/1/tags/4 HTTP/1.1
+
+
+
