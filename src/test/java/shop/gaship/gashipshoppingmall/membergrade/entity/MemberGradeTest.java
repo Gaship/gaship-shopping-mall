@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
+import javax.transaction.Transactional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils.*;
 

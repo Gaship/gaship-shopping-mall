@@ -5,11 +5,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -125,5 +130,20 @@ class MemberGradeRepositoryTest {
                 memberGradeRepository.getMemberGradeBy(testMemberGradeNo);
 
         assertThat(memberGradeDto).isEmpty();
+    }
+
+    @Test
+    void getMemberGrades() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        testEntityManager.persist(renewalPeriod);
+        memberGradeRepository.saveAndFlush(memberGrade);
+        testEntityManager.clear();
+
+        // when
+        List<MemberGradeDto> result = memberGradeRepository.getMemberGrades(pageable);
+
+        // then
+        assertThat(result).hasSize(1);
     }
 }

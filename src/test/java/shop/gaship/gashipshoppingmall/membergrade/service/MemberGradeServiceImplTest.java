@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
@@ -15,6 +17,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -189,5 +192,24 @@ class MemberGradeServiceImplTest {
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
         verify(memberGradeRepository).getMemberGradeBy(any());
+    }
+
+    @Test
+    void findMemberGrades() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // mocking
+        when(memberGradeRepository.getMemberGrades(pageable))
+                .thenReturn(List.of(createTestMemberGradeDto("일반",
+                        0L,
+                        "12개월")));
+
+        // when&then
+        assertThatNoException()
+                .isThrownBy(() -> memberGradeServiceImpl
+                        .findMemberGrades(pageable));
+
+        verify(memberGradeRepository).getMemberGrades(any());
     }
 }

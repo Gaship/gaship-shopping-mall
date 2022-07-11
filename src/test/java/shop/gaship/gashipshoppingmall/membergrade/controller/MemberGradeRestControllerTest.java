@@ -6,11 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -106,5 +110,24 @@ class MemberGradeRestControllerTest {
                 .andExpect(jsonPath("$.name", equalTo(testMemberGradeDto.getName())))
                 .andExpect(jsonPath("$.accumulateAmount", equalTo(Integer.parseInt(testMemberGradeDto.getAccumulateAmount().toString()))))
                 .andExpect(jsonPath("$.renewalPeriodStatusCode", equalTo(testMemberGradeDto.getRenewalPeriodStatusCode())));
+    }
+
+    @Test
+    void memberGradeList() throws Exception {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // mocking
+        when(memberGradeService.findMemberGrades(pageable))
+                .thenReturn(List.of(createTestMemberGradeDto("일반", 0L, "12개월")));
+
+        // when&then
+        mockMvc.perform(get("/grades")
+                        .queryParam("size", "10")
+                        .queryParam("page", "0")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }
