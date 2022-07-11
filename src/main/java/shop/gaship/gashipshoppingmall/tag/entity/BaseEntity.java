@@ -9,7 +9,17 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
-
+/**
+ * packageName    : shop.gaship.gashipshoppingmall.tag.entity
+ * fileName       : BaseEntity
+ * author         : choijungwoo
+ * date           : 2022/07/11
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2022/07/11        choijungwoo       최초 생성
+ */
 @MappedSuperclass
 @EntityListeners(value = {AuditingEntityListener.class})
 @Getter

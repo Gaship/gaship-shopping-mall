@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.tag.controller;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +12,17 @@ import shop.gaship.gashipshoppingmall.tag.service.TagService;
 
 import java.util.List;
 
+/**
+ * packageName    : shop.gaship.gashipshoppingmall.tag.controller
+ * fileName       : TagController
+ * author         : choijungwoo
+ * date           : 2022/07/11
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2022/07/11        choijungwoo       최초 생성
+ */
 @RestController
 @Slf4j
 @RequiredArgsConstructor

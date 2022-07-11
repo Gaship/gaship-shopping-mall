@@ -2,9 +2,7 @@ package shop.gaship.gashipshoppingmall.tag.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
@@ -16,6 +14,17 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * packageName    : shop.gaship.gashipshoppingmall.tag.service
+ * fileName       : TagServiceImpl
+ * author         : choijungwoo
+ * date           : 2022/07/11
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2022/07/11        choijungwoo       최초 생성
+ */
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
@@ -48,7 +57,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagResponseDto> getList(Pageable pageable) {
-        Function<Tag,TagResponseDto> converter = (this::entityToDto);
+        Function<Tag, TagResponseDto> converter = (this::entityToDto);
         Page<Tag> page = tagRepository.findAll(pageable);
         return page.stream().map(converter).collect(Collectors.toList());
     }

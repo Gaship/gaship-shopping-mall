@@ -8,15 +8,24 @@ import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-
+/**
+ * packageName    : shop.gaship.gashipshoppingmall.tag.entity
+ * fileName       : Tag
+ * author         : choijungwoo
+ * date           : 2022/07/11
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2022/07/11        choijungwoo       최초 생성
+ */
 @Entity
 @Table(name = "tags")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class Tag extends BaseEntity{
+public class Tag extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_no")

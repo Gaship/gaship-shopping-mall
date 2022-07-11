@@ -7,6 +7,17 @@ import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
 import java.util.List;
 
+/**
+ * packageName    : shop.gaship.gashipshoppingmall.tag.service
+ * fileName       : TagService
+ * author         : choijungwoo
+ * date           : 2022/07/11
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2022/07/11        choijungwoo       최초 생성
+ */
 public interface TagService {
     TagResponseDto register(TagRequestDto tagRequestDto);
 
