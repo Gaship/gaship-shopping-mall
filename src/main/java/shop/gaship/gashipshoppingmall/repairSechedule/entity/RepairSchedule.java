@@ -4,12 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +26,6 @@ import shop.gaship.gashipshoppingmall.repairSechedule.entity.pk.RepairSchedulePk
 @Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class RepairSchedule {
     @EmbeddedId
     public RepairSchedulePk pk;

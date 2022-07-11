@@ -86,13 +86,6 @@ class EmployeeControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().is2xxSuccessful())
             .andDo(print());
-
-        verify(service, times(1)).modifyEmployee(any(), any());
-    }
-
-    @DisplayName("직원 단건 조회 test")
-    @Test
-    void getEmployee() throws Exception {
         //given
         GetEmployee employee = new GetEmployee("a", "a@naver.com", "0000");
 
@@ -117,6 +110,32 @@ class EmployeeControllerTest {
         assertThat(employee.getEmail()).isEqualTo(email);
         assertThat(employee.getPhoneNo()).isEqualTo(phoneNo);
         assertThat(employee.getName()).isEqualTo(name);
+
+        verify(service, times(1)).modifyEmployee(any(), any());
+    }
+
+    @DisplayName("직원 단건 조회 test")
+    @Test
+    void getEmployee() throws Exception {
+        //given
+        GetEmployee e1 = new GetEmployee("a", "a@naver.com", "01");
+
+        //when
+        when(service.getEmployee(1)).thenReturn(e1);
+
+        MvcResult mvcResult = mvc.perform(get("/employees/" + 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andReturn();
+
+        verify(service, times(1)).getEmployee(any());
+
+        String response = mvcResult.getResponse().getContentAsString();
+        String name = JsonPath.parse(response).read("$.name");
+
+        assertThat(e1.getName()).isEqualTo(name);
     }
 
     @DisplayName("직원 다건 조회 test")

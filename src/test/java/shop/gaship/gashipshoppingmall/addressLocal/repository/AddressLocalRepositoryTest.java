@@ -16,8 +16,12 @@ import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.addressLocal.repository fileName       :
- * AddressLocalRepositoryTest author         : HoChul date           : 2022/07/09 description    :
+ * packageName    : shop.gaship.gashipshoppingmall.addressLocal.repository
+ * fileName       :
+ * AddressLocalRepositoryTest
+ * author         : HoChul
+ * date           : 2022/07/09
+ * description    :
  * =========================================================== DATE              AUTHOR
  * NOTE ----------------------------------------------------------- 2022/07/09        HoChul
  * 최초 생성
@@ -27,6 +31,13 @@ import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 class AddressLocalRepositoryTest {
     @Autowired
     private AddressLocalRepository repository;
+
+    private DayLabor labor;
+
+    @BeforeEach
+    void setUp() {
+        labor = new DayLabor(1 , 10);
+    }
 
     @DisplayName("조회 되는지 확인용 테스트")
     @Test

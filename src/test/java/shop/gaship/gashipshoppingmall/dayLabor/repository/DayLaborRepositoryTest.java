@@ -15,7 +15,10 @@ import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.dayLabor.repository fileName       :
- * DayLaborRepositoryTest author         : HoChul date           : 2022/07/09 description    :
+ * DayLaborRepositoryTest
+ * author         : HoChul
+ * date           : 2022/07/09
+ * description    :
  * =========================================================== DATE              AUTHOR
  * NOTE ----------------------------------------------------------- 2022/07/09        HoChul
  * 최초 생성
@@ -34,7 +37,8 @@ class DayLaborRepositoryTest {
     @Test
     void selectTestDayLabor() {
         AddressLocal upper = new AddressLocal(null,"마산특별시",1,true);
-        DayLabor dayLabor = new DayLabor(upper.getAddressNo(), upper, 10);
+        DayLabor dayLabor = new DayLabor(upper.getAddressNo(), 10);
+        dayLabor.setAddressLocal(upper);
 
         addressLocalRepository.save(upper);
         repository.save(dayLabor);

@@ -20,11 +20,15 @@ import shop.gaship.gashipshoppingmall.repairSechedule.entity.RepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSechedule.entity.pk.RepairSchedulePk;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.repairSechedule.repository fileName       :
- * RepairScheduleRepositoryTest author         : HoChul date           : 2022/07/09 description    :
- * =========================================================== DATE              AUTHOR
- * NOTE ----------------------------------------------------------- 2022/07/09        HoChul
- * 최초 생성
+ * packageName    : shop.gaship.gashipshoppingmall.repairSechedule.repository
+ * fileName       :RepairScheduleRepositoryTest
+ * author         : HoChul
+ * date           : 2022/07/09
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR NOTE
+ * -----------------------------------------------------------
+ * 2022/07/09        HoChul 최초생성
  */
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -42,8 +46,10 @@ class RepairScheduleRepositoryTest {
     @DisplayName("조회를 위한 테스트")
     @Test
     void repairScheduleSelectTest() {
+        //given
         AddressLocal upper = new AddressLocal(null,"무슨특별시",1,true);
-        DayLabor labor = new DayLabor(upper.getAddressNo(),upper,10);
+        DayLabor labor = new DayLabor(upper.getAddressNo(),10);
+        labor.setAddressLocal(upper);
 
         RepairSchedule repairSchedule = new RepairSchedule();
         RepairSchedulePk pk = new RepairSchedulePk(LocalDate.now(), labor.getAddressNo());
@@ -51,10 +57,18 @@ class RepairScheduleRepositoryTest {
         repairSchedule.setPk(pk);
         repairSchedule.setDayLabor(labor);
         repairSchedule.setLabor(labor.getMaxLabor());
+
+        //when & then
         addressLocalRepository.save(upper);
         dayLaborRepository.save(labor);
         repository.save(repairSchedule);
+        RepairSchedule schedule = repository.findById(pk).get();
 
-         assertThat(repository.findById(pk).get().getDayLabor()).isEqualTo(repairSchedule.getDayLabor());
+        assertThat(schedule.getDayLabor()).isEqualTo(repairSchedule.getDayLabor());
+        assertThat(schedule.getLabor()).isEqualTo(repairSchedule.getLabor());
+        assertThat(schedule.getPk()).hasSameHashCodeAs(pk);
+        assertThat(schedule.getPk().getAddressNo()).isEqualTo(pk.getAddressNo());
+        assertThat(schedule.getPk().getDate()).isEqualTo(pk.getDate());
+        assertThat(schedule.getPk().equals(pk)).isTrue();
     }
 }
