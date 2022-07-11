@@ -1,7 +1,11 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
+
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.service
@@ -47,4 +51,6 @@ public interface MemberGradeService {
     void removeMemberGrade(Integer memberGradeNo);
 
     MemberGradeDto findMemberGrade(Integer memberGradeNo);
+
+    List<MemberGradeDto> findMemberGrades(Pageable page);
 }

@@ -15,6 +15,7 @@ import lombok.Data;
  */
 @Data
 public class MemberGradeDto {
+    private Integer no;
     private String name;
     private Long accumulateAmount;
     private String renewalPeriodStatusCode;

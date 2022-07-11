@@ -1,6 +1,9 @@
 package shop.gaship.gashipshoppingmall.membergrade.controller;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
+
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.controller
@@ -96,5 +100,21 @@ public class MemberGradeRestController {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(memberGradeService.findMemberGrade(memberGradeNo));
+    }
+
+    /**
+     * .
+     * methodName : memberGradeList
+     * author : Semi Kim
+     * description : MemberGrade List GetMapping
+     *
+     * @param page Pageable
+     * @return response entity
+     */
+    @GetMapping
+    public ResponseEntity<List<MemberGradeDto>> memberGradeList(Pageable page) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(memberGradeService.findMemberGrades(page));
     }
 }
