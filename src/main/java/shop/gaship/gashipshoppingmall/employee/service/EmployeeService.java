@@ -20,7 +20,7 @@ public interface EmployeeService {
 
     void createEmployee(CreateEmployeeDto dto);
 
-    void modifyEmployee(Integer empolyeeNo, ModifyEmployeeDto dto);
+    void modifyEmployee(Integer employee, ModifyEmployeeDto dto);
 
     GetEmployee getEmployee(Integer employeeNo);
 

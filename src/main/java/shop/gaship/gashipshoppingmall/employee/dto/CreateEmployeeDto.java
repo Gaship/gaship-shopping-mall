@@ -20,7 +20,6 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @AllArgsConstructor
 public class CreateEmployeeDto {
-    // TODO 2 : 공통코드 추가시 수정
 
     @NotNull
     private Integer authorityNo;
@@ -41,4 +40,5 @@ public class CreateEmployeeDto {
 
     @NotNull
     private String phoneNo;
+
 }

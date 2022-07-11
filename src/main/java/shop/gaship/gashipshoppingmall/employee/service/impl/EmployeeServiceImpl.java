@@ -6,13 +6,19 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
 import shop.gaship.gashipshoppingmall.employee.dto.GetEmployee;
 import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
+import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
+import shop.gaship.gashipshoppingmall.employee.exception.WrongStatusCodeException;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 /**
  *packageName    : shop.gaship.gashipshoppingmall.employee.service.impl
@@ -30,12 +36,22 @@ import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository repository;
+    private final StatusCodeRepository statusCodeRepository;
+    private final AddressLocalRepository localRepository;
     @Override
     @Transactional
     public void createEmployee(CreateEmployeeDto dto) {
-        if(repository.findByEmail(dto.getEmail()).isEmpty()){
-            repository.save(new Employee(dto));
-        }
+        Employee employee = new Employee(dto);
+
+        StatusCode statusCode = statusCodeRepository.findById(dto.getAuthorityNo())
+            .orElseThrow(WrongStatusCodeException::new);
+        AddressLocal addressLocal = localRepository.findById(dto.getAddressNo())
+            .orElseThrow(WrongAddressException::new);
+
+        employee.setAddressLocal(addressLocal);
+        employee.setStatusCode(statusCode);
+
+        repository.save(employee);
     }
 
     @Override

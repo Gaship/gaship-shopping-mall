@@ -19,7 +19,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ModifyEmployeeDto {
-    // TODO : 주소지 기입시 주소지 수정 추가해야함
+
     @NotNull
     private String name;
 

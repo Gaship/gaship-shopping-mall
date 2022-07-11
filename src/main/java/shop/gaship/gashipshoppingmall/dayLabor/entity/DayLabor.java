@@ -2,13 +2,11 @@ package shop.gaship.gashipshoppingmall.dayLabor.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +22,6 @@ import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "day_labor")
 public class DayLabor {
@@ -41,4 +38,8 @@ public class DayLabor {
     @Column(name = "day_max_labor")
     private Integer maxLabor;
 
+    public DayLabor(Integer addressNo,Integer maxLabor){
+        this.addressNo = addressNo;
+        this.maxLabor = maxLabor;
+    }
 }

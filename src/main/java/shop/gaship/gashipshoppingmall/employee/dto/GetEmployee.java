@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.employee.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 
@@ -19,9 +18,7 @@ import shop.gaship.gashipshoppingmall.employee.entity.Employee;
  * 2022/07/10        유호철       최초 생성
  */
 @Getter
-@Setter
 public class GetEmployee {
-    //TODO : 주소지 추가시 담당지역들어가야한다
 
     @NotNull
     @Length(min = 1,max = 20)
@@ -38,5 +35,11 @@ public class GetEmployee {
         this.name = employee.getName();
         this.email = employee.getEmail();
         this.phoneNo = employee.getPhoneNo();
+    }
+
+    public GetEmployee(String name, String email, String phoneNo) {
+        this.name = name;
+        this.email = email;
+        this.phoneNo = phoneNo;
     }
 }

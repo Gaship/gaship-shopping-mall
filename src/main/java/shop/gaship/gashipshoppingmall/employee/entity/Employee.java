@@ -5,14 +5,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
 import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
  *packageName    : shop.gaship.gashipshoppingmall.employee.entity
@@ -33,34 +36,33 @@ import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
 @Table(name = "employees")
 @Entity
 public class Employee {
-    //Todo 1: 공통코드 들어오면 아래 권한 번호, 주소번호 수정
 
     @Id
     @Column(name = "employee_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer employeeNo;
 
-    @Column(name = "employee_authority_no")
-    private Integer authorityNo;
+    @ManyToOne
+    @JoinColumn(name = "employee_authority_no")
+    private StatusCode statusCode;
 
-    @Column(name = "responsibility_address_no")
-    private Integer addressNo;
+    @ManyToOne
+    @JoinColumn(name = "responsibility_address_no")
+    private AddressLocal addressLocal;
 
-    @Column(name = "name")
+    @Column(name = "name",unique = true)
     private String name;
 
-    @Column(name = "email")
+    @Column(name = "email",unique = true)
     private String email;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number",unique = true)
     private String phoneNo;
 
     public Employee(CreateEmployeeDto dto) {
-        this.authorityNo = dto.getAuthorityNo();
-        this.addressNo = dto.getAddressNo();
         this.name = dto.getName();
         this.email = dto.getEmail();
         this.password = dto.getPassword();
