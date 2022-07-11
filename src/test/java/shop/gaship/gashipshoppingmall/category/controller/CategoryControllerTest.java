@@ -12,6 +12,8 @@ import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -73,11 +75,6 @@ class CategoryControllerTest {
     }
 
     @Test
-    void deleteCategory() {
-
-    }
-
-    @Test
     void getCategory() throws Exception{
         Integer categoryNo = 1;
         CategoryDto categoryDto = new CategoryDto();
@@ -98,5 +95,23 @@ class CategoryControllerTest {
                 .andDo(print());
 
         verify(categoryService).getCategory(categoryNo);
+    }
+
+    @Test
+    void getCategories() throws Exception {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setNo(1);
+        categoryDto.setName("카테고리");
+        categoryDto.setLevel(1);
+
+        when(categoryService.getCategories()).thenReturn(List.of(categoryDto));
+
+        mockMvc.perform(get("/categories"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()").value(1))
+                .andDo(print());
+
+        verify(categoryService).getCategories();
     }
 }

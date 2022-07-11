@@ -12,6 +12,7 @@ import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundExcepti
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -90,7 +91,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    void getCategoryDto() {
+    void getCategory() {
         Integer categoryNo = 1;
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setNo(categoryNo);
@@ -102,5 +103,21 @@ class CategoryServiceTest {
         assertThat(categoryService.getCategory(categoryNo)).isEqualTo(categoryDto);
 
         verify(categoryRepository).findCategoryById(categoryNo);
+    }
+
+    @Test
+    void getCategories() {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setNo(1);
+        categoryDto.setName("카테고리");
+        categoryDto.setLevel(1);
+
+        when(categoryRepository.findAllCategories()).thenReturn(List.of(categoryDto));
+
+        List<CategoryDto> categories = categoryService.getCategories();
+
+        assertThat(categories.get(0)).isEqualTo(categoryDto);
+
+        verify(categoryRepository).findAllCategories();
     }
 }

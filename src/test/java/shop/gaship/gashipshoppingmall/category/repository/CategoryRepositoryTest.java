@@ -83,4 +83,20 @@ class CategoryRepositoryTest {
         assertThat(categoryDto.get().getUpperCategoryNo()).isEqualTo(savedCategory.getUpperCategory().getNo());
         assertThat(categoryDto.get().getUpperCategoryName()).isEqualTo(savedCategory.getUpperCategory().getName());
     }
+
+    @Test
+    void findAllCategories() {
+        Category savedCategory = categoryRepository.save(category);
+        List<CategoryDto> categories = categoryRepository.findAllCategories();
+
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setNo(savedCategory.getNo());
+        categoryDto.setName(savedCategory.getName());
+        categoryDto.setLevel(savedCategory.getLevel());
+        categoryDto.setUpperCategoryNo(savedCategory.getUpperCategory().getNo());
+        categoryDto.setUpperCategoryName(savedCategory.getUpperCategory().getName());
+
+        assertThat(categories).hasSize(2);
+        assertThat(categories.get(1)).isEqualTo(categoryDto);
+    }
 }

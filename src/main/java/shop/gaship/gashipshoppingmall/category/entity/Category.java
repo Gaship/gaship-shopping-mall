@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.entity;
 
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.List;
 

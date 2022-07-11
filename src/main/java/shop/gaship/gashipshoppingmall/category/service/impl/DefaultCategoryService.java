@@ -11,6 +11,7 @@ import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -80,5 +81,16 @@ public class DefaultCategoryService implements CategoryService {
     @Override
     public CategoryDto getCategory(Integer categoryNo) {
         return categoryRepository.findCategoryById(categoryNo).orElseThrow(CategoryNotFoundException::new);
+    }
+
+    /**
+     * methodName : getCategories
+     * author : 김보민
+     * description : 카테고리 다건 조회
+     *
+     */
+    @Override
+    public List<CategoryDto> getCategories() {
+        return categoryRepository.findAllCategories();
     }
 }

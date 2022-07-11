@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.dto;
 
-import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +17,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 public class CategoryDto {
     private Integer no;
     private String name;

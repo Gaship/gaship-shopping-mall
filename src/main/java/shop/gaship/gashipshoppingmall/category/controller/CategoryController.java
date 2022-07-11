@@ -10,6 +10,8 @@ import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 
+import java.util.List;
+
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.controller
  * fileName       : CategoryController
@@ -77,5 +79,20 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(categoryService.getCategory(categoryNo));
+    }
+
+
+    /**
+     * methodName : getCategories
+     * author : 김보민
+     * description : 카테고리 전체 get 요청 매핑
+     *
+     * @return response entity
+     */
+    @GetMapping
+    public ResponseEntity<List<CategoryDto>> getCategories() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(categoryService.getCategories());
     }
 }

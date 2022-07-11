@@ -11,7 +11,7 @@ package shop.gaship.gashipshoppingmall.category.exception;
  * -----------------------------------------------------------
  * 2022-07-09        김보민       최초 생성
  */
-public class CategoryNotFoundException extends RuntimeException{
+public class CategoryNotFoundException extends RuntimeException {
     public CategoryNotFoundException() {
         super("카테고리를 찾을 수 없습니다.");
     }

@@ -4,6 +4,8 @@ import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 
+import java.util.List;
+
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.service
  * fileName       : CategoryService
@@ -21,4 +23,6 @@ public interface CategoryService {
     void modifyCategory(Integer categoryNo, CategoryModifyRequest request);
 
     CategoryDto getCategory(Integer categoryNo);
+
+    List<CategoryDto> getCategories();
 }

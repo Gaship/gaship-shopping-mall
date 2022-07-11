@@ -16,5 +16,6 @@ import shop.gaship.gashipshoppingmall.category.repository.custom.CategoryReposit
  * -----------------------------------------------------------
  * 2022-07-08        김보민       최초 생성
  */
-public interface CategoryRepository extends JpaRepository<Category, Integer>, CategoryRepositoryCustom {
+public interface CategoryRepository
+        extends JpaRepository<Category, Integer>, CategoryRepositoryCustom {
 }

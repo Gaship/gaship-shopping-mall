@@ -27,8 +27,42 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
         super(Category.class);
     }
 
+    /**
+     * methodName : findCategoryById
+     * author : 김보민
+     * description : 카테고리 단건 조회
+     *
+     * @param categoryNo category no
+     * @return optional
+     */
     @Override
     public Optional<CategoryDto> findCategoryById(Integer categoryNo) {
+        QCategory category = QCategory.category;
+
+        JPQLQuery query = from(category);
+        query.where(category.no.eq(categoryNo));
+        query.leftJoin(category.upperCategory);
+        query.select(Projections.bean(CategoryDto.class,
+                category.no,
+                category.name,
+                category.level,
+                category.upperCategory.no.as("upperCategoryNo"),
+                category.upperCategory.name.as("upperCategoryName")
+        ));
+
+        return Optional.of((CategoryDto) query.fetchOne());
+    }
+
+
+    /**
+     * methodName : findAllCategories
+     * author : 김보민
+     * description : 카테고리 다건 조회
+     *
+     * @return list
+     */
+    @Override
+    public List<CategoryDto> findAllCategories() {
         QCategory category = QCategory.category;
 
         JPQLQuery query = from(category);
@@ -40,13 +74,7 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
                 category.upperCategory.no.as("upperCategoryNo"),
                 category.upperCategory.name.as("upperCategoryName")
         ));
-        query.where(category.no.eq(categoryNo));
 
-        return Optional.of((CategoryDto) query.fetchOne());
-    }
-
-    @Override
-    public List<CategoryDto> findAllCategories() {
-        return null;
+        return query.fetch();
     }
 }
