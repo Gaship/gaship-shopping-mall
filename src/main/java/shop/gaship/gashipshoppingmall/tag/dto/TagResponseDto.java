@@ -15,10 +15,17 @@ import java.time.LocalDateTime;
  * 2022/07/11        choijungwoo       최초 생성
  */
 @Data
-@Builder
 public class TagResponseDto {
     private Integer tagNo;
     private String title;
     private LocalDateTime registerDatetime;
     private LocalDateTime modifiedDatetime;
+
+    @Builder
+    public TagResponseDto(Integer tagNo, String title, LocalDateTime registerDatetime, LocalDateTime modifiedDatetime) {
+        this.tagNo = tagNo;
+        this.title = title;
+        this.registerDatetime = registerDatetime;
+        this.modifiedDatetime = modifiedDatetime;
+    }
 }
