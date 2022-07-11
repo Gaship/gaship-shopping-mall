@@ -15,5 +15,5 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
  * 2022/07/09        semi       최초 생성
  */
 public interface MemberGradeRepository
-        extends JpaRepository<MemberGrade, Integer> {
+        extends JpaRepository<MemberGrade, Integer>, MemberGradeRepositoryCustom {
 }

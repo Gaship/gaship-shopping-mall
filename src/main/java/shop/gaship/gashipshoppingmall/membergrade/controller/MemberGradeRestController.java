@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
@@ -79,5 +80,21 @@ public class MemberGradeRestController {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
+    }
+
+    /**
+     * .
+     * methodName : memberGradeDetails
+     * author : Semi Kim
+     * description : MemberGrade Detail GetMapping
+     *
+     * @param memberGradeNo Integer
+     * @return response entity
+     */
+    @GetMapping("/{memberGradeNo}")
+    public ResponseEntity<MemberGradeDto> memberGradeDetails(@PathVariable Integer memberGradeNo) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(memberGradeService.findMemberGrade(memberGradeNo));
     }
 }

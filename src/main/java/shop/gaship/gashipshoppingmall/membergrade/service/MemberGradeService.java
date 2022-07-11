@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 
 /**
@@ -44,4 +45,6 @@ public interface MemberGradeService {
      * @param memberGradeNo Integer
      */
     void removeMemberGrade(Integer memberGradeNo);
+
+    MemberGradeDto findMemberGrade(Integer memberGradeNo);
 }

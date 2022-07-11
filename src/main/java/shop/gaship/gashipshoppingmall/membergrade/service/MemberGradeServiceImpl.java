@@ -4,6 +4,7 @@ import javax.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
@@ -66,5 +67,11 @@ public class MemberGradeServiceImpl implements MemberGradeService {
                 .orElseThrow(MemberGradeNotFoundException::new);
 
         memberGradeRepository.delete(memberGrade);
+    }
+
+    @Override
+    public MemberGradeDto findMemberGrade(Integer memberGradeNo) {
+        return memberGradeRepository.getMemberGradeBy(memberGradeNo)
+                .orElseThrow(MemberGradeNotFoundException::new);
     }
 }
