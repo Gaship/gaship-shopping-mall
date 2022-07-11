@@ -14,6 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 @Entity(name = "members")
 @Getter
@@ -26,16 +28,17 @@ public class Member {
     @Column(name = "member_no", nullable = false)
     private Long memberNo;
 
-    @Column(name = "recommend_member_no")
     @ManyToOne
-    @JoinColumn(name = "member_no")
-    private Member recommendMemberNo;
+    @JoinColumn(name = "recommend_member_no")
+    private Member recommendMember;
 
-    @Column(name = "member_status_no", nullable = false)
-    private Integer statusNo;
+    @ManyToOne
+    @JoinColumn(name = "member_status_no", nullable = false)
+    private StatusCode status;
 
-    @Column(name = "member_grade_no", nullable = false)
-    private Integer gradeNo;
+    @ManyToOne
+    @JoinColumn(name = "member_grade_no", nullable = false)
+    private MemberGrade grade;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -77,9 +80,9 @@ public class Member {
         }
         Member member = (Member) o;
         return Objects.equal(memberNo, member.memberNo) &&
-            Objects.equal(recommendMemberNo, member.recommendMemberNo) &&
-            Objects.equal(statusNo, member.statusNo) &&
-            Objects.equal(gradeNo, member.gradeNo) &&
+            Objects.equal(recommendMember, member.recommendMember) &&
+            Objects.equal(status, member.status) &&
+            Objects.equal(grade, member.grade) &&
             Objects.equal(email, member.email) &&
             Objects.equal(password, member.password) &&
             Objects.equal(phoneNumber, member.phoneNumber) &&
@@ -94,7 +97,7 @@ public class Member {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(memberNo, recommendMemberNo, statusNo, gradeNo, email, password,
+        return Objects.hashCode(memberNo, recommendMember, status, grade, email, password,
             phoneNumber, name, birthDate, nickName, gender, totalPurchaseAmount,
             nextRenewalGradeDate,
             registerDateTime);

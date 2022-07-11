@@ -1,7 +1,10 @@
 package shop.gaship.gashipshoppingmall.member.dto;
 
+import org.springframework.lang.Nullable;
 import shop.gaship.gashipshoppingmall.dataprotection.protection.Aes;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.dto <br/>
@@ -15,9 +18,13 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
  * 2022/07/10           김민수               최초 생성                         <br/>
  */
 public interface MemberDto {
-    default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest){
+    default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest,
+                                                 @Nullable Member recommendMember,
+                                                 StatusCode defaultStatus, MemberGrade defaultGrade){
         return Member.builder()
-            .recommendMemberNo(memberCreationRequest.getRecommendMemberNo())
+            .recommendMember(recommendMember)
+            .status(defaultStatus)
+            .grade(defaultGrade)
             .email(memberCreationRequest.getEmail())
             .nickName(memberCreationRequest.getNickName())
             .name(memberCreationRequest.getName())
@@ -25,8 +32,6 @@ public interface MemberDto {
             .phoneNumber(memberCreationRequest.getPhoneNumber())
             .birthDate(memberCreationRequest.getBirthDate())
             .gender(memberCreationRequest.getGender())
-            .statusNo(0) // FIXME : 해당 기능 생성시 수정 예정
-            .gradeNo(0) // FIXME : 해당 기능 생성시 수정 예정
             .totalPurchaseAmount(0L)
             .build();
     }

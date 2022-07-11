@@ -25,7 +25,7 @@ public class MemberCreationRequestDummy {
             .gender("남")
             .name("example")
             .nickName("exampleNickName")
-            .recommendMemberNo(0)
+            .recommendMemberNo(0L)
             .password("password")
             .phoneNumber("01012341234")
             .build();

@@ -3,6 +3,8 @@ package shop.gaship.gashipshoppingmall.member.dummy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member <br/>
@@ -22,9 +24,9 @@ public class MemberDummy extends Member {
     public static Member dummy() {
         return MemberDummy.builder()
             .memberNo(1L)
-            .recommendMemberNo(1)
-            .statusNo(1)
-            .gradeNo(2)
+            .recommendMember(null)
+            .status(new StatusCode())
+            .grade(new MemberGrade())
             .email("example@nhn.com")
             .password("password")
             .name("example")

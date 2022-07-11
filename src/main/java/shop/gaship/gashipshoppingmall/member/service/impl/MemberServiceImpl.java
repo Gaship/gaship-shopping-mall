@@ -4,10 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.dataprotection.protection.Aes;
+import shop.gaship.gashipshoppingmall.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
+import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
+import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
+import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.service.impl <br/>
@@ -23,24 +30,41 @@ import shop.gaship.gashipshoppingmall.member.service.MemberService;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+    private static final int MEMBER_STATUS_ID = 2;
+    private static final int MEMBER_GRADE_ID = 1;
+
     private final MemberRepository memberRepository;
+    private final StatusCodeRepository statusCodeRepository;
+    private final MemberGradeRepository memberGradeRepository;
     private final Aes aes;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void registerMember(MemberCreationRequest memberCreationRequest) {
-        encodePrivacyUserInformation(memberCreationRequest);
-        Member member = memberCreationRequest.creationRequestToMemberEntity(memberCreationRequest);
+        Member recommendMember = memberRepository
+            .findById(memberCreationRequest.getRecommendMemberNo())
+            .orElse(null);
+        StatusCode defaultStatus = statusCodeRepository.findById(MEMBER_STATUS_ID)
+            .orElseThrow(StatusCodeNotFoundException::new);
+        MemberGrade defaultGrade = memberGradeRepository.findById(MEMBER_GRADE_ID)
+            .orElseThrow(MemberGradeNotFoundException::new);
 
-        memberRepository.saveAndFlush(member);
+        Member savedMember = encodePrivacyUserInformation(memberCreationRequest)
+            .creationRequestToMemberEntity(memberCreationRequest, recommendMember, defaultStatus,
+                defaultGrade);
+
+        memberRepository.saveAndFlush(savedMember);
     }
 
-    private void encodePrivacyUserInformation(MemberCreationRequest memberCreationRequest) {
+    private MemberCreationRequest encodePrivacyUserInformation(
+        MemberCreationRequest memberCreationRequest) {
         memberCreationRequest.setEmail(aes.aesECBEncode(memberCreationRequest.getEmail()));
         memberCreationRequest.setName(aes.aesECBEncode(memberCreationRequest.getName()));
         memberCreationRequest.setPhoneNumber(
             aes.aesECBEncode(memberCreationRequest.getPhoneNumber()));
         memberCreationRequest.setPassword(
             passwordEncoder.encode(memberCreationRequest.getPassword()));
+
+        return memberCreationRequest;
     }
 }

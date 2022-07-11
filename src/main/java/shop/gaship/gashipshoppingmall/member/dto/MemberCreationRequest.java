@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 @Builder
 public class MemberCreationRequest implements MemberDto {
-    private Integer recommendMemberNo;
+    private Long recommendMemberNo;
 
     private String email;
 

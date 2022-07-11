@@ -42,4 +42,12 @@ public class CreateTestUtils {
                 .accumulateAmount(request.getAccumulateAmount())
                 .build();
     }
+
+    public static MemberGrade createDummyMemberGrade() {
+        return MemberGrade.builder()
+            .renewalPeriod(createTestStatusCode())
+            .name("dummy")
+            .accumulateAmount(0L)
+            .build();
+    }
 }
