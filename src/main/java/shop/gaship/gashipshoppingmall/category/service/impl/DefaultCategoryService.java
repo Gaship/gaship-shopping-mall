@@ -8,10 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
+import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainLowerCategory;
+import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainProductException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
+import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.service.impl
@@ -28,6 +32,7 @@ import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 @RequiredArgsConstructor
 public class DefaultCategoryService implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     /**
      * methodName : createCategory
@@ -94,5 +99,31 @@ public class DefaultCategoryService implements CategoryService {
     @Override
     public List<CategoryDto> getCategories() {
         return categoryRepository.findAllCategories();
+    }
+
+    /**
+     * methodName : removeCategory
+     * author : 김보민
+     * description : 카테고리 삭제
+     *
+     * @param categoryNo category no
+     */
+    @Override
+    public void removeCategory(Integer categoryNo) {
+        Category category = categoryRepository.findById(categoryNo)
+                .orElseThrow(CategoryNotFoundException::new);
+        List<CategoryDto> lowerCategories = categoryRepository.findLowerCategories(categoryNo);
+
+        if (!lowerCategories.isEmpty()) {
+            throw new CategoryRemainLowerCategory();
+        }
+
+        List<Product> products = productRepository.findAllByCategoryNo(category.getNo());
+
+        if (!products.isEmpty()) {
+            throw new CategoryRemainProductException();
+        }
+
+        categoryRepository.deleteById(categoryNo);
     }
 }

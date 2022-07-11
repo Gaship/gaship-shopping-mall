@@ -21,4 +21,6 @@ public interface CategoryRepositoryCustom {
     Optional<CategoryDto> findCategoryById(Integer categoryNo);
 
     List<CategoryDto> findAllCategories();
+
+    List<CategoryDto> findLowerCategories(Integer categoryNo);
 }

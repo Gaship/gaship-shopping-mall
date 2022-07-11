@@ -34,12 +34,9 @@ public class Category {
     @Column
     private Integer level;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "upper_category_no")
     private Category upperCategory;
-
-    @OneToMany(mappedBy = "upperCategory")
-    private List<Category> lowerCategories;
 
     /**
      * methodName : updateCategory

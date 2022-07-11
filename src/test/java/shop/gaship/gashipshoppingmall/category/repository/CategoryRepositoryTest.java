@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
+import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.repository
@@ -38,17 +40,8 @@ class CategoryRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        upperCategory = Category.builder()
-                .name("상위 카테고리")
-                .level(1)
-                .upperCategory(null)
-                .build();
-
-        category = Category.builder()
-                .name("카테고리")
-                .level(2)
-                .upperCategory(upperCategory)
-                .build();
+        upperCategory = CategoryDummy.upperDummy(null);
+        category = CategoryDummy.dummy(null);
     }
 
     @Test
@@ -98,5 +91,23 @@ class CategoryRepositoryTest {
 
         assertThat(categories).hasSize(2);
         assertThat(categories.get(1)).isEqualTo(categoryDto);
+    }
+
+    @Test
+    void findAllLowerCategories() {
+        Category savedCategory = categoryRepository.saveAndFlush(category);
+
+        List<CategoryDto> lowerCategories = categoryRepository.findLowerCategories(savedCategory.getUpperCategory().getNo());
+
+        assertThat(lowerCategories).hasSize(1);
+    }
+
+    @Test
+    void deleteCategory() {
+        Category savedCategory = categoryRepository.save(category);
+
+        categoryRepository.deleteById(savedCategory.getNo());
+
+        assertThat(categoryRepository.findById(savedCategory.getNo())).isEmpty();
     }
 }

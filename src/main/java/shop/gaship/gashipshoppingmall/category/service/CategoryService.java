@@ -24,4 +24,6 @@ public interface CategoryService {
     CategoryDto getCategory(Integer categoryNo);
 
     List<CategoryDto> getCategories();
+
+    void removeCategory(Integer categoryNo);
 }

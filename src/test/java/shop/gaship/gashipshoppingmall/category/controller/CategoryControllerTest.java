@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
+import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
@@ -77,11 +78,7 @@ class CategoryControllerTest {
     @Test
     void getCategory() throws Exception{
         Integer categoryNo = 1;
-        CategoryDto categoryDto = CategoryDto.builder()
-                .no(categoryNo)
-                .name("카테고리")
-                .level(1)
-                .build();
+        CategoryDto categoryDto = CategoryDummy.dtoDummy(categoryNo);
 
         when(categoryService.getCategory(categoryNo)).thenReturn(categoryDto);
 
@@ -100,11 +97,7 @@ class CategoryControllerTest {
 
     @Test
     void getCategories() throws Exception {
-        CategoryDto categoryDto = CategoryDto.builder()
-                .no(1)
-                .name("카테고리")
-                .level(1)
-                .build();
+        CategoryDto categoryDto = CategoryDummy.dtoDummy(1);
 
         when(categoryService.getCategories()).thenReturn(List.of(categoryDto));
 
@@ -115,5 +108,18 @@ class CategoryControllerTest {
                 .andDo(print());
 
         verify(categoryService).getCategories();
+    }
+
+    @Test
+    void deleteCategory() throws Exception{
+        Integer categoryNo = 1;
+
+        doNothing().when(categoryService).removeCategory(categoryNo);
+
+        mockMvc.perform(delete("/categories/{categoryNo}", categoryNo))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+
+        verify(categoryService).removeCategory(categoryNo);
     }
 }

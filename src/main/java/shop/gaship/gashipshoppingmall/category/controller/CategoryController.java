@@ -94,4 +94,21 @@ public class CategoryController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(categoryService.getCategories());
     }
+
+    /**
+     * methodName : deleteCategory
+     * author : 김보민
+     * description : 카테고리 delete 요청 매핑
+     *
+     * @param categoryNo category no
+     * @return response entity
+     */
+    @DeleteMapping("/{categoryNo}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable("categoryNo") Integer categoryNo) {
+        categoryService.removeCategory(categoryNo);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
+    }
 }
