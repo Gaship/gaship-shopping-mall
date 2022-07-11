@@ -8,14 +8,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils.createTestMemberGradeDto;
 import static shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils.createTestMemberGradeRequest;
 
 /**
@@ -82,5 +85,26 @@ class MemberGradeRestControllerTest {
                 .andExpect(status().isOk());
 
         verify(memberGradeService).removeMemberGrade(any());
+    }
+
+    @Test
+    void memberGradeDetails() throws Exception {
+        // given
+        int testMemberGradeNo = 1;
+        MemberGradeDto testMemberGradeDto = createTestMemberGradeDto("일반", 0L, "1개월");
+
+        // mocking
+        when(memberGradeService.findMemberGrade(any()))
+                .thenReturn(testMemberGradeDto);
+
+        // when&then
+        mockMvc.perform(get("/grades/" + testMemberGradeNo)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name", equalTo(testMemberGradeDto.getName())))
+                .andExpect(jsonPath("$.accumulateAmount", equalTo(Integer.parseInt(testMemberGradeDto.getAccumulateAmount().toString()))))
+                .andExpect(jsonPath("$.renewalPeriodStatusCode", equalTo(testMemberGradeDto.getRenewalPeriodStatusCode())));
     }
 }

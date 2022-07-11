@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
@@ -155,5 +156,38 @@ class MemberGradeServiceImplTest {
 
         verify(memberGradeRepository).findById(any());
         verify(memberGradeRepository, never()).delete(any());
+    }
+
+    @Test
+    void findMemberGrade_whenMemberGradeIsPresent() {
+        // given
+        Integer testMemberGradeNo = 1;
+        MemberGradeDto testMemberGradeDto = createTestMemberGradeDto("일반", 0L, "12개월");
+
+        // mocking
+        when(memberGradeRepository.getMemberGradeBy(any()))
+                .thenReturn(Optional.of(testMemberGradeDto));
+
+        // when&then
+        assertThatNoException()
+                .isThrownBy(() -> memberGradeServiceImpl.findMemberGrade(testMemberGradeNo));
+
+        verify(memberGradeRepository).getMemberGradeBy(any());
+    }
+
+    @Test
+    void findMemberGrade_whenMemberGradeIsEmpty() {
+        // given
+        Integer testMemberGradeNo = 1;
+
+        // mocking
+        when(memberGradeRepository.getMemberGradeBy(any()))
+                .thenReturn(Optional.empty());
+
+        // when&then
+        assertThatThrownBy(() -> memberGradeServiceImpl.findMemberGrade(testMemberGradeNo))
+                .isInstanceOf(MemberGradeNotFoundException.class);
+
+        verify(memberGradeRepository).getMemberGradeBy(any());
     }
 }

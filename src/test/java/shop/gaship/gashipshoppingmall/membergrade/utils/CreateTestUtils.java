@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.utils;
 
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -41,5 +42,14 @@ public class CreateTestUtils {
                 .name(request.getName())
                 .accumulateAmount(request.getAccumulateAmount())
                 .build();
+    }
+
+    public static MemberGradeDto createTestMemberGradeDto(String name, Long accumulateAmount, String renewalPeriodStatusCode) {
+        MemberGradeDto testMemberGradeDto = new MemberGradeDto();
+        testMemberGradeDto.setName(name);
+        testMemberGradeDto.setAccumulateAmount(accumulateAmount);
+        testMemberGradeDto.setRenewalPeriodStatusCode(renewalPeriodStatusCode);
+
+        return testMemberGradeDto;
     }
 }
