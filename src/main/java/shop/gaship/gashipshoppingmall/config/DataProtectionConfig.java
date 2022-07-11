@@ -8,8 +8,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.reactive.function.client.WebClient;
-import shop.gaship.gashipshoppingmall.dataprotection.vo.SecureKeyResponse;
-import shop.gaship.gashipshoppingmall.exception.NotFoundReposeData;
+import shop.gaship.gashipshoppingmall.dataprotection.dto.SecureKeyResponse;
+import shop.gaship.gashipshoppingmall.dataprotection.exception.NotFoundDataProtectionReposeData;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.config <br/>
@@ -41,7 +41,7 @@ public class DataProtectionConfig {
                 .retrieve()
                 .toEntity(SecureKeyResponse.class)
                 .blockOptional()
-                .orElseThrow(() -> new NotFoundReposeData("응답 결과가 없습니다."))
+                .orElseThrow(() -> new NotFoundDataProtectionReposeData("응답 결과가 없습니다."))
                 .getBody())
             .getBody()
             .getSecret();

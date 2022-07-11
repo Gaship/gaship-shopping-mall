@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.exception;
+package shop.gaship.gashipshoppingmall.dataprotection.exception;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.exception <br/>

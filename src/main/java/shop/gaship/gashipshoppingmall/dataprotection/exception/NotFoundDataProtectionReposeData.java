@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.exception;
+package shop.gaship.gashipshoppingmall.dataprotection.exception;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.exception <br/>
@@ -11,8 +11,8 @@ package shop.gaship.gashipshoppingmall.exception;
  * -----------------------------------------------------------  <br/>
  * 2022/07/10           김민수               최초 생성                         <br/>
  */
-public class NotFoundReposeData extends RuntimeException {
-    public NotFoundReposeData(String s) {
+public class NotFoundDataProtectionReposeData extends RuntimeException {
+    public NotFoundDataProtectionReposeData(String s) {
         super(s);
     }
 }

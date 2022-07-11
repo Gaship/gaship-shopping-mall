@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.exception;
+package shop.gaship.gashipshoppingmall.member.exception;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.exception <br/>

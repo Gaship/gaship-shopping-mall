@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.dataprotection.vo;
+package shop.gaship.gashipshoppingmall.dataprotection.dto;
 
 import lombok.Getter;
 
@@ -23,7 +23,7 @@ public class SecureKeyResponse {
     public static class Header {
         private Integer resultCode;
         private String resultMessage;
-        private Boolean isSucceessful;
+        private Boolean isSuccessful;
     }
 
     @Getter

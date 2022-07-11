@@ -5,7 +5,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
-import shop.gaship.gashipshoppingmall.exception.EncodeFailureException;
+import shop.gaship.gashipshoppingmall.dataprotection.exception.EncodeFailureException;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.dataprotection.protection <br/>
