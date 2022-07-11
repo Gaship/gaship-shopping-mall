@@ -1,18 +1,17 @@
 package shop.gaship.gashipshoppingmall.category.service.impl;
 
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
-import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.service.impl
@@ -43,7 +42,8 @@ public class DefaultCategoryService implements CategoryService {
         Category upperCategory = null;
 
         if (Objects.nonNull(request.getUpperCategoryNo())) {
-            upperCategory = categoryRepository.findById(request.getUpperCategoryNo()).orElseThrow(CategoryNotFoundException::new);
+            upperCategory = categoryRepository.findById(request.getUpperCategoryNo())
+                    .orElseThrow(CategoryNotFoundException::new);
         }
 
         Category category = Category.builder()
@@ -66,7 +66,8 @@ public class DefaultCategoryService implements CategoryService {
     @Transactional
     @Override
     public void modifyCategory(Integer categoryNo, CategoryModifyRequest request) {
-        Category category = categoryRepository.findById(categoryNo).orElseThrow(CategoryNotFoundException::new);
+        Category category = categoryRepository.findById(categoryNo)
+                .orElseThrow(CategoryNotFoundException::new);
 
         categoryRepository.save(category.updateCategory(request.getName()));
     }
@@ -80,7 +81,8 @@ public class DefaultCategoryService implements CategoryService {
      */
     @Override
     public CategoryDto getCategory(Integer categoryNo) {
-        return categoryRepository.findCategoryById(categoryNo).orElseThrow(CategoryNotFoundException::new);
+        return categoryRepository.findCategoryById(categoryNo)
+                .orElseThrow(CategoryNotFoundException::new);
     }
 
     /**

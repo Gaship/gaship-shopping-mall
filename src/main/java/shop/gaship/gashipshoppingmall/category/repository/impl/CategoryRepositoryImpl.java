@@ -2,14 +2,13 @@ package shop.gaship.gashipshoppingmall.category.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
 import shop.gaship.gashipshoppingmall.category.repository.custom.CategoryRepositoryCustom;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.repository.impl
@@ -22,7 +21,8 @@ import java.util.Optional;
  * -----------------------------------------------------------
  * 2022-07-11        김보민       최초 생성
  */
-public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements CategoryRepositoryCustom {
+public class CategoryRepositoryImpl
+        extends QuerydslRepositorySupport implements CategoryRepositoryCustom {
     public CategoryRepositoryImpl() {
         super(Category.class);
     }

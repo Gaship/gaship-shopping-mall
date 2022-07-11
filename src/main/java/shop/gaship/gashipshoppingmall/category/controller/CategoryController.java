@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,8 +10,6 @@ import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
 import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
-
-import java.util.List;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.controller

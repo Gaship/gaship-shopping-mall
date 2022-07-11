@@ -1,10 +1,9 @@
 package shop.gaship.gashipshoppingmall.category.repository.custom;
 
-import org.springframework.data.repository.NoRepositoryBean;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.repository.NoRepositoryBean;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.repository.custom
@@ -20,5 +19,6 @@ import java.util.Optional;
 @NoRepositoryBean
 public interface CategoryRepositoryCustom {
     Optional<CategoryDto> findCategoryById(Integer categoryNo);
+
     List<CategoryDto> findAllCategories();
 }
