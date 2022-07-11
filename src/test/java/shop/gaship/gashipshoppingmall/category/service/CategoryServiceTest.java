@@ -65,7 +65,7 @@ class CategoryServiceTest {
 
     @Test
     void createCategoryFail() {
-        CategoryCreateRequest request = new CategoryCreateRequest("카테고리", 2, 1);
+        CategoryCreateRequest request = new CategoryCreateRequest("카테고리", 2, 9999);
 
         when(categoryRepository.findById(request.getUpperCategoryNo())).thenReturn(Optional.empty());
 
@@ -88,6 +88,18 @@ class CategoryServiceTest {
 
         verify(categoryRepository).findById(categoryNo);
         verify(categoryRepository).save(category);
+    }
+
+    @Test
+    void modifyCategoryFail() {
+        Integer categoryNo = 9999;
+        CategoryModifyRequest request = new CategoryModifyRequest("수정 카테고리");
+
+        when(categoryRepository.findById(categoryNo)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> categoryService.modifyCategory(categoryNo, request)).isInstanceOf(CategoryNotFoundException.class);
+
+        verify(categoryRepository).findById(categoryNo);
     }
 
     @Test
