@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.member.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.protection.Aes;
 import shop.gaship.gashipshoppingmall.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
@@ -39,6 +40,7 @@ public class MemberServiceImpl implements MemberService {
     private final Aes aes;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     @Override
     public void registerMember(MemberCreationRequest memberCreationRequest) {
         Member recommendMember = memberRepository
