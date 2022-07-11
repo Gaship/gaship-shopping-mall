@@ -93,10 +93,11 @@ class CategoryServiceTest {
     @Test
     void getCategory() {
         Integer categoryNo = 1;
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setNo(categoryNo);
-        categoryDto.setName("카테고리");
-        categoryDto.setLevel(1);
+        CategoryDto categoryDto = CategoryDto.builder()
+                .no(categoryNo)
+                .name("카테고리")
+                .level(1)
+                .build();
 
         when(categoryRepository.findCategoryById(categoryNo)).thenReturn(Optional.of(categoryDto));
 
@@ -107,10 +108,11 @@ class CategoryServiceTest {
 
     @Test
     void getCategories() {
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setNo(1);
-        categoryDto.setName("카테고리");
-        categoryDto.setLevel(1);
+        CategoryDto categoryDto = CategoryDto.builder()
+                .no(1)
+                .name("카테고리")
+                .level(1)
+                .build();
 
         when(categoryRepository.findAllCategories()).thenReturn(List.of(categoryDto));
 

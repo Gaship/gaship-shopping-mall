@@ -77,10 +77,11 @@ class CategoryControllerTest {
     @Test
     void getCategory() throws Exception{
         Integer categoryNo = 1;
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setNo(categoryNo);
-        categoryDto.setName("카테고리");
-        categoryDto.setLevel(1);
+        CategoryDto categoryDto = CategoryDto.builder()
+                .no(categoryNo)
+                .name("카테고리")
+                .level(1)
+                .build();
 
         when(categoryService.getCategory(categoryNo)).thenReturn(categoryDto);
 
@@ -99,10 +100,11 @@ class CategoryControllerTest {
 
     @Test
     void getCategories() throws Exception {
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setNo(1);
-        categoryDto.setName("카테고리");
-        categoryDto.setLevel(1);
+        CategoryDto categoryDto = CategoryDto.builder()
+                .no(1)
+                .name("카테고리")
+                .level(1)
+                .build();
 
         when(categoryService.getCategories()).thenReturn(List.of(categoryDto));
 

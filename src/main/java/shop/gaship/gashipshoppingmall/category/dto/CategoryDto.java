@@ -1,8 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.dto
@@ -15,9 +13,10 @@ import lombok.Setter;
  * -----------------------------------------------------------
  * 2022-07-10        김보민       최초 생성
  */
-@Getter
-@Setter
-@EqualsAndHashCode
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class CategoryDto {
     private Integer no;
     private String name;
