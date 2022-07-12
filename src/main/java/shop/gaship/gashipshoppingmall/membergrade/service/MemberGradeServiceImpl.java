@@ -6,8 +6,10 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
@@ -32,6 +34,7 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 public class MemberGradeServiceImpl implements MemberGradeService {
     private final MemberGradeRepository memberGradeRepository;
     private final StatusCodeRepository statusCodeRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     @Override
@@ -68,6 +71,10 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         MemberGrade memberGrade = memberGradeRepository
                 .findById(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
+
+        if (!memberRepository.findByMemberGrades(memberGradeNo).isEmpty()) {
+            throw new MemberGradeInUseException();
+        }
 
         memberGradeRepository.delete(memberGrade);
     }
