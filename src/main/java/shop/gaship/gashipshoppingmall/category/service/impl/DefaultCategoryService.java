@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
-import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainLowerCategory;
+import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainLowerCategoryException;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainProductException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
-import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
-import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryCreateRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
@@ -43,7 +43,7 @@ public class DefaultCategoryService implements CategoryService {
      */
     @Transactional
     @Override
-    public void createCategory(CategoryCreateRequest request) {
+    public void createCategory(CategoryCreateRequestDto request) {
         Category upperCategory = null;
 
         if (Objects.nonNull(request.getUpperCategoryNo())) {
@@ -70,7 +70,7 @@ public class DefaultCategoryService implements CategoryService {
      */
     @Transactional
     @Override
-    public void modifyCategory(Integer categoryNo, CategoryModifyRequest request) {
+    public void modifyCategory(Integer categoryNo, CategoryModifyRequestDto request) {
         Category category = categoryRepository.findById(categoryNo)
                 .orElseThrow(CategoryNotFoundException::new);
 
@@ -108,6 +108,7 @@ public class DefaultCategoryService implements CategoryService {
      *
      * @param categoryNo category no
      */
+    @Transactional
     @Override
     public void removeCategory(Integer categoryNo) {
         Category category = categoryRepository.findById(categoryNo)
@@ -115,7 +116,7 @@ public class DefaultCategoryService implements CategoryService {
         List<CategoryDto> lowerCategories = categoryRepository.findLowerCategories(categoryNo);
 
         if (!lowerCategories.isEmpty()) {
-            throw new CategoryRemainLowerCategory();
+            throw new CategoryRemainLowerCategoryException();
         }
 
         List<Product> products = productRepository.findAllByCategoryNo(category.getNo());

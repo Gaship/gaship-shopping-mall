@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.category.request;
+package shop.gaship.gashipshoppingmall.category.dto;
 
 import lombok.Data;
 
@@ -14,7 +14,7 @@ import lombok.Data;
  * 2022-07-09        김보민       최초 생성
  */
 @Data
-public class CategoryCreateRequest {
+public class CategoryCreateRequestDto {
     private final String name;
     private final Integer level;
     private final Integer upperCategoryNo;

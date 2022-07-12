@@ -2,8 +2,8 @@ package shop.gaship.gashipshoppingmall.category.service;
 
 import java.util.List;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
-import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
-import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryCreateRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.service
@@ -17,9 +17,9 @@ import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
  * 2022-07-09        김보민       최초 생성
  */
 public interface CategoryService {
-    void createCategory(CategoryCreateRequest request);
+    void createCategory(CategoryCreateRequestDto request);
 
-    void modifyCategory(Integer categoryNo, CategoryModifyRequest request);
+    void modifyCategory(Integer categoryNo, CategoryModifyRequestDto request);
 
     CategoryDto getCategory(Integer categoryNo);
 

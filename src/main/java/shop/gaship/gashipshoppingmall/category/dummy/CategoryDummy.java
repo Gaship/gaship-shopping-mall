@@ -16,7 +16,6 @@ import shop.gaship.gashipshoppingmall.category.entity.Category;
  */
 public class CategoryDummy {
 
-
     /**
      * methodName : upperDummy
      * author : 김보민

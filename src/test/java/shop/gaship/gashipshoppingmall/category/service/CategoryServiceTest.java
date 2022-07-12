@@ -7,13 +7,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
-import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainLowerCategory;
+import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainLowerCategoryException;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainProductException;
-import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryCreateRequestDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
-import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
@@ -53,7 +53,7 @@ class CategoryServiceTest {
 
     @Test
     void createCategorySuccess() {
-        CategoryCreateRequest request = new CategoryCreateRequest("카테고리", 1, null);
+        CategoryCreateRequestDto request = new CategoryCreateRequestDto("카테고리", 1, null);
         Category category = CategoryDummy.upperDummy(1);
 
         when(categoryRepository.save(any(Category.class))).thenReturn(category);
@@ -65,7 +65,7 @@ class CategoryServiceTest {
 
     @Test
     void createCategoryFail() {
-        CategoryCreateRequest request = new CategoryCreateRequest("카테고리", 2, 9999);
+        CategoryCreateRequestDto request = new CategoryCreateRequestDto("카테고리", 2, 9999);
 
         when(categoryRepository.findById(request.getUpperCategoryNo())).thenReturn(Optional.empty());
 
@@ -77,7 +77,7 @@ class CategoryServiceTest {
     @Test
     void modifyCategorySuccess() {
         Integer categoryNo = 1;
-        CategoryModifyRequest request = new CategoryModifyRequest("수정 카테고리");
+        CategoryModifyRequestDto request = new CategoryModifyRequestDto("수정 카테고리");
         Category category = CategoryDummy.upperDummy(1);
 
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(category));
@@ -93,7 +93,7 @@ class CategoryServiceTest {
     @Test
     void modifyCategoryFail() {
         Integer categoryNo = 9999;
-        CategoryModifyRequest request = new CategoryModifyRequest("수정 카테고리");
+        CategoryModifyRequestDto request = new CategoryModifyRequestDto("수정 카테고리");
 
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.empty());
 
@@ -162,7 +162,7 @@ class CategoryServiceTest {
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(category));
         when(categoryRepository.findLowerCategories(categoryNo)).thenReturn(List.of(lowerCategory));
 
-        assertThatThrownBy(() -> categoryService.removeCategory(categoryNo)).isInstanceOf(CategoryRemainLowerCategory.class);
+        assertThatThrownBy(() -> categoryService.removeCategory(categoryNo)).isInstanceOf(CategoryRemainLowerCategoryException.class);
 
         verify(categoryRepository).findById(categoryNo);
         verify(categoryRepository).findLowerCategories(categoryNo);

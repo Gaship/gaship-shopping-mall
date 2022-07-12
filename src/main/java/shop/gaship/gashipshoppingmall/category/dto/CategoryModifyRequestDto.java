@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.category.request;
+package shop.gaship.gashipshoppingmall.category.dto;
 
 import lombok.*;
 
@@ -17,6 +17,6 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryModifyRequest {
+public class CategoryModifyRequestDto {
     private String name;
 }

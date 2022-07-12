@@ -11,8 +11,8 @@ package shop.gaship.gashipshoppingmall.category.exception;
  * -----------------------------------------------------------
  * 2022-07-11        김보민       최초 생성
  */
-public class CategoryRemainLowerCategory extends RuntimeException {
-    public CategoryRemainLowerCategory() {
+public class CategoryRemainLowerCategoryException extends RuntimeException {
+    public CategoryRemainLowerCategoryException() {
         super("해당 카테고리에 속한 하위 카테고리가 있어 삭제할 수 없습니다.");
     }
 }

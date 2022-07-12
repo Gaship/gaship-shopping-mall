@@ -9,8 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
-import shop.gaship.gashipshoppingmall.category.request.CategoryCreateRequest;
-import shop.gaship.gashipshoppingmall.category.request.CategoryModifyRequest;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryCreateRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 
 import java.util.List;
@@ -44,7 +44,7 @@ class CategoryControllerTest {
 
     @Test
     void postCategory() throws Exception {
-        CategoryCreateRequest request = new CategoryCreateRequest("카테고리", 1, null);
+        CategoryCreateRequestDto request = new CategoryCreateRequestDto("카테고리", 1, null);
 
         doNothing().when(categoryService).createCategory(request);
 
@@ -61,7 +61,7 @@ class CategoryControllerTest {
     @Test
     void putCategory() throws Exception {
         Integer categoryNo = 1;
-        CategoryModifyRequest request = new CategoryModifyRequest("수정 카테고리");
+        CategoryModifyRequestDto request = new CategoryModifyRequestDto("수정 카테고리");
 
         doNothing().when(categoryService).modifyCategory(categoryNo, request);
 
