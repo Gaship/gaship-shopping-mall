@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.dto;
 
 import org.springframework.lang.Nullable;
-import shop.gaship.gashipshoppingmall.dataprotection.protection.Aes;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
