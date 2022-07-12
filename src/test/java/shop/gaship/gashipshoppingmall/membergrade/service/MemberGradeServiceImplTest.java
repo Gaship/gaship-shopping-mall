@@ -7,8 +7,11 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
@@ -46,6 +49,8 @@ class MemberGradeServiceImplTest {
     private MemberGradeRepository memberGradeRepository;
     @Mock
     private StatusCodeRepository statusCodeRepository;
+    @Mock
+    private MemberRepository memberRepository;
     private MemberGradeRequest memberGradeRequest;
 
     @BeforeEach
@@ -129,19 +134,45 @@ class MemberGradeServiceImplTest {
     }
 
     @Test
-    void removeMemberGrade_whenMemberGradeIsPresent() {
+    void removeMemberGrade_whenMemberGradeIsPresent_memberGradeIsNotUsed() {
         // given
         StatusCode renewalPeriod = createTestStatusCode();
         MemberGrade testMemberGrade = createTestMemberGrade(memberGradeRequest, renewalPeriod);
 
         // mocking
-        when(memberGradeRepository.findById(any())).thenReturn(Optional.ofNullable(testMemberGrade));
+        when(memberGradeRepository.findById(any()))
+                .thenReturn(Optional.ofNullable(testMemberGrade));
+        when(memberRepository.findByMemberGrades(any()))
+                .thenReturn(List.of());
 
         // when&then
         assertThatNoException().isThrownBy(() -> memberGradeServiceImpl.removeMemberGrade(any()));
 
         verify(memberGradeRepository).findById(any());
+        verify(memberRepository).findByMemberGrades(any());
         verify(memberGradeRepository).delete(any());
+    }
+
+    @Test
+    void removeMemberGrade_whenMemberGradeIsPresent_memberGradeIsUsed() {
+        // given
+        Integer testMemberGradeNo = 1;
+        StatusCode renewalPeriod = createTestStatusCode();
+        MemberGrade testMemberGrade = createTestMemberGrade(memberGradeRequest, renewalPeriod);
+
+        // mocking
+        when(memberGradeRepository.findById(any()))
+                .thenReturn(Optional.ofNullable(testMemberGrade));
+        when(memberRepository.findByMemberGrades(any()))
+                .thenReturn(List.of(MemberDummy.dummy(renewalPeriod, testMemberGrade)));
+
+        // when&then
+        assertThatThrownBy(() -> memberGradeServiceImpl.removeMemberGrade(1))
+                .isInstanceOf(MemberGradeInUseException.class);
+
+        verify(memberGradeRepository).findById(any());
+        verify(memberRepository).findByMemberGrades(any());
+        verify(memberGradeRepository, never()).delete(any());
     }
 
     @Test
@@ -157,6 +188,7 @@ class MemberGradeServiceImplTest {
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
         verify(memberGradeRepository).findById(any());
+        verify(memberRepository, never()).findByMemberGrades(any());
         verify(memberGradeRepository, never()).delete(any());
     }
 
