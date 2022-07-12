@@ -72,8 +72,7 @@ class MemberGradeRepositoryTest {
         MemberGrade newMemberGrade = memberGradeRepository.save(memberGrade);
 
         // when
-        newMemberGrade.setName("새싹");
-        newMemberGrade.setAccumulateAmount(1L);
+        newMemberGrade.modify(createTestMemberGradeRequest("새싹", 1L));
         memberGradeRepository.saveAndFlush(newMemberGrade);
         testEntityManager.clear();
 

@@ -58,8 +58,7 @@ public class MemberGradeServiceImpl implements MemberGradeService {
                 .findById(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
 
-        memberGrade.setName(request.getName());
-        memberGrade.setAccumulateAmount(request.getAccumulateAmount());
+        memberGrade.modify(request);
 
         memberGradeRepository.save(memberGrade);
     }

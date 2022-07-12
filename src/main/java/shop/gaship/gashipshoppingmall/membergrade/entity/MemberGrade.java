@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.membergrade.entity;
 
 import javax.persistence.*;
 import lombok.*;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 
@@ -31,10 +32,9 @@ public class MemberGrade {
     @JoinColumn(name = "renewal_period_no")
     private StatusCode renewalPeriodStatusCode;
 
-    @Setter
+    @Column
     private String name;
 
-    @Setter
     @Column(name = "accumulate_amount")
     private Long accumulateAmount;
 
@@ -50,5 +50,17 @@ public class MemberGrade {
         this.renewalPeriodStatusCode = renewalPeriod;
         this.name = name;
         this.accumulateAmount = accumulateAmount;
+    }
+
+    /**.
+     * methodName : modify
+     * author : Semi Kim
+     * description :
+     *
+     * @param memberGradeRequestDto MemberGradeRequestDto
+     */
+    public void modify(MemberGradeRequestDto memberGradeRequestDto) {
+        this.name = memberGradeRequestDto.getName();
+        this.accumulateAmount = memberGradeRequestDto.getAccumulateAmount();
     }
 }
