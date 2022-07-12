@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.tag.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,9 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public TagResponseDto register(TagRequestDto tagRequestDto) {
-        return entityToDto(tagRepository.save(dtoToEntity(tagRequestDto)));
+        Tag tag = dtoToEntity(tagRequestDto);
+        Tag save = tagRepository.save(tag);
+        return entityToDto(save);
     }
 
     @Transactional
