@@ -2,7 +2,6 @@ package shop.gaship.gashipshoppingmall.membergrade.repository;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 

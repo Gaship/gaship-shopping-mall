@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.entity;
 
 import javax.persistence.*;
-
 import lombok.*;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 

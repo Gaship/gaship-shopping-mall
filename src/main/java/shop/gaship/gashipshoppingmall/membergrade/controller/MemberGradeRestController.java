@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.controller;
 
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

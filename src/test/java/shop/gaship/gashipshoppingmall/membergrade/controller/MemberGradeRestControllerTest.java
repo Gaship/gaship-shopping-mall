@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.gaship.gashipshoppingmall.member.controller.MemberController;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
