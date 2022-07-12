@@ -1,8 +1,7 @@
 package shop.gaship.gashipshoppingmall.category.dto.request;
 
-import lombok.*;
-
 import javax.validation.constraints.NotBlank;
+import lombok.*;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.request

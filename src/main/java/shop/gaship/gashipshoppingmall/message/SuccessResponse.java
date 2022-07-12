@@ -1,9 +1,8 @@
 package shop.gaship.gashipshoppingmall.message;
 
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall

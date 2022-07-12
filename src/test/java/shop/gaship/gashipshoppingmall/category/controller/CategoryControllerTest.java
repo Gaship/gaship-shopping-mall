@@ -12,6 +12,7 @@ import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequestDto;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
+import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 
 import java.util.List;
@@ -132,5 +133,22 @@ class CategoryControllerTest {
                 .andDo(print());
 
         verify(categoryService).removeCategory(categoryNo);
+    }
+
+    @Test
+    @DisplayName("예외 처리 테스트")
+    void handleException() throws Exception {
+        Integer categoryNo = 9999;
+        CategoryNotFoundException exception = new CategoryNotFoundException();
+        when(categoryService.findCategory(categoryNo)).thenThrow(exception);
+
+        mockMvc.perform(get("/categories/{categoryNo}", categoryNo))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.exception").value(exception.getClass().getSimpleName()))
+                .andExpect(jsonPath("$.message").value(exception.getMessage()))
+                .andDo(print());
+
+        verify(categoryService).findCategory(categoryNo);
     }
 }

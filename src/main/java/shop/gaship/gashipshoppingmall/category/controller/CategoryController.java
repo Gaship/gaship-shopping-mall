@@ -1,17 +1,15 @@
 package shop.gaship.gashipshoppingmall.category.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequestDto;
-import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
+import shop.gaship.gashipshoppingmall.message.Error;
 import shop.gaship.gashipshoppingmall.message.SuccessResponse;
-
 import javax.validation.Valid;
 
 /**
@@ -113,5 +111,20 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(SuccessResponse.noData());
+    }
+
+    /**
+     * methodName : handleException
+     * author : 김보민
+     * description : 예외 처리
+     *
+     * @param ex exception
+     * @return response entity
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Error> handleException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new Error(ex.getClass().getSimpleName(), ex.getMessage()));
     }
 }
