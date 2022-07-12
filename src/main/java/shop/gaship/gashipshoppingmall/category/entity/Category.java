@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.category.entity;
 
-import java.util.List;
 import javax.persistence.*;
 import lombok.*;
 
@@ -18,9 +17,7 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode
-@Builder
 @Table(name = "categories")
 public class Category {
     @Id
@@ -37,6 +34,13 @@ public class Category {
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "upper_category_no")
     private Category upperCategory;
+
+    @Builder
+    public Category(String name, Integer level, Category upperCategory) {
+        this.name = name;
+        this.level = level;
+        this.upperCategory = upperCategory;
+    }
 
     /**
      * methodName : updateCategory

@@ -5,21 +5,21 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryCreateRequestDto;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainLowerCategoryException;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainProductException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryCreateRequestDto;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.service.impl
- * fileName       : DefaultCategoryService
+ * fileName       : CategoryServiceImpl
  * author         : 김보민
  * date           : 2022-07-09
  * description    : 카테고리 서비스
@@ -30,7 +30,7 @@ import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
  */
 @Service
 @RequiredArgsConstructor
-public class DefaultCategoryService implements CategoryService {
+public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 

@@ -1,9 +1,12 @@
 package shop.gaship.gashipshoppingmall.category.service;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
@@ -51,12 +54,27 @@ class CategoryServiceTest {
     @MockBean
     private ProductRepository productRepository;
 
-    @Test
-    void createCategorySuccess() {
-        CategoryCreateRequestDto request = new CategoryCreateRequestDto("카테고리", 1, null);
-        Category category = CategoryDummy.upperDummy(1);
+    private CategoryModifyRequestDto modifyRequestDto;
+    private Category upperCategory;
+    private Category category;
 
-        when(categoryRepository.save(any(Category.class))).thenReturn(category);
+    @BeforeEach
+    void setUp() {
+        modifyRequestDto = CategoryDummy.modifyRequestDto();
+        upperCategory = CategoryDummy.upperDummy();
+        category = CategoryDummy.dummy();
+    }
+
+    @Test
+    @DisplayName("카테고리 생성 성공")
+    void createCategorySuccess() {
+        CategoryCreateRequestDto request = CategoryCreateRequestDto.builder()
+                .name("카테고리")
+                .level(1)
+                .build();
+        ReflectionTestUtils.setField(upperCategory, "no", 1);
+
+        when(categoryRepository.save(any(Category.class))).thenReturn(upperCategory);
 
         categoryService.createCategory(request);
 
@@ -64,8 +82,13 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("카테고리 생성 실패 - 상위 카테고리 찾기 불가")
     void createCategoryFail() {
-        CategoryCreateRequestDto request = new CategoryCreateRequestDto("카테고리", 2, 9999);
+        CategoryCreateRequestDto request = CategoryCreateRequestDto.builder()
+                .name("카테고리")
+                .level(2)
+                .upperCategoryNo(9999)
+                .build();
 
         when(categoryRepository.findById(request.getUpperCategoryNo())).thenReturn(Optional.empty());
 
@@ -75,34 +98,35 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("카테고리 수정 성공")
     void modifyCategorySuccess() {
         Integer categoryNo = 1;
-        CategoryModifyRequestDto request = new CategoryModifyRequestDto("수정 카테고리");
-        Category category = CategoryDummy.upperDummy(1);
+        ReflectionTestUtils.setField(upperCategory, "no", categoryNo);
 
-        when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(category));
+        when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(upperCategory));
 
-        categoryService.modifyCategory(categoryNo, request);
+        categoryService.modifyCategory(categoryNo, modifyRequestDto);
 
-        assertThat(category.getName()).isEqualTo(request.getName());
+        assertThat(upperCategory.getName()).isEqualTo(modifyRequestDto.getName());
 
         verify(categoryRepository).findById(categoryNo);
-        verify(categoryRepository).save(category);
+        verify(categoryRepository).save(upperCategory);
     }
 
     @Test
+    @DisplayName("카테고리 수정 실패 - 해당 카테고리 찾기 불가")
     void modifyCategoryFail() {
         Integer categoryNo = 9999;
-        CategoryModifyRequestDto request = new CategoryModifyRequestDto("수정 카테고리");
 
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> categoryService.modifyCategory(categoryNo, request)).isInstanceOf(CategoryNotFoundException.class);
+        assertThatThrownBy(() -> categoryService.modifyCategory(categoryNo, modifyRequestDto)).isInstanceOf(CategoryNotFoundException.class);
 
         verify(categoryRepository).findById(categoryNo);
     }
 
     @Test
+    @DisplayName("카테고리 단건 조회")
     void getCategory() {
         Integer categoryNo = 1;
         CategoryDto categoryDto = CategoryDummy.dtoDummy(categoryNo);
@@ -115,6 +139,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("카테고리 전체 조회")
     void getCategories() {
         CategoryDto categoryDto = CategoryDummy.dtoDummy(1);
 
@@ -128,8 +153,9 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("카테고리 삭제 성공")
     void removeCategorySuccess() {
-        Category category = CategoryDummy.dummy(2);
+        ReflectionTestUtils.setField(category, "no", 2);
 
         when(categoryRepository.findById(category.getNo())).thenReturn(Optional.of(category));
         when(categoryRepository.findLowerCategories(category.getNo())).thenReturn(Collections.emptyList());
@@ -144,8 +170,10 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("카테고리 삭제 실패 - 해당 카테고리 찾기 불가")
     void removeCategoryFail_notFoundCategory() {
         Integer categoryNo = 9999;
+
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> categoryService.removeCategory(categoryNo)).isInstanceOf(CategoryNotFoundException.class);
@@ -154,12 +182,13 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("카테고리 삭제 실패 - 하위 카테고리 존재")
     void removeCategoryFail_remainLowerCategory() {
         Integer categoryNo = 1;
-        Category category = CategoryDummy.upperDummy(categoryNo);
         CategoryDto lowerCategory = CategoryDummy.dtoDummy(2);
+        ReflectionTestUtils.setField(upperCategory, "no", categoryNo);
 
-        when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(category));
+        when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(upperCategory));
         when(categoryRepository.findLowerCategories(categoryNo)).thenReturn(List.of(lowerCategory));
 
         assertThatThrownBy(() -> categoryService.removeCategory(categoryNo)).isInstanceOf(CategoryRemainLowerCategoryException.class);
@@ -169,10 +198,11 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("카테고리 삭제 실패 - 해당 카테고리에 속한 상품 존재")
     void removeCategoryFail_remainProduct() {
         Integer categoryNo = 2;
-        Category category = CategoryDummy.dummy(categoryNo);
         Product product = ProductDummy.dummy();
+        ReflectionTestUtils.setField(category, "no", categoryNo);
 
         when(categoryRepository.findById(category.getNo())).thenReturn(Optional.of(category));
         when(categoryRepository.findLowerCategories(categoryNo)).thenReturn(Collections.emptyList());

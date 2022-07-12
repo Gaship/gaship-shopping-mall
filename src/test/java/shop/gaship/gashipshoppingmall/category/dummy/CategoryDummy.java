@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.category.dummy;
 
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 
 /**
@@ -23,9 +24,8 @@ public class CategoryDummy {
      *
      * @return category
      */
-    public static Category upperDummy(Integer categoryNo) {
+    public static Category upperDummy() {
         return Category.builder()
-                .no(categoryNo)
                 .name("상위 카테고리")
                 .level(1)
                 .upperCategory(null)
@@ -39,16 +39,13 @@ public class CategoryDummy {
      *
      * @return category
      */
-    public static Category dummy(Integer categoryNo) {
+    public static Category dummy() {
         return Category.builder()
-                .no(categoryNo)
                 .name("카테고리")
                 .level(2)
-                .upperCategory(upperDummy(null))
+                .upperCategory(upperDummy())
                 .build();
     }
-
-
 
     /**
      * methodName : dtoDummy
@@ -63,6 +60,19 @@ public class CategoryDummy {
                 .no(categoryNo)
                 .name("카테고리")
                 .level(1)
+                .build();
+    }
+
+    /**
+     * methodName : modifyRequestDto
+     * author : 김보민
+     * description : 카테고리 modify request dto 더미
+     *
+     * @return category modify request dto
+     */
+    public static CategoryModifyRequestDto modifyRequestDto() {
+        return CategoryModifyRequestDto.builder()
+                .name("수정 카테고리")
                 .build();
     }
 }

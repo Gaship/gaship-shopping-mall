@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.category.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -43,7 +44,8 @@ class CategoryControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void postCategory() throws Exception {
+    @DisplayName("카테고리 생성 post 요청")
+    void createCategory() throws Exception {
         CategoryCreateRequestDto request = new CategoryCreateRequestDto("카테고리", 1, null);
 
         doNothing().when(categoryService).createCategory(request);
@@ -59,9 +61,10 @@ class CategoryControllerTest {
     }
 
     @Test
-    void putCategory() throws Exception {
+    @DisplayName("카테고리 수정 put 요청")
+    void modifyCategory() throws Exception {
         Integer categoryNo = 1;
-        CategoryModifyRequestDto request = new CategoryModifyRequestDto("수정 카테고리");
+        CategoryModifyRequestDto request = CategoryDummy.modifyRequestDto();
 
         doNothing().when(categoryService).modifyCategory(categoryNo, request);
 
@@ -76,6 +79,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("카테고리 단건 조회 get 요청")
     void getCategory() throws Exception{
         Integer categoryNo = 1;
         CategoryDto categoryDto = CategoryDummy.dtoDummy(categoryNo);
@@ -96,6 +100,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("카테고리 전체 조회 get 요청")
     void getCategories() throws Exception {
         CategoryDto categoryDto = CategoryDummy.dtoDummy(1);
 
@@ -105,13 +110,19 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].no").value(categoryDto.getNo()))
+                .andExpect(jsonPath("$[0].name").value(categoryDto.getName()))
+                .andExpect(jsonPath("$[0].level").value(categoryDto.getLevel()))
+                .andExpect(jsonPath("$[0].upperCategoryNo").value(categoryDto.getUpperCategoryNo()))
+                .andExpect(jsonPath("$[0].upperCategoryName").value(categoryDto.getUpperCategoryName()))
                 .andDo(print());
 
         verify(categoryService).getCategories();
     }
 
     @Test
-    void deleteCategory() throws Exception{
+    @DisplayName("카테고리 삭제 delete 요청")
+    void removeCategory() throws Exception{
         Integer categoryNo = 1;
 
         doNothing().when(categoryService).removeCategory(categoryNo);

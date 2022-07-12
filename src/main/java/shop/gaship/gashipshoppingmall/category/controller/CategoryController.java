@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryCreateRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 
@@ -29,7 +29,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     /**
-     * methodName : postCategory
+     * methodName : createCategory
      * author : 김보민
      * description : 카테고리 post 요청 매핑
      *
@@ -37,7 +37,7 @@ public class CategoryController {
      * @return response entity
      */
     @PostMapping
-    public ResponseEntity<Void> postCategory(@RequestBody CategoryCreateRequestDto request) {
+    public ResponseEntity<Void> createCategory(@RequestBody CategoryCreateRequestDto request) {
         categoryService.createCategory(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -46,7 +46,7 @@ public class CategoryController {
     }
 
     /**
-     * methodName : putCategory
+     * methodName : modifyCategory
      * author : 김보민
      * description : 카테고리 put 요청 매핑
      *
@@ -55,8 +55,8 @@ public class CategoryController {
      * @return response entity
      */
     @PutMapping("/{categoryNo}")
-    public ResponseEntity<Void> putCategory(@PathVariable("categoryNo") Integer categoryNo,
-                                            @RequestBody CategoryModifyRequestDto request) {
+    public ResponseEntity<Void> modifyCategory(@PathVariable("categoryNo") Integer categoryNo,
+                                               @RequestBody CategoryModifyRequestDto request) {
         categoryService.modifyCategory(categoryNo, request);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
@@ -96,7 +96,7 @@ public class CategoryController {
     }
 
     /**
-     * methodName : deleteCategory
+     * methodName : removeCategory
      * author : 김보민
      * description : 카테고리 delete 요청 매핑
      *
@@ -104,7 +104,7 @@ public class CategoryController {
      * @return response entity
      */
     @DeleteMapping("/{categoryNo}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable("categoryNo") Integer categoryNo) {
+    public ResponseEntity<Void> removeCategory(@PathVariable("categoryNo") Integer categoryNo) {
         categoryService.removeCategory(categoryNo);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT)

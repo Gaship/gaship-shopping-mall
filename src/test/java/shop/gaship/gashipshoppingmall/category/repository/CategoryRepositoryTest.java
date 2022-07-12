@@ -1,10 +1,10 @@
 package shop.gaship.gashipshoppingmall.category.repository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
@@ -29,8 +29,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 @DataJpaTest
 class CategoryRepositoryTest {
-    @Autowired
-    private TestEntityManager entityManager;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -40,11 +38,12 @@ class CategoryRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        upperCategory = CategoryDummy.upperDummy(null);
-        category = CategoryDummy.dummy(null);
+        upperCategory = CategoryDummy.upperDummy();
+        category = CategoryDummy.dummy();
     }
 
     @Test
+    @DisplayName("카테고리 등록 및 수정")
     void saveCategory() {
         Category savedCategory = categoryRepository.save(category);
 
@@ -55,6 +54,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
+    @DisplayName("카테고리 엔티티 단건 조회")
     void findById() {
         Category savedCategory = categoryRepository.save(category);
 
@@ -64,6 +64,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
+    @DisplayName("카테고리 단건 조회")
     void findDtoById() {
         Category savedCategory = categoryRepository.save(category);
 
@@ -78,22 +79,25 @@ class CategoryRepositoryTest {
     }
 
     @Test
+    @DisplayName("카테고리 전체 조회")
     void findAllCategories() {
         Category savedCategory = categoryRepository.save(category);
         List<CategoryDto> categories = categoryRepository.findAllCategories();
 
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setNo(savedCategory.getNo());
-        categoryDto.setName(savedCategory.getName());
-        categoryDto.setLevel(savedCategory.getLevel());
-        categoryDto.setUpperCategoryNo(savedCategory.getUpperCategory().getNo());
-        categoryDto.setUpperCategoryName(savedCategory.getUpperCategory().getName());
+        CategoryDto categoryDto = CategoryDto.builder()
+                .no(savedCategory.getNo())
+                .name(savedCategory.getName())
+                .level(savedCategory.getLevel())
+                .upperCategoryNo(savedCategory.getUpperCategory().getNo())
+                .upperCategoryName(savedCategory.getUpperCategory().getName())
+                .build();
 
         assertThat(categories).hasSize(2);
         assertThat(categories.get(1)).isEqualTo(categoryDto);
     }
 
     @Test
+    @DisplayName("하위 카테고리 조회")
     void findAllLowerCategories() {
         Category savedCategory = categoryRepository.saveAndFlush(category);
 
@@ -103,6 +107,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
+    @DisplayName("카테고리 삭제")
     void deleteCategory() {
         Category savedCategory = categoryRepository.save(category);
 

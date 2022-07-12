@@ -1,6 +1,9 @@
 package shop.gaship.gashipshoppingmall.category.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.dto
@@ -13,9 +16,12 @@ import lombok.Data;
  * -----------------------------------------------------------
  * 2022-07-09        김보민       최초 생성
  */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class CategoryCreateRequestDto {
-    private final String name;
-    private final Integer level;
-    private final Integer upperCategoryNo;
+    private String name;
+    private Integer level;
+    private Integer upperCategoryNo;
 }

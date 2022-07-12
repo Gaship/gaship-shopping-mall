@@ -26,7 +26,7 @@ public class ProductDummy {
      */
     public static Product dummy() {
         return Product.builder()
-                .category(CategoryDummy.dummy(2))
+                .category(CategoryDummy.dummy())
                 .name("상품")
                 .amount(10000L)
                 .registerDatetime(LocalDateTime.now())

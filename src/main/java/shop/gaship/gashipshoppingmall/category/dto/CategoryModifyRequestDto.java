@@ -13,10 +13,10 @@ import lombok.*;
  * -----------------------------------------------------------
  * 2022-07-10        김보민       최초 생성
  */
-@Getter
-@EqualsAndHashCode
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class CategoryModifyRequestDto {
     private String name;
 }
