@@ -22,8 +22,7 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils.*;
@@ -52,10 +51,12 @@ class MemberGradeServiceImplTest {
     @Mock
     private MemberRepository memberRepository;
     private MemberGradeRequestDto memberGradeRequestDto;
+    private Integer testMemberGradeNo;
 
     @BeforeEach
     void setUp() {
         memberGradeRequestDto = createTestMemberGradeRequest("일반", 0L);
+        testMemberGradeNo = 1;
     }
 
     @Test
@@ -72,6 +73,7 @@ class MemberGradeServiceImplTest {
         memberGradeServiceImpl.addMemberGrade(memberGradeRequestDto);
 
         // then
+        verify(statusCodeRepository).findById(any());
         verify(memberGradeRepository).save(any());
     }
 
@@ -92,7 +94,6 @@ class MemberGradeServiceImplTest {
     @Test
     void modifyMemberGrade_whenMemberGradeIsPresent() {
         // given
-        Integer testMemberGradeNo = 1;
         MemberGradeRequestDto modifyMemberGradeRequestDto = createTestMemberGradeRequest("새싹", 0L);
 
         StatusCode renewalPeriod = createTestStatusCode();
@@ -117,7 +118,6 @@ class MemberGradeServiceImplTest {
     @Test
     void modifyMemberGrade_whenMemberGradeIsEmpty_throwMemberGradeNotFoundException() {
         // given
-        Integer testMemberGradeNo = 1;
         MemberGradeRequestDto modifyMemberGradeRequestDto = createTestMemberGradeRequest("새싹", 0L);
 
         // mocking
@@ -156,7 +156,6 @@ class MemberGradeServiceImplTest {
     @Test
     void removeMemberGrade_whenMemberGradeIsPresent_memberGradeIsUsed() {
         // given
-        Integer testMemberGradeNo = 1;
         StatusCode renewalPeriod = createTestStatusCode();
         MemberGrade testMemberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
 
@@ -177,9 +176,6 @@ class MemberGradeServiceImplTest {
 
     @Test
     void removeMemberGrade_whenMemberGradeIsEmpty_throwMemberGradeNotFoundException() {
-        // given
-        Integer testMemberGradeNo = 1;
-
         // mocking
         when(memberGradeRepository.findById(any())).thenReturn(Optional.empty());
 
@@ -195,25 +191,24 @@ class MemberGradeServiceImplTest {
     @Test
     void findMemberGrade_whenMemberGradeIsPresent() {
         // given
-        Integer testMemberGradeNo = 1;
         MemberGradeDto testMemberGradeDto = createTestMemberGradeDto("일반", 0L, "12개월");
 
         // mocking
         when(memberGradeRepository.getMemberGradeBy(any()))
                 .thenReturn(Optional.of(testMemberGradeDto));
 
-        // when&then
-        assertThatNoException()
-                .isThrownBy(() -> memberGradeServiceImpl.findMemberGrade(testMemberGradeNo));
+        // when
+        MemberGradeDto result = memberGradeServiceImpl.findMemberGrade(testMemberGradeNo);
+
+        // then
+        assertThat(result.getName()).isEqualTo(testMemberGradeDto.getName());
+        assertThat(result.getAccumulateAmount()).isEqualTo(testMemberGradeDto.getAccumulateAmount());
 
         verify(memberGradeRepository).getMemberGradeBy(any());
     }
 
     @Test
     void findMemberGrade_whenMemberGradeIsEmpty() {
-        // given
-        Integer testMemberGradeNo = 1;
-
         // mocking
         when(memberGradeRepository.getMemberGradeBy(any()))
                 .thenReturn(Optional.empty());
