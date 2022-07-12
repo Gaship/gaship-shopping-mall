@@ -5,11 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryCreateRequestDto;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
 import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
+
+import javax.validation.Valid;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.controller
@@ -37,7 +40,7 @@ public class CategoryController {
      * @return response entity
      */
     @PostMapping
-    public ResponseEntity<Void> createCategory(@RequestBody CategoryCreateRequestDto request) {
+    public ResponseEntity<Void> createCategory(@Valid @RequestBody CategoryCreateRequestDto request) {
         categoryService.createCategory(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -56,7 +59,7 @@ public class CategoryController {
      */
     @PutMapping("/{categoryNo}")
     public ResponseEntity<Void> modifyCategory(@PathVariable("categoryNo") Integer categoryNo,
-                                               @RequestBody CategoryModifyRequestDto request) {
+                                               @Valid @RequestBody CategoryModifyRequestDto request) {
         categoryService.modifyCategory(categoryNo, request);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT)

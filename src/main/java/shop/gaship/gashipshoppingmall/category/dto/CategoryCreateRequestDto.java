@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.dto
  * fileName       : CategoryCreateRequest
@@ -21,7 +25,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class CategoryCreateRequestDto {
+    @NotBlank
     private String name;
+
+    @NotNull
+    @Min(1)
     private Integer level;
+
     private Integer upperCategoryNo;
 }

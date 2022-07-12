@@ -2,6 +2,8 @@ package shop.gaship.gashipshoppingmall.category.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.request
  * fileName       : CategoryModifyRequest
@@ -18,5 +20,7 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 public class CategoryModifyRequestDto {
+
+    @NotBlank
     private String name;
 }
