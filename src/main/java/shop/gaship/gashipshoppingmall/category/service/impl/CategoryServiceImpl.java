@@ -5,9 +5,9 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryCreateRequestDto;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainLowerCategoryException;
@@ -34,16 +34,9 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 
-    /**
-     * methodName : createCategory
-     * author : 김보민
-     * description : 카테고리 생성
-     *
-     * @param request category create request
-     */
     @Transactional
     @Override
-    public void createCategory(CategoryCreateRequestDto request) {
+    public void addCategory(CategoryCreateRequestDto request) {
         Category upperCategory = null;
 
         if (Objects.nonNull(request.getUpperCategoryNo())) {
@@ -60,14 +53,6 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category);
     }
 
-    /**
-     * methodName : modifyCategory
-     * author : 김보민
-     * description : 카테고리 수정
-     *
-     * @param categoryNo category no
-     * @param request category modify request
-     */
     @Transactional
     @Override
     public void modifyCategory(Integer categoryNo, CategoryModifyRequestDto request) {
@@ -77,43 +62,24 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category.updateCategory(request.getName()));
     }
 
-    /**
-     * methodName : getCategory
-     * author : 김보민
-     * description : 카테고리 단건 조회
-     *
-     * @param categoryNo category no
-     */
     @Override
-    public CategoryDto getCategory(Integer categoryNo) {
+    public CategoryResponseDto findCategory(Integer categoryNo) {
         return categoryRepository.findCategoryById(categoryNo)
                 .orElseThrow(CategoryNotFoundException::new);
     }
 
-    /**
-     * methodName : getCategories
-     * author : 김보민
-     * description : 카테고리 다건 조회
-     *
-     */
     @Override
-    public List<CategoryDto> getCategories() {
+    public List<CategoryResponseDto> findCategories() {
         return categoryRepository.findAllCategories();
     }
 
-    /**
-     * methodName : removeCategory
-     * author : 김보민
-     * description : 카테고리 삭제
-     *
-     * @param categoryNo category no
-     */
     @Transactional
     @Override
     public void removeCategory(Integer categoryNo) {
         Category category = categoryRepository.findById(categoryNo)
                 .orElseThrow(CategoryNotFoundException::new);
-        List<CategoryDto> lowerCategories = categoryRepository.findLowerCategories(categoryNo);
+        List<CategoryResponseDto> lowerCategories = categoryRepository
+                .findLowerCategories(categoryNo);
 
         if (!lowerCategories.isEmpty()) {
             throw new CategoryRemainLowerCategoryException();

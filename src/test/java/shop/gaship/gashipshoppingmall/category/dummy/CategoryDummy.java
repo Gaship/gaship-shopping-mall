@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.category.dummy;
 
-import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
+import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 
 /**
@@ -55,8 +55,8 @@ public class CategoryDummy {
      * @param categoryNo category no
      * @return category dto
      */
-    public static CategoryDto dtoDummy(Integer categoryNo) {
-        return CategoryDto.builder()
+    public static CategoryResponseDto dtoDummy(Integer categoryNo) {
+        return CategoryResponseDto.builder()
                 .no(categoryNo)
                 .name("카테고리")
                 .level(1)

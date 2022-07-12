@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.category.dto;
+package shop.gaship.gashipshoppingmall.category.dto.request;
 
 import lombok.*;
 

@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.category.repository.custom;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
+import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.repository.custom
@@ -18,9 +18,9 @@ import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
  */
 @NoRepositoryBean
 public interface CategoryRepositoryCustom {
-    Optional<CategoryDto> findCategoryById(Integer categoryNo);
+    Optional<CategoryResponseDto> findCategoryById(Integer categoryNo);
 
-    List<CategoryDto> findAllCategories();
+    List<CategoryResponseDto> findAllCategories();
 
-    List<CategoryDto> findLowerCategories(Integer categoryNo);
+    List<CategoryResponseDto> findLowerCategories(Integer categoryNo);
 }

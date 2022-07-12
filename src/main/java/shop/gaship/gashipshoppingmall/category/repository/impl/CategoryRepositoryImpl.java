@@ -5,7 +5,7 @@ import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
+import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
 import shop.gaship.gashipshoppingmall.category.repository.custom.CategoryRepositoryCustom;
@@ -36,13 +36,13 @@ public class CategoryRepositoryImpl
      * @return optional
      */
     @Override
-    public Optional<CategoryDto> findCategoryById(Integer categoryNo) {
+    public Optional<CategoryResponseDto> findCategoryById(Integer categoryNo) {
         QCategory category = QCategory.category;
 
         JPQLQuery query = from(category);
         query.where(category.no.eq(categoryNo));
         query.leftJoin(category.upperCategory);
-        query.select(Projections.bean(CategoryDto.class,
+        query.select(Projections.bean(CategoryResponseDto.class,
                 category.no,
                 category.name,
                 category.level,
@@ -50,7 +50,7 @@ public class CategoryRepositoryImpl
                 category.upperCategory.name.as("upperCategoryName")
         ));
 
-        return Optional.of((CategoryDto) query.fetchOne());
+        return Optional.of((CategoryResponseDto) query.fetchOne());
     }
 
 
@@ -62,12 +62,12 @@ public class CategoryRepositoryImpl
      * @return list
      */
     @Override
-    public List<CategoryDto> findAllCategories() {
+    public List<CategoryResponseDto> findAllCategories() {
         QCategory category = QCategory.category;
 
         JPQLQuery query = from(category);
         query.leftJoin(category.upperCategory);
-        query.select(Projections.bean(CategoryDto.class,
+        query.select(Projections.bean(CategoryResponseDto.class,
                 category.no,
                 category.name,
                 category.level,
@@ -87,12 +87,12 @@ public class CategoryRepositoryImpl
      * @return list
      */
     @Override
-    public List<CategoryDto> findLowerCategories(Integer categoryNo) {
+    public List<CategoryResponseDto> findLowerCategories(Integer categoryNo) {
         QCategory category = QCategory.category;
 
         JPQLQuery query = from(category);
         query.where(category.upperCategory.no.eq(categoryNo));
-        query.select(Projections.bean(CategoryDto.class,
+        query.select(Projections.bean(CategoryResponseDto.class,
                 category.no,
                 category.name,
                 category.level

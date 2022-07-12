@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.category.dto;
+package shop.gaship.gashipshoppingmall.category.dto.response;
 
 import lombok.*;
 
@@ -17,7 +17,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CategoryDto {
+public class CategoryResponseDto {
     private Integer no;
     private String name;
     private Integer level;

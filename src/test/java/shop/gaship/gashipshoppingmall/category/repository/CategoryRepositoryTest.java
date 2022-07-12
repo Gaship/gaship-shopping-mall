@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
+import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 
@@ -68,7 +68,7 @@ class CategoryRepositoryTest {
     void findDtoById() {
         Category savedCategory = categoryRepository.save(category);
 
-        Optional<CategoryDto> categoryDto = categoryRepository.findCategoryById(savedCategory.getNo());
+        Optional<CategoryResponseDto> categoryDto = categoryRepository.findCategoryById(savedCategory.getNo());
 
         assertThat(categoryDto).isPresent();
         assertThat(categoryDto.get().getNo()).isEqualTo(savedCategory.getNo());
@@ -82,9 +82,9 @@ class CategoryRepositoryTest {
     @DisplayName("카테고리 전체 조회")
     void findAllCategories() {
         Category savedCategory = categoryRepository.save(category);
-        List<CategoryDto> categories = categoryRepository.findAllCategories();
+        List<CategoryResponseDto> categories = categoryRepository.findAllCategories();
 
-        CategoryDto categoryDto = CategoryDto.builder()
+        CategoryResponseDto categoryResponseDto = CategoryResponseDto.builder()
                 .no(savedCategory.getNo())
                 .name(savedCategory.getName())
                 .level(savedCategory.getLevel())
@@ -93,7 +93,7 @@ class CategoryRepositoryTest {
                 .build();
 
         assertThat(categories).hasSize(2);
-        assertThat(categories.get(1)).isEqualTo(categoryDto);
+        assertThat(categories.get(1)).isEqualTo(categoryResponseDto);
     }
 
     @Test
@@ -101,7 +101,7 @@ class CategoryRepositoryTest {
     void findAllLowerCategories() {
         Category savedCategory = categoryRepository.saveAndFlush(category);
 
-        List<CategoryDto> lowerCategories = categoryRepository.findLowerCategories(savedCategory.getUpperCategory().getNo());
+        List<CategoryResponseDto> lowerCategories = categoryRepository.findLowerCategories(savedCategory.getUpperCategory().getNo());
 
         assertThat(lowerCategories).hasSize(1);
     }

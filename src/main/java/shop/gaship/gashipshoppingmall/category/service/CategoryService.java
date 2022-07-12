@@ -1,9 +1,9 @@
 package shop.gaship.gashipshoppingmall.category.service;
 
 import java.util.List;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryCreateRequestDto;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryDto;
-import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.service
@@ -17,13 +17,48 @@ import shop.gaship.gashipshoppingmall.category.dto.CategoryModifyRequestDto;
  * 2022-07-09        김보민       최초 생성
  */
 public interface CategoryService {
-    void createCategory(CategoryCreateRequestDto request);
+    /**
+     * methodName : addCategory
+     * author : 김보민
+     * description : 카테고리 생성
+     *
+     * @param request category create request
+     */
+    void addCategory(CategoryCreateRequestDto request);
 
+    /**
+     * methodName : modifyCategory
+     * author : 김보민
+     * description : 카테고리 수정
+     *
+     * @param categoryNo category no
+     * @param request category modify request
+     */
     void modifyCategory(Integer categoryNo, CategoryModifyRequestDto request);
 
-    CategoryDto getCategory(Integer categoryNo);
+    /**
+     * methodName : findCategory
+     * author : 김보민
+     * description : 카테고리 단건 조회
+     *
+     * @param categoryNo category no
+     */
+    CategoryResponseDto findCategory(Integer categoryNo);
 
-    List<CategoryDto> getCategories();
+    /**
+     * methodName : findCategories
+     * author : 김보민
+     * description : 카테고리 다건 조회
+     *
+     */
+    List<CategoryResponseDto> findCategories();
 
+    /**
+     * methodName : removeCategory
+     * author : 김보민
+     * description : 카테고리 삭제
+     *
+     * @param categoryNo category no
+     */
     void removeCategory(Integer categoryNo);
 }
