@@ -8,6 +8,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -16,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils.*;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.repository
@@ -42,9 +44,9 @@ class MemberGradeRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        MemberGradeRequestDto memberGradeRequestDto = createTestMemberGradeRequest("일반", 0L);
-        renewalPeriod = createTestStatusCode();
-        memberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
+        MemberGradeRequestDto memberGradeRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
+        renewalPeriod = StatusCodeDummy.dummy();
+        memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
     }
 
     @Test
@@ -72,7 +74,7 @@ class MemberGradeRepositoryTest {
         MemberGrade newMemberGrade = memberGradeRepository.save(memberGrade);
 
         // when
-        newMemberGrade.modify(createTestMemberGradeRequest("새싹", 1L));
+        newMemberGrade.modify(MemberGradeDtoDummy.requestDummy("새싹", 1L));
         memberGradeRepository.saveAndFlush(newMemberGrade);
         testEntityManager.clear();
 

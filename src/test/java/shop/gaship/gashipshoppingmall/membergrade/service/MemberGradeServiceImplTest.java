@@ -9,7 +9,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
-import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
@@ -25,7 +28,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils.*;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.service
@@ -55,15 +57,15 @@ class MemberGradeServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        memberGradeRequestDto = createTestMemberGradeRequest("일반", 0L);
+        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
         testMemberGradeNo = 1;
     }
 
     @Test
     void addMemberGrade_whenRenewalPeriodIsPresent() {
         // given
-        StatusCode renewalPeriod = createTestStatusCode();
-        MemberGrade memberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
+        StatusCode renewalPeriod = StatusCodeDummy.dummy();
+        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
 
         // mocking
         when(statusCodeRepository.findById(any())).thenReturn(Optional.of(renewalPeriod));
@@ -94,12 +96,12 @@ class MemberGradeServiceImplTest {
     @Test
     void modifyMemberGrade_whenMemberGradeIsPresent() {
         // given
-        MemberGradeRequestDto modifyMemberGradeRequestDto = createTestMemberGradeRequest("새싹", 0L);
+        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy("새싹", 0L);
 
-        StatusCode renewalPeriod = createTestStatusCode();
-        MemberGrade memberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
+        StatusCode renewalPeriod = StatusCodeDummy.dummy();
+        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
 
-        MemberGrade modifyMemberGrade = createTestMemberGrade(modifyMemberGradeRequestDto, renewalPeriod);
+        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(modifyMemberGradeRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -118,7 +120,7 @@ class MemberGradeServiceImplTest {
     @Test
     void modifyMemberGrade_whenMemberGradeIsEmpty_throwMemberGradeNotFoundException() {
         // given
-        MemberGradeRequestDto modifyMemberGradeRequestDto = createTestMemberGradeRequest("새싹", 0L);
+        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy("새싹", 0L);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -136,8 +138,8 @@ class MemberGradeServiceImplTest {
     @Test
     void removeMemberGrade_whenMemberGradeIsPresent_memberGradeIsNotUsed() {
         // given
-        StatusCode renewalPeriod = createTestStatusCode();
-        MemberGrade testMemberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
+        StatusCode renewalPeriod = StatusCodeDummy.dummy();
+        MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -156,8 +158,8 @@ class MemberGradeServiceImplTest {
     @Test
     void removeMemberGrade_whenMemberGradeIsPresent_memberGradeIsUsed() {
         // given
-        StatusCode renewalPeriod = createTestStatusCode();
-        MemberGrade testMemberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
+        StatusCode renewalPeriod = StatusCodeDummy.dummy();
+        MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -191,7 +193,7 @@ class MemberGradeServiceImplTest {
     @Test
     void findMemberGrade_whenMemberGradeIsPresent() {
         // given
-        MemberGradeDto testMemberGradeDto = createTestMemberGradeDto("일반", 0L, "12개월");
+        MemberGradeDto testMemberGradeDto = MemberGradeDtoDummy.responseDummy("일반", 0L, "12개월");
 
         // mocking
         when(memberGradeRepository.getMemberGradeBy(any()))
@@ -227,7 +229,7 @@ class MemberGradeServiceImplTest {
 
         // mocking
         when(memberGradeRepository.getMemberGrades(pageable))
-                .thenReturn(List.of(createTestMemberGradeDto("일반",
+                .thenReturn(List.of(MemberGradeDtoDummy.responseDummy("일반",
                         0L,
                         "12개월")));
 

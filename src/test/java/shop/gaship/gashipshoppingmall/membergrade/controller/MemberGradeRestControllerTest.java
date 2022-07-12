@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
 import java.util.List;
@@ -22,8 +23,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils.createTestMemberGradeDto;
-import static shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils.createTestMemberGradeRequest;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.controller
@@ -50,7 +49,7 @@ class MemberGradeRestControllerTest {
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        testMemberGradeRequestDto = createTestMemberGradeRequest("일반", 0L);
+        testMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
     }
 
     @Test
@@ -95,7 +94,7 @@ class MemberGradeRestControllerTest {
     void memberGradeDetails() throws Exception {
         // given
         int testMemberGradeNo = 1;
-        MemberGradeDto testMemberGradeDto = createTestMemberGradeDto("일반", 0L, "1개월");
+        MemberGradeDto testMemberGradeDto = MemberGradeDtoDummy.responseDummy("일반", 0L, "1개월");
 
         // mocking
         when(memberGradeService.findMemberGrade(any()))
@@ -119,7 +118,7 @@ class MemberGradeRestControllerTest {
 
         // mocking
         when(memberGradeService.findMemberGrades(pageable))
-                .thenReturn(List.of(createTestMemberGradeDto("일반", 0L, "12개월")));
+                .thenReturn(List.of(MemberGradeDtoDummy.responseDummy("일반", 0L, "12개월")));
 
         // when&then
         mockMvc.perform(get("/grades")

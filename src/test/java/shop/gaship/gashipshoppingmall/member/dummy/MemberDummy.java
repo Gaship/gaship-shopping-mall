@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.membergrade.dummy;
+package shop.gaship.gashipshoppingmall.member.dummy;
 
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
