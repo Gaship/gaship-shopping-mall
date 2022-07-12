@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.membergrade.request;
+package shop.gaship.gashipshoppingmall.membergrade.dto;
 
 import lombok.Data;
 
@@ -14,7 +14,7 @@ import lombok.Data;
  * 2022/07/09        Semi Kim       최초 생성
  */
 @Data
-public class MemberGradeRequest {
+public class MemberGradeRequestDto {
     private String name;
     private Long accumulateAmount;
 }

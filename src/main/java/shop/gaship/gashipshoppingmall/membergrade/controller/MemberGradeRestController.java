@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
-import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
 
@@ -39,7 +39,7 @@ public class MemberGradeRestController {
      * @return response entity
      */
     @PostMapping
-    public ResponseEntity<Void> memberGradeAdd(@RequestBody MemberGradeRequest request) {
+    public ResponseEntity<Void> memberGradeAdd(@RequestBody MemberGradeRequestDto request) {
         memberGradeService.addMemberGrade(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -59,7 +59,7 @@ public class MemberGradeRestController {
      */
     @PutMapping("/{memberGradeNo}")
     public ResponseEntity<Void> memberGradeModify(@PathVariable Integer memberGradeNo,
-                                                  @RequestBody MemberGradeRequest request) {
+                                                  @RequestBody MemberGradeRequestDto request) {
         memberGradeService.modifyMemberGrade(memberGradeNo, request);
 
         return ResponseEntity.status(HttpStatus.OK)

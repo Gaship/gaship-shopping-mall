@@ -2,7 +2,7 @@ package shop.gaship.gashipshoppingmall.membergrade.utils;
 
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
@@ -20,12 +20,12 @@ public class CreateTestUtils {
     private CreateTestUtils() {
     }
 
-    public static MemberGradeRequest createTestMemberGradeRequest(String name, Long accumulateAmount) {
-        MemberGradeRequest memberGradeRequest = new MemberGradeRequest();
-        memberGradeRequest.setName(name);
-        memberGradeRequest.setAccumulateAmount(accumulateAmount);
+    public static MemberGradeRequestDto createTestMemberGradeRequest(String name, Long accumulateAmount) {
+        MemberGradeRequestDto memberGradeRequestDto = new MemberGradeRequestDto();
+        memberGradeRequestDto.setName(name);
+        memberGradeRequestDto.setAccumulateAmount(accumulateAmount);
 
-        return memberGradeRequest;
+        return memberGradeRequestDto;
     }
 
     public static StatusCode createTestStatusCode() {
@@ -36,7 +36,7 @@ public class CreateTestUtils {
                 .build();
     }
 
-    public static MemberGrade createTestMemberGrade(MemberGradeRequest request, StatusCode renewalPeriod) {
+    public static MemberGrade createTestMemberGrade(MemberGradeRequestDto request, StatusCode renewalPeriod) {
         return MemberGrade.builder()
                 .renewalPeriod(renewalPeriod)
                 .name(request.getName())

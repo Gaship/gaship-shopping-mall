@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
-import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
 import java.util.List;
@@ -45,19 +45,19 @@ class MemberGradeRestControllerTest {
     private MockMvc mockMvc;
 
     private ObjectMapper objectMapper;
-    private MemberGradeRequest testMemberGradeRequest;
+    private MemberGradeRequestDto testMemberGradeRequestDto;
 
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        testMemberGradeRequest = createTestMemberGradeRequest("일반", 0L);
+        testMemberGradeRequestDto = createTestMemberGradeRequest("일반", 0L);
     }
 
     @Test
     void memberGradeAdd() throws Exception {
         mockMvc.perform(post("/grades")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testMemberGradeRequest))
+                        .content(objectMapper.writeValueAsString(testMemberGradeRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -71,7 +71,7 @@ class MemberGradeRestControllerTest {
 
         mockMvc.perform(put("/grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testMemberGradeRequest))
+                        .content(objectMapper.writeValueAsString(testMemberGradeRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

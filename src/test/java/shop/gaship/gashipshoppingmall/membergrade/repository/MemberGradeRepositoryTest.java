@@ -7,11 +7,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 import java.util.List;
@@ -44,9 +42,9 @@ class MemberGradeRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        MemberGradeRequest memberGradeRequest = createTestMemberGradeRequest("일반", 0L);
+        MemberGradeRequestDto memberGradeRequestDto = createTestMemberGradeRequest("일반", 0L);
         renewalPeriod = createTestStatusCode();
-        memberGrade = createTestMemberGrade(memberGradeRequest, renewalPeriod);
+        memberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
     }
 
     @Test

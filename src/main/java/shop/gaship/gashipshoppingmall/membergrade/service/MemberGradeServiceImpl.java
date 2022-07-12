@@ -7,11 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
-import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -37,7 +37,7 @@ public class MemberGradeServiceImpl implements MemberGradeService {
 
     @Transactional
     @Override
-    public void addMemberGrade(MemberGradeRequest request) {
+    public void addMemberGrade(MemberGradeRequestDto request) {
         StatusCode renewalPeriod = statusCodeRepository
                 .findById(1)
                 .orElseThrow(StatusCodeNotFoundException::new);
@@ -53,7 +53,7 @@ public class MemberGradeServiceImpl implements MemberGradeService {
 
     @Transactional
     @Override
-    public void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequest request) {
+    public void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request) {
         MemberGrade memberGrade = memberGradeRepository
                 .findById(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);

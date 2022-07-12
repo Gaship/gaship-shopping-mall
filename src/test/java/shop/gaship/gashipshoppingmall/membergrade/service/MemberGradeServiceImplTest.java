@@ -14,7 +14,7 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
-import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
+import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -51,25 +51,25 @@ class MemberGradeServiceImplTest {
     private StatusCodeRepository statusCodeRepository;
     @Mock
     private MemberRepository memberRepository;
-    private MemberGradeRequest memberGradeRequest;
+    private MemberGradeRequestDto memberGradeRequestDto;
 
     @BeforeEach
     void setUp() {
-        memberGradeRequest = createTestMemberGradeRequest("일반", 0L);
+        memberGradeRequestDto = createTestMemberGradeRequest("일반", 0L);
     }
 
     @Test
     void addMemberGrade_whenRenewalPeriodIsPresent() {
         // given
         StatusCode renewalPeriod = createTestStatusCode();
-        MemberGrade memberGrade = createTestMemberGrade(memberGradeRequest, renewalPeriod);
+        MemberGrade memberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
 
         // mocking
         when(statusCodeRepository.findById(any())).thenReturn(Optional.of(renewalPeriod));
         when(memberGradeRepository.save(any())).thenReturn(memberGrade);
 
         // when
-        memberGradeServiceImpl.addMemberGrade(memberGradeRequest);
+        memberGradeServiceImpl.addMemberGrade(memberGradeRequestDto);
 
         // then
         verify(memberGradeRepository).save(any());
@@ -82,7 +82,7 @@ class MemberGradeServiceImplTest {
 
         // when&then
         assertThatThrownBy(() -> memberGradeServiceImpl
-                .addMemberGrade(memberGradeRequest))
+                .addMemberGrade(memberGradeRequestDto))
                 .isInstanceOf(StatusCodeNotFoundException.class);
 
         verify(statusCodeRepository).findById(any());
@@ -93,12 +93,12 @@ class MemberGradeServiceImplTest {
     void modifyMemberGrade_whenMemberGradeIsPresent() {
         // given
         Integer testMemberGradeNo = 1;
-        MemberGradeRequest modifyMemberGradeRequest = createTestMemberGradeRequest("새싹", 0L);
+        MemberGradeRequestDto modifyMemberGradeRequestDto = createTestMemberGradeRequest("새싹", 0L);
 
         StatusCode renewalPeriod = createTestStatusCode();
-        MemberGrade memberGrade = createTestMemberGrade(memberGradeRequest, renewalPeriod);
+        MemberGrade memberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
 
-        MemberGrade modifyMemberGrade = createTestMemberGrade(modifyMemberGradeRequest, renewalPeriod);
+        MemberGrade modifyMemberGrade = createTestMemberGrade(modifyMemberGradeRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -107,7 +107,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(modifyMemberGrade);
 
         // when
-        memberGradeServiceImpl.modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequest);
+        memberGradeServiceImpl.modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequestDto);
 
         // then
         verify(memberGradeRepository).findById(any());
@@ -118,7 +118,7 @@ class MemberGradeServiceImplTest {
     void modifyMemberGrade_whenMemberGradeIsEmpty_throwMemberGradeNotFoundException() {
         // given
         Integer testMemberGradeNo = 1;
-        MemberGradeRequest modifyMemberGradeRequest = createTestMemberGradeRequest("새싹", 0L);
+        MemberGradeRequestDto modifyMemberGradeRequestDto = createTestMemberGradeRequest("새싹", 0L);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -126,7 +126,7 @@ class MemberGradeServiceImplTest {
 
         // when&then
         assertThatThrownBy(() -> memberGradeServiceImpl
-                .modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequest))
+                .modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequestDto))
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
         verify(memberGradeRepository).findById(any());
@@ -137,7 +137,7 @@ class MemberGradeServiceImplTest {
     void removeMemberGrade_whenMemberGradeIsPresent_memberGradeIsNotUsed() {
         // given
         StatusCode renewalPeriod = createTestStatusCode();
-        MemberGrade testMemberGrade = createTestMemberGrade(memberGradeRequest, renewalPeriod);
+        MemberGrade testMemberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -158,7 +158,7 @@ class MemberGradeServiceImplTest {
         // given
         Integer testMemberGradeNo = 1;
         StatusCode renewalPeriod = createTestStatusCode();
-        MemberGrade testMemberGrade = createTestMemberGrade(memberGradeRequest, renewalPeriod);
+        MemberGrade testMemberGrade = createTestMemberGrade(memberGradeRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
