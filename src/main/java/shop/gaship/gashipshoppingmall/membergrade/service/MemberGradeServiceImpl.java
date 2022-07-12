@@ -72,7 +72,7 @@ public class MemberGradeServiceImpl implements MemberGradeService {
                 .findById(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
 
-        if (!memberRepository.findByMemberGrades(memberGradeNo).isEmpty()) {
+        if (!memberRepository.findByMemberGrades(memberGrade).isEmpty()) {
             throw new MemberGradeInUseException();
         }
 
