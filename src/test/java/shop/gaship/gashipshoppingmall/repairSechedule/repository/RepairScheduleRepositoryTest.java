@@ -1,21 +1,20 @@
 package shop.gaship.gashipshoppingmall.repairSechedule.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
+import shop.gaship.gashipshoppingmall.repairSechedule.dummy.RepairScheduleDummy;
 import shop.gaship.gashipshoppingmall.repairSechedule.entity.RepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSechedule.entity.pk.RepairSchedulePk;
 
@@ -47,16 +46,14 @@ class RepairScheduleRepositoryTest {
     @Test
     void repairScheduleSelectTest() {
         //given
-        AddressLocal upper = new AddressLocal(null,"무슨특별시",1,true);
-        DayLabor labor = new DayLabor(upper.getAddressNo(),10);
-        labor.setAddressLocal(upper);
+        AddressLocal upper = AddressLocalDummy.dummy1();
+        DayLabor labor = DayLaboyDummy.dummy();
+        labor.fixLocation(upper);
 
-        RepairSchedule repairSchedule = new RepairSchedule();
-        RepairSchedulePk pk = new RepairSchedulePk(LocalDate.now(), labor.getAddressNo());
+        RepairSchedule repairSchedule = RepairScheduleDummy.dummy();
+        repairSchedule.fixDayLabor(labor);
 
-        repairSchedule.setPk(pk);
-        repairSchedule.setDayLabor(labor);
-        repairSchedule.setLabor(labor.getMaxLabor());
+        RepairSchedulePk pk = repairSchedule.getPk();
 
         //when & then
         addressLocalRepository.save(upper);
@@ -69,6 +66,6 @@ class RepairScheduleRepositoryTest {
         assertThat(schedule.getPk()).hasSameHashCodeAs(pk);
         assertThat(schedule.getPk().getAddressNo()).isEqualTo(pk.getAddressNo());
         assertThat(schedule.getPk().getDate()).isEqualTo(pk.getDate());
-        assertThat(schedule.getPk().equals(pk)).isTrue();
+        assertThat(schedule.getPk()).isEqualTo(pk);
     }
 }

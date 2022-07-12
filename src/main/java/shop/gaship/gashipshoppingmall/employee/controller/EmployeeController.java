@@ -1,13 +1,9 @@
 package shop.gaship.gashipshoppingmall.employee.controller;
 
 import java.util.List;
-import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +36,7 @@ public class EmployeeController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void postEmployee(@RequestBody CreateEmployeeDto dto){
+    public void postEmployee(@Valid @RequestBody CreateEmployeeDto dto){
         employeeService.createEmployee(dto);
     }
 
@@ -56,7 +52,8 @@ public class EmployeeController {
     @PutMapping("/{employeeNo}")
     @ResponseStatus(HttpStatus.OK)
     public void putEmployee(@PathVariable("employeeNo") Integer employeeNo,
-                            @RequestBody ModifyEmployeeDto dto){
+                            @Valid @RequestBody ModifyEmployeeDto dto){
+
         employeeService.modifyEmployee(employeeNo,dto);
     }
 

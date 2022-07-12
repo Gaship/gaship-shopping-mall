@@ -10,7 +10,6 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.repairSechedule.entity.pk.RepairSchedulePk;
 
@@ -23,7 +22,6 @@ import shop.gaship.gashipshoppingmall.repairSechedule.entity.pk.RepairSchedulePk
  */
 @Entity
 @Table(name = "repair_schedules")
-@Setter
 @Getter
 @NoArgsConstructor
 public class RepairSchedule {
@@ -38,5 +36,21 @@ public class RepairSchedule {
     @ManyToOne(fetch = FetchType.LAZY)
     private DayLabor dayLabor;
 
+    public RepairSchedule(RepairSchedulePk pk,Integer labor) {
+        this.pk = pk;
+        this.labor = labor;
+    }
+
+    /**
+     * methodName : fixDayLabor
+     * author : 유호철
+     * description : DayLabor 변경시 기입
+     *
+     * @param dayLabor DayLabor
+     */
+    public void fixDayLabor(DayLabor dayLabor) {
+        this.dayLabor = dayLabor;
+        this.labor = dayLabor.getMaxLabor();
+    }
 
 }

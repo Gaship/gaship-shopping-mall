@@ -41,15 +41,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void createEmployee(CreateEmployeeDto dto) {
-        Employee employee = new Employee(dto);
 
         StatusCode statusCode = statusCodeRepository.findById(dto.getAuthorityNo())
             .orElseThrow(WrongStatusCodeException::new);
         AddressLocal addressLocal = localRepository.findById(dto.getAddressNo())
             .orElseThrow(WrongAddressException::new);
 
-        employee.setAddressLocal(addressLocal);
-        employee.setStatusCode(statusCode);
+        Employee employee = new Employee();
+        employee.registerEmployee(dto);
+        employee.fixLocation(addressLocal);
+        employee.fixCode(statusCode);
 
         repository.save(employee);
     }
@@ -75,7 +76,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<GetEmployee> getAllEmployees() {
-        return repository.findAll().stream().map(GetEmployee::new).collect(Collectors.toList());
+        return repository.findAll().stream()
+            .map(GetEmployee::new)
+            .collect(Collectors.toList());
     }
-
 }

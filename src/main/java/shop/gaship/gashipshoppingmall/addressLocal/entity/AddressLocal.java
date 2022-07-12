@@ -12,10 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 
 /**
@@ -27,9 +25,7 @@ import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 @Entity
 @Table(name = "address_locals")
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
-@Setter
 public class AddressLocal {
 
     @Id
@@ -55,13 +51,49 @@ public class AddressLocal {
     private AddressLocal upperLocal;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "upperLocal")
-    private List<AddressLocal> subLocal;
+    private  List<AddressLocal> subLocal;
 
-    public AddressLocal(Integer addressNo, String addressName, Integer level,
-        boolean allowDelivery) {
-        this.addressNo = addressNo;
+    public AddressLocal(String addressName, Integer level, boolean allowDelivery, DayLabor dayLabor,
+        AddressLocal upperLocal,List<AddressLocal> subLocal) {
         this.addressName = addressName;
         this.level = level;
         this.allowDelivery = allowDelivery;
+        this.dayLabor = dayLabor;
+        this.upperLocal = upperLocal;
+        this.subLocal = subLocal;
     }
+
+    /**
+     * methodName : registerDayLoabor
+     * author : 유호철
+     * description : DayLoabor 수정시 / 등록시
+     *
+     * @param dayLabor DayLabor
+     */
+    public void registerDayLabor(DayLabor dayLabor) {
+        this.dayLabor = dayLabor;
+    }
+
+    /**
+     * methodName : registerUpperLocal
+     * author : 유호철
+     * description : 상위주소 수정시
+     *
+     * @param addressLocal AddressLocal
+     */
+    public void registerUpperLocal(AddressLocal addressLocal) {
+        this.upperLocal = addressLocal;
+    }
+
+    /**
+     * methodName : addSubLocal
+     * author : 유호철
+     * description : 하위주소에 값이 추가될경우
+     *
+     * @param list AddressLocal
+     */
+    public void addSubLocal(List<AddressLocal> list){
+        this.subLocal = list;
+    }
+
 }

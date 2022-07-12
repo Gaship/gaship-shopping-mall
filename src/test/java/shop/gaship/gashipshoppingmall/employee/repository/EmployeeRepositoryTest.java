@@ -8,11 +8,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
+import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
+import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
@@ -51,24 +55,27 @@ class EmployeeRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        employee = EmployeeDummy.dummy();
+
+        labor = DayLaboyDummy.dummy();
+
+        addressLocal = AddressLocalDummy.dummy1();
+
+        code = StatusCodeDummy.dummy();
+
         labor = new DayLabor(1, 10);
 
-        addressLocal = new AddressLocal(null,"마산턱별시",1,true,labor,null,null);
+        addressLocal.registerDayLabor(labor);
 
-        code = new StatusCode("test", 1, "test", "tt");
-
-        employee = new Employee(null, code, addressLocal, "잠온다", "test@naver.com", "password",
-            "01011111111");
-
-        labor.setAddressLocal(addressLocal);
-
-        addressLocal.setDayLabor(labor);
+        labor.fixLocation(addressLocal);
     }
 
     @DisplayName("이메일 중복검증을 위한 테스트")
     @Test
     void findByEmail() {
         //given
+        employee.fixCode(code);
+        employee.fixLocation(addressLocal);
         laborRepository.save(labor);
         localRepository.save(addressLocal);
         codeRepository.save(code);
@@ -77,6 +84,8 @@ class EmployeeRepositoryTest {
         Employee employee1 = repository.findByEmail("test@naver.com").get();
 
         assertThat(employee1.getEmployeeNo()).isEqualTo(employee.getEmployeeNo());
+        assertThat(employee1.getAddressLocal()).isEqualTo(addressLocal);
+        assertThat(employee1.getStatusCode()).isEqualTo(code);
     }
 
 }

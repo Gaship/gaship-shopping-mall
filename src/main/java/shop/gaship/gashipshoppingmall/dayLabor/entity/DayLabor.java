@@ -9,7 +9,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 
 /**
@@ -20,7 +19,6 @@ import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
  * 최초 생성
  */
 @Getter
-@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "day_labor")
@@ -41,5 +39,17 @@ public class DayLabor {
     public DayLabor(Integer addressNo,Integer maxLabor){
         this.addressNo = addressNo;
         this.maxLabor = maxLabor;
+    }
+
+    /**
+     * methodName : fixLocation
+     * author : 유호철
+     * description : 지역 수정
+     *
+     * @param addressLocal AddressLocal
+     */
+    public void fixLocation(AddressLocal addressLocal) {
+        this.addressNo = addressLocal.getAddressNo();
+        this.addressLocal = addressLocal;
     }
 }

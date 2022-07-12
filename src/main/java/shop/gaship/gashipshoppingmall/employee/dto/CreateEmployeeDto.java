@@ -3,7 +3,8 @@ package shop.gaship.gashipshoppingmall.employee.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -17,8 +18,9 @@ import org.hibernate.validator.constraints.Length;
  * -----------------------------------------------------------
  * 2022/07/10        유호철       최초 생성
  */
-@Data
+@Getter
 @AllArgsConstructor
+@EqualsAndHashCode
 public class CreateEmployeeDto {
 
     @NotNull

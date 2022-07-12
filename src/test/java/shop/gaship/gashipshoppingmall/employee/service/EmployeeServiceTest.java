@@ -20,18 +20,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
 import shop.gaship.gashipshoppingmall.employee.dto.GetEmployee;
 import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
+import shop.gaship.gashipshoppingmall.employee.dummy.CreateEmployeeDtoDummy;
+import shop.gaship.gashipshoppingmall.employee.dummy.ModifyEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongStatusCodeException;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.employee.service.impl.EmployeeServiceImpl;
+import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
@@ -80,26 +85,27 @@ class EmployeeServiceTest {
 
     @BeforeEach
     void setUp() {
-        dto = new CreateEmployeeDto(1, 1, "test", "test@naver.com", "asdfasdf",
-            "10000");
+        dto = CreateEmployeeDtoDummy.dummy();
 
-        employee = new Employee(dto);
+        employee = new Employee();
 
-        modifyEmployeeDto = new ModifyEmployeeDto("test", "test@naver.com", "10000");
+        employee.registerEmployee(dto);
+
+        modifyEmployeeDto = ModifyEmployeeDtoDummy.dummy();
 
         captor = ArgumentCaptor.forClass(Employee.class);
 
         getEmployee = new GetEmployee(employee);
 
-        labor = new DayLabor(1, 10);
+        labor = DayLaboyDummy.dummy();
 
-        addressLocal = new AddressLocal(1, "부산광역시", 1, true);
+        addressLocal = AddressLocalDummy.dummy1();
 
-        code = new StatusCode("test", 1, "test", "tt");
+        code = StatusCodeDummy.dummy();
 
-        labor.setAddressLocal(addressLocal);
+        labor.fixLocation(addressLocal);
 
-        addressLocal.setDayLabor(labor);
+        addressLocal.registerDayLabor(labor);
 
     }
 
@@ -130,8 +136,8 @@ class EmployeeServiceTest {
     @Test
     void createEmployeeTest() {
         //given
-        employee.setStatusCode(code);
-        employee.setAddressLocal(addressLocal);
+        employee.fixCode(code);
+        employee.fixLocation(addressLocal);
 
         given(repository.save(any()))
             .willReturn(employee);
@@ -224,7 +230,7 @@ class EmployeeServiceTest {
     @Test
     void getAllEmployees() {
         //given
-        Employee employee1 = new Employee(null, code, addressLocal, "t", "t@naver.com", "aaaa",
+        Employee employee1 = new Employee(code, addressLocal, "t", "t@naver.com", "aaaa",
             "01010101");
         List<Employee> list = new ArrayList<>();
 

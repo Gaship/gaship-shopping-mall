@@ -8,10 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
 import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
@@ -29,10 +27,8 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * 2022/07/10        유호철       최초 생성
  */
 
-@Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "employees")
 @Entity
 public class Employee {
@@ -62,13 +58,27 @@ public class Employee {
     @Column(name = "phone_number",unique = true)
     private String phoneNo;
 
-    public Employee(CreateEmployeeDto dto) {
-        this.name = dto.getName();
-        this.email = dto.getEmail();
-        this.password = dto.getPassword();
-        this.phoneNo = dto.getPhoneNo();
+    public Employee(StatusCode statusCode, AddressLocal addressLocal,
+        String name,
+        String email, String password, String phoneNo) {
+        this.statusCode = statusCode;
+        this.addressLocal = addressLocal;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNo = phoneNo;
     }
 
+    /**
+     * methodName : registerLocal
+     * author : 유호철
+     * description :
+     *
+     * @param addressLocal AddressLocal
+     */
+    public void fixLocation(AddressLocal addressLocal) {
+        this.addressLocal = addressLocal;
+    }
 
     /**
      * methodName : modifyEmployee
@@ -81,5 +91,30 @@ public class Employee {
         this.name = dto.getName();
         this.email = dto.getEmail();
         this.phoneNo = dto.getPhoneNo();
+    }
+
+    /**
+     * methodName : registerCode
+     * author : 유호철
+     * description : code 변경시 주입
+     *
+     * @param code StatusCode
+     */
+    public void fixCode(StatusCode code) {
+        this.statusCode = code;
+    }
+
+    /**
+     * methodName : registerEmployee
+     * author : 유호철
+     * description : employee 생성시 주입
+     *
+     * @param dto CreateEmployeeDto
+     */
+    public void registerEmployee(CreateEmployeeDto dto){
+        this.name = dto.getName();
+        this.phoneNo = dto.getPhoneNo();
+        this.email = dto.getEmail();
+        this.password = dto.getPassword();
     }
 }

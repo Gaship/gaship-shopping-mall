@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
 import shop.gaship.gashipshoppingmall.employee.dto.GetEmployee;
 import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
+import shop.gaship.gashipshoppingmall.employee.dummy.CreateEmployeeDtoDummy;
+import shop.gaship.gashipshoppingmall.employee.dummy.GetEmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
 
 /**
@@ -53,8 +56,7 @@ class EmployeeControllerTest {
     @Test
     void postEmployee() throws Exception {
         //given
-        CreateEmployeeDto dto = new CreateEmployeeDto(1, 1, "name", "email@email.com", "asdf",
-            "01110");
+        CreateEmployeeDto dto = CreateEmployeeDtoDummy.dummy();
 
         //when
         doNothing().when(service).createEmployee(dto);
@@ -118,7 +120,7 @@ class EmployeeControllerTest {
     @Test
     void getEmployee() throws Exception {
         //given
-        GetEmployee e1 = new GetEmployee("a", "a@naver.com", "01");
+        GetEmployee e1 = GetEmployeeDummy.dummy();
 
         //when
         when(service.getEmployee(1)).thenReturn(e1);
@@ -142,8 +144,8 @@ class EmployeeControllerTest {
     @Test
     void getEmployees() throws Exception {
         //given
-        GetEmployee e1 = new GetEmployee("a", "a@naver.com", "01");
-        GetEmployee e2 = new GetEmployee("b", "b@naver.comm", "011");
+        GetEmployee e1 = GetEmployeeDummy.dummy();
+        GetEmployee e2 = GetEmployeeDummy.dummy2();
 
         List<GetEmployee> list = new ArrayList<>();
         list.add(e1);

@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.dayLabor.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,8 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 
 /**
@@ -36,13 +37,14 @@ class DayLaborRepositoryTest {
     @DisplayName("조회를 위한 테스트")
     @Test
     void selectTestDayLabor() {
-        AddressLocal upper = new AddressLocal(null,"마산특별시",1,true);
-        DayLabor dayLabor = new DayLabor(upper.getAddressNo(), 10);
-        dayLabor.setAddressLocal(upper);
+        AddressLocal upper = AddressLocalDummy.dummy1();
+        DayLabor dayLabor = DayLaboyDummy.dummy();
+        dayLabor.fixLocation(upper);
 
         addressLocalRepository.save(upper);
         repository.save(dayLabor);
 
-        assertThat(repository.findById(dayLabor.getAddressNo()).get()).isEqualTo(dayLabor);
+        assertThat(repository.findById(dayLabor.getAddressNo())).contains(dayLabor);
+        assertThat(dayLabor.getAddressLocal()).isEqualTo(upper);
     }
 }
