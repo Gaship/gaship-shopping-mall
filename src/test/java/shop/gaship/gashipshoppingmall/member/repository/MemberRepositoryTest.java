@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
@@ -25,7 +24,6 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
  * 2022/07/10        김민수               최초 생성                         <br/>
  */
 @DataJpaTest
-@Transactional
 class MemberRepositoryTest {
     @PersistenceContext
     EntityManager entityManager;
@@ -73,5 +71,20 @@ class MemberRepositoryTest {
             .orElse(null);
 
         assertThat(member).isNull();
+    }
+
+    @Test
+    @DisplayName("custom query findByNickname Optional 테스트")
+    void findByNicknameTest() {
+        // 임의의 멤버 한명 저장
+        entityManager.persist(memberDummy.getStatus());
+        entityManager.persist(memberDummy.getGrade());
+        Member cachedMember = memberRepository.save(memberDummy);
+
+        Member member = memberRepository.findByNickname(memberDummy.getNickname())
+            .orElse(null);
+
+        assertThat(member).isNotNull()
+            .isEqualTo(cachedMember);
     }
 }

@@ -18,4 +18,6 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 @NoRepositoryBean
 public interface MemberRepositoryCustom {
     Optional<Member> findByEmail(String email);
+
+    Optional<Member> findByNickname(String nickname);
 }

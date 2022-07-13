@@ -33,4 +33,16 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                 .fetchOne()
         );
     }
+
+    @Override
+    public Optional<Member> findByNickname(String nickname) {
+        QMember member = QMember.member;
+
+        return Optional.ofNullable(
+            from(member)
+                .where(member.nickname.eq(nickname))
+                .select(member)
+                .fetchOne()
+        );
+    }
 }
