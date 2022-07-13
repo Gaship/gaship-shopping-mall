@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 
 
 /**
@@ -37,7 +38,7 @@ public interface MemberGradeService {
      * @param memberGradeNo Integer
      * @param request       MemberGradeRequest
      */
-    void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request);
+    void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request) throws MemberGradeNotFoundException;
 
     /**
      * .
@@ -47,9 +48,7 @@ public interface MemberGradeService {
      *
      * @param memberGradeNo Integer
      */
-    void removeMemberGrade(Integer memberGradeNo);
-
-    MemberGradeResponseDto findMemberGrade(Integer memberGradeNo);
+    MemberGradeResponseDto findMemberGrade(Integer memberGradeNo) throws MemberGradeNotFoundException;
 
     List<MemberGradeResponseDto> findMemberGrades(Pageable pageable);
 }

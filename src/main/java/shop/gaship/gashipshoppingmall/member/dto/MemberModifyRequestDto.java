@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 
@@ -25,4 +26,15 @@ public class MemberModifyRequestDto {
     private String name;
     private String nickname;
     private String gender;
+
+    @Builder
+    public MemberModifyRequestDto(Integer memberNo, String email, String password, String phoneNumber, String name, String nickname, String gender) {
+        this.memberNo = memberNo;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.name = name;
+        this.nickname = nickname;
+        this.gender = gender;
+    }
 }

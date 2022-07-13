@@ -9,6 +9,7 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeRespon
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.entity.QMemberGrade;
 
+
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.repository
  * fileName       : MemberGradeRepositoryImpl

@@ -42,8 +42,6 @@ public interface MemberService {
 
     default MemberResponseDto entityToDto(Member member) {
         return MemberResponseDto.builder()
-                .memberNo(member.getMemberNo())
-                .recommendMemberNo(member.getRecommendMember().getMemberNo())
                 .email(member.getEmail())
                 .password(member.getPassword())
                 .phoneNumber(member.getPhoneNumber())

@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
@@ -30,4 +31,16 @@ public class MemberRegisterRequestDto {
     private LocalDate birthDate;
     private String nickname;
     private String gender;
+
+    @Builder
+    public MemberRegisterRequestDto(String recommendMemberNickname, String email, String password, String phoneNumber, String name, LocalDate birthDate, String nickname, String gender) {
+        this.recommendMemberNickname = recommendMemberNickname;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.name = name;
+        this.birthDate = birthDate;
+        this.nickname = nickname;
+        this.gender = gender;
+    }
 }

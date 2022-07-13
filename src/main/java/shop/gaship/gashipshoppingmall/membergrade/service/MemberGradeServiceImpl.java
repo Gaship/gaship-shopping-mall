@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
-import java.util.List;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -9,12 +7,14 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+
+import javax.transaction.Transactional;
+import java.util.List;
 
 
 /**
@@ -53,7 +53,7 @@ public class MemberGradeServiceImpl implements MemberGradeService {
 
     @Transactional
     @Override
-    public void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request) {
+    public void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request) throws MemberGradeNotFoundException {
         MemberGrade memberGrade = memberGradeRepository
                 .findById(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
@@ -63,22 +63,8 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         memberGradeRepository.save(memberGrade);
     }
 
-    @Transactional
     @Override
-    public void removeMemberGrade(Integer memberGradeNo) {
-        MemberGrade memberGrade = memberGradeRepository
-                .findById(memberGradeNo)
-                .orElseThrow(MemberGradeNotFoundException::new);
-
-        if (!memberRepository.findByMemberGrades(memberGrade).isEmpty()) {
-            throw new MemberGradeInUseException();
-        }
-
-        memberGradeRepository.delete(memberGrade);
-    }
-
-    @Override
-    public MemberGradeResponseDto findMemberGrade(Integer memberGradeNo) {
+    public MemberGradeResponseDto findMemberGrade(Integer memberGradeNo) throws MemberGradeNotFoundException {
         return memberGradeRepository.getMemberGradeBy(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
     }
