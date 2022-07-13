@@ -22,9 +22,9 @@ public interface CategoryService {
      * author : 김보민
      * description : 카테고리 생성
      *
-     * @param request category create request
+     * @param createRequest category create request
      */
-    void addCategory(CategoryCreateRequestDto request);
+    void addCategory(CategoryCreateRequestDto createRequest);
 
     /**
      * methodName : modifyCategory
@@ -32,9 +32,9 @@ public interface CategoryService {
      * description : 카테고리 수정
      *
      * @param categoryNo category no
-     * @param request category modify request
+     * @param modifyRequest category modify request
      */
-    void modifyCategory(Integer categoryNo, CategoryModifyRequestDto request);
+    void modifyCategory(CategoryModifyRequestDto modifyRequest);
 
     /**
      * methodName : findCategory

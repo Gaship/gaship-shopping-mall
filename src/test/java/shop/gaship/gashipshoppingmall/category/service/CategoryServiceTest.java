@@ -3,9 +3,11 @@ package shop.gaship.gashipshoppingmall.category.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
@@ -17,6 +19,7 @@ import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
+import shop.gaship.gashipshoppingmall.category.service.impl.CategoryServiceImpl;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
@@ -42,8 +45,8 @@ import static org.mockito.Mockito.when;
  * -----------------------------------------------------------
  * 2022-07-09        김보민       최초 생성
  */
-@SpringBootTest
-@Transactional
+@ExtendWith(SpringExtension.class)
+@Import(CategoryServiceImpl.class)
 class CategoryServiceTest {
     @Autowired
     private CategoryService categoryService;
@@ -54,13 +57,11 @@ class CategoryServiceTest {
     @MockBean
     private ProductRepository productRepository;
 
-    private CategoryModifyRequestDto modifyRequestDto;
     private Category upperCategory;
     private Category category;
 
     @BeforeEach
     void setUp() {
-        modifyRequestDto = CategoryDummy.modifyRequestDto();
         upperCategory = CategoryDummy.upperDummy();
         category = CategoryDummy.dummy();
     }
@@ -68,15 +69,16 @@ class CategoryServiceTest {
     @Test
     @DisplayName("카테고리 생성 성공")
     void addCategorySuccess() {
-        CategoryCreateRequestDto request = CategoryCreateRequestDto.builder()
-                .name("카테고리")
-                .level(1)
-                .build();
+        CategoryCreateRequestDto createRequest = new CategoryCreateRequestDto(
+                "카테고리",
+                1,
+                null
+        );
         ReflectionTestUtils.setField(upperCategory, "no", 1);
 
         when(categoryRepository.save(any(Category.class))).thenReturn(upperCategory);
 
-        categoryService.addCategory(request);
+        categoryService.addCategory(createRequest);
 
         verify(categoryRepository).save(any(Category.class));
     }
@@ -84,30 +86,35 @@ class CategoryServiceTest {
     @Test
     @DisplayName("카테고리 생성 실패 - 상위 카테고리 찾기 불가")
     void addCategoryFail() {
-        CategoryCreateRequestDto request = CategoryCreateRequestDto.builder()
-                .name("카테고리")
-                .level(2)
-                .upperCategoryNo(9999)
-                .build();
+        CategoryCreateRequestDto createRequest = new CategoryCreateRequestDto(
+                "카테고리",
+                2,
+                9999
+        );
 
-        when(categoryRepository.findById(request.getUpperCategoryNo())).thenReturn(Optional.empty());
+        when(categoryRepository.findById(createRequest.getUpperCategoryNo())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> categoryService.addCategory(request)).isInstanceOf(CategoryNotFoundException.class);
+        assertThatThrownBy(() -> categoryService.addCategory(createRequest)).isInstanceOf(CategoryNotFoundException.class);
 
-        verify(categoryRepository).findById(request.getUpperCategoryNo());
+        verify(categoryRepository).findById(createRequest.getUpperCategoryNo());
     }
 
     @Test
     @DisplayName("카테고리 수정 성공")
     void modifyCategorySuccess() {
-        Integer categoryNo = 1;
+        CategoryModifyRequestDto modifyRequest = new CategoryModifyRequestDto(
+                1,
+                "수정 카테고리"
+        );
+
+        Integer categoryNo = modifyRequest.getNo();
         ReflectionTestUtils.setField(upperCategory, "no", categoryNo);
 
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(upperCategory));
 
-        categoryService.modifyCategory(categoryNo, modifyRequestDto);
+        categoryService.modifyCategory(modifyRequest);
 
-        assertThat(upperCategory.getName()).isEqualTo(modifyRequestDto.getName());
+        assertThat(upperCategory.getName()).isEqualTo(modifyRequest.getName());
 
         verify(categoryRepository).findById(categoryNo);
         verify(categoryRepository).save(upperCategory);
@@ -116,11 +123,15 @@ class CategoryServiceTest {
     @Test
     @DisplayName("카테고리 수정 실패 - 해당 카테고리 찾기 불가")
     void modifyCategoryFail() {
-        Integer categoryNo = 9999;
+        CategoryModifyRequestDto modifyRequest = new CategoryModifyRequestDto(
+                9999,
+                "수정 카테고리"
+        );
+        Integer categoryNo = modifyRequest.getNo();
 
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> categoryService.modifyCategory(categoryNo, modifyRequestDto)).isInstanceOf(CategoryNotFoundException.class);
+        assertThatThrownBy(() -> categoryService.modifyCategory(modifyRequest)).isInstanceOf(CategoryNotFoundException.class);
 
         verify(categoryRepository).findById(categoryNo);
     }

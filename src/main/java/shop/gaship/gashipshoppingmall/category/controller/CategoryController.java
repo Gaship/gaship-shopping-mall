@@ -29,7 +29,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
-@ComponentScan(basePackages = { "shop.gaship.gashipshoppingmall.message" })
 public class CategoryController {
     private final CategoryService categoryService;
     private final Response responseBody;
@@ -39,12 +38,12 @@ public class CategoryController {
      * author : 김보민
      * description : 카테고리 post 요청 매핑
      *
-     * @param request category create request
+     * @param createRequest category create request
      * @return response entity
      */
     @PostMapping
-    public ResponseEntity<?> categoryAdd(@Valid @RequestBody CategoryCreateRequestDto request) {
-        categoryService.addCategory(request);
+    public ResponseEntity<?> categoryAdd(@Valid @RequestBody CategoryCreateRequestDto createRequest) {
+        categoryService.addCategory(createRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -57,13 +56,14 @@ public class CategoryController {
      * description : 카테고리 put 요청 매핑
      *
      * @param categoryNo category no
-     * @param request category modify request
+     * @param modifyRequest category modify request
      * @return response entity
      */
     @PutMapping("/{categoryNo}")
     public ResponseEntity<?> categoryModify(@PathVariable("categoryNo") Integer categoryNo,
-                                               @Valid @RequestBody CategoryModifyRequestDto request) {
-        categoryService.modifyCategory(categoryNo, request);
+                                               @Valid @RequestBody CategoryModifyRequestDto modifyRequest) {
+        modifyRequest.updateNo(categoryNo);
+        categoryService.modifyCategory(modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

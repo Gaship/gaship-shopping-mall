@@ -1,9 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -20,10 +17,10 @@ import javax.validation.constraints.NotNull;
  * -----------------------------------------------------------
  * 2022-07-09        김보민       최초 생성
  */
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@EqualsAndHashCode
 public class CategoryCreateRequestDto {
     @NotBlank
     private String name;

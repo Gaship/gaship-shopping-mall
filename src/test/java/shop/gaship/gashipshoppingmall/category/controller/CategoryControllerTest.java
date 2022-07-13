@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
@@ -14,6 +15,7 @@ import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequest
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
+import shop.gaship.gashipshoppingmall.message.Response;
 
 import java.util.List;
 
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * -----------------------------------------------------------
  * 2022-07-09        김보민       최초 생성
  */
-@WebMvcTest(CategoryController.class)
+@WebMvcTest({ CategoryController.class, Response.class })
 class CategoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -47,36 +49,39 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 생성 post 요청")
     void categoryCreate() throws Exception {
-        CategoryCreateRequestDto request = new CategoryCreateRequestDto("카테고리", 1, null);
+        CategoryCreateRequestDto createRequest = new CategoryCreateRequestDto("카테고리", 1, null);
 
-        doNothing().when(categoryService).addCategory(request);
+        doNothing().when(categoryService).addCategory(createRequest);
 
         mockMvc.perform(post("/categories")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(createRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
 
-        verify(categoryService).addCategory(request);
+        verify(categoryService).addCategory(createRequest);
     }
 
     @Test
     @DisplayName("카테고리 수정 put 요청")
     void categoryModify() throws Exception {
         Integer categoryNo = 1;
-        CategoryModifyRequestDto request = CategoryDummy.modifyRequestDto();
+        CategoryModifyRequestDto modifyRequest = new CategoryModifyRequestDto(
+                categoryNo,
+                "수정 카테고리"
+        );
 
-        doNothing().when(categoryService).modifyCategory(categoryNo, request);
+        doNothing().when(categoryService).modifyCategory(modifyRequest);
 
         mockMvc.perform(put("/categories/{categoryNo}", categoryNo)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)))
+                    .content(objectMapper.writeValueAsString(modifyRequest)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
 
-        verify(categoryService).modifyCategory(categoryNo, request);
+        verify(categoryService).modifyCategory(modifyRequest);
     }
 
     @Test

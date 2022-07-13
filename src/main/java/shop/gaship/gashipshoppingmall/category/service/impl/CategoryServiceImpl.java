@@ -36,30 +36,33 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public void addCategory(CategoryCreateRequestDto request) {
+    public void addCategory(CategoryCreateRequestDto createRequest) {
         Category upperCategory = null;
 
-        if (Objects.nonNull(request.getUpperCategoryNo())) {
-            upperCategory = categoryRepository.findById(request.getUpperCategoryNo())
+        if (Objects.nonNull(createRequest.getUpperCategoryNo())) {
+            upperCategory = categoryRepository.findById(createRequest.getUpperCategoryNo())
                     .orElseThrow(CategoryNotFoundException::new);
         }
 
         Category category = Category.builder()
-                .name(request.getName())
-                .level(request.getLevel())
-                .upperCategory(upperCategory)
+                .name(createRequest.getName())
+                .level(createRequest.getLevel())
                 .build();
+
+        category.updateUpperCategory(upperCategory);
 
         categoryRepository.save(category);
     }
 
     @Transactional
     @Override
-    public void modifyCategory(Integer categoryNo, CategoryModifyRequestDto request) {
-        Category category = categoryRepository.findById(categoryNo)
+    public void modifyCategory(CategoryModifyRequestDto modifyRequest) {
+        Category category = categoryRepository.findById(modifyRequest.getNo())
                 .orElseThrow(CategoryNotFoundException::new);
 
-        categoryRepository.save(category.updateCategory(request.getName()));
+        category.updateCategoryName(modifyRequest.getName());
+
+        categoryRepository.save(category);
     }
 
     @Override

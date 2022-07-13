@@ -3,6 +3,9 @@ package shop.gaship.gashipshoppingmall.category.entity;
 import javax.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.entity
  * fileName       : Category
@@ -36,22 +39,23 @@ public class Category {
     private Category upperCategory;
 
     @Builder
-    public Category(String name, Integer level, Category upperCategory) {
+    public Category(String name, Integer level) {
         this.name = name;
         this.level = level;
-        this.upperCategory = upperCategory;
+    }
+
+    public void updateUpperCategory(Category category) {
+        this.upperCategory = category;
     }
 
     /**
-     * methodName : updateCategory
+     * methodName : updateCategoryName
      * author : 김보민
      * description : 카테고리 엔티티 내부 값 변경
      *
      * @param name update name
-     * @return category
      */
-    public Category updateCategory(String name) {
+    public void updateCategoryName(String name) {
         this.name = name;
-        return this;
     }
 }

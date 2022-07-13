@@ -28,7 +28,6 @@ public class CategoryDummy {
         return Category.builder()
                 .name("상위 카테고리")
                 .level(1)
-                .upperCategory(null)
                 .build();
     }
 
@@ -40,11 +39,13 @@ public class CategoryDummy {
      * @return category
      */
     public static Category dummy() {
-        return Category.builder()
+        Category dummy = Category.builder()
                 .name("카테고리")
                 .level(2)
-                .upperCategory(upperDummy())
                 .build();
+
+        dummy.updateUpperCategory(upperDummy());
+        return dummy;
     }
 
     /**
@@ -60,19 +61,6 @@ public class CategoryDummy {
                 .no(categoryNo)
                 .name("카테고리")
                 .level(1)
-                .build();
-    }
-
-    /**
-     * methodName : modifyRequestDto
-     * author : 김보민
-     * description : 카테고리 modify request dto 더미
-     *
-     * @return category modify request dto
-     */
-    public static CategoryModifyRequestDto modifyRequestDto() {
-        return CategoryModifyRequestDto.builder()
-                .name("수정 카테고리")
                 .build();
     }
 }

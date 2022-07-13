@@ -1,6 +1,8 @@
 package shop.gaship.gashipshoppingmall.category.dto.request;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import lombok.*;
 
 /**
@@ -14,12 +16,18 @@ import lombok.*;
  * -----------------------------------------------------------
  * 2022-07-10        김보민       최초 생성
  */
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@EqualsAndHashCode
 public class CategoryModifyRequestDto {
+    @NotNull
+    private Integer no;
 
     @NotBlank
     private String name;
+
+    public void updateNo(Integer no) {
+        this.no = no;
+    }
 }

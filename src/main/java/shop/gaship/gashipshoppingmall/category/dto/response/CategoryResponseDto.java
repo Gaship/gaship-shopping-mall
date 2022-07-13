@@ -13,14 +13,23 @@ import lombok.*;
  * -----------------------------------------------------------
  * 2022-07-10        김보민       최초 생성
  */
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Data
+@EqualsAndHashCode
 public class CategoryResponseDto {
     private Integer no;
     private String name;
     private Integer level;
     private Integer upperCategoryNo;
     private String upperCategoryName;
+
+    @Builder
+    public CategoryResponseDto(Integer no, String name, Integer level, Integer upperCategoryNo, String upperCategoryName) {
+        this.no = no;
+        this.name = name;
+        this.level = level;
+        this.upperCategoryNo = upperCategoryNo;
+        this.upperCategoryName = upperCategoryName;
+    }
 }
