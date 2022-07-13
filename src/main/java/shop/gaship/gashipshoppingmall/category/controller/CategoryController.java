@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequestDto;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
-import shop.gaship.gashipshoppingmall.message.Error;
-import shop.gaship.gashipshoppingmall.message.SuccessResponse;
+import shop.gaship.gashipshoppingmall.message.Response;
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.controller
@@ -28,6 +30,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
+    private final Response responseBody = new Response();
 
     /**
      * methodName : categoryAdd
@@ -38,12 +41,12 @@ public class CategoryController {
      * @return response entity
      */
     @PostMapping
-    public ResponseEntity<SuccessResponse> categoryAdd(@Valid @RequestBody CategoryCreateRequestDto request) {
+    public ResponseEntity<?> categoryAdd(@Valid @RequestBody CategoryCreateRequestDto request) {
         categoryService.addCategory(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(SuccessResponse.noData());
+                .body(responseBody.success(Collections.emptyList(), null, HttpStatus.CREATED));
     }
 
     /**
@@ -56,13 +59,13 @@ public class CategoryController {
      * @return response entity
      */
     @PutMapping("/{categoryNo}")
-    public ResponseEntity<SuccessResponse> categoryModify(@PathVariable("categoryNo") Integer categoryNo,
+    public ResponseEntity<?> categoryModify(@PathVariable("categoryNo") Integer categoryNo,
                                                @Valid @RequestBody CategoryModifyRequestDto request) {
         categoryService.modifyCategory(categoryNo, request);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(SuccessResponse.noData());
+                .body(responseBody.success());
     }
 
 
@@ -75,10 +78,10 @@ public class CategoryController {
      * @return response entity
      */
     @GetMapping("/{categoryNo}")
-    public ResponseEntity<SuccessResponse> categoryDetails(@PathVariable("categoryNo") Integer categoryNo) {
+    public ResponseEntity<?> categoryDetails(@PathVariable("categoryNo") Integer categoryNo) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(SuccessResponse.data(categoryService.findCategory(categoryNo)));
+                .body(responseBody.success(categoryService.findCategory(categoryNo)));
     }
 
 
@@ -90,10 +93,10 @@ public class CategoryController {
      * @return response entity
      */
     @GetMapping
-    public ResponseEntity<SuccessResponse> categoryList() {
+    public ResponseEntity<?> categoryList() {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(SuccessResponse.data(categoryService.findCategories()));
+                .body(responseBody.success(categoryService.findCategories()));
     }
 
     /**
@@ -105,12 +108,12 @@ public class CategoryController {
      * @return response entity
      */
     @DeleteMapping("/{categoryNo}")
-    public ResponseEntity<SuccessResponse> categoryRemove(@PathVariable("categoryNo") Integer categoryNo) {
+    public ResponseEntity<?> categoryRemove(@PathVariable("categoryNo") Integer categoryNo) {
         categoryService.removeCategory(categoryNo);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(SuccessResponse.noData());
+                .body(responseBody.success());
     }
 
     /**
@@ -122,9 +125,12 @@ public class CategoryController {
      * @return response entity
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Error> handleException(Exception ex) {
+    public ResponseEntity<?> handleException(Exception ex) {
+        LinkedHashMap<String, String> errors = new LinkedHashMap<>();
+        errors.put("message", ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new Error(ex.getClass().getSimpleName(), ex.getMessage()));
+                .body(responseBody.invalidFields(List.of(errors)));
     }
 }

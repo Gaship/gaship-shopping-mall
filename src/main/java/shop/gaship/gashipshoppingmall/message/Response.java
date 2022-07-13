@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.List;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall
  * fileName       : SuccessResponse
  * author         : 김보민
  * date           : 2022-07-12
- * description    : 성공 시 보낼 response body
+ * description    : 보낼 response body
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
@@ -73,7 +73,7 @@ public class Response {
         return fail(Collections.emptyList(), msg, status);
     }
 
-    public ResponseEntity<?> invalidFields(LinkedList<LinkedHashMap<String, String>> errors) {
+    public ResponseEntity<?> invalidFields(List<LinkedHashMap<String, String>> errors) {
         Body body = Body.builder()
                 .state(HttpStatus.BAD_REQUEST.value())
                 .data(Collections.emptyList())

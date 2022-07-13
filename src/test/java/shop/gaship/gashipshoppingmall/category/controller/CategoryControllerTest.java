@@ -90,11 +90,11 @@ class CategoryControllerTest {
         mockMvc.perform(get("/categories/{categoryNo}", categoryNo))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.data.no").value(categoryResponseDto.getNo()))
-                .andExpect(jsonPath("$.data.name").value(categoryResponseDto.getName()))
-                .andExpect(jsonPath("$.data.level").value(categoryResponseDto.getLevel()))
-                .andExpect(jsonPath("$.data.upperCategoryNo").value(categoryResponseDto.getUpperCategoryNo()))
-                .andExpect(jsonPath("$.data.upperCategoryName").value(categoryResponseDto.getUpperCategoryName()))
+                .andExpect(jsonPath("$.body.data.no").value(categoryResponseDto.getNo()))
+                .andExpect(jsonPath("$.body.data.name").value(categoryResponseDto.getName()))
+                .andExpect(jsonPath("$.body.data.level").value(categoryResponseDto.getLevel()))
+                .andExpect(jsonPath("$.body.data.upperCategoryNo").value(categoryResponseDto.getUpperCategoryNo()))
+                .andExpect(jsonPath("$.body.data.upperCategoryName").value(categoryResponseDto.getUpperCategoryName()))
                 .andDo(print());
 
         verify(categoryService).findCategory(categoryNo);
@@ -110,12 +110,12 @@ class CategoryControllerTest {
         mockMvc.perform(get("/categories"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.data.size()").value(1))
-                .andExpect(jsonPath("$.data[0].no").value(categoryResponseDto.getNo()))
-                .andExpect(jsonPath("$.data[0].name").value(categoryResponseDto.getName()))
-                .andExpect(jsonPath("$.data[0].level").value(categoryResponseDto.getLevel()))
-                .andExpect(jsonPath("$.data[0].upperCategoryNo").value(categoryResponseDto.getUpperCategoryNo()))
-                .andExpect(jsonPath("$.data[0].upperCategoryName").value(categoryResponseDto.getUpperCategoryName()))
+                .andExpect(jsonPath("$.body.data.size()").value(1))
+                .andExpect(jsonPath("$.body.data[0].no").value(categoryResponseDto.getNo()))
+                .andExpect(jsonPath("$.body.data[0].name").value(categoryResponseDto.getName()))
+                .andExpect(jsonPath("$.body.data[0].level").value(categoryResponseDto.getLevel()))
+                .andExpect(jsonPath("$.body.data[0].upperCategoryNo").value(categoryResponseDto.getUpperCategoryNo()))
+                .andExpect(jsonPath("$.body.data[0].upperCategoryName").value(categoryResponseDto.getUpperCategoryName()))
                 .andDo(print());
 
         verify(categoryService).findCategories();
@@ -145,8 +145,7 @@ class CategoryControllerTest {
         mockMvc.perform(get("/categories/{categoryNo}", categoryNo))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.exception").value(exception.getClass().getSimpleName()))
-                .andExpect(jsonPath("$.message").value(exception.getMessage()))
+                .andExpect(jsonPath("$.body.error[0].message").value(exception.getMessage()))
                 .andDo(print());
 
         verify(categoryService).findCategory(categoryNo);
