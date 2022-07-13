@@ -32,6 +32,7 @@ public class Tag extends BaseEntity {
     @Column(name = "tag_no")
     private Integer tagNo;
 
+    @Column(unique=true)
     private String title;
 
     public void modifyEntity(TagRequestDto tagRequestDto) {
