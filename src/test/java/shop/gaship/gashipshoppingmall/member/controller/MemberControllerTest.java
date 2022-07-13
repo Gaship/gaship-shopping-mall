@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
@@ -19,8 +20,7 @@ import shop.gaship.gashipshoppingmall.member.service.MemberService;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,6 +53,7 @@ class MemberControllerTest {
     @Test
     void registerMemberTest() throws Exception {
         String body = objectMapper.writeValueAsString(MemberTestUtils.memberRegisterRequestDto());
+        doNothing().when(memberService).register(MemberTestUtils.memberRegisterRequestDto());
 
         mockMvc.perform(post("/signUp")
                         .accept(MediaType.APPLICATION_JSON)
@@ -61,13 +62,13 @@ class MemberControllerTest {
                 .andExpect(status().isCreated());
 
         verify(memberService).register(any());
-
     }
 
     @DisplayName("회원 정보 수정 테스트")
     @Test
     void modifyMemberTest() throws Exception {
         String body = objectMapper.writeValueAsString(MemberTestUtils.memberModifyRequestDto());
+        doNothing().when(memberService).modify(MemberTestUtils.memberModifyRequestDto());
 
         mockMvc.perform(put("/members/1")
                         .accept(MediaType.APPLICATION_JSON)
@@ -76,12 +77,12 @@ class MemberControllerTest {
                 .andExpect(status().isOk());
 
         verify(memberService).modify(any());
-
     }
 
     @DisplayName("회원 삭제 테스트(실삭제(db 에서 삭제))")
     @Test
     void deleteMemberTest() throws Exception {
+        doNothing().when(memberService).delete(any(Integer.class));
         mockMvc.perform(delete("/members/1")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -93,7 +94,7 @@ class MemberControllerTest {
     @DisplayName("회원 단건 조회 테스트")
     @Test
     void getMemberTest() throws Exception {
-        when(memberService.get(any())).thenReturn(MemberTestUtils.memberResponseDto());
+        when(memberService.get(any(Integer.class))).thenReturn(MemberTestUtils.memberResponseDto());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/members/1")
                         .accept(MediaType.APPLICATION_JSON)
@@ -108,7 +109,7 @@ class MemberControllerTest {
     @Test
     void getMemberListTest() throws Exception {
         List<MemberResponseDto> memberResponseDtoList = List.of(MemberTestUtils.memberResponseDto(), MemberTestUtils.memberResponseDto());
-        when(memberService.getList(any())).thenReturn(memberResponseDtoList);
+        when(memberService.getList(any(Pageable.class))).thenReturn(memberResponseDtoList);
 
         mockMvc.perform(get("/members")
                         .queryParam("page", "0")
