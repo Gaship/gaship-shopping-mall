@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.membergrade.dummy;
 
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.dummy
@@ -25,12 +25,12 @@ public class MemberGradeDtoDummy {
         return memberGradeRequestDto;
     }
 
-    public static MemberGradeDto responseDummy(String name, Long accumulateAmount, String renewalPeriodStatusCode) {
-        MemberGradeDto testMemberGradeDto = new MemberGradeDto();
-        testMemberGradeDto.setName(name);
-        testMemberGradeDto.setAccumulateAmount(accumulateAmount);
-        testMemberGradeDto.setRenewalPeriodStatusCode(renewalPeriodStatusCode);
+    public static MemberGradeResponseDto responseDummy(String name, Long accumulateAmount, String renewalPeriodStatusCode) {
+        MemberGradeResponseDto testMemberGradeResponseDto = new MemberGradeResponseDto();
+        testMemberGradeResponseDto.setName(name);
+        testMemberGradeResponseDto.setAccumulateAmount(accumulateAmount);
+        testMemberGradeResponseDto.setRenewalPeriodStatusCode(renewalPeriodStatusCode);
 
-        return testMemberGradeDto;
+        return testMemberGradeResponseDto;
     }
 }

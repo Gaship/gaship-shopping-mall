@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.entity.QMemberGrade;
 
@@ -27,13 +27,13 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Optional<MemberGradeDto> getMemberGradeBy(Integer memberGradeNo) {
+    public Optional<MemberGradeResponseDto> getMemberGradeBy(Integer memberGradeNo) {
         QMemberGrade memberGrade = QMemberGrade.memberGrade;
 
         return Optional.ofNullable(from(memberGrade)
                 .innerJoin(memberGrade.renewalPeriodStatusCode)
                 .where(memberGrade.no.eq(memberGradeNo))
-                .select(Projections.bean(MemberGradeDto.class,
+                .select(Projections.bean(MemberGradeResponseDto.class,
                         memberGrade.name,
                         memberGrade.accumulateAmount,
                         memberGrade.renewalPeriodStatusCode.statusCodeName))
@@ -41,14 +41,14 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public List<MemberGradeDto> getMemberGrades(Pageable page) {
+    public List<MemberGradeResponseDto> getMemberGrades(Pageable pageable) {
         QMemberGrade memberGrade = QMemberGrade.memberGrade;
 
         return from(memberGrade)
                 .innerJoin(memberGrade.renewalPeriodStatusCode)
-                .offset(page.getOffset())
-                .limit(page.getPageSize())
-                .select(Projections.bean(MemberGradeDto.class,
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .select(Projections.bean(MemberGradeResponseDto.class,
                         memberGrade.no,
                         memberGrade.name,
                         memberGrade.accumulateAmount,

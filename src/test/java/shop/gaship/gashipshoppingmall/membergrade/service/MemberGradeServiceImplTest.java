@@ -2,13 +2,13 @@ package shop.gaship.gashipshoppingmall.membergrade.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
@@ -17,7 +17,7 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -43,14 +43,14 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class MemberGradeServiceImplTest {
 
-    @InjectMocks
-    private MemberGradeServiceImpl memberGradeServiceImpl;
+    @Autowired
+    private MemberGradeService memberGradeService;
 
-    @Mock
+    @MockBean
     private MemberGradeRepository memberGradeRepository;
-    @Mock
+    @MockBean
     private StatusCodeRepository statusCodeRepository;
-    @Mock
+    @MockBean
     private MemberRepository memberRepository;
     private MemberGradeRequestDto memberGradeRequestDto;
     private Integer testMemberGradeNo;
@@ -72,7 +72,7 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.save(any())).thenReturn(memberGrade);
 
         // when
-        memberGradeServiceImpl.addMemberGrade(memberGradeRequestDto);
+        memberGradeService.addMemberGrade(memberGradeRequestDto);
 
         // then
         verify(statusCodeRepository).findById(any());
@@ -85,7 +85,7 @@ class MemberGradeServiceImplTest {
         when(statusCodeRepository.findById(any())).thenReturn(Optional.empty());
 
         // when&then
-        assertThatThrownBy(() -> memberGradeServiceImpl
+        assertThatThrownBy(() -> memberGradeService
                 .addMemberGrade(memberGradeRequestDto))
                 .isInstanceOf(StatusCodeNotFoundException.class);
 
@@ -110,7 +110,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(modifyMemberGrade);
 
         // when
-        memberGradeServiceImpl.modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequestDto);
+        memberGradeService.modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequestDto);
 
         // then
         verify(memberGradeRepository).findById(any());
@@ -127,7 +127,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(Optional.empty());
 
         // when&then
-        assertThatThrownBy(() -> memberGradeServiceImpl
+        assertThatThrownBy(() -> memberGradeService
                 .modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequestDto))
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
@@ -148,7 +148,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(List.of());
 
         // when&then
-        assertThatNoException().isThrownBy(() -> memberGradeServiceImpl.removeMemberGrade(any()));
+        assertThatNoException().isThrownBy(() -> memberGradeService.removeMemberGrade(any()));
 
         verify(memberGradeRepository).findById(any());
         verify(memberRepository).findByMemberGrades(any());
@@ -168,7 +168,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(List.of(MemberDummy.dummy(renewalPeriod, testMemberGrade)));
 
         // when&then
-        assertThatThrownBy(() -> memberGradeServiceImpl.removeMemberGrade(1))
+        assertThatThrownBy(() -> memberGradeService.removeMemberGrade(1))
                 .isInstanceOf(MemberGradeInUseException.class);
 
         verify(memberGradeRepository).findById(any());
@@ -182,7 +182,7 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.findById(any())).thenReturn(Optional.empty());
 
         // when&then
-        assertThatThrownBy(() -> memberGradeServiceImpl.removeMemberGrade(testMemberGradeNo))
+        assertThatThrownBy(() -> memberGradeService.removeMemberGrade(testMemberGradeNo))
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
         verify(memberGradeRepository).findById(any());
@@ -193,18 +193,18 @@ class MemberGradeServiceImplTest {
     @Test
     void findMemberGrade_whenMemberGradeIsPresent() {
         // given
-        MemberGradeDto testMemberGradeDto = MemberGradeDtoDummy.responseDummy("일반", 0L, "12개월");
+        MemberGradeResponseDto testMemberGradeResponseDto = MemberGradeDtoDummy.responseDummy("일반", 0L, "12개월");
 
         // mocking
         when(memberGradeRepository.getMemberGradeBy(any()))
-                .thenReturn(Optional.of(testMemberGradeDto));
+                .thenReturn(Optional.of(testMemberGradeResponseDto));
 
         // when
-        MemberGradeDto result = memberGradeServiceImpl.findMemberGrade(testMemberGradeNo);
+        MemberGradeResponseDto result = memberGradeService.findMemberGrade(testMemberGradeNo);
 
         // then
-        assertThat(result.getName()).isEqualTo(testMemberGradeDto.getName());
-        assertThat(result.getAccumulateAmount()).isEqualTo(testMemberGradeDto.getAccumulateAmount());
+        assertThat(result.getName()).isEqualTo(testMemberGradeResponseDto.getName());
+        assertThat(result.getAccumulateAmount()).isEqualTo(testMemberGradeResponseDto.getAccumulateAmount());
 
         verify(memberGradeRepository).getMemberGradeBy(any());
     }
@@ -216,7 +216,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(Optional.empty());
 
         // when&then
-        assertThatThrownBy(() -> memberGradeServiceImpl.findMemberGrade(testMemberGradeNo))
+        assertThatThrownBy(() -> memberGradeService.findMemberGrade(testMemberGradeNo))
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
         verify(memberGradeRepository).getMemberGradeBy(any());
@@ -226,17 +226,21 @@ class MemberGradeServiceImplTest {
     void findMemberGrades() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
+        MemberGradeResponseDto dummyMemberGradeResponseDto =
+                MemberGradeDtoDummy.responseDummy("일반",
+                0L,
+                "12개월");
 
         // mocking
         when(memberGradeRepository.getMemberGrades(pageable))
-                .thenReturn(List.of(MemberGradeDtoDummy.responseDummy("일반",
-                        0L,
-                        "12개월")));
+                .thenReturn(List.of(dummyMemberGradeResponseDto));
 
-        // when&then
-        assertThatNoException()
-                .isThrownBy(() -> memberGradeServiceImpl
-                        .findMemberGrades(pageable));
+        // when
+        List<MemberGradeResponseDto> result = memberGradeService.findMemberGrades(pageable);
+
+        // then
+        assertThat(result).isNotEmpty();
+        assertThat(result.get(0)).isEqualTo(dummyMemberGradeResponseDto);
 
         verify(memberGradeRepository).getMemberGrades(any());
     }

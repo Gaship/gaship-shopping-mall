@@ -6,12 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
@@ -42,13 +43,13 @@ class MemberGradeRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
+    @Autowired
     private ObjectMapper objectMapper;
+
     private MemberGradeRequestDto testMemberGradeRequestDto;
 
     @BeforeEach
     void setUp() {
-        objectMapper = new ObjectMapper();
         testMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
     }
 
@@ -94,11 +95,11 @@ class MemberGradeRestControllerTest {
     void memberGradeDetails() throws Exception {
         // given
         int testMemberGradeNo = 1;
-        MemberGradeDto testMemberGradeDto = MemberGradeDtoDummy.responseDummy("일반", 0L, "1개월");
+        MemberGradeResponseDto testMemberGradeResponseDto = MemberGradeDtoDummy.responseDummy("일반", 0L, "1개월");
 
         // mocking
         when(memberGradeService.findMemberGrade(any()))
-                .thenReturn(testMemberGradeDto);
+                .thenReturn(testMemberGradeResponseDto);
 
         // when&then
         mockMvc.perform(get("/grades/" + testMemberGradeNo)
@@ -106,9 +107,9 @@ class MemberGradeRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", equalTo(testMemberGradeDto.getName())))
-                .andExpect(jsonPath("$.accumulateAmount", equalTo(Integer.parseInt(testMemberGradeDto.getAccumulateAmount().toString()))))
-                .andExpect(jsonPath("$.renewalPeriodStatusCode", equalTo(testMemberGradeDto.getRenewalPeriodStatusCode())));
+                .andExpect(jsonPath("$.name", equalTo(testMemberGradeResponseDto.getName())))
+                .andExpect(jsonPath("$.accumulateAmount", equalTo(Integer.parseInt(testMemberGradeResponseDto.getAccumulateAmount().toString()))))
+                .andExpect(jsonPath("$.renewalPeriodStatusCode", equalTo(testMemberGradeResponseDto.getRenewalPeriodStatusCode())));
     }
 
     @Test
@@ -127,6 +128,10 @@ class MemberGradeRestControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()", equalTo(1)))
+                .andExpect(jsonPath("$[0].name", equalTo("일반")))
+                .andExpect(jsonPath("$[0].accumulateAmount", equalTo(0)))
+                .andExpect(jsonPath("$[0].renewalPeriodStatusCode", equalTo("12개월")));
     }
 }

@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
@@ -78,13 +78,13 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     }
 
     @Override
-    public MemberGradeDto findMemberGrade(Integer memberGradeNo) {
+    public MemberGradeResponseDto findMemberGrade(Integer memberGradeNo) {
         return memberGradeRepository.getMemberGradeBy(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
     }
 
     @Override
-    public List<MemberGradeDto> findMemberGrades(Pageable page) {
-        return memberGradeRepository.getMemberGrades(page);
+    public List<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
+        return memberGradeRepository.getMemberGrades(pageable);
     }
 }

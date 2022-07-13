@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.dummy;
 
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 

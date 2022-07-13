@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.membergrade.dto;
+package shop.gaship.gashipshoppingmall.membergrade.dto.request;
 
 import lombok.Data;
 

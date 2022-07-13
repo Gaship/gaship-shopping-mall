@@ -7,12 +7,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 import java.util.List;
@@ -42,9 +42,10 @@ class MemberGradeRepositoryTest {
     private StatusCode renewalPeriod;
     private MemberGrade memberGrade;
 
+    private MemberGradeRequestDto memberGradeRequestDto;
     @BeforeEach
     void setUp() {
-        MemberGradeRequestDto memberGradeRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
+        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
         renewalPeriod = StatusCodeDummy.dummy();
         memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
     }
@@ -110,7 +111,7 @@ class MemberGradeRepositoryTest {
         testEntityManager.clear();
 
         // when
-        Optional<MemberGradeDto> memberGradeDto =
+        Optional<MemberGradeResponseDto> memberGradeDto =
                 memberGradeRepository.getMemberGradeBy(newMemberGrade.getNo());
 
         // then
@@ -125,7 +126,7 @@ class MemberGradeRepositoryTest {
         Integer testMemberGradeNo = 2;
 
         // when
-        Optional<MemberGradeDto> memberGradeDto =
+        Optional<MemberGradeResponseDto> memberGradeDto =
                 memberGradeRepository.getMemberGradeBy(testMemberGradeNo);
 
         assertThat(memberGradeDto).isEmpty();
@@ -134,15 +135,20 @@ class MemberGradeRepositoryTest {
     @Test
     void getMemberGrades() {
         // given
-        Pageable pageable = PageRequest.of(0, 10);
         testEntityManager.persist(renewalPeriod);
         memberGradeRepository.saveAndFlush(memberGrade);
+        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
+        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
+        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
+        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
         testEntityManager.clear();
 
+        Pageable pageable = PageRequest.of(1, 3);
+
         // when
-        List<MemberGradeDto> result = memberGradeRepository.getMemberGrades(pageable);
+        List<MemberGradeResponseDto> result = memberGradeRepository.getMemberGrades(pageable);
 
         // then
-        assertThat(result).hasSize(1);
+        assertThat(result).hasSize(2);
     }
 }

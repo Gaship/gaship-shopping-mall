@@ -2,7 +2,7 @@ package shop.gaship.gashipshoppingmall.membergrade.entity;
 
 import javax.persistence.*;
 import lombok.*;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 

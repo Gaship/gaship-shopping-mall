@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
 
@@ -95,7 +95,9 @@ public class MemberGradeRestController {
      * @return response entity
      */
     @GetMapping("/{memberGradeNo}")
-    public ResponseEntity<MemberGradeDto> memberGradeDetails(@PathVariable Integer memberGradeNo) {
+    public ResponseEntity<MemberGradeResponseDto>
+        memberGradeDetails(@PathVariable Integer memberGradeNo) {
+
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(memberGradeService.findMemberGrade(memberGradeNo));
@@ -107,13 +109,13 @@ public class MemberGradeRestController {
      * author : Semi Kim
      * description : MemberGrade List GetMapping
      *
-     * @param page Pageable
+     * @param pageable Pageable
      * @return response entity
      */
     @GetMapping
-    public ResponseEntity<List<MemberGradeDto>> memberGradeList(Pageable page) {
+    public ResponseEntity<List<MemberGradeResponseDto>> memberGradeList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(memberGradeService.findMemberGrades(page));
+                .body(memberGradeService.findMemberGrades(pageable));
     }
 }

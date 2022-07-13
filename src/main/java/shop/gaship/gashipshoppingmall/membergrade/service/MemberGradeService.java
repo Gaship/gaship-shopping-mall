@@ -2,8 +2,8 @@ package shop.gaship.gashipshoppingmall.membergrade.service;
 
 import java.util.List;
 import org.springframework.data.domain.Pageable;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 
 
 /**
@@ -49,7 +49,7 @@ public interface MemberGradeService {
      */
     void removeMemberGrade(Integer memberGradeNo);
 
-    MemberGradeDto findMemberGrade(Integer memberGradeNo);
+    MemberGradeResponseDto findMemberGrade(Integer memberGradeNo);
 
-    List<MemberGradeDto> findMemberGrades(Pageable page);
+    List<MemberGradeResponseDto> findMemberGrades(Pageable pageable);
 }
