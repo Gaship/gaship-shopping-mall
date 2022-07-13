@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -40,25 +41,37 @@ class MemberRepositoryTest {
     }
 
     @Test
+    @DisplayName("멤버 엔티티 jpa 테스트")
     void saveAndCheck() {
         entityManager.persist(memberDummy.getStatus());
         entityManager.persist(memberDummy.getGrade());
 
         Member savedDummy = memberRepository.save(memberDummy);
-        Member member = memberRepository.findById(1L).orElse(null);
+        Member member = memberRepository.findById(savedDummy.getMemberNo()).orElse(null);
 
-        assertThat(member.getName()).isEqualTo(savedDummy.getName());
+        assertThat(member).isEqualTo(savedDummy);
     }
 
     @Test
-    void findByEmail() {
+    @DisplayName("custom query findByEmail 테스트")
+    void findByEmailTest() {
         // 임의의 멤버 한명 저장
         entityManager.persist(memberDummy.getStatus());
         entityManager.persist(memberDummy.getGrade());
         Member cachedMember = memberRepository.save(memberDummy);
 
-        Member member = memberRepository.findByEmail(memberDummy.getEmail());
+        Member member = memberRepository.findByEmail(memberDummy.getEmail())
+            .orElse(null);
 
         assertThat(member).isEqualTo(cachedMember);
+    }
+
+    @Test
+    @DisplayName("custom query findByEmail Optional 테스트")
+    void findByEmailNotFoundTest() {
+        Member member = memberRepository.findByEmail("abc@nhn.com")
+            .orElse(null);
+
+        assertThat(member).isNull();
     }
 }

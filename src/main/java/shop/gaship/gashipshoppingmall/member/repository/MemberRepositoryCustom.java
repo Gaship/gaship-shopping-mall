@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.repository;
 
+import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
@@ -16,5 +17,5 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
  */
 @NoRepositoryBean
 public interface MemberRepositoryCustom {
-    Member findByEmail(String email);
+    Optional<Member> findByEmail(String email);
 }

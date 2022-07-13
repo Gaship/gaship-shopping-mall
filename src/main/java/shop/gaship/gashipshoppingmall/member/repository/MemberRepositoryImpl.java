@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.QMember;
@@ -15,18 +16,21 @@ import shop.gaship.gashipshoppingmall.member.entity.QMember;
  * -----------------------------------------------------------  <br/>
  * 2022/07/13           김민수               최초 생성                         <br/>
  */
-public class MemberRepositoryImpl extends QuerydslRepositorySupport implements MemberRepositoryCustom {
+public class MemberRepositoryImpl extends QuerydslRepositorySupport
+    implements MemberRepositoryCustom {
     public MemberRepositoryImpl() {
         super(Member.class);
     }
 
     @Override
-    public Member findByEmail(String email) {
+    public Optional<Member> findByEmail(String email) {
         QMember member = QMember.member;
 
-        return from(member)
-            .where(member.email.eq(email))
-            .select(member)
-            .fetchOne();
+        return Optional.ofNullable(
+            from(member)
+                .where(member.email.eq(email))
+                .select(member)
+                .fetchOne()
+        );
     }
 }
