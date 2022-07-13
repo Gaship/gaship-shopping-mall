@@ -3,11 +3,15 @@ package shop.gaship.gashipshoppingmall.member.controller;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.convert.Jsr310Converters;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
@@ -30,6 +35,7 @@ import shop.gaship.gashipshoppingmall.member.service.MemberService;
  * 2022/07/12           김민수               최초 생성                         <br/>
  */
 @WebMvcTest(MemberController.class)
+@Slf4j
 class MemberControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -45,6 +51,7 @@ class MemberControllerTest {
     }
 
     @Test
+    @DisplayName("회원가입 성공")
     void signUpMemberTest() throws Exception {
         String contentBody = objectMapper.registerModule(new JavaTimeModule())
             .writeValueAsString(MemberCreationRequestDummy.dummy());
@@ -57,5 +64,27 @@ class MemberControllerTest {
             .content(contentBody))
             .andDo(print())
             .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 : 이메일 미인증 또는 이메일 중복확인을 하지않는 경우")
+    void signUpMemberFailureTest() throws Exception {
+        MemberCreationRequest dummy = MemberCreationRequestDummy.dummy();
+        dummy.setIsUniqueEmail(false);
+
+        log.trace("dummy isUniqueEmail : {}", dummy.getIsUniqueEmail());
+
+        String contentBody = objectMapper.registerModule(new JavaTimeModule())
+            .writeValueAsString(dummy);
+
+
+        mockMvc.perform(post("/members/signUp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(contentBody))
+            .andDo(print())
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.message")
+                .value("이메일 중복확인 또는 이메일 검증이 필요합니다."));
     }
 }
