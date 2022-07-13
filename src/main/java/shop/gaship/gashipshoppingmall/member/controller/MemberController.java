@@ -3,12 +3,16 @@ package shop.gaship.gashipshoppingmall.member.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.MemberFoundedDto;
+import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
 /**
@@ -37,5 +41,10 @@ public class MemberController {
         }
 
         throw new SignUpDenyException("이메일 중복확인 또는 이메일 검증이 필요합니다.");
+    }
+
+    @GetMapping("/retrieve")
+    public MemberFoundedDto signUpMember(@RequestParam String email){
+        return new MemberFoundedDto(memberService.isAvailableEmail(email));
     }
 }
