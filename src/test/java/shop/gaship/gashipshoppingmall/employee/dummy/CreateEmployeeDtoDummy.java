@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.employee.dummy;
 
-import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.employee.dummy
@@ -19,7 +19,14 @@ public class CreateEmployeeDtoDummy {
 
     }
 
-    public static CreateEmployeeDto dummy(){
-        return new CreateEmployeeDto(1, 1, "test", "test@naver.com", "test","010101");
+    /**
+     * methodName : dummy
+     * author : 유호철
+     * description :
+     *
+     * @return create employee request dto
+     */
+    public static CreateEmployeeRequestDto dummy(){
+        return new CreateEmployeeRequestDto(1, 1, "test", "test@naver.com", "test","010101");
     }
 }

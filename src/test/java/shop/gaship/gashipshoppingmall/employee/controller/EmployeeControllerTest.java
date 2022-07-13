@@ -27,9 +27,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
-import shop.gaship.gashipshoppingmall.employee.dto.GetEmployee;
-import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dummy.CreateEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.dummy.GetEmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
@@ -56,7 +56,7 @@ class EmployeeControllerTest {
     @Test
     void postEmployee() throws Exception {
         //given
-        CreateEmployeeDto dto = CreateEmployeeDtoDummy.dummy();
+        CreateEmployeeRequestDto dto = CreateEmployeeDtoDummy.dummy();
 
         //when
         doNothing().when(service).createEmployee(dto);
@@ -76,51 +76,27 @@ class EmployeeControllerTest {
     @Test
     void putEmployee() throws Exception {
         //given
-        ModifyEmployeeDto dto = new ModifyEmployeeDto("aa", "test@mail.com", "000000");
+        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1,"aa", "test@mail.com", "000000");
 
         //when & then
-        doNothing().when(service).modifyEmployee(1, dto);
+        doNothing().when(service).modifyEmployee(dto);
 
-        mvc.perform(put("/employees/" + 1)
+        mvc.perform(put("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .content(objectMapper.writeValueAsString(dto))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().is2xxSuccessful())
             .andDo(print());
-        //given
-        GetEmployee employee = new GetEmployee("a", "a@naver.com", "0000");
-
-        //when
-        when(service.getEmployee(any())).thenReturn(employee);
-
-        MvcResult mvcResult = mvc.perform(get("/employees/" + 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding(StandardCharsets.UTF_8))
-            .andExpect(status().is2xxSuccessful())
-            .andDo(print())
-            .andReturn();
-
         //then
-        verify(service, times(1)).getEmployee(any());
-
-        String response = mvcResult.getResponse().getContentAsString();
-        String name = JsonPath.parse(response).read("$.name");
-        String email = JsonPath.parse(response).read("$.email");
-        String phoneNo = JsonPath.parse(response).read("$.phoneNo");
-
-        assertThat(employee.getEmail()).isEqualTo(email);
-        assertThat(employee.getPhoneNo()).isEqualTo(phoneNo);
-        assertThat(employee.getName()).isEqualTo(name);
-
-        verify(service, times(1)).modifyEmployee(any(), any());
+        verify(service,times(1)).modifyEmployee(any());
     }
 
     @DisplayName("직원 단건 조회 test")
     @Test
     void getEmployee() throws Exception {
         //given
-        GetEmployee e1 = GetEmployeeDummy.dummy();
+        EmployeeInfoResponseDto e1 = GetEmployeeDummy.dummy();
 
         //when
         when(service.getEmployee(1)).thenReturn(e1);
@@ -144,10 +120,10 @@ class EmployeeControllerTest {
     @Test
     void getEmployees() throws Exception {
         //given
-        GetEmployee e1 = GetEmployeeDummy.dummy();
-        GetEmployee e2 = GetEmployeeDummy.dummy2();
+        EmployeeInfoResponseDto e1 = GetEmployeeDummy.dummy();
+        EmployeeInfoResponseDto e2 = GetEmployeeDummy.dummy2();
 
-        List<GetEmployee> list = new ArrayList<>();
+        List<EmployeeInfoResponseDto> list = new ArrayList<>();
         list.add(e1);
         list.add(e2);
         //when

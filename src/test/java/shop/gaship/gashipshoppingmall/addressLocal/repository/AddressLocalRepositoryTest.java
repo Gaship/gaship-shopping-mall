@@ -36,7 +36,7 @@ class AddressLocalRepositoryTest {
     @DisplayName("조회 되는지 확인용 테스트")
     @Test
     void selectTest() {
-        DayLabor labor = DayLaboyDummy.dummy();
+        DayLabor labor = DayLaboyDummy.dummy1();
 
         AddressLocal upper = AddressLocalDummy.dummy1();
 

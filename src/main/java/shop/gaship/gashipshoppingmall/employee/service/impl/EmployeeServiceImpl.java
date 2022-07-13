@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
-import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
-import shop.gaship.gashipshoppingmall.employee.dto.GetEmployee;
-import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
@@ -40,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final AddressLocalRepository localRepository;
     @Override
     @Transactional
-    public void createEmployee(CreateEmployeeDto dto) {
+    public void createEmployee(CreateEmployeeRequestDto dto) {
 
         StatusCode statusCode = statusCodeRepository.findById(dto.getAuthorityNo())
             .orElseThrow(WrongStatusCodeException::new);
@@ -58,8 +58,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     @Modifying
-    public void modifyEmployee(Integer employeeNo, ModifyEmployeeDto dto) {
-        Employee employee = repository.findById(employeeNo)
+    public void modifyEmployee(ModifyEmployeeRequestDto dto) {
+        Employee employee = repository.findById(dto.getEmployeeNo())
             .orElseThrow(EmployeeNotFoundException::new);
         employee.modifyEmployee(dto);
 
@@ -67,17 +67,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public GetEmployee getEmployee(Integer employeeNo) {
+    public EmployeeInfoResponseDto getEmployee(Integer employeeNo) {
         Employee employee = repository.findById(employeeNo)
             .orElseThrow(EmployeeNotFoundException::new);
 
-        return new GetEmployee(employee);
+        return new EmployeeInfoResponseDto(employee);
     }
 
     @Override
-    public List<GetEmployee> getAllEmployees() {
+    public List<EmployeeInfoResponseDto> getAllEmployees() {
         return repository.findAll().stream()
-            .map(GetEmployee::new)
+            .map(EmployeeInfoResponseDto::new)
             .collect(Collectors.toList());
     }
 }

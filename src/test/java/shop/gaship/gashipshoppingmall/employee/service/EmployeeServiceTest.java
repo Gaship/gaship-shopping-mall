@@ -25,9 +25,9 @@ import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
-import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
-import shop.gaship.gashipshoppingmall.employee.dto.GetEmployee;
-import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dummy.CreateEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.dummy.ModifyEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
@@ -45,7 +45,7 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
  * fileName:EmployeeServiceTest
  * author         : 유호철
  * date           : 2022/07/10
- * description    :
+ * description    : EmployeeService 테스트를 위한 클래스
  * ===========================================================
  * DATE              AUTHOR     NOTE
  * -----------------------------------------------------------
@@ -68,13 +68,13 @@ class EmployeeServiceTest {
     @Autowired
     EmployeeService service;
 
-    CreateEmployeeDto dto;
+    CreateEmployeeRequestDto dto;
 
     Employee employee;
 
-    ModifyEmployeeDto modifyEmployeeDto;
+    ModifyEmployeeRequestDto modifyEmployeeDto;
 
-    GetEmployee getEmployee;
+    EmployeeInfoResponseDto getEmployee;
     ArgumentCaptor<Employee> captor;
 
     DayLabor labor;
@@ -95,9 +95,9 @@ class EmployeeServiceTest {
 
         captor = ArgumentCaptor.forClass(Employee.class);
 
-        getEmployee = new GetEmployee(employee);
+        getEmployee = new EmployeeInfoResponseDto(employee);
 
-        labor = DayLaboyDummy.dummy();
+        labor = DayLaboyDummy.dummy1();
 
         addressLocal = AddressLocalDummy.dummy1();
 
@@ -171,7 +171,7 @@ class EmployeeServiceTest {
         given(repository.findById(any()))
             .willReturn(Optional.of(employee));
         //when
-        service.modifyEmployee(employee.getEmployeeNo(), modifyEmployeeDto);
+        service.modifyEmployee(modifyEmployeeDto);
 
         //then
         verify(repository, times(1))
@@ -191,7 +191,7 @@ class EmployeeServiceTest {
             .willReturn(Optional.empty());
 
         //when & then
-        assertThatThrownBy(() -> service.modifyEmployee(any(), modifyEmployeeDto))
+        assertThatThrownBy(() -> service.modifyEmployee(modifyEmployeeDto))
             .isInstanceOf(EmployeeNotFoundException.class);
     }
 
@@ -212,7 +212,7 @@ class EmployeeServiceTest {
             .willReturn(Optional.of(addressLocal));
         //when
         service.createEmployee(dto);
-        GetEmployee test = service.getEmployee(employee.getEmployeeNo());
+        EmployeeInfoResponseDto test = service.getEmployee(employee.getEmployeeNo());
 
         //then
         verify(repository, times(1))
@@ -241,7 +241,7 @@ class EmployeeServiceTest {
             .willReturn(list);
 
         //when
-        List<GetEmployee> allEmployees = service.getAllEmployees();
+        List<EmployeeInfoResponseDto> allEmployees = service.getAllEmployees();
 
         //then
         verify(repository, times(1))

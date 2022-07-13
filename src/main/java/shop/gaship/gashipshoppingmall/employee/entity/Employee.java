@@ -11,8 +11,8 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
-import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
@@ -87,7 +87,7 @@ public class Employee {
      *
      * @param dto ModifyEmployeeDto
      */
-    public void modifyEmployee(ModifyEmployeeDto dto){
+    public void modifyEmployee(ModifyEmployeeRequestDto dto){
         this.name = dto.getName();
         this.email = dto.getEmail();
         this.phoneNo = dto.getPhoneNo();
@@ -111,7 +111,7 @@ public class Employee {
      *
      * @param dto CreateEmployeeDto
      */
-    public void registerEmployee(CreateEmployeeDto dto){
+    public void registerEmployee(CreateEmployeeRequestDto dto){
         this.name = dto.getName();
         this.phoneNo = dto.getPhoneNo();
         this.email = dto.getEmail();

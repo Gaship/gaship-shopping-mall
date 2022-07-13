@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
-import shop.gaship.gashipshoppingmall.employee.dto.GetEmployee;
-import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
 
 /**
@@ -36,7 +36,7 @@ public class EmployeeController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void postEmployee(@Valid @RequestBody CreateEmployeeDto dto){
+    public void postEmployee(@Valid @RequestBody CreateEmployeeRequestDto dto){
         employeeService.createEmployee(dto);
     }
 
@@ -45,16 +45,14 @@ public class EmployeeController {
      * author : 유호철
      * description : Employee put 요청
      *
-     * @param employeeNo no
      * @param dto ModifyEmployeeDto
      */
 
-    @PutMapping("/{employeeNo}")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public void putEmployee(@PathVariable("employeeNo") Integer employeeNo,
-                            @Valid @RequestBody ModifyEmployeeDto dto){
+    public void putEmployee(@Valid @RequestBody ModifyEmployeeRequestDto dto){
 
-        employeeService.modifyEmployee(employeeNo,dto);
+        employeeService.modifyEmployee(dto);
     }
 
     /**
@@ -68,7 +66,7 @@ public class EmployeeController {
 
     @GetMapping("/{employeeNo}")
     @ResponseStatus(HttpStatus.OK)
-    public GetEmployee getEmployee(@PathVariable("employeeNo") Integer employeeNo){
+    public EmployeeInfoResponseDto getEmployee(@PathVariable("employeeNo") Integer employeeNo){
 
         return employeeService.getEmployee(employeeNo);
     }
@@ -84,7 +82,7 @@ public class EmployeeController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<GetEmployee> getEmployees(){
+    public List<EmployeeInfoResponseDto> getEmployees(){
 
         return employeeService.getAllEmployees();
     }

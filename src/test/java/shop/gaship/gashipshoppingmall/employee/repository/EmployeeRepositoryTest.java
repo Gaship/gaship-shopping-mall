@@ -57,7 +57,7 @@ class EmployeeRepositoryTest {
     void setUp() {
         employee = EmployeeDummy.dummy();
 
-        labor = DayLaboyDummy.dummy();
+        labor = DayLaboyDummy.dummy1();
 
         addressLocal = AddressLocalDummy.dummy1();
 

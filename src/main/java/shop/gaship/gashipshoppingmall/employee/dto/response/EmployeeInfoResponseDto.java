@@ -1,46 +1,45 @@
-package shop.gaship.gashipshoppingmall.employee.dto;
+package shop.gaship.gashipshoppingmall.employee.dto.response;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
+import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 
 /**
  *packageName    : shop.gaship.gashipshoppingmall.employee.dto
- * fileName       : CreateEmployeeDto
+ * fileName       : GetEmployee
  * author         : 유호철
  * date           : 2022/07/10
- * description    : Employee 생성을 위한 dto
+ * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2022/07/10        유호철       최초 생성
  */
 @Getter
-@AllArgsConstructor
-@EqualsAndHashCode
-public class CreateEmployeeDto {
-
-    @NotNull
-    private Integer authorityNo;
-
-    @NotNull
-    private Integer addressNo;
+public class EmployeeInfoResponseDto {
 
     @NotNull
     @Length(min = 1,max = 20)
     private String name;
 
-    @NotNull
     @Email
-    private String email;
-
     @NotNull
-    private String password;
+    private String email;
 
     @NotNull
     private String phoneNo;
 
+    public EmployeeInfoResponseDto(Employee employee) {
+        this.name = employee.getName();
+        this.email = employee.getEmail();
+        this.phoneNo = employee.getPhoneNo();
+    }
+
+    public EmployeeInfoResponseDto(String name, String email, String phoneNo) {
+        this.name = name;
+        this.email = email;
+        this.phoneNo = phoneNo;
+    }
 }

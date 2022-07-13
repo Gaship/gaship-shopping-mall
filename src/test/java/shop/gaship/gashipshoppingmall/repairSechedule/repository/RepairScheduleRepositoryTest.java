@@ -47,7 +47,7 @@ class RepairScheduleRepositoryTest {
     void repairScheduleSelectTest() {
         //given
         AddressLocal upper = AddressLocalDummy.dummy1();
-        DayLabor labor = DayLaboyDummy.dummy();
+        DayLabor labor = DayLaboyDummy.dummy1();
         labor.fixLocation(upper);
 
         RepairSchedule repairSchedule = RepairScheduleDummy.dummy();

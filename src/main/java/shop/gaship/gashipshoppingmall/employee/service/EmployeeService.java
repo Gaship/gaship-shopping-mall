@@ -1,16 +1,16 @@
 package shop.gaship.gashipshoppingmall.employee.service;
 
 import java.util.List;
-import shop.gaship.gashipshoppingmall.employee.dto.CreateEmployeeDto;
-import shop.gaship.gashipshoppingmall.employee.dto.GetEmployee;
-import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 
 /**
- *packageName    : shop.gaship.gashipshoppingmall.employee.service
+ *packageName     : shop.gaship.gashipshoppingmall.employee.service
  * fileName       : EmployeeService
  * author         : 유호철
  * date           : 2022/07/10
- * description    :
+ * description    : Employee Service 를 위한 class
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
@@ -18,11 +18,11 @@ import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
  */
 public interface EmployeeService {
 
-    void createEmployee(CreateEmployeeDto dto);
+    void createEmployee(CreateEmployeeRequestDto dto);
 
-    void modifyEmployee(Integer employee, ModifyEmployeeDto dto);
+    void modifyEmployee(ModifyEmployeeRequestDto dto);
 
-    GetEmployee getEmployee(Integer employeeNo);
+    EmployeeInfoResponseDto getEmployee(Integer employeeNo);
 
-    List<GetEmployee> getAllEmployees();
+    List<EmployeeInfoResponseDto> getAllEmployees();
 }
