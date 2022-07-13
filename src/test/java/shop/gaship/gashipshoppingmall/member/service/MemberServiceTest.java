@@ -113,4 +113,25 @@ class MemberServiceTest {
         assertThatThrownBy(() -> memberService.findMemberFromEmail("example@nhn.com"))
             .hasMessage("찿고있는 회원의 정보가 존재하지않습니다.");
     }
+
+    @Test
+    @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하는 경우")
+    void findMemberFromNicknameCaseFounded() {
+        given(memberRepository.findByNickname(anyString()))
+            .willReturn(Optional.of(MemberDummy.dummy()));
+
+        Member member = memberService.findMemberFromNickname("example nickName");
+
+        assertThat(member).isNotNull();
+    }
+
+    @Test
+    @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하는 경우")
+    void findMemberFromNicknameCaseNotFounded() {
+        given(memberRepository.findByNickname(anyString()))
+            .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> memberService.findMemberFromNickname("example nickName"))
+            .hasMessage("찿고있는 회원의 정보가 존재하지않습니다.");
+    }
 }

@@ -88,4 +88,9 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findByEmail(email)
             .orElseThrow(MemberNotFoundException::new);
     }
+
+    @Override
+    public Member findMemberFromNickname(String nickName) {
+        return null;
+    }
 }

@@ -32,4 +32,6 @@ public interface MemberService {
             .accumulatePurchaseAmount(0L)
             .build();
     }
+
+    Member findMemberFromNickname(String nickName);
 }
