@@ -5,7 +5,7 @@ import lombok.Getter;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.dto <br/>
- * fileName       : MemberFoundedDto <br/>
+ * fileName       : EmailPresence <br/>
  * author         : 김민수 <br/>
  * date           : 2022/07/14 <br/>
  * description    : <br/>
@@ -16,6 +16,6 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class MemberFoundedDto {
+public class EmailPresence {
     private Boolean hasEmail;
 }

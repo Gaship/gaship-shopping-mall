@@ -23,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
+import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
 /**
@@ -116,5 +118,35 @@ class MemberControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.hasEmail").value(false));
+    }
+
+    @Test
+    @DisplayName("닉네임을 통한 회원조회 : 성공 ")
+    void retrieveMemberFromNicknameCaseSuccess() throws Exception {
+        given(memberService.findMemberFromNickname(anyString()))
+            .willReturn(MemberDummy.dummy());
+
+        mockMvc.perform(get("/members/retrieve")
+                .param("nickname", "example nickname"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.memberNo").value(1));
+    }
+
+    @Test
+    @DisplayName("닉네임을 통한 회원조회 : 실패")
+    void retrieveMemberFromNicknameCaseFailure() throws Exception {
+        given(memberService.findMemberFromNickname(anyString()))
+            .willThrow(new MemberNotFoundException());
+
+        mockMvc.perform(get("/members/retrieve")
+                .param("nickname", "example nickname"))
+            .andDo(print())
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.requestStatus").value("failure"))
+            .andExpect(jsonPath("$.message")
+                .value("찿고있는 회원의 정보가 존재하지않습니다."));
     }
 }

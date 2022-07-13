@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.gaship.gashipshoppingmall.member.dto.FailureRequestDto;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 
 /**
@@ -20,7 +21,7 @@ import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
  */
 @RestControllerAdvice
 public class MemberAdvisor {
-    @ExceptionHandler({SignUpDenyException.class})
+    @ExceptionHandler({SignUpDenyException.class, MemberNotFoundException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public FailureRequestDto memberExceptionAdvice(RuntimeException exception){
         return new FailureRequestDto("failure", exception.getMessage());

@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.member.dto.EmailPresence;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
-import shop.gaship.gashipshoppingmall.member.dto.MemberFoundedDto;
+import shop.gaship.gashipshoppingmall.member.dto.MemberNumberPresence;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
@@ -34,8 +35,9 @@ public class MemberController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signUp")
-    public void signUpMember(@Validated @RequestBody MemberCreationRequest memberCreationRequest){
-        if(memberCreationRequest.getIsUniqueEmail() && memberCreationRequest.getIsVerifiedEmail()){
+    public void signUpMember(@Validated @RequestBody MemberCreationRequest memberCreationRequest) {
+        if (memberCreationRequest.getIsUniqueEmail() &&
+            memberCreationRequest.getIsVerifiedEmail()) {
             memberService.registerMember(memberCreationRequest);
             return;
         }
@@ -43,8 +45,14 @@ public class MemberController {
         throw new SignUpDenyException("이메일 중복확인 또는 이메일 검증이 필요합니다.");
     }
 
-    @GetMapping("/retrieve")
-    public MemberFoundedDto signUpMember(@RequestParam String email){
-        return new MemberFoundedDto(memberService.isAvailableEmail(email));
+    @GetMapping(value = "/retrieve", params = "email")
+    public EmailPresence retrieveFromEmail(@RequestParam String email) {
+        return new EmailPresence(memberService.isAvailableEmail(email));
+    }
+
+    @GetMapping(value = "/retrieve", params = "nickname")
+    public MemberNumberPresence retrieveFromNickname(@RequestParam String nickname) {
+        return new MemberNumberPresence(
+            memberService.findMemberFromNickname(nickname).getMemberNo());
     }
 }
