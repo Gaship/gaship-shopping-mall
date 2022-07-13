@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.category.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
+@ComponentScan(basePackages = { "shop.gaship.gashipshoppingmall.message" })
 public class CategoryController {
     private final CategoryService categoryService;
-    private final Response responseBody = new Response();
+    private final Response responseBody;
 
     /**
      * methodName : categoryAdd
