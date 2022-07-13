@@ -12,6 +12,8 @@ public interface MemberService {
 
     boolean isAvailableEmail(String email);
 
+    Member findMemberFromEmail(String email);
+
     default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest,
                                                  @Nullable Member recommendMember,
                                                  StatusCode defaultStatus,

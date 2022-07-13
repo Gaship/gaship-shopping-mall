@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.member.service.impl;
 
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -8,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
@@ -75,10 +75,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean isAvailableEmail(String email) {
-        Member member = memberRepository.findByEmail(email)
-            .orElse(null);
-
-        return !Objects.isNull(member);
+        try{
+            findMemberFromEmail(email);
+        } catch (MemberNotFoundException e){
+            return false;
+        }
+        return true;
     }
 
+    @Override
+    public Member findMemberFromEmail(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(MemberNotFoundException::new);
+    }
 }
