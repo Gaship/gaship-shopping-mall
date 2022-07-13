@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Null;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.lang.Nullable;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.dto <br/>
@@ -54,4 +52,10 @@ public class MemberCreationRequest implements MemberDto {
     @NotBlank
     @Length(max = 1)
     private String gender;
+
+    @NotNull
+    private Boolean isVerifiedEmail;
+
+    @NotNull
+    private Boolean isUniqueEmail;
 }

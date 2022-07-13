@@ -22,11 +22,21 @@ public class MemberDummy extends Member {
     }
 
     public static Member dummy() {
+        StatusCode status = StatusCode.builder()
+            .statusCodeName("ex")
+            .groupCodeName("ex")
+            .priority(1)
+            .build();
+
         return MemberDummy.builder()
             .memberNo(1L)
             .recommendMember(null)
-            .status(new StatusCode())
-            .grade(new MemberGrade())
+            .status(status)
+            .grade(MemberGrade.builder()
+                .name("name")
+                .accumulateAmount(0L)
+                .renewalPeriod(status)
+                .build())
             .email("example@nhn.com")
             .password("password")
             .name("example")

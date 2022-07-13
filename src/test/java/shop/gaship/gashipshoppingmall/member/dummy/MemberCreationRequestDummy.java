@@ -28,6 +28,8 @@ public class MemberCreationRequestDummy {
             .recommendMemberNo(1L)
             .password("password")
             .phoneNumber("01012341234")
+            .isUniqueEmail(true)
+            .isVerifiedEmail(true)
             .build();
     }
 }

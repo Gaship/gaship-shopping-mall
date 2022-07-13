@@ -31,6 +31,11 @@ public class MemberController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signUp")
     public void signUpMember(@Validated @RequestBody MemberCreationRequest memberCreationRequest){
-        memberService.registerMember(memberCreationRequest);
+        if(memberCreationRequest.getIsUniqueEmail() && memberCreationRequest.getIsVerifiedEmail()){
+            memberService.registerMember(memberCreationRequest);
+            return;
+        }
+
+        throw new SignUpDenyException("이메일 중복확인 또는 이메일 검증이 필요합니다.");
     }
 }
