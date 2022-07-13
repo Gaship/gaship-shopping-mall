@@ -25,7 +25,7 @@ public class MemberCreationRequestDummy {
             .gender("남")
             .name("example")
             .nickName("exampleNickName")
-            .recommendMemberNo(1L)
+            .recommendMemberNo(1)
             .password("password")
             .phoneNumber("01012341234")
             .isUniqueEmail(true)

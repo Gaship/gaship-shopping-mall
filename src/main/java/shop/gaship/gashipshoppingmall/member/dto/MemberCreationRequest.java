@@ -22,9 +22,9 @@ import org.hibernate.validator.constraints.Length;
  */
 @Data
 @Builder
-public class MemberCreationRequest implements MemberDto {
+public class MemberCreationRequest {
     @Min(0)
-    private Long recommendMemberNo;
+    private Integer recommendMemberNo;
 
     @NotBlank
     @Length(max = 255)

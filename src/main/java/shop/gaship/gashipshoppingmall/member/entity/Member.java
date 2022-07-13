@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.member.entity;
 import com.google.common.base.Objects;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,8 +24,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_no", nullable = false)
-    private Long memberNo;
+    private Integer memberNo;
 
     @ManyToOne
     @JoinColumn(name = "recommend_member_no")
@@ -40,35 +38,25 @@ public class Member {
     @JoinColumn(name = "member_grade_no", nullable = false)
     private MemberGrade grade;
 
-    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @Column(name = "nickname", nullable = false)
-    private String nickName;
+    private String nickname;
 
-    @Column(name = "gender", nullable = false)
     private String gender;
 
-    @Column(name = "accumulate_purchase_amount", nullable = false)
-    private Long totalPurchaseAmount;
+    private Long accumulatePurchaseAmount;
 
-    @Column(name = "next_renewal_grade_date", nullable = false)
     private LocalDate nextRenewalGradeDate;
 
-    @Column(name = "register_datetime", nullable = false)
-    private LocalDateTime registerDateTime;
+    private LocalDateTime registerDatetime;
 
     @Override
     public boolean equals(Object o) {
@@ -88,18 +76,18 @@ public class Member {
             Objects.equal(phoneNumber, member.phoneNumber) &&
             Objects.equal(name, member.name) &&
             Objects.equal(birthDate, member.birthDate) &&
-            Objects.equal(nickName, member.nickName) &&
+            Objects.equal(nickname, member.nickname) &&
             Objects.equal(gender, member.gender) &&
-            Objects.equal(totalPurchaseAmount, member.totalPurchaseAmount) &&
+            Objects.equal(accumulatePurchaseAmount, member.accumulatePurchaseAmount) &&
             Objects.equal(nextRenewalGradeDate, member.nextRenewalGradeDate) &&
-            Objects.equal(registerDateTime, member.registerDateTime);
+            Objects.equal(registerDatetime, member.registerDatetime);
     }
 
     @Override
     public int hashCode() {
         return Objects.hashCode(memberNo, recommendMember, status, grade, email, password,
-            phoneNumber, name, birthDate, nickName, gender, totalPurchaseAmount,
+            phoneNumber, name, birthDate, nickname, gender, accumulatePurchaseAmount,
             nextRenewalGradeDate,
-            registerDateTime);
+            registerDatetime);
     }
 }

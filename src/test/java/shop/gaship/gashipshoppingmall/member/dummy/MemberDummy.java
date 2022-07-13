@@ -29,7 +29,7 @@ public class MemberDummy extends Member {
             .build();
 
         return MemberDummy.builder()
-            .memberNo(1L)
+            .memberNo(1)
             .recommendMember(null)
             .status(status)
             .grade(MemberGrade.builder()
@@ -40,12 +40,12 @@ public class MemberDummy extends Member {
             .email("example@nhn.com")
             .password("password")
             .name("example")
-            .nickName("example nickName")
+            .nickname("example nickname")
             .birthDate(LocalDate.now())
             .phoneNumber("01012341234")
             .gender("남")
-            .totalPurchaseAmount(100000L)
-            .registerDateTime(LocalDateTime.now())
+            .accumulatePurchaseAmount(100000L)
+            .registerDatetime(LocalDateTime.now())
             .nextRenewalGradeDate(LocalDate.of(2022, 9, 16))
             .build();
     }

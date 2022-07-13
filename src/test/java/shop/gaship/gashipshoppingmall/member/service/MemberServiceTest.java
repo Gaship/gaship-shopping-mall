@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -54,7 +55,7 @@ class MemberServiceTest {
 
         String plainEmailDummy = dummy.getEmail();
 
-        given(memberRepository.findById(0L)).willReturn(
+        given(memberRepository.findById(anyInt())).willReturn(
             Optional.of(MemberDummy.dummy()));
         given(memberGradeRepository.findById(1)).willReturn(
             Optional.of(CreateTestUtils.createDummyMemberGrade()));
