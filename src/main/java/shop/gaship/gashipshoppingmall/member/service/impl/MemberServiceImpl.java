@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
@@ -20,8 +21,8 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 /**
  * MemberService를 구현하는 클래스입니다.
  *
- * @see MemberService
  * @author 김민수
+ * @see MemberService
  * @since 1.0
  */
 @Service
@@ -83,9 +84,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean isAvailableEmail(String email) {
-        try{
+        try {
             findMemberFromEmail(email);
-        } catch (MemberNotFoundException e){
+        } catch (MemberNotFoundException e) {
             return false;
         }
         return true;
@@ -100,6 +101,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member findMemberFromNickname(String nickName) {
         return memberRepository.findByNickname(nickName)
+            .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Override
+    public SignInUserDetailsDto findSignInUserDetailFromEmail(String email) {
+        return memberRepository.findSignInUserDetail(email)
             .orElseThrow(MemberNotFoundException::new);
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.member.dto.EmailPresence;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberNumberPresence;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
@@ -67,5 +68,10 @@ public class MemberController {
         @RequestParam String nickname) {
         return ResponseEntity.ok(new MemberNumberPresence(
             memberService.findMemberFromNickname(nickname).getMemberNo()));
+    }
+
+    @GetMapping(value = "/retrieve/user-detail", params = "email")
+    public ResponseEntity<SignInUserDetailsDto> retrieveUserDetail(@RequestParam String email){
+        return ResponseEntity.ok(memberService.findSignInUserDetailFromEmail(email));
     }
 }

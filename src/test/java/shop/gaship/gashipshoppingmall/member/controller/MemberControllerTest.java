@@ -22,8 +22,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
@@ -142,6 +144,40 @@ class MemberControllerTest {
 
         mockMvc.perform(get("/members/retrieve")
                 .param("nickname", "example nickname"))
+            .andDo(print())
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.requestStatus").value("failure"))
+            .andExpect(jsonPath("$.message")
+                .value("찿고있는 회원의 정보가 존재하지않습니다."));
+    }
+
+    @Test
+    @DisplayName("이메일을 통한 로그인 대상 회원 조회 : 성공")
+    void retrieveSignInUserDetailCaseSuccess() throws Exception {
+        SignInUserDetailsDto dummy = SignInUserDetailDummy.dummy();
+        given(memberService.findSignInUserDetailFromEmail(anyString()))
+            .willReturn(SignInUserDetailDummy.dummy());
+
+        mockMvc.perform(get("/members/retrieve/user-detail")
+                .param("email", "example@nhn.com"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.identifyNo").value(dummy.getIdentifyNo()))
+            .andExpect(jsonPath("$.email").value(dummy.getEmail()))
+            .andExpect(jsonPath("$.hashedPassword").value(dummy.getHashedPassword()))
+            .andExpect(jsonPath("$.authorities[0]").value(dummy.getAuthorities().get(0)));
+    }
+
+    @Test
+    @DisplayName("이메일을 통한 로그인 대상 회원 조회 : 실패")
+    void retrieveSignInUserDetailCaseFailure() throws Exception {
+        given(memberService.findSignInUserDetailFromEmail(anyString()))
+            .willThrow(new MemberNotFoundException());
+
+        mockMvc.perform(get("/members/retrieve/user-detail")
+                .param("email", "example@nhn.com"))
             .andDo(print())
             .andExpect(status().is4xxClientError())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))

@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.member.service;
 
 import org.springframework.lang.Nullable;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -73,4 +74,12 @@ public interface MemberService {
      * @return 검색된 회원
      */
     Member findMemberFromNickname(String nickName);
+
+    /**
+     * 회원 상세 정보를 이메일을 통해서 조회하는 메서드입니다.
+     *
+     * @param email 이메일입니다.
+     * @return 로그인을 시도하는 회원의 상세 정보 결과입니다.
+     */
+    SignInUserDetailsDto findSignInUserDetailFromEmail(String email);
 }

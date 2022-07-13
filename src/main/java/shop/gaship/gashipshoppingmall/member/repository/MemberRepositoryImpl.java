@@ -1,9 +1,12 @@
 package shop.gaship.gashipshoppingmall.member.repository;
 
+import com.querydsl.core.types.Projections;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.QMember;
+import shop.gaship.gashipshoppingmall.membergrade.entity.QMemberGrade;
 
 /**
  * MemberRepositoryCustom 인터페이스에서 제작한 커스텀 쿼리를 구현하는 클래스입니다.
@@ -39,5 +42,25 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                 .select(member)
                 .fetchOne()
         );
+    }
+
+    @Override
+    public Optional<SignInUserDetailsDto> findSignInUserDetail(String email) {
+        QMember member = QMember.member;
+        QMemberGrade memberGrade = QMemberGrade.memberGrade;
+
+        return
+            Optional.ofNullable(from(member)
+                .join(member.grade, memberGrade)
+                .where(member.email.eq(email))
+                .select(
+                    Projections.constructor(SignInUserDetailsDto.class,
+                        member.memberNo,
+                        member.email,
+                        member.password,
+                        Projections.list(memberGrade.name))
+                )
+                .fetchOne()
+            );
     }
 }

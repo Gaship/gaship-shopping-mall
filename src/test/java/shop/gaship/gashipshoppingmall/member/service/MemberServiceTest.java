@@ -9,6 +9,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
@@ -133,6 +136,35 @@ class MemberServiceTest {
             .willReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.findMemberFromNickname("example nickName"))
+            .hasMessage(expectErrorMessage);
+    }
+
+    @Test
+    @DisplayName("이메일을 통해서 로그인을 시도하는 회원의 정보를 조회합니다. : 존재하는 경우")
+    void findSignInUserDetailCaseFounded() {
+        Member dummy = MemberDummy.dummy();
+        given(memberRepository.findSignInUserDetail(anyString()))
+            .willReturn(Optional.of(SignInUserDetailDummy.dummy()));
+
+        SignInUserDetailsDto userDetailsDto =
+            memberService.findSignInUserDetailFromEmail("example@nhn.com");
+
+
+        assertThat(userDetailsDto.getEmail()).isEqualTo(dummy.getEmail());
+        assertThat(userDetailsDto.getHashedPassword()).isEqualTo(dummy.getPassword());
+        assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(dummy.getMemberNo());
+        assertThat(userDetailsDto.getAuthorities()).isEqualTo(List.of(dummy.getGrade().getName()));
+        assertThat(userDetailsDto).isInstanceOf(SignInUserDetailsDto.class);
+    }
+
+    @Test
+    @DisplayName("이메일을 통해서 로그인을 시도하는 회원의 정보를 조회합니다. : 존재하지 않는 경우")
+    void findSignInUserDetailCaseNotFounded() {
+        String expectErrorMessage = "찿고있는 회원의 정보가 존재하지않습니다.";
+        given(memberRepository.findSignInUserDetail(anyString()))
+            .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> memberService.findSignInUserDetailFromEmail("exmaple@nhn.com"))
             .hasMessage(expectErrorMessage);
     }
 }
