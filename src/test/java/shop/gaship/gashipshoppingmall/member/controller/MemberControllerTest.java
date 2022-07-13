@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +12,10 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.memberTestUtils.MemberTestUtils;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -54,38 +49,10 @@ class MemberControllerTest {
     @MockBean
     MemberService memberService;
 
-    private MemberRegisterRequestDto memberRegisterRequestDto;
-    private MemberModifyRequestDto memberModifyRequestDto;
-    private MemberResponseDto memberResponseDto1;
-    private MemberResponseDto memberResponseDto2;
-
-    @BeforeEach
-    void setUp() {
-        Integer memberNo = 1;
-        String recommendMemberNickname = "최정우친구";
-        String email = "abcd1010@naver.com";
-        String password = "1234";
-        String phoneNumber = "01053171234";
-        String name = "최정우";
-        LocalDate birthDate = LocalDate.now();
-        String nickname = "정우";
-        String gender = "남";
-        Long accumulatePurchaseAmount = 1L;
-        LocalDate nextRenewalGradeDate = LocalDate.now();
-        LocalDateTime registerDatetime = LocalDateTime.now();
-        LocalDateTime modifyDatetime = LocalDateTime.now();
-        Boolean isBlackMember = false;
-
-        memberRegisterRequestDto = MemberTestUtils.memberRegisterRequestDto(recommendMemberNickname, email, password, phoneNumber, name, birthDate, nickname, gender);
-        memberModifyRequestDto = MemberTestUtils.memberModifyRequestDto(memberNo, email, password, phoneNumber, name, nickname, gender);
-        memberResponseDto1 = MemberTestUtils.memberResponseDto(recommendMemberNickname, email, password, phoneNumber, name, birthDate, nickname, gender, accumulatePurchaseAmount, nextRenewalGradeDate, registerDatetime, modifyDatetime, isBlackMember);
-        memberResponseDto2 = MemberTestUtils.memberResponseDto(recommendMemberNickname, email, password, phoneNumber, name, birthDate, nickname, gender, accumulatePurchaseAmount, nextRenewalGradeDate, registerDatetime, modifyDatetime, isBlackMember);
-    }
-
     @DisplayName("회원 등록 테스트")
     @Test
     void registerMemberTest() throws Exception {
-        String body = objectMapper.writeValueAsString(memberRegisterRequestDto);
+        String body = objectMapper.writeValueAsString(MemberTestUtils.memberRegisterRequestDto());
 
         mockMvc.perform(post("/signUp")
                         .accept(MediaType.APPLICATION_JSON)
@@ -100,7 +67,7 @@ class MemberControllerTest {
     @DisplayName("회원 정보 수정 테스트")
     @Test
     void modifyMemberTest() throws Exception {
-        String body = objectMapper.writeValueAsString(memberModifyRequestDto);
+        String body = objectMapper.writeValueAsString(MemberTestUtils.memberModifyRequestDto());
 
         mockMvc.perform(put("/members/1")
                         .accept(MediaType.APPLICATION_JSON)
@@ -126,7 +93,7 @@ class MemberControllerTest {
     @DisplayName("회원 단건 조회 테스트")
     @Test
     void getMemberTest() throws Exception {
-        when(memberService.get(any())).thenReturn(memberResponseDto1);
+        when(memberService.get(any())).thenReturn(MemberTestUtils.memberResponseDto());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/members/1")
                         .accept(MediaType.APPLICATION_JSON)
@@ -140,7 +107,7 @@ class MemberControllerTest {
     @DisplayName("회원 다건 조회 테스트")
     @Test
     void getMemberListTest() throws Exception {
-        List<MemberResponseDto> memberResponseDtoList = List.of(memberResponseDto1, memberResponseDto2);
+        List<MemberResponseDto> memberResponseDtoList = List.of(MemberTestUtils.memberResponseDto(), MemberTestUtils.memberResponseDto());
         when(memberService.getList(any())).thenReturn(memberResponseDtoList);
 
         mockMvc.perform(get("/members")

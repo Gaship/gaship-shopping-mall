@@ -22,7 +22,7 @@ public interface MemberService {
 
     List<MemberResponseDto> getList(Pageable pageable);
 
-    default Member dtoToEntity(MemberRegisterRequestDto request, Member recommendMember, StatusCode statusCode, MemberGrade memberGrade) {
+    default Member dtoToEntity(MemberRegisterRequestDto request, Member recommendMember, StatusCode statusCode, MemberGrade memberGrade,Boolean isBlackMember) {
         return Member.builder()
                 .recommendMember(recommendMember)
                 .memberStatusCodes(statusCode)
@@ -36,7 +36,7 @@ public interface MemberService {
                 .gender(request.getGender())
                 .accumulatePurchaseAmount(0L)
                 .nextRenewalGradeDate(LocalDate.now())
-                .isBooleanMember(Boolean.FALSE)
+                .isBlackMember(isBlackMember)
                 .build();
     }
 

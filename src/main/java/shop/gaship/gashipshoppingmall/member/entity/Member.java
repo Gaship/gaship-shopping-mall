@@ -65,8 +65,8 @@ public class Member extends BaseEntity{
     @Column(name = "modify_datetime")
     private LocalDateTime modifyDatetime;
 
-    @Column(name = "is_boolean_member")
-    private Boolean isBooleanMember;
+    @Column(name = "is_black_member")
+    private Boolean isBlackMember;
 
     public void modifyMember(MemberModifyRequestDto memberModifyRequestDto) {
         this.email = memberModifyRequestDto.getEmail();

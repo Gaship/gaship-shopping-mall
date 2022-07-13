@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +44,7 @@ public class MemberServiceImpl implements MemberService {
         Member recommendMember = memberRepository.findByNickname(memberRegisterRequestDto.getRecommendMemberNickname()).orElseThrow(RuntimeException::new);
         MemberGrade memberGrade = memberGradeRepository.findById(0).orElseThrow(RuntimeException::new);
         StatusCode statusCode = statusCodeRepository.findByStatusCodeName("활성").orElseThrow(RuntimeException::new);
-        Member member = dtoToEntity(memberRegisterRequestDto, recommendMember,statusCode,memberGrade);
+        Member member = dtoToEntity(memberRegisterRequestDto, recommendMember,statusCode,memberGrade,false);
         memberRepository.save(member);
     }
 
@@ -69,6 +70,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberResponseDto> getList(Pageable pageable) {
         Function<Member,MemberResponseDto> converter = (this::entityToDto);
-        return memberRepository.findAll(pageable).stream().map(converter).collect(Collectors.toList());
+        Page<Member> members = memberRepository.findAll(pageable);
+        List<MemberResponseDto> collect = members.stream().map(converter).collect(Collectors.toList());
+        return collect;
     }
 }
