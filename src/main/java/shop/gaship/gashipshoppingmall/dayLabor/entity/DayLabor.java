@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.address.entity fileName       : DayLabor author
@@ -51,5 +53,21 @@ public class DayLabor {
     public void fixLocation(AddressLocal addressLocal) {
         this.addressNo = addressLocal.getAddressNo();
         this.addressLocal = addressLocal;
+    }
+
+    /**
+     * methodName : registerDayLabor
+     * author : 유호철
+     * description : 클래스 dto 생성
+     *
+     * @param dto
+     */
+    public void registerDayLabor(CreateDayLaborRequestDto dto) {
+        this.addressNo = dto.getLocalNo();
+        this.maxLabor = dto.getMaxLabor();
+    }
+
+    public void fixMaxLabor(FixDayLaborRequestDto dto) {
+        this.maxLabor = dto.getMaxLabor();
     }
 }

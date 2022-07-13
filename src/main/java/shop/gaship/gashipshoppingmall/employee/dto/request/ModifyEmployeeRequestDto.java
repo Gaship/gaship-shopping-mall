@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.employee.dto;
+package shop.gaship.gashipshoppingmall.employee.dto.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -18,7 +18,10 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class ModifyEmployeeDto {
+public class ModifyEmployeeRequestDto {
+
+    @NotNull
+    private Integer employeeNo;
 
     @NotNull
     private String name;
