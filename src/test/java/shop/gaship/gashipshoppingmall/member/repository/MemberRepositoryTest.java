@@ -2,11 +2,13 @@ package shop.gaship.gashipshoppingmall.member.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
@@ -46,5 +48,17 @@ class MemberRepositoryTest {
         Member member = memberRepository.findById(1L).orElse(null);
 
         assertThat(member.getName()).isEqualTo(savedDummy.getName());
+    }
+
+    @Test
+    void findByEmail() {
+        // 임의의 멤버 한명 저장
+        entityManager.persist(memberDummy.getStatus());
+        entityManager.persist(memberDummy.getGrade());
+        Member cachedMember = memberRepository.save(memberDummy);
+
+        Member member = memberRepository.findByEmail(memberDummy.getEmail());
+
+        assertThat(member).isEqualTo(cachedMember);
     }
 }
