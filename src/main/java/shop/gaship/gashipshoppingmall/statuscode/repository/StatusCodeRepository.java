@@ -3,6 +3,8 @@ package shop.gaship.gashipshoppingmall.statuscode.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
+import java.util.Optional;
+
 /**
  * packageName    : shop.gaship.gashipshoppingmall.statuscode.repository
  * fileName       : StatusCodeRepository
@@ -15,4 +17,5 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * 2022/07/09        Semi Kim       최초 생성
  */
 public interface StatusCodeRepository extends JpaRepository<StatusCode, Integer> {
+    Optional<StatusCode> findByStatusCodeName(String 활성);
 }

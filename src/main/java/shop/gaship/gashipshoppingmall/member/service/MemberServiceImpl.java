@@ -9,8 +9,13 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,12 +34,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+    private final StatusCodeRepository statusCodeRepository;
+    private final MemberGradeRepository memberGradeRepository;
 
     @Transactional
     @Override
     public void register(MemberRegisterRequestDto memberRegisterRequestDto) {
         Member recommendMember = memberRepository.findByNickname(memberRegisterRequestDto.getRecommendMemberNickname()).orElseThrow(RuntimeException::new);
-        Member member = dtoToEntity(memberRegisterRequestDto, recommendMember, , );
+        MemberGrade memberGrade = memberGradeRepository.findById(0).orElseThrow(RuntimeException::new);
+        StatusCode statusCode = statusCodeRepository.findByStatusCodeName("활성").orElseThrow(RuntimeException::new);
+        Member member = dtoToEntity(memberRegisterRequestDto, recommendMember,statusCode,memberGrade);
         memberRepository.save(member);
     }
 
