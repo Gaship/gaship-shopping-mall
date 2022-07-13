@@ -91,6 +91,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member findMemberFromNickname(String nickName) {
-        return null;
+        return memberRepository.findByNickname(nickName)
+            .orElseThrow(MemberNotFoundException::new);
     }
 }
