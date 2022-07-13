@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.service.impl;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -68,4 +69,13 @@ public class MemberServiceImpl implements MemberService {
 
         return memberCreationRequest;
     }
+
+    @Override
+    public boolean isAvailableEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+            .orElse(null);
+
+        return !Objects.isNull(member);
+    }
+
 }
