@@ -1,6 +1,9 @@
 package shop.gaship.gashipshoppingmall.member.controller;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -16,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.convert.Jsr310Converters;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
@@ -86,5 +88,33 @@ class MemberControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message")
                 .value("이메일 중복확인 또는 이메일 검증이 필요합니다."));
+    }
+
+    @Test
+    @DisplayName("이메일을 통한 회원조회 : 성공 ")
+    void retrieveMemberFromEmailCaseSuccess() throws Exception {
+        given(memberService.isAvailableEmail(anyString()))
+            .willReturn(true);
+
+        mockMvc.perform(get("/members/retrieve")
+                .param("email", "abc@nhn.com"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.hasEmail").value(true));
+    }
+
+    @Test
+    @DisplayName("이메일을 통한 회원조회 : 실패")
+    void retrieveMemberFromEmailCaseFailure() throws Exception {
+        given(memberService.isAvailableEmail(anyString()))
+            .willReturn(false);
+
+        mockMvc.perform(get("/members/retrieve")
+                .param("email", "abc@nhn.com"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.hasEmail").value(false));
     }
 }
