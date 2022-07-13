@@ -2,11 +2,18 @@ package shop.gaship.gashipshoppingmall.membergrade.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
@@ -40,7 +47,8 @@ import static org.mockito.Mockito.*;
  * -----------------------------------------------------------
  * 2022/07/09        Semi Kim       최초 생성
  */
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@Import(MemberGradeServiceImpl.class)
 class MemberGradeServiceImplTest {
 
     @Autowired
