@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.dataprotection.protection;
+package shop.gaship.gashipshoppingmall.dataprotection.util;
 
 import java.nio.charset.StandardCharsets;
 import javax.crypto.Cipher;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import shop.gaship.gashipshoppingmall.dataprotection.exception.EncodeFailureException;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.dataprotection.protection <br/>
+ * packageName    : shop.gaship.gashipshoppingmall.dataprotection.util <br/>
  * fileName       : Aes <br/>
  * author         : 김민수 <br/>
  * date           : 2022/07/10 <br/>

@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.dataprotection.protection;
+package shop.gaship.gashipshoppingmall.dataprotection.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
