@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.employee.dummy;
 
-import shop.gaship.gashipshoppingmall.employee.dto.ModifyEmployeeDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.employee.dummy
@@ -19,7 +19,7 @@ public class ModifyEmployeeDtoDummy {
 
     }
 
-    public static ModifyEmployeeDto dummy() {
-        return new ModifyEmployeeDto("test", "test@naver.com", "10000");
+    public static ModifyEmployeeRequestDto dummy() {
+        return new ModifyEmployeeRequestDto(1,"test", "test@naver.com", "10000");
     }
 }

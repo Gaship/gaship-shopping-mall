@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.employee.dummy;
 
-import shop.gaship.gashipshoppingmall.employee.dto.GetEmployee;
+import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.employee.dummy fileName       : GetEmployeeDummy
@@ -13,11 +13,11 @@ public class GetEmployeeDummy {
     private GetEmployeeDummy() {
     }
 
-    public static GetEmployee dummy() {
-        return new GetEmployee("a", "a@naver.com", "01");
+    public static EmployeeInfoResponseDto dummy() {
+        return new EmployeeInfoResponseDto("a", "a@naver.com", "01");
     }
 
-    public static GetEmployee dummy2() {
-        return new GetEmployee("b", "b@naver.com", "01");
+    public static EmployeeInfoResponseDto dummy2() {
+        return new EmployeeInfoResponseDto("b", "b@naver.com", "01");
     }
 }

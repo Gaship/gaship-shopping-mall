@@ -17,7 +17,11 @@ public class DayLaboyDummy {
     private DayLaboyDummy(){
     }
 
-    public static DayLabor dummy(){
+    public static DayLabor dummy1(){
         return new DayLabor(null, 10);
+    }
+
+    public static DayLabor dummy2() {
+        return new DayLabor(null, 20);
     }
 }
