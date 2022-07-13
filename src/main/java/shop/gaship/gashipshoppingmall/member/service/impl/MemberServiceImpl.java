@@ -51,9 +51,12 @@ public class MemberServiceImpl implements MemberService {
         MemberGrade defaultGrade = memberGradeRepository.findById(MEMBER_GRADE_ID)
             .orElseThrow(MemberGradeNotFoundException::new);
 
-        Member savedMember = encodePrivacyUserInformation(memberCreationRequest)
-            .creationRequestToMemberEntity(memberCreationRequest, recommendMember, defaultStatus,
-                defaultGrade);
+        Member savedMember = creationRequestToMemberEntity(
+            encodePrivacyUserInformation(memberCreationRequest),
+            recommendMember,
+            defaultStatus,
+            defaultGrade
+        );
 
         memberRepository.saveAndFlush(savedMember);
     }
