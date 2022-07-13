@@ -22,8 +22,11 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
  * 2022/07/10        김민수               최초 생성                         <br/>
  */
 @DataJpaTest
-@TestPropertySource("classpath:application-test.properties")
+@Transactional
 class MemberRepositoryTest {
+    @PersistenceContext
+    EntityManager entityManager;
+
     @Autowired
     MemberRepository memberRepository;
 
@@ -36,8 +39,11 @@ class MemberRepositoryTest {
 
     @Test
     void saveAndCheck() {
-        Member savedDummy = memberRepository.saveAndFlush(memberDummy);
-        Member member = memberRepository.findById(1L).get();
+        entityManager.persist(memberDummy.getStatus());
+        entityManager.persist(memberDummy.getGrade());
+
+        Member savedDummy = memberRepository.save(memberDummy);
+        Member member = memberRepository.findById(1L).orElse(null);
 
         assertThat(member.getName()).isEqualTo(savedDummy.getName());
     }
