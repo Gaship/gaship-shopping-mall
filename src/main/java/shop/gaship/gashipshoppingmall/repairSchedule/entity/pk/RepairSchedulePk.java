@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.repairSechedule.entity.pk;
+package shop.gaship.gashipshoppingmall.repairSchedule.entity.pk;
 
 import java.io.Serializable;
 import java.time.LocalDate;

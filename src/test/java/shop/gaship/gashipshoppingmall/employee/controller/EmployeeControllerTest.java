@@ -35,8 +35,8 @@ import shop.gaship.gashipshoppingmall.employee.dummy.GetEmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.employee.controller fileName       :
- * EmployeeControllerTest author         : 유호철 date           : 2022/07/10 description    :
+ * packageName    : shop.gaship.gashipshoppingmall.employee.controller
+ * fileName       : EmployeeControllerTest author         : 유호철 date           : 2022/07/10 description    :
  * =========================================================== DATE              AUTHOR NOTE
  * ----------------------------------------------------------- 2022/07/10        유호철       최초 생성
  */

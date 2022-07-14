@@ -63,10 +63,6 @@ class AddressLocalRepositoryTest {
         AddressLocal test = repository.findById(upper.getAddressNo()).get();
         repository.findAll();
 
-        System.out.println(upper.getAddressNo());
-        System.out.println(child1.getAddressNo());
-        System.out.println(child2.getAddressNo());
-
         assertThat(repository.findByLevel(2)).hasSize(2);
         assertThat(repository.findByLevel(1).get(0)).isEqualTo(upper);
         assertThat(upper.getSubLocal()).hasSize(2);

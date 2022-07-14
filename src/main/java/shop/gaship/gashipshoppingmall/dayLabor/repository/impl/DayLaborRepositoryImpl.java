@@ -32,16 +32,15 @@ public class DayLaborRepositoryImpl extends QuerydslRepositorySupport implements
     @Override
     public List<GetDayLaborResponseDto> findAllDayLabor() {
 
-        QDayLabor qDayLabor = QDayLabor.dayLabor;
+        QDayLabor dayLabor = QDayLabor.dayLabor;
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
-        JPQLQuery query = from(qDayLabor);
 
-        query.leftJoin(qDayLabor,addressLocal.dayLabor);
-        query.select(
-            Projections.bean(GetDayLaborResponseDto.class),
-            addressLocal.addressName.as("local"),
-            qDayLabor.maxLabor);
-
-        return query.fetch();
+        return from(dayLabor)
+            .leftJoin(dayLabor,addressLocal.dayLabor)
+            .select(
+                Projections.bean(GetDayLaborResponseDto.class,
+                addressLocal.addressName.as("local"),
+                dayLabor.maxLabor))
+            .fetch();
     }
 }

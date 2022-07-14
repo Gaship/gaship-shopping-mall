@@ -77,4 +77,5 @@ class DayLaborRepositoryTest {
 
         assertThat(repository.findAll()).hasSize(2);
     }
+
 }

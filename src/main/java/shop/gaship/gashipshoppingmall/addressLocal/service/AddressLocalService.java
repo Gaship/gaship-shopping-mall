@@ -12,4 +12,5 @@ package shop.gaship.gashipshoppingmall.addressLocal.service;
  * 2022/07/12        유호철       최초 생성
  */
 public interface AddressLocalService {
+
 }
