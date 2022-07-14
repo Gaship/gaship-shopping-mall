@@ -6,10 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
@@ -40,70 +37,65 @@ import static org.mockito.Mockito.when;
 class TagServiceImplTest {
     @Autowired
     TagService tagService;
+
     @MockBean
     private TagRepository tagRepository;
+
     private String title = "테스트 타이틀";
     private String modifiedTitle = "변경 테스트 타이틀";
 
+    @DisplayName("tagService register 테스트")
     @Test
-    @DisplayName("tagService register success 테스트")
     void register() {
+        when(tagRepository.save(any(Tag.class))).thenReturn(TestUtils.CreateTestTagEntity());
+        tagService.register(TestUtils.CreateTestTagRequestDto());
 
-        when(tagRepository.save(any(Tag.class))).thenReturn(Tag.builder().tagNo(1).title(title).build());
-        TagResponseDto tagResponseDto = tagService.register(TestUtils.CreateTestTagRequestDto(title));
-
-        assertThat(tagResponseDto.getTagNo()).isEqualTo(1);
-        assertThat(tagResponseDto.getTitle()).isEqualTo(title);
         verify(tagRepository).save(any(Tag.class));
     }
 
+    @DisplayName("tagService modify 테스트")
     @Test
     void modify() {
-        Tag tag = Tag.builder().tagNo(1).title(title).build();
-        Tag modifiedTag = Tag.builder().tagNo(1).title(modifiedTitle).build();
+        Tag tag = TestUtils.CreateTestTagEntity();
         when(tagRepository.findById(any())).thenReturn(Optional.of(tag));
-        when(tagRepository.save(any(Tag.class))).thenReturn(modifiedTag);
+        when(tagRepository.save(any(Tag.class))).thenReturn(tag);
 
-        assertThat(tag.getTitle()).isEqualTo(title);
+        tagService.modify(TestUtils.CreateTestTagRequestDto());
 
-        TagResponseDto tagResponseDto = tagService.modify(TestUtils.CreateTestTagRequestDto(modifiedTitle), tag.getTagNo());
-        assertThat(tag.getTagNo()).isEqualTo(1);
-        assertThat(tag.getTitle()).isEqualTo(modifiedTitle);
-        assertThat(tagResponseDto.getTagNo()).isEqualTo(tag.getTagNo());
-        assertThat(tagResponseDto.getTitle()).isEqualTo(modifiedTitle);
         verify(tagRepository).findById(any());
         verify(tagRepository).save(any(Tag.class));
-
-
     }
 
+    @DisplayName("tagService delete 테스트")
     @Test
     void delete() {
-        int TagNo = 1;
         tagService.delete(1);
+
         verify(tagRepository).deleteById(any());
     }
 
+    @DisplayName("tagService get 테스트")
     @Test
     void get() {
-        int TagNo = 1;
-        Tag tag = Tag.builder().tagNo(1).title(title).build();
-        when(tagRepository.findById(any())).thenReturn(Optional.ofNullable(tag));
-        TagResponseDto tagResponseDto = tagService.get(TagNo);
-        assertThat(tagResponseDto.getTagNo()).isEqualTo(tag.getTagNo());
-        assertThat(tagResponseDto.getTitle()).isEqualTo(tag.getTitle());
+        Tag tag = TestUtils.CreateTestTagEntity();
+        when(tagRepository.findById(any())).thenReturn(Optional.of(tag));
 
+        tagService.get(0);
 
+        verify(tagRepository).findById(any());
     }
 
+    @DisplayName("tagService getList 테스트")
     @Test
     void getList() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("title"));
-        Tag tag1 = Tag.builder().tagNo(1).title(title).build();
-        Tag tag2 = Tag.builder().tagNo(2).title(title).build();
-        when(tagRepository.findAll(pageable)).thenReturn(new PageImpl<Tag>(List.of(tag1,tag2)));
+        List<Tag> tagList = TestUtils.CreateTestTagEntityList();
+        Page<Tag> page = new PageImpl<>(tagList);
+        when(tagRepository.findAll(pageable)).thenReturn(page);
+
         List<TagResponseDto> list = tagService.getList(pageable);
+
         verify(tagRepository).findAll(pageable);
-        assertThat(list).hasSize(2);
+        assertThat(list).hasSize(100);
     }
 }

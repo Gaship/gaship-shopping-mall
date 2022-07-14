@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.service.TagService;
+import shop.gaship.gashipshoppingmall.tag.utils.TestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,8 +32,8 @@ class TagRepositoryTest {
     @DisplayName("레포지토리 태그 등록 테스트")
     @Test
     void saveTagTest(){
-        String title = "테스트 타이틀";
-        Tag tag = Tag.builder().tagNo(null).title(title).build();
+        Tag tag = TestUtils.CreateTestTagEntity();
+
         Tag savedTag = tagRepository.save(tag);
 
         assertThat(tag.getTagNo()).isEqualTo(savedTag.getTagNo());

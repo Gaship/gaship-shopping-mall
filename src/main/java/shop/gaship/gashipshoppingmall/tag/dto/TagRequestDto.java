@@ -16,5 +16,6 @@ import lombok.Data;
  */
 @Data
 public class TagRequestDto {
+    private Integer tagNo;
     private String title;
 }

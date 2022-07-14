@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.tag.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
-
     private final TagRepository tagRepository;
 
     @Transactional
@@ -42,8 +40,8 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     @Override
-    public TagResponseDto modify(TagRequestDto tagRequestDto, Integer tagNo) {
-        Tag tag = tagRepository.findById(tagNo).orElseThrow(RuntimeException::new);
+    public TagResponseDto modify(TagRequestDto tagRequestDto) {
+        Tag tag = tagRepository.findById(tagRequestDto.getTagNo()).orElseThrow(RuntimeException::new);
         tag.modifyEntity(tagRequestDto);
         return entityToDto(tagRepository.save(tag));
     }
@@ -55,11 +53,13 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagResponseDto get(Integer tagNo) {
-        return entityToDto(tagRepository.findById(tagNo).orElseThrow(RuntimeException::new));
+        Tag tag = tagRepository.findById(tagNo).orElseThrow(RuntimeException::new);
+        return entityToDto(tag);
     }
 
     @Override
     public List<TagResponseDto> getList(Pageable pageable) {
+        // 이거 메서드를 분리할까요? 어차피 인터페이스에서 상속받는데
         Function<Tag, TagResponseDto> converter = (this::entityToDto);
         Page<Tag> page = tagRepository.findAll(pageable);
         return page.stream().map(converter).collect(Collectors.toList());

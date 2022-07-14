@@ -37,8 +37,8 @@ public class TagController {
     }
 
     @PutMapping("/admin/{adminNo}/tags/{tagNo}")
-    public ResponseEntity<TagResponseDto> modify(@RequestBody TagRequestDto tagRequestDto, @PathVariable Integer tagNo) {
-        TagResponseDto tagResponseDto = tagService.modify(tagRequestDto, tagNo);
+    public ResponseEntity<TagResponseDto> modify(@RequestBody TagRequestDto tagRequestDto) {
+        TagResponseDto tagResponseDto = tagService.modify(tagRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(tagResponseDto);
     }
 

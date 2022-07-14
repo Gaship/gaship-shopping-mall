@@ -21,7 +21,7 @@ import java.util.List;
 public interface TagService {
     TagResponseDto register(TagRequestDto tagRequestDto);
 
-    TagResponseDto modify(TagRequestDto tagRequestDto, Integer tagId);
+    TagResponseDto modify(TagRequestDto tagRequestDto);
 
     void delete(Integer tagNo);
 
@@ -37,13 +37,9 @@ public interface TagService {
 
     default TagResponseDto entityToDto(Tag tag){
         return TagResponseDto.builder()
-                .tagNo(tag.getTagNo())
                 .title(tag.getTitle())
                 .registerDatetime(tag.getRegisterDatetime())
                 .modifiedDatetime(tag.getModifiedDatetime())
                 .build();
     }
-
-
-
 }
