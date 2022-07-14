@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.category.dto.request;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -23,11 +24,13 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode
 public class CategoryCreateRequestDto {
     @NotBlank
+    @Length(max = 20)
     private String name;
 
     @NotNull
     @Min(1)
     private Integer level;
 
+    @Min(1)
     private Integer upperCategoryNo;
 }

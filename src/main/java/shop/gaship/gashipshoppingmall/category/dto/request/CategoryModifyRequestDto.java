@@ -1,9 +1,11 @@
 package shop.gaship.gashipshoppingmall.category.dto.request;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.request
@@ -22,9 +24,11 @@ import lombok.*;
 @EqualsAndHashCode
 public class CategoryModifyRequestDto {
     @NotNull
+    @Min(1)
     private Integer no;
 
     @NotBlank
+    @Length(max = 20)
     private String name;
 
     public void updateNo(Integer no) {

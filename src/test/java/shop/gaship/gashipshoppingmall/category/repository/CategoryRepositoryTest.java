@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.repository
@@ -84,16 +83,12 @@ class CategoryRepositoryTest {
         Category savedCategory = categoryRepository.save(category);
         List<CategoryResponseDto> categories = categoryRepository.findAllCategories();
 
-        CategoryResponseDto categoryResponseDto = CategoryResponseDto.builder()
-                .no(savedCategory.getNo())
-                .name(savedCategory.getName())
-                .level(savedCategory.getLevel())
-                .upperCategoryNo(savedCategory.getUpperCategory().getNo())
-                .upperCategoryName(savedCategory.getUpperCategory().getName())
-                .build();
-
         assertThat(categories).hasSize(2);
-        assertThat(categories.get(1)).isEqualTo(categoryResponseDto);
+        assertThat(categories.get(1).getNo()).isEqualTo(savedCategory.getNo());
+        assertThat(categories.get(1).getName()).isEqualTo(savedCategory.getName());
+        assertThat(categories.get(1).getLevel()).isEqualTo(savedCategory.getLevel());
+        assertThat(categories.get(1).getUpperCategoryNo()).isEqualTo(savedCategory.getUpperCategory().getNo());
+        assertThat(categories.get(1).getUpperCategoryName()).isEqualTo(savedCategory.getUpperCategory().getName());
     }
 
     @Test

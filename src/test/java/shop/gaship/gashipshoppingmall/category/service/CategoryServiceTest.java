@@ -140,7 +140,7 @@ class CategoryServiceTest {
     @DisplayName("카테고리 단건 조회")
     void findCategory() {
         Integer categoryNo = 1;
-        CategoryResponseDto categoryResponseDto = CategoryDummy.dtoDummy(categoryNo);
+        CategoryResponseDto categoryResponseDto = CategoryDummy.upperDtoDummy();
 
         when(categoryRepository.findCategoryById(categoryNo)).thenReturn(Optional.of(categoryResponseDto));
 
@@ -152,7 +152,7 @@ class CategoryServiceTest {
     @Test
     @DisplayName("카테고리 전체 조회")
     void findCategories() {
-        CategoryResponseDto categoryResponseDto = CategoryDummy.dtoDummy(1);
+        CategoryResponseDto categoryResponseDto = CategoryDummy.upperDtoDummy();
 
         when(categoryRepository.findAllCategories()).thenReturn(List.of(categoryResponseDto));
 
@@ -196,7 +196,7 @@ class CategoryServiceTest {
     @DisplayName("카테고리 삭제 실패 - 하위 카테고리 존재")
     void removeCategoryFail_remainLowerCategory() {
         Integer categoryNo = 1;
-        CategoryResponseDto lowerCategory = CategoryDummy.dtoDummy(2);
+        CategoryResponseDto lowerCategory = CategoryDummy.dtoDummy();
         ReflectionTestUtils.setField(upperCategory, "no", categoryNo);
 
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(upperCategory));

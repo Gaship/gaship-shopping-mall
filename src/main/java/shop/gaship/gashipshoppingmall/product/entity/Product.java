@@ -42,54 +42,39 @@ public class Product {
     @JoinColumn(name = "sales_status_no")
     StatusCode salesStatus;
 
-    @Column
     String name;
 
-    @Column
     Long amount;
 
-    @Column(name = "register_datetime")
     LocalDateTime registerDatetime;
 
-    @Column
     String manufacturer;
 
-    @Column(name = "manufacturer_country")
     String manufacturerCountry;
 
-    @Column
     String seller;
 
-    @Column
     String importer;
 
     @Column(name = "shipping_installation_cost")
     Long shippingInstallationCost;
 
-    @Column(name = "quality_assurance_standard")
     String qualityAssuranceStandard;
 
-    @Column
     String color;
 
-    @Column(name = "stock_quantity")
     Integer stockQuantity;
 
-    @Column(name = "image_link_1")
     String imageLink1;
 
-    @Column(name = "image_link_2")
     String imageLink2;
 
-    @Column(name = "image_link_3")
     String imageLink3;
 
-    @Column(name = "image_link_4")
     String imageLink4;
 
-    @Column(name = "image_link_5")
+    @Column
     String imageLink5;
 
-    @Column
     String explanation;
 }

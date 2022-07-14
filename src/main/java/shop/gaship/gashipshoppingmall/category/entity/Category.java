@@ -3,9 +3,6 @@ package shop.gaship.gashipshoppingmall.category.entity;
 import javax.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.entity
  * fileName       : Category
@@ -28,10 +25,8 @@ public class Category {
     @Column(name = "category_no")
     private Integer no;
 
-    @Column
     private String name;
 
-    @Column
     private Integer level;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })

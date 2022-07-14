@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.repository.impl;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -39,18 +38,17 @@ public class CategoryRepositoryImpl
     public Optional<CategoryResponseDto> findCategoryById(Integer categoryNo) {
         QCategory category = QCategory.category;
 
-        JPQLQuery query = from(category);
-        query.where(category.no.eq(categoryNo));
-        query.leftJoin(category.upperCategory);
-        query.select(Projections.bean(CategoryResponseDto.class,
-                category.no,
-                category.name,
-                category.level,
-                category.upperCategory.no.as("upperCategoryNo"),
-                category.upperCategory.name.as("upperCategoryName")
-        ));
-
-        return Optional.of((CategoryResponseDto) query.fetchOne());
+        return Optional.of(from(category)
+                .where(category.no.eq(categoryNo))
+                .leftJoin(category.upperCategory)
+                .select(Projections.bean(CategoryResponseDto.class,
+                        category.no,
+                        category.name,
+                        category.level,
+                        category.upperCategory.no.as("upperCategoryNo"),
+                        category.upperCategory.name.as("upperCategoryName")))
+                .fetchOne()
+        );
     }
 
 
@@ -65,17 +63,15 @@ public class CategoryRepositoryImpl
     public List<CategoryResponseDto> findAllCategories() {
         QCategory category = QCategory.category;
 
-        JPQLQuery query = from(category);
-        query.leftJoin(category.upperCategory);
-        query.select(Projections.bean(CategoryResponseDto.class,
-                category.no,
-                category.name,
-                category.level,
-                category.upperCategory.no.as("upperCategoryNo"),
-                category.upperCategory.name.as("upperCategoryName")
-        ));
-
-        return query.fetch();
+        return from(category)
+                .leftJoin(category.upperCategory)
+                .select(Projections.bean(CategoryResponseDto.class,
+                        category.no,
+                        category.name,
+                        category.level,
+                        category.upperCategory.no.as("upperCategoryNo"),
+                        category.upperCategory.name.as("upperCategoryName")))
+                .fetch();
     }
 
     /**
@@ -90,14 +86,12 @@ public class CategoryRepositoryImpl
     public List<CategoryResponseDto> findLowerCategories(Integer categoryNo) {
         QCategory category = QCategory.category;
 
-        JPQLQuery query = from(category);
-        query.where(category.upperCategory.no.eq(categoryNo));
-        query.select(Projections.bean(CategoryResponseDto.class,
-                category.no,
-                category.name,
-                category.level
-        ));
-
-        return query.fetch();
+        return from(category)
+                .where(category.upperCategory.no.eq(categoryNo))
+                .select(Projections.bean(CategoryResponseDto.class,
+                        category.no,
+                        category.name,
+                        category.level))
+                .fetch();
     }
 }

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
@@ -15,7 +14,6 @@ import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequest
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
-import shop.gaship.gashipshoppingmall.message.Response;
 
 import java.util.List;
 
@@ -35,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * -----------------------------------------------------------
  * 2022-07-09        김보민       최초 생성
  */
-@WebMvcTest({ CategoryController.class, Response.class })
+@WebMvcTest({ CategoryController.class })
 class CategoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -66,15 +64,14 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 수정 put 요청")
     void categoryModify() throws Exception {
-        Integer categoryNo = 1;
         CategoryModifyRequestDto modifyRequest = new CategoryModifyRequestDto(
-                categoryNo,
+                1,
                 "수정 카테고리"
         );
 
         doNothing().when(categoryService).modifyCategory(modifyRequest);
 
-        mockMvc.perform(put("/categories/{categoryNo}", categoryNo)
+        mockMvc.perform(put("/categories")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(modifyRequest)))
                 .andExpect(status().isOk())
@@ -88,18 +85,18 @@ class CategoryControllerTest {
     @DisplayName("카테고리 단건 조회 get 요청")
     void categoryDetails() throws Exception{
         Integer categoryNo = 1;
-        CategoryResponseDto categoryResponseDto = CategoryDummy.dtoDummy(categoryNo);
+        CategoryResponseDto categoryResponseDto = CategoryDummy.upperDtoDummy();
 
         when(categoryService.findCategory(categoryNo)).thenReturn(categoryResponseDto);
 
         mockMvc.perform(get("/categories/{categoryNo}", categoryNo))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.body.data.no").value(categoryResponseDto.getNo()))
-                .andExpect(jsonPath("$.body.data.name").value(categoryResponseDto.getName()))
-                .andExpect(jsonPath("$.body.data.level").value(categoryResponseDto.getLevel()))
-                .andExpect(jsonPath("$.body.data.upperCategoryNo").value(categoryResponseDto.getUpperCategoryNo()))
-                .andExpect(jsonPath("$.body.data.upperCategoryName").value(categoryResponseDto.getUpperCategoryName()))
+                .andExpect(jsonPath("$.no").value(categoryResponseDto.getNo()))
+                .andExpect(jsonPath("$.name").value(categoryResponseDto.getName()))
+                .andExpect(jsonPath("$.level").value(categoryResponseDto.getLevel()))
+                .andExpect(jsonPath("$.upperCategoryNo").value(categoryResponseDto.getUpperCategoryNo()))
+                .andExpect(jsonPath("$.upperCategoryName").value(categoryResponseDto.getUpperCategoryName()))
                 .andDo(print());
 
         verify(categoryService).findCategory(categoryNo);
@@ -108,19 +105,19 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 전체 조회 get 요청")
     void categoryList() throws Exception {
-        CategoryResponseDto categoryResponseDto = CategoryDummy.dtoDummy(1);
+        CategoryResponseDto categoryResponseDto = CategoryDummy.upperDtoDummy();
 
         when(categoryService.findCategories()).thenReturn(List.of(categoryResponseDto));
 
         mockMvc.perform(get("/categories"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.body.data.size()").value(1))
-                .andExpect(jsonPath("$.body.data[0].no").value(categoryResponseDto.getNo()))
-                .andExpect(jsonPath("$.body.data[0].name").value(categoryResponseDto.getName()))
-                .andExpect(jsonPath("$.body.data[0].level").value(categoryResponseDto.getLevel()))
-                .andExpect(jsonPath("$.body.data[0].upperCategoryNo").value(categoryResponseDto.getUpperCategoryNo()))
-                .andExpect(jsonPath("$.body.data[0].upperCategoryName").value(categoryResponseDto.getUpperCategoryName()))
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].no").value(categoryResponseDto.getNo()))
+                .andExpect(jsonPath("$[0].name").value(categoryResponseDto.getName()))
+                .andExpect(jsonPath("$[0].level").value(categoryResponseDto.getLevel()))
+                .andExpect(jsonPath("$[0].upperCategoryNo").value(categoryResponseDto.getUpperCategoryNo()))
+                .andExpect(jsonPath("$[0].upperCategoryName").value(categoryResponseDto.getUpperCategoryName()))
                 .andDo(print());
 
         verify(categoryService).findCategories();
@@ -150,7 +147,7 @@ class CategoryControllerTest {
         mockMvc.perform(get("/categories/{categoryNo}", categoryNo))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.body.error[0].message").value(exception.getMessage()))
+                .andExpect(jsonPath("$.message").value(exception.getMessage()))
                 .andDo(print());
 
         verify(categoryService).findCategory(categoryNo);

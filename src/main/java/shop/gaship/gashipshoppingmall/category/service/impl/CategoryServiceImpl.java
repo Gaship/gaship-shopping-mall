@@ -34,6 +34,13 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 
+    /**
+     * methodName : addCategory
+     * author : 김보민
+     * description : 카테고리 생성
+     *
+     * @param createRequest category create request
+     */
     @Transactional
     @Override
     public void addCategory(CategoryCreateRequestDto createRequest) {
@@ -54,6 +61,13 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category);
     }
 
+    /**
+     * methodName : modifyCategory
+     * author : 김보민
+     * description : 카테고리 수정
+     *
+     * @param modifyRequest category modify request
+     */
     @Transactional
     @Override
     public void modifyCategory(CategoryModifyRequestDto modifyRequest) {
@@ -65,17 +79,37 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category);
     }
 
+    /**
+     * methodName : findCategory
+     * author : 김보민
+     * description : 카테고리 단건 조회
+     *
+     * @param categoryNo category no
+     */
     @Override
     public CategoryResponseDto findCategory(Integer categoryNo) {
         return categoryRepository.findCategoryById(categoryNo)
                 .orElseThrow(CategoryNotFoundException::new);
     }
 
+    /**
+     * methodName : findCategories
+     * author : 김보민
+     * description : 카테고리 다건 조회
+     *
+     */
     @Override
     public List<CategoryResponseDto> findCategories() {
         return categoryRepository.findAllCategories();
     }
 
+    /**
+     * methodName : removeCategory
+     * author : 김보민
+     * description : 카테고리 삭제
+     *
+     * @param categoryNo category no
+     */
     @Transactional
     @Override
     public void removeCategory(Integer categoryNo) {
@@ -84,12 +118,14 @@ public class CategoryServiceImpl implements CategoryService {
         List<CategoryResponseDto> lowerCategories = categoryRepository
                 .findLowerCategories(categoryNo);
 
+        //해당 카테고리의 하위 카테고리가 존재할 시 삭제 실패
         if (!lowerCategories.isEmpty()) {
             throw new CategoryRemainLowerCategoryException();
         }
 
         List<Product> products = productRepository.findAllByCategoryNo(category.getNo());
 
+        //해당 카테고리에 속한 상품이 존재할 시 삭제 실패
         if (!products.isEmpty()) {
             throw new CategoryRemainProductException();
         }

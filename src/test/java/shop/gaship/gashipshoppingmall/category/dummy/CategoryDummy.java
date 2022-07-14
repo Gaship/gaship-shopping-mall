@@ -49,18 +49,34 @@ public class CategoryDummy {
     }
 
     /**
+     * methodName : upperDtoDummy
+     * author : 김보민
+     * description : 상위 카테고리 dto 더미
+     *
+     * @return category response dto
+     */
+    public static CategoryResponseDto upperDtoDummy() {
+        return CategoryResponseDto.builder()
+                .no(1)
+                .name("카테고리")
+                .level(1)
+                .build();
+    }
+    
+    /**
      * methodName : dtoDummy
      * author : 김보민
      * description : 카테고리 dto 더미
      *
-     * @param categoryNo category no
      * @return category dto
      */
-    public static CategoryResponseDto dtoDummy(Integer categoryNo) {
+    public static CategoryResponseDto dtoDummy() {
         return CategoryResponseDto.builder()
-                .no(categoryNo)
+                .no(2)
                 .name("카테고리")
-                .level(1)
+                .level(2)
+                .upperCategoryNo(1)
+                .upperCategoryName("상위 카테고리")
                 .build();
     }
 }

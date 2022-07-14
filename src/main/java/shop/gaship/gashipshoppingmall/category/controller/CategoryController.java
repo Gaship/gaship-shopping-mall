@@ -1,18 +1,17 @@
 package shop.gaship.gashipshoppingmall.category.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequestDto;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
+import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
-import shop.gaship.gashipshoppingmall.message.Response;
+import shop.gaship.gashipshoppingmall.message.ErrorResponse;
+
 import javax.validation.Valid;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -31,7 +30,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
-    private final Response responseBody;
 
     /**
      * methodName : categoryAdd
@@ -42,12 +40,12 @@ public class CategoryController {
      * @return response entity
      */
     @PostMapping
-    public ResponseEntity<?> categoryAdd(@Valid @RequestBody CategoryCreateRequestDto createRequest) {
+    public ResponseEntity<Void> categoryAdd(@Valid @RequestBody CategoryCreateRequestDto createRequest) {
         categoryService.addCategory(createRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(responseBody.success(Collections.emptyList(), null, HttpStatus.CREATED));
+                .build();
     }
 
     /**
@@ -55,19 +53,16 @@ public class CategoryController {
      * author : 김보민
      * description : 카테고리 put 요청 매핑
      *
-     * @param categoryNo category no
      * @param modifyRequest category modify request
      * @return response entity
      */
-    @PutMapping("/{categoryNo}")
-    public ResponseEntity<?> categoryModify(@PathVariable("categoryNo") Integer categoryNo,
-                                               @Valid @RequestBody CategoryModifyRequestDto modifyRequest) {
-        modifyRequest.updateNo(categoryNo);
+    @PutMapping
+    public ResponseEntity<Void> categoryModify(@Valid @RequestBody CategoryModifyRequestDto modifyRequest) {
         categoryService.modifyCategory(modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(responseBody.success());
+                .build();
     }
 
 
@@ -80,10 +75,10 @@ public class CategoryController {
      * @return response entity
      */
     @GetMapping("/{categoryNo}")
-    public ResponseEntity<?> categoryDetails(@PathVariable("categoryNo") Integer categoryNo) {
+    public ResponseEntity<CategoryResponseDto> categoryDetails(@PathVariable("categoryNo") Integer categoryNo) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(responseBody.success(categoryService.findCategory(categoryNo)));
+                .body(categoryService.findCategory(categoryNo));
     }
 
 
@@ -95,10 +90,10 @@ public class CategoryController {
      * @return response entity
      */
     @GetMapping
-    public ResponseEntity<?> categoryList() {
+    public ResponseEntity<List<CategoryResponseDto>> categoryList() {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(responseBody.success(categoryService.findCategories()));
+                .body(categoryService.findCategories());
     }
 
     /**
@@ -110,12 +105,12 @@ public class CategoryController {
      * @return response entity
      */
     @DeleteMapping("/{categoryNo}")
-    public ResponseEntity<?> categoryRemove(@PathVariable("categoryNo") Integer categoryNo) {
+    public ResponseEntity<Void> categoryRemove(@PathVariable("categoryNo") Integer categoryNo) {
         categoryService.removeCategory(categoryNo);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(responseBody.success());
+                .build();
     }
 
     /**
@@ -127,12 +122,9 @@ public class CategoryController {
      * @return response entity
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleException(Exception ex) {
-        LinkedHashMap<String, String> errors = new LinkedHashMap<>();
-        errors.put("message", ex.getMessage());
-
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(responseBody.invalidFields(List.of(errors)));
+                .body(new ErrorResponse(ex.getMessage()));
     }
 }
