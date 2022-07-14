@@ -76,6 +76,21 @@ class MemberGradeTest {
         assertThat(result.isDefault()).isTrue();
     }
 
+    @DisplayName("기본 이외의 회원등급 생성 메서드 테스트")
+    @Test
+    void create(){
+        // when
+        String dummyName = "VIP";
+        Long dummyAccumulateAmount = 100_000_000L;
+        MemberGrade result = MemberGrade.create(renewalPeriod,
+                MemberGradeDtoDummy.requestDummy(dummyName, dummyAccumulateAmount));
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo(dummyName);
+        assertThat(result.getAccumulateAmount()).isEqualTo(dummyAccumulateAmount);
+    }
+
     @DisplayName("회원등급 이름/기준누적금액 수정 메서드 테스트")
     @Test
     void modifyDetails(){

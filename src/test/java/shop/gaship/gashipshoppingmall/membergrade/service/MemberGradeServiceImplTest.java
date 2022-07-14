@@ -1,14 +1,10 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +17,8 @@ import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.membergrade.exception.AccumulateAmountIsOverlap;
+import shop.gaship.gashipshoppingmall.membergrade.exception.DefaultMemberGradeIsExist;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
@@ -69,24 +67,122 @@ class MemberGradeServiceImplTest {
         testMemberGradeNo = 1;
     }
 
+    @DisplayName("default 등급 추가시 " +
+            "갱신기간에 대한 statusCode 존재하고 " +
+            "누적금액이 동일한 회원등급이 존재하지 않고 " +
+            "기존에 default 등급도 존재하지 않는 경우")
     @Test
     void addMemberGrade_whenRenewalPeriodIsPresent() {
         // given
+        memberGradeRequestDto.setDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
-        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+        MemberGrade memberGrade = MemberGradeDummy.defaultDummy(memberGradeRequestDto, renewalPeriod);
 
         // mocking
-        when(statusCodeRepository.findById(any())).thenReturn(Optional.of(renewalPeriod));
-        when(memberGradeRepository.save(any())).thenReturn(memberGrade);
+        when(statusCodeRepository.findById(any()))
+                .thenReturn(Optional.of(renewalPeriod));
+        when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
+                .thenReturn(false);
+        when(memberGradeRepository.existsByIsDefaultIsTrue())
+                .thenReturn(false);
+        when(memberGradeRepository.save(any()))
+                .thenReturn(memberGrade);
 
         // when
         memberGradeService.addMemberGrade(memberGradeRequestDto);
 
         // then
         verify(statusCodeRepository).findById(any());
+        verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
+        verify(memberGradeRepository).existsByIsDefaultIsTrue();
         verify(memberGradeRepository).save(any());
     }
 
+    @DisplayName("default 등급 추가시 " +
+            "갱신기간에 대한 StatusCode 가 존재하고" +
+            "누적금액이 동일한 회원등급이 존재하는 경우")
+    @Test
+    void addMemberGrade_whenAccumulateAmountOverlapMemberGradeIsExist_throwExp(){
+        // given
+        memberGradeRequestDto.setDefault(true);
+        StatusCode renewalPeriod = StatusCodeDummy.dummy();
+
+        // mocking
+        when(statusCodeRepository.findById(any()))
+                .thenReturn(Optional.of(renewalPeriod));
+        when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
+                .thenReturn(true);
+
+        // when&then
+        assertThatThrownBy(() -> memberGradeService.addMemberGrade(memberGradeRequestDto))
+                .isInstanceOf(AccumulateAmountIsOverlap.class)
+                .hasMessageContaining("동일한 기준누적금액");
+
+        verify(statusCodeRepository).findById(any());
+        verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
+        verify(memberGradeRepository, never()).existsByIsDefaultIsTrue();
+        verify(memberGradeRepository, never()).save(any());
+    }
+
+    @DisplayName("default 등급 추가시 " +
+            "갱신기간에 대한 StatusCode 가 존재하고 " +
+            "누적금액이 동일한 회원등급이 존재하지 않고 " +
+            "기존에 default 등급이 존재하는 경우")
+    @Test
+    void addMemberGrade_whenDefaultMemberGradeIsExist_throwExp(){
+        // given
+        memberGradeRequestDto.setDefault(true);
+        StatusCode renewalPeriod = StatusCodeDummy.dummy();
+
+        // mocking
+        when(statusCodeRepository.findById(any()))
+                .thenReturn(Optional.of(renewalPeriod));
+        when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
+                .thenReturn(false);
+        when(memberGradeRepository.existsByIsDefaultIsTrue())
+                .thenReturn(true);
+
+        // when&then
+        assertThatThrownBy(() -> memberGradeService.addMemberGrade(memberGradeRequestDto))
+                .isInstanceOf(DefaultMemberGradeIsExist.class)
+                .hasMessageContaining("기본 회원등급");
+
+        verify(statusCodeRepository).findById(any());
+        verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
+        verify(memberGradeRepository).existsByIsDefaultIsTrue();
+        verify(memberGradeRepository, never()).save(any());
+    }
+
+
+    @DisplayName("default 이외의 등급을 추가시 " +
+            "갱신기간에 대한 StatusCode 가 존재하고 " +
+            "누적금액이 동일한 회원등급이 존재하지 않는 경우")
+    @Test
+    void addMemberGrade_whenNotDefaultMemberGrade(){
+        // given
+        memberGradeRequestDto.setDefault(false);
+        StatusCode renewalPeriod = StatusCodeDummy.dummy();
+        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+
+        // mocking
+        when(statusCodeRepository.findById(any()))
+                .thenReturn(Optional.of(renewalPeriod));
+        when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
+                .thenReturn(false);
+        when(memberGradeRepository.save(any()))
+                .thenReturn(memberGrade);
+
+        // when
+        memberGradeService.addMemberGrade(memberGradeRequestDto);
+
+        // then
+        verify(statusCodeRepository).findById(any());
+        verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
+        verify(memberGradeRepository).save(any());
+        verify(memberGradeRepository, never()).existsByIsDefaultIsTrue();
+    }
+
+    @DisplayName("등급 추가시 갱신가긴에 대한 StatusCode 가 존재하지 않는 경우")
     @Test
     void addMemberGrade_whenRenewalPeriodIsEmpty_throwStatusCodeNotFoundException() {
         // mocking
@@ -98,6 +194,8 @@ class MemberGradeServiceImplTest {
                 .isInstanceOf(StatusCodeNotFoundException.class);
 
         verify(statusCodeRepository).findById(any());
+        verify(memberGradeRepository, never()).existsByAccumulateAmountEquals(any());
+        verify(memberGradeRepository, never()).existsByIsDefaultIsTrue();
         verify(memberGradeRepository, never()).save(any());
     }
 
@@ -113,7 +211,7 @@ class MemberGradeServiceImplTest {
 
         // mocking
         when(memberGradeRepository.findById(any()))
-                .thenReturn(Optional.ofNullable(memberGrade));
+                .thenReturn(Optional.of(memberGrade));
         when(memberGradeRepository.save(any()))
                 .thenReturn(modifyMemberGrade);
 
@@ -151,7 +249,7 @@ class MemberGradeServiceImplTest {
 
         // mocking
         when(memberGradeRepository.findById(any()))
-                .thenReturn(Optional.ofNullable(testMemberGrade));
+                .thenReturn(Optional.of(testMemberGrade));
         when(memberRepository.findByMemberGrades(any()))
                 .thenReturn(List.of());
 
@@ -171,7 +269,7 @@ class MemberGradeServiceImplTest {
 
         // mocking
         when(memberGradeRepository.findById(any()))
-                .thenReturn(Optional.ofNullable(testMemberGrade));
+                .thenReturn(Optional.of(testMemberGrade));
         when(memberRepository.findByMemberGrades(any()))
                 .thenReturn(List.of(MemberDummy.dummy(renewalPeriod, testMemberGrade)));
 
