@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
@@ -17,10 +18,7 @@ import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.exception.AccumulateAmountIsOverlap;
-import shop.gaship.gashipshoppingmall.membergrade.exception.DefaultMemberGradeIsExist;
-import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
-import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
+import shop.gaship.gashipshoppingmall.membergrade.exception.*;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -241,9 +239,14 @@ class MemberGradeServiceImplTest {
         verify(memberGradeRepository, never()).save(any());
     }
 
+    @DisplayName("회원등급 삭제시" +
+            "해당 회원등급이 존재하고" +
+            "기본 회원 등급이 아니고" +
+            "사용중이지 않은 회원등급인 경우")
     @Test
-    void removeMemberGrade_whenMemberGradeIsPresent_memberGradeIsNotUsed() {
+    void removeMemberGrade_notDefault_whenMemberGradeIsPresent_memberGradeIsNotUsed() {
         // given
+        memberGradeRequestDto.setDefault(false);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
 
@@ -261,9 +264,14 @@ class MemberGradeServiceImplTest {
         verify(memberGradeRepository).delete(any());
     }
 
+    @DisplayName("회원등급 삭제시" +
+            "회원등급이 존재하고" +
+            "기본 회원등급이 아니고" +
+            "사용중인 등급인 경우")
     @Test
     void removeMemberGrade_whenMemberGradeIsPresent_memberGradeIsUsed() {
         // given
+        memberGradeRequestDto.setDefault(false);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
 
@@ -282,8 +290,10 @@ class MemberGradeServiceImplTest {
         verify(memberGradeRepository, never()).delete(any());
     }
 
+    @DisplayName("회원등급 삭제시" +
+            "등급이 존재하지 않는 경우")
     @Test
-    void removeMemberGrade_whenMemberGradeIsEmpty_throwMemberGradeNotFoundException() {
+    void removeMemberGrade_whenMemberGradeIsEmpty_throwExp() {
         // mocking
         when(memberGradeRepository.findById(any())).thenReturn(Optional.empty());
 
@@ -295,6 +305,32 @@ class MemberGradeServiceImplTest {
         verify(memberRepository, never()).findByMemberGrades(any());
         verify(memberGradeRepository, never()).delete(any());
     }
+
+    @DisplayName("회원등급 삭제시" +
+            "등급이 존재하고" +
+            "기본 회원등급인 경우")
+    @Test
+    void removeMemberGrade_whenDefaultMemberGrade_throwExp(){
+        // given
+        memberGradeRequestDto.setDefault(true);
+        StatusCode renewalPeriod = StatusCodeDummy.dummy();
+        MemberGrade testMemberGrade = MemberGradeDummy.defaultDummy(memberGradeRequestDto, renewalPeriod);
+
+        ReflectionTestUtils.setField(testMemberGrade, "no", testMemberGradeNo);
+
+        // mocking
+        when(memberGradeRepository.findById(any()))
+                .thenReturn(Optional.of(testMemberGrade));
+
+        // when&then
+        assertThatThrownBy(() -> memberGradeService.removeMemberGrade(testMemberGradeNo))
+                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(CannotDeleteDefaultMemberGrade.class)
+                .hasMessageContaining("기본 회원등급");
+
+        verify(memberRepository, never()).findByMemberGrades(any());
+    }
+
 
     @Test
     void findMemberGrade_whenMemberGradeIsPresent() {
