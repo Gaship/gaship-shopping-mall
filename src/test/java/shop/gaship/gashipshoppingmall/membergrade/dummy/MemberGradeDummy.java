@@ -23,6 +23,7 @@ public class MemberGradeDummy {
                 .renewalPeriod(renewalPeriod)
                 .name(request.getName())
                 .accumulateAmount(request.getAccumulateAmount())
+                .isDefault(false)
                 .build();
     }
 }

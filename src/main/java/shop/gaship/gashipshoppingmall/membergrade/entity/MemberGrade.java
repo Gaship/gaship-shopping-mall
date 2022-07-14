@@ -17,7 +17,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * -----------------------------------------------------------
  * 2022/07/09        semi       최초 생성
  */
-@EqualsAndHashCode
 @NoArgsConstructor
 @Getter
 @Entity
@@ -38,6 +37,9 @@ public class MemberGrade {
     @Column(name = "accumulate_amount")
     private Long accumulateAmount;
 
+    @Column(name = "is_default")
+    private boolean isDefault;
+
     /**
      * Instantiates a new Member grade.
      *
@@ -46,20 +48,41 @@ public class MemberGrade {
      * @param accumulateAmount the accumulateAmount
      */
     @Builder
-    public MemberGrade(StatusCode renewalPeriod, String name, Long accumulateAmount) {
+    public MemberGrade(StatusCode renewalPeriod, String name,
+                       Long accumulateAmount, Boolean isDefault) {
         this.renewalPeriodStatusCode = renewalPeriod;
         this.name = name;
         this.accumulateAmount = accumulateAmount;
+        this.isDefault = isDefault;
     }
 
     /**.
-     * methodName : modify
+     * methodName : createDefault
      * author : Semi Kim
-     * description :
+     * description : 회원가입 및 기본 등급에 사용되는 회원 등급 생성시 사용되는 메서드
+     *
+     * @param renewalPeriod StatusCode
+     * @param memberGradeRequestDto MemberGradeRequestDto
+     * @return memberGrade MemberGrade
+     */
+    public static MemberGrade createDefault(StatusCode renewalPeriod,
+                                            MemberGradeRequestDto memberGradeRequestDto) {
+        return MemberGrade.builder()
+                .renewalPeriod(renewalPeriod)
+                .name(memberGradeRequestDto.getName())
+                .accumulateAmount(memberGradeRequestDto.getAccumulateAmount())
+                .isDefault(true)
+                .build();
+    }
+
+    /**.
+     * methodName : modifyDetails
+     * author : Semi Kim
+     * description : 회원등급의 세부 내용(회원등급명, 기준누적금액) 수정시 사용되는 메서드
      *
      * @param memberGradeRequestDto MemberGradeRequestDto
      */
-    public void modify(MemberGradeRequestDto memberGradeRequestDto) {
+    public void modifyDetails(MemberGradeRequestDto memberGradeRequestDto) {
         this.name = memberGradeRequestDto.getName();
         this.accumulateAmount = memberGradeRequestDto.getAccumulateAmount();
     }
