@@ -96,4 +96,7 @@ public class AddressLocal {
         this.subLocal = list;
     }
 
+    public void allowDelivery(boolean allowDelivery) {
+        this.allowDelivery = allowDelivery;
+    }
 }
