@@ -16,4 +16,7 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
  */
 public interface MemberGradeRepository
         extends JpaRepository<MemberGrade, Integer>, MemberGradeRepositoryCustom {
+    boolean existsByIsDefaultIsTrue();
+
+    boolean existsByAccumulateAmountEquals(Long accumulateAmount);
 }
