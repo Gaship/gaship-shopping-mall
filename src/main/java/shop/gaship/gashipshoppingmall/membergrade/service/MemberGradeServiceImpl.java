@@ -9,10 +9,7 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.exception.AccumulateAmountIsOverlap;
-import shop.gaship.gashipshoppingmall.membergrade.exception.DefaultMemberGradeIsExist;
-import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
-import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
+import shop.gaship.gashipshoppingmall.membergrade.exception.*;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
@@ -72,6 +69,10 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         MemberGrade memberGrade = memberGradeRepository
                 .findById(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
+
+        if (memberGrade.isDefault()) {
+            throw new CannotDeleteDefaultMemberGrade("기본 회원등급은 삭제할 수 없습니다.");
+        }
 
         if (!memberRepository.findByMemberGrades(memberGrade).isEmpty()) {
             throw new MemberGradeInUseException();
