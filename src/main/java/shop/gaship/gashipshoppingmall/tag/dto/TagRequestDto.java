@@ -1,7 +1,9 @@
 package shop.gaship.gashipshoppingmall.tag.dto;
 
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.tag.dto
@@ -14,8 +16,14 @@ import lombok.Data;
  * -----------------------------------------------------------
  * 2022/07/11        choijungwoo       최초 생성
  */
-@Data
+@Getter
 public class TagRequestDto {
     private Integer tagNo;
     private String title;
+
+    @Builder
+    public TagRequestDto(Integer tagNo, String title) {
+        this.tagNo = tagNo;
+        this.title = title;
+    }
 }

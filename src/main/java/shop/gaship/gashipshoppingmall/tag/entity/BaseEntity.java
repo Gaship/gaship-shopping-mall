@@ -27,11 +27,11 @@ import java.time.LocalDateTime;
 abstract class BaseEntity {
     @CreatedDate
     @Column(name = "register_datetime",updatable=false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime registerDatetime;
 
     @LastModifiedDate
     @Column(name = "modified_datetime")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime modifiedDatetime;
 }

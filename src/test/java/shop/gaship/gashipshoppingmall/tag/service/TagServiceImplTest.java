@@ -11,7 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
-import shop.gaship.gashipshoppingmall.tag.utils.TestUtils;
+import shop.gaship.gashipshoppingmall.tag.utils.TestDummy;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,14 +41,11 @@ class TagServiceImplTest {
     @MockBean
     private TagRepository tagRepository;
 
-    private String title = "테스트 타이틀";
-    private String modifiedTitle = "변경 테스트 타이틀";
-
     @DisplayName("tagService register 테스트")
     @Test
     void register() {
-        when(tagRepository.save(any(Tag.class))).thenReturn(TestUtils.CreateTestTagEntity());
-        tagService.register(TestUtils.CreateTestTagRequestDto());
+        when(tagRepository.save(any(Tag.class))).thenReturn(TestDummy.CreateTestTagEntity());
+        tagService.register(TestDummy.CreateTestTagRequestDto());
 
         verify(tagRepository).save(any(Tag.class));
     }
@@ -56,11 +53,11 @@ class TagServiceImplTest {
     @DisplayName("tagService modify 테스트")
     @Test
     void modify() {
-        Tag tag = TestUtils.CreateTestTagEntity();
+        Tag tag = TestDummy.CreateTestTagEntity();
         when(tagRepository.findById(any())).thenReturn(Optional.of(tag));
         when(tagRepository.save(any(Tag.class))).thenReturn(tag);
 
-        tagService.modify(TestUtils.CreateTestTagRequestDto());
+        tagService.modify(TestDummy.CreateTestTagRequestDto());
 
         verify(tagRepository).findById(any());
         verify(tagRepository).save(any(Tag.class));
@@ -77,7 +74,7 @@ class TagServiceImplTest {
     @DisplayName("tagService get 테스트")
     @Test
     void get() {
-        Tag tag = TestUtils.CreateTestTagEntity();
+        Tag tag = TestDummy.CreateTestTagEntity();
         when(tagRepository.findById(any())).thenReturn(Optional.of(tag));
 
         tagService.get(0);
@@ -89,7 +86,7 @@ class TagServiceImplTest {
     @Test
     void getList() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("title"));
-        List<Tag> tagList = TestUtils.CreateTestTagEntityList();
+        List<Tag> tagList = TestDummy.CreateTestTagEntityList();
         Page<Tag> page = new PageImpl<>(tagList);
         when(tagRepository.findAll(pageable)).thenReturn(page);
 

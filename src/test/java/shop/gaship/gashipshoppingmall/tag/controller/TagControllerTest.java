@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.tag.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.service.TagService;
-import shop.gaship.gashipshoppingmall.tag.utils.TestUtils;
+import shop.gaship.gashipshoppingmall.tag.utils.TestDummy;
 
 import java.util.List;
 
@@ -41,7 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 2022/07/12        choijungwoo       최초 생성
  */
 @WebMvcTest(TagController.class)
-@MockBean(JpaMetamodelMappingContext.class)
 class TagControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -58,7 +56,7 @@ class TagControllerTest {
     @DisplayName("태그 등록 테스트")
     @Test
     void registerTagTest() throws Exception {
-        String body = objectMapper.writeValueAsString(TestUtils.CreateTestTagRequestDto());
+        String body = objectMapper.writeValueAsString(TestDummy.CreateTestTagRequestDto());
 
         mockMvc.perform(post("/admin/1/tags")
                         .accept(MediaType.APPLICATION_JSON)
@@ -77,7 +75,7 @@ class TagControllerTest {
     @DisplayName("태그 수정 테스트")
     @Test
     void modifyTagTest() throws Exception {
-        String body = objectMapper.writeValueAsString(TestUtils.CreateTestTagRequestDto());
+        String body = objectMapper.writeValueAsString(TestDummy.CreateTestTagRequestDto());
 
         mockMvc.perform(put("/admin/1/tags/1")
                         .accept(MediaType.APPLICATION_JSON)
@@ -98,7 +96,7 @@ class TagControllerTest {
     @DisplayName("태그 단건 조회 테스트")
     @Test
     void getTagTest() throws Exception{
-        TagResponseDto tagResponseDto = TestUtils.CreateTestTagResponseDto(title);
+        TagResponseDto tagResponseDto = TestDummy.CreateTestTagResponseDto(title);
 
         when(tagService.get(any()))
                 .thenReturn(tagResponseDto);
@@ -114,7 +112,7 @@ class TagControllerTest {
     @DisplayName("태그 다건 조회 테스트")
     @Test
     void getTagListTest() throws Exception{
-        List<TagResponseDto> tagResponseDtoList = List.of(TestUtils.CreateTestTagResponseDto(title));
+        List<TagResponseDto> tagResponseDtoList = List.of(TestDummy.CreateTestTagResponseDto(title));
         when(tagService.getList(any())).thenReturn(tagResponseDtoList);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/admin/1/tags")

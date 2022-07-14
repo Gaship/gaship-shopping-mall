@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.tag.utils
- * fileName       : TestUtils
+ * fileName       : TestDummy
  * author         : choijungwoo
  * date           : 2022/07/12
  * description    :
@@ -20,10 +20,9 @@ import java.util.stream.IntStream;
  * -----------------------------------------------------------
  * 2022/07/12        choijungwoo       최초 생성
  */
-public class TestUtils {
+public class TestDummy {
     public static TagRequestDto CreateTestTagRequestDto() {
-        TagRequestDto tagRequestDto = new TagRequestDto();
-        tagRequestDto.setTitle("테스트 타이틀");
+        TagRequestDto tagRequestDto = TagRequestDto.builder().title("테스트 타이틀").build();
 
         return tagRequestDto;
     }

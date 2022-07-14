@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.tag.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
  * -----------------------------------------------------------
  * 2022/07/11        choijungwoo       최초 생성
  */
-@Data
+@Getter
 public class TagResponseDto {
     private String title;
     private LocalDateTime registerDatetime;

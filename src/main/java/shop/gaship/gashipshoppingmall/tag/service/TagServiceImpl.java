@@ -59,9 +59,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagResponseDto> getList(Pageable pageable) {
-        // 이거 메서드를 분리할까요? 어차피 인터페이스에서 상속받는데
-        Function<Tag, TagResponseDto> converter = (this::entityToDto);
         Page<Tag> page = tagRepository.findAll(pageable);
-        return page.stream().map(converter).collect(Collectors.toList());
+        return page.stream().map(this::entityToDto).collect(Collectors.toList());
     }
 }
