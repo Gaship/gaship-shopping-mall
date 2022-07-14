@@ -19,11 +19,10 @@ public class MemberGradeDummy {
     private MemberGradeDummy(){}
 
     public static MemberGrade dummy(MemberGradeRequestDto request, StatusCode renewalPeriod) {
-        return MemberGrade.builder()
-                .renewalPeriod(renewalPeriod)
-                .name(request.getName())
-                .accumulateAmount(request.getAccumulateAmount())
-                .isDefault(false)
-                .build();
+        return MemberGrade.create(renewalPeriod, request);
+    }
+
+    public static MemberGrade defaultDummy(MemberGradeRequestDto request, StatusCode renewalPeriod){
+        return MemberGrade.createDefault(renewalPeriod, request);
     }
 }

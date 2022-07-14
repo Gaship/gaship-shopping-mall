@@ -9,6 +9,8 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.membergrade.exception.AccumulateAmountIsOverlap;
+import shop.gaship.gashipshoppingmall.membergrade.exception.DefaultMemberGradeIsExist;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
@@ -42,13 +44,14 @@ public class MemberGradeServiceImpl implements MemberGradeService {
                 .findById(1)
                 .orElseThrow(StatusCodeNotFoundException::new);
 
-        MemberGrade memberGrade = MemberGrade.builder()
-                .renewalPeriod(renewalPeriod)
-                .name(request.getName())
-                .accumulateAmount(request.getAccumulateAmount())
-                .build();
+        checkOverlapAccumulateAmount(request.getAccumulateAmount());
 
-        memberGradeRepository.save(memberGrade);
+        if (request.isDefault()) {
+            checkExistDefaultMemberGrade();
+            memberGradeRepository.save(MemberGrade.createDefault(renewalPeriod, request));
+        } else {
+            memberGradeRepository.save(MemberGrade.create(renewalPeriod, request));
+        }
     }
 
     @Transactional
@@ -58,7 +61,7 @@ public class MemberGradeServiceImpl implements MemberGradeService {
                 .findById(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
 
-        memberGrade.modify(request);
+        memberGrade.modifyDetails(request);
 
         memberGradeRepository.save(memberGrade);
     }
@@ -86,5 +89,18 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     @Override
     public List<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
         return memberGradeRepository.getMemberGrades(pageable);
+    }
+
+    private void checkOverlapAccumulateAmount(Long accumulateAmount) {
+        if (memberGradeRepository.existsByAccumulateAmountEquals(accumulateAmount)) {
+            throw new AccumulateAmountIsOverlap("동일한 기준누적금액에 해당하는 등급이 존재합니다. 기준누적금액 : "
+                    + accumulateAmount);
+        }
+    }
+
+    private void checkExistDefaultMemberGrade() {
+        if (memberGradeRepository.existsByIsDefaultIsTrue()) {
+            throw new DefaultMemberGradeIsExist("기본 회원등급이 이미 존재합니다.");
+        }
     }
 }

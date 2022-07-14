@@ -24,35 +24,36 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 public class MemberGrade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_grade_no")
+    @Column(name = "member_grade_no", nullable = false)
     private Integer no;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "renewal_period_no")
+    @JoinColumn(name = "renewal_period_no", nullable = false)
     private StatusCode renewalPeriodStatusCode;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "accumulate_amount")
+    @Column(name = "accumulate_amount", unique = true, nullable = false)
     private Long accumulateAmount;
 
-    @Column(name = "is_default")
+    @Column(name = "is_default", nullable = false)
     private boolean isDefault;
 
     /**
      * Instantiates a new Member grade.
      *
-     * @param renewalPeriod    the renewal period
-     * @param name             the name
-     * @param accumulateAmount the accumulateAmount
+     * @param renewalPeriod         the renewalPeriod
+     * @param memberGradeRequestDto the memberGradeRequestDto
+     * @param isDefault             the isDefault
      */
     @Builder
-    public MemberGrade(StatusCode renewalPeriod, String name,
-                       Long accumulateAmount, Boolean isDefault) {
+    private MemberGrade(StatusCode renewalPeriod,
+                        MemberGradeRequestDto memberGradeRequestDto,
+                        Boolean isDefault) {
         this.renewalPeriodStatusCode = renewalPeriod;
-        this.name = name;
-        this.accumulateAmount = accumulateAmount;
+        this.name = memberGradeRequestDto.getName();
+        this.accumulateAmount = memberGradeRequestDto.getAccumulateAmount();
         this.isDefault = isDefault;
     }
 
@@ -67,12 +68,21 @@ public class MemberGrade {
      */
     public static MemberGrade createDefault(StatusCode renewalPeriod,
                                             MemberGradeRequestDto memberGradeRequestDto) {
-        return MemberGrade.builder()
-                .renewalPeriod(renewalPeriod)
-                .name(memberGradeRequestDto.getName())
-                .accumulateAmount(memberGradeRequestDto.getAccumulateAmount())
-                .isDefault(true)
-                .build();
+        return new MemberGrade(renewalPeriod, memberGradeRequestDto, true);
+    }
+
+    /**.
+     * methodName : create
+     * author : Semi Kim
+     * description : 기본 등급 이외의 등급 생성시 사용되는 메서드
+     *
+     * @param renewalPeriod StatusCode
+     * @param memberGradeRequestDto MemberGradeRequestDto
+     * @return member grade
+     */
+    public static MemberGrade create(StatusCode renewalPeriod,
+                                     MemberGradeRequestDto memberGradeRequestDto) {
+        return new MemberGrade(renewalPeriod, memberGradeRequestDto, false);
     }
 
     /**.

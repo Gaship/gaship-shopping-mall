@@ -15,6 +15,8 @@ import lombok.Data;
  */
 @Data
 public class MemberGradeRequestDto {
+    private Integer no;
     private String name;
     private Long accumulateAmount;
+    private boolean isDefault;
 }
