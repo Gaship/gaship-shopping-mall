@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
@@ -28,21 +29,21 @@ class AddressLocalRepositoryTest {
 
     DayLabor labor;
 
+    AddressLocal upper;
+    AddressLocal child1;
+    AddressLocal child2;
     @BeforeEach
     void setUp() {
-        labor = new DayLabor(1 , 10);
+        upper = AddressLocalDummy.dummy1();
+        child1 = AddressLocalDummy.dummy2();
+        child2 = AddressLocalDummy.dummy3();
+        labor = DayLaboyDummy.dummy1();
     }
 
     @DisplayName("조회 되는지 확인용 테스트")
     @Test
     void selectTest() {
-        DayLabor labor = DayLaboyDummy.dummy1();
-
-        AddressLocal upper = AddressLocalDummy.dummy1();
-
-        AddressLocal child1 = AddressLocalDummy.dummy2();
-        AddressLocal child2 = AddressLocalDummy.dummy3();
-
+        //given
         List<AddressLocal> list = new ArrayList<>();
         list.add(child1);
         list.add(child2);
@@ -54,7 +55,7 @@ class AddressLocalRepositoryTest {
         child1.registerUpperLocal(upper);
         child2.registerUpperLocal(upper);
 
-
+        //when
         laborRepository.save(labor);
         repository.save(upper);
         repository.save(child1);
@@ -72,4 +73,35 @@ class AddressLocalRepositoryTest {
         assertThat(test.getDayLabor()).isEqualTo(labor);
         assertThat(child1.getUpperLocal().getAddressName()).isEqualTo(upper.getAddressName());
     }
+
+    @DisplayName("지역 검색시 관련 하위 지역들 나오는지 테스트")
+    @Test
+    void address_searchTest(){
+        //given
+        GetAddressLocalResponseDto d1 = new GetAddressLocalResponseDto(upper.getAddressName(),child1.getAddressName());
+        List<AddressLocal> list = new ArrayList<>();
+        list.add(child1);
+        list.add(child2);
+
+        labor.fixLocation(upper);
+        upper.registerDayLabor(labor);
+        upper.addSubLocal(list);
+
+        child1.registerUpperLocal(upper);
+        child2.registerUpperLocal(upper);
+
+        //when
+        laborRepository.save(labor);
+        repository.save(upper);
+        repository.save(child1);
+        repository.save(child2);
+
+        List<GetAddressLocalResponseDto> result = repository.findAllAddress(
+            upper.getAddressName());
+        assertThat(result.get(0).getUpperAddressName()).isEqualTo(upper.getAddressName());
+        assertThat(result.get(0).getAddressName()).isEqualTo(child1.getAddressName());
+        assertThat(result.get(1).getUpperAddressName()).isEqualTo(upper.getAddressName());
+        assertThat(result.get(1).getAddressName()).isEqualTo(child2.getAddressName());
+    }
+
 }
