@@ -1,8 +1,8 @@
-package shop.gaship.gashipshoppingmall.repairSechedule.dummy;
+package shop.gaship.gashipshoppingmall.repairSchedule.dummy;
 
 import java.time.LocalDate;
-import shop.gaship.gashipshoppingmall.repairSechedule.entity.RepairSchedule;
-import shop.gaship.gashipshoppingmall.repairSechedule.entity.pk.RepairSchedulePk;
+import shop.gaship.gashipshoppingmall.repairSchedule.entity.RepairSchedule;
+import shop.gaship.gashipshoppingmall.repairSchedule.entity.pk.RepairSchedulePk;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.repairSechedule.dummy fileName       :
