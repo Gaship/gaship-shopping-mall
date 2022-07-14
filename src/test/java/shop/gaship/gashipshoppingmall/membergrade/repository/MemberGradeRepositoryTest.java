@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.repository;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -32,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * 2022/07/09        Semi Kim       최초 생성
  */
 @DataJpaTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MemberGradeRepositoryTest {
     @Autowired
     private TestEntityManager testEntityManager;
@@ -50,6 +50,7 @@ class MemberGradeRepositoryTest {
         memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
     }
 
+    @Order(0)
     @Test
     void insertMemberGrade() {
         // when
@@ -67,7 +68,7 @@ class MemberGradeRepositoryTest {
 
         assertThat(count).isEqualTo(1L);
     }
-
+    @Order(1)
     @Test
     void updateMemberGrade() {
         // given
@@ -75,7 +76,7 @@ class MemberGradeRepositoryTest {
         MemberGrade newMemberGrade = memberGradeRepository.save(memberGrade);
 
         // when
-        newMemberGrade.modify(MemberGradeDtoDummy.requestDummy("새싹", 1L));
+        newMemberGrade.modifyDetails(MemberGradeDtoDummy.requestDummy("새싹", 1L));
         memberGradeRepository.saveAndFlush(newMemberGrade);
         testEntityManager.clear();
 
@@ -87,6 +88,7 @@ class MemberGradeRepositoryTest {
         assertThat(result.get().getAccumulateAmount()).isEqualTo(1L);
     }
 
+    @Order(2)
     @Test
     void deleteMemberGrade() {
         // given
@@ -103,6 +105,7 @@ class MemberGradeRepositoryTest {
         assertThat(result).isFalse();
     }
 
+    @Order(3)
     @Test
     void getMemberGradeBy_whenMemberGradeIsPresent() {
         // given
@@ -120,6 +123,7 @@ class MemberGradeRepositoryTest {
         assertThat(memberGradeDto.get().getAccumulateAmount()).isEqualTo(newMemberGrade.getAccumulateAmount());
     }
 
+    @Order(4)
     @Test
     void getMemberGradeBy_whenMemberGradIsEmpty() {
         // given
@@ -132,14 +136,19 @@ class MemberGradeRepositoryTest {
         assertThat(memberGradeDto).isEmpty();
     }
 
+    @Order(5)
     @Test
     void getMemberGrades() {
         // given
         testEntityManager.persist(renewalPeriod);
         memberGradeRepository.saveAndFlush(memberGrade);
+        memberGradeRequestDto.setAccumulateAmount(1L);
         memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
+        memberGradeRequestDto.setAccumulateAmount(2L);
         memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
+        memberGradeRequestDto.setAccumulateAmount(3L);
         memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
+        memberGradeRequestDto.setAccumulateAmount(4L);
         memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
         testEntityManager.clear();
 
@@ -150,5 +159,73 @@ class MemberGradeRepositoryTest {
 
         // then
         assertThat(result).hasSize(2);
+    }
+
+    @Order(6)
+    @DisplayName("isDefault 속성이 true 인 데이터가 있을때 existsByDefault 메서드 테스트")
+    @Test
+    void existsByDefaultIsTrue_whenDefaultIsExist(){
+        // given
+        MemberGrade defaultDummy = MemberGradeDummy
+                .defaultDummy(memberGradeRequestDto, renewalPeriod);
+        testEntityManager.persist(renewalPeriod);
+        testEntityManager.persist(defaultDummy);
+        testEntityManager.clear();
+
+        // when
+        boolean result = memberGradeRepository.existsByIsDefaultIsTrue();
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Order(7)
+    @DisplayName("isDefault 속성이 true 인 데이터가 없을때 existsByDefault 메서드 테스트")
+    @Test
+    void existsByDefaultIsTrue_whenDefaultIsNotExist(){
+        // given
+        testEntityManager.persist(renewalPeriod);
+        testEntityManager.persist(memberGrade);
+        testEntityManager.clear();
+
+        // when
+        boolean result = memberGradeRepository.existsByIsDefaultIsTrue();
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Order(8)
+    @DisplayName("기준누적금액이 동일한 회원등급이 이미 존재하는 경우")
+    @Test
+    void existsByAccumulateAmountEquals_whenIsOverlap(){
+        // given
+        Long dummyAccumulateAmount = 0L;
+        testEntityManager.persist(renewalPeriod);
+        testEntityManager.persist(memberGrade);
+        testEntityManager.clear();
+
+        // when
+        boolean result = memberGradeRepository.existsByAccumulateAmountEquals(dummyAccumulateAmount);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Order(9)
+    @DisplayName("기준누적금액이 동일한 회원등급이 존재하지 않는 경우")
+    @Test
+    void existsByAccumulateAmountEquals_whenIsNotOverlap(){
+        // given
+        Long dummyAccumulateAmount = 100_000_000L;
+        testEntityManager.persist(renewalPeriod);
+        testEntityManager.persist(memberGrade);
+        testEntityManager.clear();
+
+        // when
+        boolean result = memberGradeRepository.existsByAccumulateAmountEquals(dummyAccumulateAmount);
+
+        // then
+        assertThat(result).isFalse();
     }
 }
