@@ -19,22 +19,71 @@ import java.util.List;
  * 2022/07/11        choijungwoo       최초 생성
  */
 public interface TagService {
+    /**
+     * .
+     * methodName : register
+     * author : choijungwoo
+     *
+     * @param tagRequestDto TagRequestDto
+     */
     TagResponseDto register(TagRequestDto tagRequestDto);
 
+    /**
+     * .
+     * methodName : modify
+     * author : choijungwoo
+     *
+     * @param tagRequestDto TagRequestDto
+     */
     TagResponseDto modify(TagRequestDto tagRequestDto);
 
+    /**
+     * .
+     * methodName : delete
+     * author : choijungwoo
+     *
+     * @param tagNo TagNo
+     */
     void delete(Integer tagNo);
 
+    /**
+     * .
+     * methodName : get
+     * author : choijungwoo
+     *
+     * @param tagNo Integer
+     */
     TagResponseDto get(Integer tagNo);
 
+    /**
+     * .
+     * methodName : getList
+     * author : choijungwoo
+     *
+     * @param pageable Pageable
+     */
     List<TagResponseDto> getList(Pageable pageable);
 
+    /**
+     * .
+     * methodName : dtoToEntity
+     * author : choijungwoo
+     *
+     * @param dto TagRequestDto
+     */
     default Tag dtoToEntity(TagRequestDto dto){
         return Tag.builder()
                 .title(dto.getTitle())
                 .build();
     }
 
+    /**
+     * .
+     * methodName : entityToDto
+     * author : choijungwoo
+     *
+     * @param tag Tag
+     */
     default TagResponseDto entityToDto(Tag tag){
         return TagResponseDto.builder()
                 .title(tag.getTitle())
