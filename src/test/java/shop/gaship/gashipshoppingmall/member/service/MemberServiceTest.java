@@ -128,10 +128,11 @@ class MemberServiceTest {
     @Test
     @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하지 않는 경우")
     void findMemberFromNicknameCaseNotFounded() {
+        String expectErrorMessage = "찿고있는 회원의 정보가 존재하지않습니다.";
         given(memberRepository.findByNickname(anyString()))
             .willReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.findMemberFromNickname("example nickName"))
-            .hasMessage("찿고있는 회원의 정보가 존재하지않습니다.");
+            .hasMessage(expectErrorMessage);
     }
 }

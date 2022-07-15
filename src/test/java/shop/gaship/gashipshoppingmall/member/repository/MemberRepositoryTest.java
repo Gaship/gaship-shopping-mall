@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
@@ -25,8 +26,8 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
  */
 @DataJpaTest
 class MemberRepositoryTest {
-    @PersistenceContext
-    EntityManager entityManager;
+    @Autowired
+    TestEntityManager entityManager;
 
     @Autowired
     MemberRepository memberRepository;
