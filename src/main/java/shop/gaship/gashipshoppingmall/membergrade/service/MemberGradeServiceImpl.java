@@ -109,7 +109,7 @@ public class MemberGradeServiceImpl implements MemberGradeService {
                 .orElseThrow(MemberGradeNotFoundException::new);
 
         if (memberGrade.isDefault()) {
-            throw new CannotDeleteDefaultMemberGrade("기본 회원등급은 삭제할 수 없습니다.");
+            throw new CannotDeleteDefaultMemberGrade();
         }
 
         if (!memberRepository.findByMemberGrades(memberGrade).isEmpty()) {
@@ -155,8 +155,7 @@ public class MemberGradeServiceImpl implements MemberGradeService {
      */
     private void checkOverlapAccumulateAmount(Long accumulateAmount) {
         if (memberGradeRepository.existsByAccumulateAmountEquals(accumulateAmount)) {
-            throw new AccumulateAmountIsOverlap("동일한 기준누적금액에 해당하는 등급이 존재합니다. 기준누적금액 : "
-                    + accumulateAmount);
+            throw new AccumulateAmountIsOverlap(accumulateAmount);
         }
     }
 
@@ -167,7 +166,7 @@ public class MemberGradeServiceImpl implements MemberGradeService {
      */
     private void checkExistDefaultMemberGrade() {
         if (memberGradeRepository.existsByIsDefaultIsTrue()) {
-            throw new DefaultMemberGradeIsExist("기본 회원등급이 이미 존재합니다.");
+            throw new DefaultMemberGradeIsExist();
         }
     }
 }

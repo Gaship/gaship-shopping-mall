@@ -12,7 +12,9 @@ package shop.gaship.gashipshoppingmall.membergrade.exception;
  * 2022/07/10        Semi Kim       최초 생성
  */
 public class MemberGradeNotFoundException extends RuntimeException {
+    private static final String MESSAGE = "해당 회원 등급을 찾을 수 없습니다.";
+
     public MemberGradeNotFoundException() {
-        super("해당 회원 등급을 찾을 수 없습니다.");
+        super(MESSAGE);
     }
 }

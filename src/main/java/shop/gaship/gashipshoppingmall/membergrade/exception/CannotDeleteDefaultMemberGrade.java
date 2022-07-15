@@ -12,7 +12,9 @@ package shop.gaship.gashipshoppingmall.membergrade.exception;
  * 2022/07/14        Semi Kim       최초 생성
  */
 public class CannotDeleteDefaultMemberGrade extends RuntimeException {
-    public CannotDeleteDefaultMemberGrade(String message) {
-        super(message);
+    private static final String MESSAGE = "기본 회원등급은 삭제할 수 없습니다.";
+
+    public CannotDeleteDefaultMemberGrade() {
+        super(MESSAGE);
     }
 }

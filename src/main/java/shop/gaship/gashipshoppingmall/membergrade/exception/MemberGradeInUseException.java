@@ -12,7 +12,9 @@ package shop.gaship.gashipshoppingmall.membergrade.exception;
  * 2022/07/12        Semi Kim       최초 생성
  */
 public class MemberGradeInUseException extends RuntimeException {
+    private static final String MESSAGE = "사용중인 회원등급 입니다.";
+
     public MemberGradeInUseException() {
-        super("사용중인 회원등급 입니다.");
+        super(MESSAGE);
     }
 }
