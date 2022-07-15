@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.membergrade.dto.response;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.dto
@@ -13,7 +14,8 @@ import lombok.Data;
  * -----------------------------------------------------------
  * 2022/07/11        Semi Kim       최초 생성
  */
-@Data
+@Getter
+@Setter
 public class MemberGradeResponseDto {
     private Integer no;
     private String name;

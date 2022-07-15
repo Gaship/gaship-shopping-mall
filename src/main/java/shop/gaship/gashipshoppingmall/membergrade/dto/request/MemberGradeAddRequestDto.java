@@ -3,7 +3,8 @@ package shop.gaship.gashipshoppingmall.membergrade.dto.request;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.request
@@ -16,7 +17,8 @@ import lombok.Data;
  * -----------------------------------------------------------
  * 2022/07/09        Semi Kim       최초 생성
  */
-@Data
+@Getter
+@Setter
 public class MemberGradeAddRequestDto {
     @NotBlank(message = "name 은 필수 입력값입니다.")
     @Size(min = 1, max = 10)
