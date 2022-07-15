@@ -13,6 +13,7 @@ import shop.gaship.gashipshoppingmall.message.ErrorResponse;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.category.controller
@@ -41,7 +42,11 @@ public class CategoryController {
      */
     @PostMapping
     public ResponseEntity<Void> categoryAdd(@Valid @RequestBody CategoryCreateRequestDto createRequest) {
-        categoryService.addCategory(createRequest);
+        if (Objects.isNull(createRequest.getUpperCategoryNo())) {
+            categoryService.addRootCategory(createRequest);
+        } else {
+            categoryService.addLowerCategory(createRequest);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -94,6 +99,13 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(categoryService.findCategories());
+    }
+
+    @GetMapping("/{categoryNo}/lower")
+    public ResponseEntity<List<CategoryResponseDto>> lowerCategoryList(@PathVariable Integer categoryNo) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(categoryService.findLowerCategories(categoryNo));
     }
 
     /**

@@ -67,34 +67,47 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("카테고리 생성 성공")
-    void addCategorySuccess() {
+    @DisplayName("카테고리 생성")
+    void addRootCategory() {
         CategoryCreateRequestDto createRequest = new CategoryCreateRequestDto(
                 "카테고리",
-                1,
                 null
         );
         ReflectionTestUtils.setField(upperCategory, "no", 1);
 
         when(categoryRepository.save(any(Category.class))).thenReturn(upperCategory);
 
-        categoryService.addCategory(createRequest);
+        categoryService.addRootCategory(createRequest);
 
         verify(categoryRepository).save(any(Category.class));
     }
 
     @Test
-    @DisplayName("카테고리 생성 실패 - 상위 카테고리 찾기 불가")
-    void addCategoryFail() {
+    @DisplayName("하위 카테고리 생성 성공")
+    void addLowerCategorySuccess() {
         CategoryCreateRequestDto createRequest = new CategoryCreateRequestDto(
                 "카테고리",
-                2,
+                1
+        );
+
+        when(categoryRepository.findById(createRequest.getUpperCategoryNo())).thenReturn(Optional.of(category));
+
+        categoryService.addLowerCategory(createRequest);
+
+        verify(categoryRepository).findById(createRequest.getUpperCategoryNo());
+    }
+
+    @Test
+    @DisplayName("하위 카테고리 생성 실패 - 상위 카테고리 찾기 불가")
+    void addLowerCategoryFail() {
+        CategoryCreateRequestDto createRequest = new CategoryCreateRequestDto(
+                "카테고리",
                 9999
         );
 
         when(categoryRepository.findById(createRequest.getUpperCategoryNo())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> categoryService.addCategory(createRequest)).isInstanceOf(CategoryNotFoundException.class);
+        assertThatThrownBy(() -> categoryService.addLowerCategory(createRequest)).isInstanceOf(CategoryNotFoundException.class);
 
         verify(categoryRepository).findById(createRequest.getUpperCategoryNo());
     }
@@ -164,18 +177,36 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("하위 카테고리 조회")
+    void findLowerCategories() {
+        Integer upperCategoryNo = 1;
+        CategoryResponseDto categoryResponseDto = CategoryDummy.dtoDummy();
+        ReflectionTestUtils.setField(upperCategory, "no", upperCategoryNo);
+
+        when(categoryRepository.findById(upperCategoryNo)).thenReturn(Optional.of(upperCategory));
+        when(categoryRepository.findAllLowerCategories(upperCategoryNo)).thenReturn(List.of(categoryResponseDto));
+
+        List<CategoryResponseDto> categories = categoryService.findLowerCategories(upperCategoryNo);
+
+        assertThat(categories.get(0)).isEqualTo(categoryResponseDto);
+
+        verify(categoryRepository).findById(upperCategoryNo);
+        verify(categoryRepository).findAllLowerCategories(upperCategoryNo);
+    }
+
+    @Test
     @DisplayName("카테고리 삭제 성공")
     void removeCategorySuccess() {
         ReflectionTestUtils.setField(category, "no", 2);
 
         when(categoryRepository.findById(category.getNo())).thenReturn(Optional.of(category));
-        when(categoryRepository.findLowerCategories(category.getNo())).thenReturn(Collections.emptyList());
+        when(categoryRepository.findAllLowerCategories(category.getNo())).thenReturn(Collections.emptyList());
         when(productRepository.findAllByCategoryNo(category.getNo())).thenReturn(Collections.emptyList());
 
         categoryService.removeCategory(category.getNo());
 
         verify(categoryRepository).findById(category.getNo());
-        verify(categoryRepository).findLowerCategories(category.getNo());
+        verify(categoryRepository).findAllLowerCategories(category.getNo());
         verify(productRepository).findAllByCategoryNo(category.getNo());
         verify(categoryRepository).deleteById(category.getNo());
     }
@@ -200,12 +231,12 @@ class CategoryServiceTest {
         ReflectionTestUtils.setField(upperCategory, "no", categoryNo);
 
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(upperCategory));
-        when(categoryRepository.findLowerCategories(categoryNo)).thenReturn(List.of(lowerCategory));
+        when(categoryRepository.findAllLowerCategories(categoryNo)).thenReturn(List.of(lowerCategory));
 
         assertThatThrownBy(() -> categoryService.removeCategory(categoryNo)).isInstanceOf(CategoryRemainLowerCategoryException.class);
 
         verify(categoryRepository).findById(categoryNo);
-        verify(categoryRepository).findLowerCategories(categoryNo);
+        verify(categoryRepository).findAllLowerCategories(categoryNo);
     }
 
     @Test
@@ -216,13 +247,13 @@ class CategoryServiceTest {
         ReflectionTestUtils.setField(category, "no", categoryNo);
 
         when(categoryRepository.findById(category.getNo())).thenReturn(Optional.of(category));
-        when(categoryRepository.findLowerCategories(categoryNo)).thenReturn(Collections.emptyList());
+        when(categoryRepository.findAllLowerCategories(categoryNo)).thenReturn(Collections.emptyList());
         when(productRepository.findAllByCategoryNo(categoryNo)).thenReturn(List.of(product));
 
         assertThatThrownBy(() -> categoryService.removeCategory(category.getNo())).isInstanceOf(CategoryRemainProductException.class);
 
         verify(categoryRepository).findById(categoryNo);
-        verify(categoryRepository).findLowerCategories(categoryNo);
+        verify(categoryRepository).findAllLowerCategories(categoryNo);
         verify(productRepository).findAllByCategoryNo(category.getNo());
     }
 }

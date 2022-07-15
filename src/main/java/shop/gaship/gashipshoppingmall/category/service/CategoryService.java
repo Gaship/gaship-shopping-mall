@@ -17,7 +17,9 @@ import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
  * 2022-07-09        김보민       최초 생성
  */
 public interface CategoryService {
-    void addCategory(CategoryCreateRequestDto createRequest);
+    void addRootCategory(CategoryCreateRequestDto createRequest);
+
+    void addLowerCategory(CategoryCreateRequestDto createRequest);
 
     void modifyCategory(CategoryModifyRequestDto modifyRequest);
 
@@ -26,4 +28,6 @@ public interface CategoryService {
     List<CategoryResponseDto> findCategories();
 
     void removeCategory(Integer categoryNo);
+
+    List<CategoryResponseDto> findLowerCategories(Integer categoryNo);
 }

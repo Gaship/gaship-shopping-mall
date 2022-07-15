@@ -94,9 +94,9 @@ class CategoryRepositoryTest {
     @Test
     @DisplayName("하위 카테고리 조회")
     void findAllLowerCategories() {
-        Category savedCategory = categoryRepository.saveAndFlush(category);
+        Category savedCategory = categoryRepository.save(category);
 
-        List<CategoryResponseDto> lowerCategories = categoryRepository.findLowerCategories(savedCategory.getUpperCategory().getNo());
+        List<CategoryResponseDto> lowerCategories = categoryRepository.findAllLowerCategories(savedCategory.getUpperCategory().getNo());
 
         assertThat(lowerCategories).hasSize(1);
     }
@@ -109,5 +109,24 @@ class CategoryRepositoryTest {
         categoryRepository.deleteById(savedCategory.getNo());
 
         assertThat(categoryRepository.findById(savedCategory.getNo())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("하위 카테고리 등록")
+    void saveLowerCategory() {
+        Category savedCategory = categoryRepository.save(upperCategory);
+
+        Category lowerCategory = new Category(
+                "하위 카테고리",
+                2
+        );
+
+        savedCategory.insertLowerCategory(lowerCategory);
+
+        List<CategoryResponseDto> lowerCategories = categoryRepository.findAllLowerCategories(savedCategory.getNo());
+
+        assertThat(lowerCategories).hasSize(1);
+        assertThat(lowerCategories.get(0).getName()).isEqualTo(lowerCategory.getName());
+        assertThat(lowerCategories.get(0).getLevel()).isEqualTo(lowerCategory.getLevel());
     }
 }

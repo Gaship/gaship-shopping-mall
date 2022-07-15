@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.dummy;
 
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
-import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 
 /**
@@ -25,10 +24,10 @@ public class CategoryDummy {
      * @return category
      */
     public static Category upperDummy() {
-        return Category.builder()
-                .name("상위 카테고리")
-                .level(1)
-                .build();
+        return new Category(
+                "상위 카테고리",
+                1
+        );
     }
 
     /**
@@ -39,10 +38,10 @@ public class CategoryDummy {
      * @return category
      */
     public static Category dummy() {
-        Category dummy = Category.builder()
-                .name("카테고리")
-                .level(2)
-                .build();
+        Category dummy = new Category(
+                "카테고리",
+                2
+        );
 
         dummy.updateUpperCategory(upperDummy());
         return dummy;

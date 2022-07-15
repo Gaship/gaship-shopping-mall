@@ -45,11 +45,14 @@ class CategoryControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("카테고리 생성 post 요청")
-    void categoryCreate() throws Exception {
-        CategoryCreateRequestDto createRequest = new CategoryCreateRequestDto("카테고리", 1, null);
+    @DisplayName("root 카테고리 생성 post 요청")
+    void rootCategoryCreate() throws Exception {
+        CategoryCreateRequestDto createRequest = new CategoryCreateRequestDto(
+                "카테고리",
+                null
+        );
 
-        doNothing().when(categoryService).addCategory(createRequest);
+        doNothing().when(categoryService).addRootCategory(createRequest);
 
         mockMvc.perform(post("/categories")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -58,7 +61,27 @@ class CategoryControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
 
-        verify(categoryService).addCategory(createRequest);
+        verify(categoryService).addRootCategory(createRequest);
+    }
+
+    @Test
+    @DisplayName("lower 카테고리 생성 post 요청")
+    void lowerCategoryCreate() throws Exception {
+        CategoryCreateRequestDto createRequest = new CategoryCreateRequestDto(
+                "카테고리",
+                1
+        );
+
+        doNothing().when(categoryService).addLowerCategory(createRequest);
+
+        mockMvc.perform(post("/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
+
+        verify(categoryService).addLowerCategory(createRequest);
     }
 
     @Test
@@ -121,6 +144,28 @@ class CategoryControllerTest {
                 .andDo(print());
 
         verify(categoryService).findCategories();
+    }
+
+    @Test
+    @DisplayName("하위 카테고리 조회 get 요청")
+    void lowerCategoryList() throws Exception {
+        Integer categoryNo = 1;
+        CategoryResponseDto categoryResponseDto = CategoryDummy.dtoDummy();
+
+        when(categoryService.findLowerCategories(categoryNo)).thenReturn(List.of(categoryResponseDto));
+
+        mockMvc.perform(get("/categories/{categoryNo}/lower", categoryNo))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].no").value(categoryResponseDto.getNo()))
+                .andExpect(jsonPath("$[0].name").value(categoryResponseDto.getName()))
+                .andExpect(jsonPath("$[0].level").value(categoryResponseDto.getLevel()))
+                .andExpect(jsonPath("$[0].upperCategoryNo").value(categoryResponseDto.getUpperCategoryNo()))
+                .andExpect(jsonPath("$[0].upperCategoryName").value(categoryResponseDto.getUpperCategoryName()))
+                .andDo(print());
+
+        verify(categoryService).findLowerCategories(categoryNo);
     }
 
     @Test

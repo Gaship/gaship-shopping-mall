@@ -75,7 +75,7 @@ public class CategoryRepositoryImpl
     }
 
     /**
-     * methodName : findLowerCategories
+     * methodName : findAllLowerCategories
      * author : 김보민
      * description : 하위 카테고리 조회
      *
@@ -83,7 +83,7 @@ public class CategoryRepositoryImpl
      * @return list
      */
     @Override
-    public List<CategoryResponseDto> findLowerCategories(Integer categoryNo) {
+    public List<CategoryResponseDto> findAllLowerCategories(Integer categoryNo) {
         QCategory category = QCategory.category;
 
         return from(category)
@@ -91,7 +91,9 @@ public class CategoryRepositoryImpl
                 .select(Projections.bean(CategoryResponseDto.class,
                         category.no,
                         category.name,
-                        category.level))
+                        category.level,
+                        category.upperCategory.no.as("upperCategoryNo"),
+                        category.upperCategory.name.as("upperCategoryName")))
                 .fetch();
     }
 }

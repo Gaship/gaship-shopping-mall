@@ -22,5 +22,5 @@ public interface CategoryRepositoryCustom {
 
     List<CategoryResponseDto> findAllCategories();
 
-    List<CategoryResponseDto> findLowerCategories(Integer categoryNo);
+    List<CategoryResponseDto> findAllLowerCategories(Integer categoryNo);
 }

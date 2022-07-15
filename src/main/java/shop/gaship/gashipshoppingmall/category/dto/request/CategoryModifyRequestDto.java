@@ -30,8 +30,4 @@ public class CategoryModifyRequestDto {
     @NotBlank
     @Length(max = 20)
     private String name;
-
-    public void updateNo(Integer no) {
-        this.no = no;
-    }
 }

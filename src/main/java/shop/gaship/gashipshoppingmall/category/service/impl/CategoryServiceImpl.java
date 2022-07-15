@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.service.impl;
 
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,22 +42,27 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Transactional
     @Override
-    public void addCategory(CategoryCreateRequestDto createRequest) {
-        Category upperCategory = null;
-
-        if (Objects.nonNull(createRequest.getUpperCategoryNo())) {
-            upperCategory = categoryRepository.findById(createRequest.getUpperCategoryNo())
-                    .orElseThrow(CategoryNotFoundException::new);
-        }
-
-        Category category = Category.builder()
-                .name(createRequest.getName())
-                .level(createRequest.getLevel())
-                .build();
-
-        category.updateUpperCategory(upperCategory);
+    public void addRootCategory(CategoryCreateRequestDto createRequest) {
+        Category category = new Category(
+                createRequest.getName(),
+                1
+        );
 
         categoryRepository.save(category);
+    }
+
+    @Transactional
+    @Override
+    public void addLowerCategory(CategoryCreateRequestDto createRequest) {
+        Category upperCategory = categoryRepository.findById(createRequest.getUpperCategoryNo())
+                .orElseThrow(CategoryNotFoundException::new);
+
+        Category category = new Category(
+                createRequest.getName(),
+                upperCategory.getLevel() + 1
+        );
+
+        upperCategory.insertLowerCategory(category);
     }
 
     /**
@@ -116,7 +120,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(categoryNo)
                 .orElseThrow(CategoryNotFoundException::new);
         List<CategoryResponseDto> lowerCategories = categoryRepository
-                .findLowerCategories(categoryNo);
+                .findAllLowerCategories(categoryNo);
 
         //해당 카테고리의 하위 카테고리가 존재할 시 삭제 실패
         if (!lowerCategories.isEmpty()) {
@@ -131,5 +135,13 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         categoryRepository.deleteById(categoryNo);
+    }
+
+    @Override
+    public List<CategoryResponseDto> findLowerCategories(Integer categoryNo) {
+        Category category = categoryRepository.findById(categoryNo)
+                .orElseThrow(CategoryNotFoundException::new);
+
+        return categoryRepository.findAllLowerCategories(category.getNo());
     }
 }
