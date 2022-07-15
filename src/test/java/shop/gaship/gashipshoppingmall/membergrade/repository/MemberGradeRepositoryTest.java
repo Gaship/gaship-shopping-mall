@@ -11,7 +11,7 @@ import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 import java.util.List;
@@ -42,12 +42,12 @@ class MemberGradeRepositoryTest {
     private StatusCode renewalPeriod;
     private MemberGrade memberGrade;
 
-    private MemberGradeRequestDto memberGradeRequestDto;
+    private MemberGradeAddRequestDto memberGradeAddRequestDto;
     @BeforeEach
     void setUp() {
-        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1, "일반", 0L);
+        memberGradeAddRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
         renewalPeriod = StatusCodeDummy.dummy();
-        memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+        memberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
     }
 
     @Order(0)
@@ -142,14 +142,14 @@ class MemberGradeRepositoryTest {
         // given
         testEntityManager.persist(renewalPeriod);
         memberGradeRepository.saveAndFlush(memberGrade);
-        memberGradeRequestDto.setAccumulateAmount(1L);
-        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
-        memberGradeRequestDto.setAccumulateAmount(2L);
-        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
-        memberGradeRequestDto.setAccumulateAmount(3L);
-        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
-        memberGradeRequestDto.setAccumulateAmount(4L);
-        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod));
+        memberGradeAddRequestDto.setAccumulateAmount(1L);
+        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod));
+        memberGradeAddRequestDto.setAccumulateAmount(2L);
+        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod));
+        memberGradeAddRequestDto.setAccumulateAmount(3L);
+        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod));
+        memberGradeAddRequestDto.setAccumulateAmount(4L);
+        memberGradeRepository.saveAndFlush(MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod));
         testEntityManager.clear();
 
         Pageable pageable = PageRequest.of(1, 3);
@@ -167,7 +167,7 @@ class MemberGradeRepositoryTest {
     void existsByDefaultIsTrue_whenDefaultIsExist(){
         // given
         MemberGrade defaultDummy = MemberGradeDummy
-                .defaultDummy(memberGradeRequestDto, renewalPeriod);
+                .defaultDummy(memberGradeAddRequestDto, renewalPeriod);
         testEntityManager.persist(renewalPeriod);
         testEntityManager.persist(defaultDummy);
         testEntityManager.clear();

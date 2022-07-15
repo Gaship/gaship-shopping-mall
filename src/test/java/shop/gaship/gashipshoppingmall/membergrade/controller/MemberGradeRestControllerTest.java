@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
@@ -46,23 +46,39 @@ class MemberGradeRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private MemberGradeRequestDto testMemberGradeRequestDto;
+    private MemberGradeAddRequestDto testMemberGradeAddRequestDto;
 
     @BeforeEach
     void setUp() {
-        testMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1, "일반", 0L);
+        testMemberGradeAddRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
     }
 
+    @DisplayName("회원등급을 등록하는 경우")
     @Test
     void memberGradeAdd() throws Exception {
         mockMvc.perform(post("/grades")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testMemberGradeRequestDto))
+                        .content(objectMapper.writeValueAsString(testMemberGradeAddRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
         verify(memberGradeService).addMemberGrade(any());
+    }
+
+    @DisplayName("회원등급 등록시 " +
+            "name 이 null 인 경우")
+    @Test
+    void memberGradeAdd_whenNameIsNull() throws Exception{
+        testMemberGradeAddRequestDto.setName(null);
+
+        mockMvc.perform(post("/grades")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(testMemberGradeAddRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+
+        verify(memberGradeService, never()).addMemberGrade(any());
     }
 
     @DisplayName("회원등급을 수정하는 경우")
@@ -83,7 +99,7 @@ class MemberGradeRestControllerTest {
     @DisplayName("회원등급 수정시 " +
             "request 의 name 이 null 인 경우")
     @Test
-    void memberGradeModify_whenNameIsNull_throwExp() throws Exception {
+    void memberGradeModify_whenNameIsNull() throws Exception {
         MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, null, 0L);
 
         mockMvc.perform(put("/grades")

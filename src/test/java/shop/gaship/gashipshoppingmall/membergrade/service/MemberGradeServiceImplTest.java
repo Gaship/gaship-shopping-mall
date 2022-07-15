@@ -21,7 +21,7 @@ import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.*;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -57,12 +57,12 @@ class MemberGradeServiceImplTest {
     private StatusCodeRepository statusCodeRepository;
     @MockBean
     private MemberRepository memberRepository;
-    private MemberGradeRequestDto memberGradeRequestDto;
+    private MemberGradeAddRequestDto memberGradeAddRequestDto;
     private Integer testMemberGradeNo;
 
     @BeforeEach
     void setUp() {
-        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1, "일반", 0L);
+        memberGradeAddRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
         testMemberGradeNo = 1;
     }
 
@@ -73,9 +73,9 @@ class MemberGradeServiceImplTest {
     @Test
     void addMemberGrade_whenRenewalPeriodIsPresent() {
         // given
-        memberGradeRequestDto.setDefault(true);
+        memberGradeAddRequestDto.setIsDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
-        MemberGrade memberGrade = MemberGradeDummy.defaultDummy(memberGradeRequestDto, renewalPeriod);
+        MemberGrade memberGrade = MemberGradeDummy.defaultDummy(memberGradeAddRequestDto, renewalPeriod);
 
         // mocking
         when(statusCodeRepository.findById(any()))
@@ -88,7 +88,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(memberGrade);
 
         // when
-        memberGradeService.addMemberGrade(memberGradeRequestDto);
+        memberGradeService.addMemberGrade(memberGradeAddRequestDto);
 
         // then
         verify(statusCodeRepository).findById(any());
@@ -103,7 +103,7 @@ class MemberGradeServiceImplTest {
     @Test
     void addMemberGrade_whenAccumulateAmountOverlapMemberGradeIsExist_throwExp(){
         // given
-        memberGradeRequestDto.setDefault(true);
+        memberGradeAddRequestDto.setIsDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
 
         // mocking
@@ -113,7 +113,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(true);
 
         // when&then
-        assertThatThrownBy(() -> memberGradeService.addMemberGrade(memberGradeRequestDto))
+        assertThatThrownBy(() -> memberGradeService.addMemberGrade(memberGradeAddRequestDto))
                 .isInstanceOf(AccumulateAmountIsOverlap.class)
                 .hasMessageContaining("동일한 기준누적금액");
 
@@ -130,7 +130,7 @@ class MemberGradeServiceImplTest {
     @Test
     void addMemberGrade_whenDefaultMemberGradeIsExist_throwExp(){
         // given
-        memberGradeRequestDto.setDefault(true);
+        memberGradeAddRequestDto.setIsDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
 
         // mocking
@@ -142,7 +142,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(true);
 
         // when&then
-        assertThatThrownBy(() -> memberGradeService.addMemberGrade(memberGradeRequestDto))
+        assertThatThrownBy(() -> memberGradeService.addMemberGrade(memberGradeAddRequestDto))
                 .isInstanceOf(DefaultMemberGradeIsExist.class)
                 .hasMessageContaining("기본 회원등급");
 
@@ -159,9 +159,9 @@ class MemberGradeServiceImplTest {
     @Test
     void addMemberGrade_whenNotDefaultMemberGrade(){
         // given
-        memberGradeRequestDto.setDefault(false);
+        memberGradeAddRequestDto.setIsDefault(false);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
-        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
         // mocking
         when(statusCodeRepository.findById(any()))
@@ -172,7 +172,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(memberGrade);
 
         // when
-        memberGradeService.addMemberGrade(memberGradeRequestDto);
+        memberGradeService.addMemberGrade(memberGradeAddRequestDto);
 
         // then
         verify(statusCodeRepository).findById(any());
@@ -189,7 +189,7 @@ class MemberGradeServiceImplTest {
 
         // when&then
         assertThatThrownBy(() -> memberGradeService
-                .addMemberGrade(memberGradeRequestDto))
+                .addMemberGrade(memberGradeAddRequestDto))
                 .isInstanceOf(StatusCodeNotFoundException.class);
 
         verify(statusCodeRepository).findById(any());
@@ -207,10 +207,10 @@ class MemberGradeServiceImplTest {
         MemberGradeModifyRequestDto modifyRequestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 0L);
 
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
-        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        memberGradeRequestDto.setName("새싹");
-        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+        memberGradeAddRequestDto.setName("새싹");
+        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -236,9 +236,9 @@ class MemberGradeServiceImplTest {
         MemberGradeModifyRequestDto modifyRequestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 1L);
 
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
-        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -284,9 +284,9 @@ class MemberGradeServiceImplTest {
     @Test
     void removeMemberGrade_notDefault_whenMemberGradeIsPresent_memberGradeIsNotUsed() {
         // given
-        memberGradeRequestDto.setDefault(false);
+        memberGradeAddRequestDto.setIsDefault(false);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
-        MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+        MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -309,9 +309,9 @@ class MemberGradeServiceImplTest {
     @Test
     void removeMemberGrade_whenMemberGradeIsPresent_memberGradeIsUsed() {
         // given
-        memberGradeRequestDto.setDefault(false);
+        memberGradeAddRequestDto.setIsDefault(false);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
-        MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+        MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -350,9 +350,9 @@ class MemberGradeServiceImplTest {
     @Test
     void removeMemberGrade_whenDefaultMemberGrade_throwExp(){
         // given
-        memberGradeRequestDto.setDefault(true);
+        memberGradeAddRequestDto.setIsDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
-        MemberGrade testMemberGrade = MemberGradeDummy.defaultDummy(memberGradeRequestDto, renewalPeriod);
+        MemberGrade testMemberGrade = MemberGradeDummy.defaultDummy(memberGradeAddRequestDto, renewalPeriod);
 
         ReflectionTestUtils.setField(testMemberGrade, "no", testMemberGradeNo);
 

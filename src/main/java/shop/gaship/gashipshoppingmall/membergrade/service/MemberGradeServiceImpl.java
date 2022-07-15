@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.*;
@@ -50,14 +50,14 @@ public class MemberGradeServiceImpl implements MemberGradeService {
      */
     @Transactional
     @Override
-    public void addMemberGrade(MemberGradeRequestDto request) {
+    public void addMemberGrade(MemberGradeAddRequestDto request) {
         StatusCode renewalPeriod = statusCodeRepository
                 .findById(1)
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         checkOverlapAccumulateAmount(request.getAccumulateAmount());
 
-        if (request.isDefault()) {
+        if (request.getIsDefault()) {
             checkExistDefaultMemberGrade();
             memberGradeRepository.save(MemberGrade.createDefault(renewalPeriod, request));
         } else {

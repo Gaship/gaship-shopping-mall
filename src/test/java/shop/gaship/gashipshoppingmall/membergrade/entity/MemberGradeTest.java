@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
@@ -27,12 +27,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MemberGradeTest {
 
     private StatusCode renewalPeriod;
-    private MemberGradeRequestDto memberGradeRequestDto;
+    private MemberGradeAddRequestDto memberGradeAddRequestDto;
 
     @BeforeEach
     void setUp() {
         renewalPeriod = StatusCodeDummy.dummy();
-        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1,"일반", 0L);
+        memberGradeAddRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
     }
 
     @DisplayName("회원등급 getNo 메서드 테스트")
@@ -40,7 +40,7 @@ class MemberGradeTest {
     void getNo(){
         // given
         MemberGrade memberGrade = MemberGradeDummy
-                .dummy(memberGradeRequestDto, renewalPeriod);
+                .dummy(memberGradeAddRequestDto, renewalPeriod);
         ReflectionTestUtils.setField(memberGrade, "no", 1);
 
         // when
@@ -55,7 +55,7 @@ class MemberGradeTest {
     void getRenewalPeriodStatusCode(){
         // given
         MemberGrade memberGrade = MemberGradeDummy
-                .dummy(memberGradeRequestDto, renewalPeriod);
+                .dummy(memberGradeAddRequestDto, renewalPeriod);
 
         // when
         StatusCode result = memberGrade.getRenewalPeriodStatusCode();
@@ -68,7 +68,7 @@ class MemberGradeTest {
     @Test
     void createDefault(){
         // when
-        MemberGrade result = MemberGrade.createDefault(renewalPeriod, memberGradeRequestDto);
+        MemberGrade result = MemberGrade.createDefault(renewalPeriod, memberGradeAddRequestDto);
 
         // then
         assertThat(result).isNotNull();
@@ -84,7 +84,7 @@ class MemberGradeTest {
         String dummyName = "VIP";
         Long dummyAccumulateAmount = 100_000_000L;
         MemberGrade result = MemberGrade.create(renewalPeriod,
-                MemberGradeDtoDummy.requestDummy(1, dummyName, dummyAccumulateAmount));
+                MemberGradeDtoDummy.requestDummy(dummyName, dummyAccumulateAmount));
 
         // then
         assertThat(result).isNotNull();
@@ -100,7 +100,7 @@ class MemberGradeTest {
         Long modifyAccumulateAmountData = 1L;
 
         MemberGrade memberGrade = MemberGradeDummy
-                .dummy(memberGradeRequestDto, renewalPeriod);
+                .dummy(memberGradeAddRequestDto, renewalPeriod);
         MemberGradeModifyRequestDto modifyRequestDto = MemberGradeDtoDummy
                 .modifyRequestDummy(1, modifyNameData, modifyAccumulateAmountData);
 

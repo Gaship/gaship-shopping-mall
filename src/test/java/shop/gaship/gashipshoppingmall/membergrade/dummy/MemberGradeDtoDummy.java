@@ -2,7 +2,7 @@ package shop.gaship.gashipshoppingmall.membergrade.dummy;
 
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.dummy
@@ -18,13 +18,13 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequest
 public class MemberGradeDtoDummy {
     private MemberGradeDtoDummy(){}
 
-    public static MemberGradeRequestDto requestDummy(Integer no, String name, Long accumulateAmount) {
-        MemberGradeRequestDto memberGradeRequestDto = new MemberGradeRequestDto();
-        memberGradeRequestDto.setNo(no);
-        memberGradeRequestDto.setName(name);
-        memberGradeRequestDto.setAccumulateAmount(accumulateAmount);
+    public static MemberGradeAddRequestDto requestDummy(String name, Long accumulateAmount) {
+        MemberGradeAddRequestDto dummy = new MemberGradeAddRequestDto();
+        dummy.setName(name);
+        dummy.setAccumulateAmount(accumulateAmount);
+        dummy.setIsDefault(false);
 
-        return memberGradeRequestDto;
+        return dummy;
     }
 
     public static MemberGradeModifyRequestDto modifyRequestDummy(Integer no, String name, Long accumulateAmount){

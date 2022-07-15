@@ -2,8 +2,8 @@ package shop.gaship.gashipshoppingmall.membergrade.entity;
 
 import javax.persistence.*;
 import lombok.*;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 
@@ -45,16 +45,16 @@ public class MemberGrade {
      * Instantiates a new Member grade.
      *
      * @param renewalPeriod         the renewalPeriod
-     * @param memberGradeRequestDto the memberGradeRequestDto
+     * @param memberGradeAddRequestDto the memberGradeRequestDto
      * @param isDefault             the isDefault
      */
     @Builder
     private MemberGrade(StatusCode renewalPeriod,
-                        MemberGradeRequestDto memberGradeRequestDto,
+                        MemberGradeAddRequestDto memberGradeAddRequestDto,
                         Boolean isDefault) {
         this.renewalPeriodStatusCode = renewalPeriod;
-        this.name = memberGradeRequestDto.getName();
-        this.accumulateAmount = memberGradeRequestDto.getAccumulateAmount();
+        this.name = memberGradeAddRequestDto.getName();
+        this.accumulateAmount = memberGradeAddRequestDto.getAccumulateAmount();
         this.isDefault = isDefault;
     }
 
@@ -64,12 +64,12 @@ public class MemberGrade {
      * description : 회원가입 및 기본 등급에 사용되는 회원 등급 생성시 사용되는 메서드
      *
      * @param renewalPeriod 회원등급 갱신기간 관련 StatusCode
-     * @param memberGradeRequestDto MemberGradeRequestDto
+     * @param memberGradeAddRequestDto MemberGradeRequestDto
      * @return memberGrade MemberGrade
      */
     public static MemberGrade createDefault(StatusCode renewalPeriod,
-                                            MemberGradeRequestDto memberGradeRequestDto) {
-        return new MemberGrade(renewalPeriod, memberGradeRequestDto, true);
+                                            MemberGradeAddRequestDto memberGradeAddRequestDto) {
+        return new MemberGrade(renewalPeriod, memberGradeAddRequestDto, true);
     }
 
     /**.
@@ -78,12 +78,12 @@ public class MemberGrade {
      * description : 기본 등급 이외의 등급 생성시 사용되는 메서드
      *
      * @param renewalPeriod 회원등급 갱신기간 관련 StatusCode
-     * @param memberGradeRequestDto MemberGradeRequestDto
+     * @param memberGradeAddRequestDto MemberGradeRequestDto
      * @return member grade
      */
     public static MemberGrade create(StatusCode renewalPeriod,
-                                     MemberGradeRequestDto memberGradeRequestDto) {
-        return new MemberGrade(renewalPeriod, memberGradeRequestDto, false);
+                                     MemberGradeAddRequestDto memberGradeAddRequestDto) {
+        return new MemberGrade(renewalPeriod, memberGradeAddRequestDto, false);
     }
 
     /**.
