@@ -62,7 +62,7 @@ public class MemberGrade {
      * author : Semi Kim
      * description : 회원가입 및 기본 등급에 사용되는 회원 등급 생성시 사용되는 메서드
      *
-     * @param renewalPeriod StatusCode
+     * @param renewalPeriod 회원등급 갱신기간 관련 StatusCode
      * @param memberGradeRequestDto MemberGradeRequestDto
      * @return memberGrade MemberGrade
      */
@@ -76,7 +76,7 @@ public class MemberGrade {
      * author : Semi Kim
      * description : 기본 등급 이외의 등급 생성시 사용되는 메서드
      *
-     * @param renewalPeriod StatusCode
+     * @param renewalPeriod 회원등급 갱신기간 관련 StatusCode
      * @param memberGradeRequestDto MemberGradeRequestDto
      * @return member grade
      */

@@ -33,10 +33,10 @@ public class MemberGradeRestController {
      * .
      * methodName : memberGradeAdd
      * author : Semi Kim
-     * description : MemberGrade PostMapping
+     * description : 회원등급 등록을 위한 RestController 메서드
      *
      * @param request MemberGradeRequest
-     * @return response entity
+     * @return responseEntity
      */
     @PostMapping
     public ResponseEntity<Void> memberGradeAdd(@RequestBody MemberGradeRequestDto request) {
@@ -51,11 +51,11 @@ public class MemberGradeRestController {
      * .
      * methodName : memberGradeModify
      * author : Semi Kim
-     * description : MemberGrade PutMapping
+     * description : 회원등급 수정을 위한 RestController 메서드
      *
-     * @param memberGradeNo Integer
+     * @param memberGradeNo 수정하려는 회원등급 식별 번호 (Integer)
      * @param request       MemberGradeRequest
-     * @return response entity
+     * @return responseEntity
      */
     @PutMapping("/{memberGradeNo}")
     public ResponseEntity<Void> memberGradeModify(@PathVariable Integer memberGradeNo,
@@ -71,10 +71,10 @@ public class MemberGradeRestController {
      * .
      * methodName : memberGradeRemove
      * author : Semi Kim
-     * description : MemberGrade DeleteMapping
+     * description : 회원등급 삭제을 위한 RestController 메서드
      *
-     * @param memberGradeNo Integer
-     * @return response entity
+     * @param memberGradeNo 삭제하려는 회원등급 식별 번호 (Integer)
+     * @return responseEntity
      */
     @DeleteMapping("/{memberGradeNo}")
     public ResponseEntity<Void> memberGradeRemove(@PathVariable Integer memberGradeNo) {
@@ -89,10 +89,10 @@ public class MemberGradeRestController {
      * .
      * methodName : memberGradeDetails
      * author : Semi Kim
-     * description : MemberGrade Detail GetMapping
+     * description : 회원등급 단건조회를 위한 RestController 메서드
      *
-     * @param memberGradeNo Integer
-     * @return response entity
+     * @param memberGradeNo 단건조회하려는 회원등급 식별 번호 (Integer)
+     * @return responseEntity
      */
     @GetMapping("/{memberGradeNo}")
     public ResponseEntity<MemberGradeResponseDto>
@@ -107,10 +107,10 @@ public class MemberGradeRestController {
      * .
      * methodName : memberGradeList
      * author : Semi Kim
-     * description : MemberGrade List GetMapping
+     * description : pagination 이 적용된 회원등급 다건 조회를 위한 RestController 메서드
      *
      * @param pageable Pageable
-     * @return response entity
+     * @return responseEntity
      */
     @GetMapping
     public ResponseEntity<List<MemberGradeResponseDto>> memberGradeList(Pageable pageable) {

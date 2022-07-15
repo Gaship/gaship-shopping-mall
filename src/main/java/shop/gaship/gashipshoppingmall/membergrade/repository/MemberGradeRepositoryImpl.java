@@ -25,6 +25,12 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
     public MemberGradeRepositoryImpl() {
         super(MemberGrade.class);
     }
+    /**
+     * Gets member grade by.
+     *
+     * @param memberGradeNo 단건 조회하려는 회원등급 식별 번호 (Integer)
+     * @return the member grade by
+     */
 
     @Override
     public Optional<MemberGradeResponseDto> getMemberGradeBy(Integer memberGradeNo) {
@@ -40,6 +46,12 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
                 .fetchOne());
     }
 
+    /**
+     * Gets member grades.
+     *
+     * @param pageable the pageable
+     * @return the member grades
+     */
     @Override
     public List<MemberGradeResponseDto> getMemberGrades(Pageable pageable) {
         QMemberGrade memberGrade = QMemberGrade.memberGrade;
