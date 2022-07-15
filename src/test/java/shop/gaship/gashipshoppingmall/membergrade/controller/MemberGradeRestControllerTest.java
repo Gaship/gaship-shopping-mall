@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -50,7 +49,7 @@ class MemberGradeRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        testMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
+        testMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1, "일반", 0L);
     }
 
     @Test
@@ -69,14 +68,14 @@ class MemberGradeRestControllerTest {
     void memberGradeModify() throws Exception {
         int testMemberGradeNo = 1;
 
-        mockMvc.perform(put("/grades/" + testMemberGradeNo)
+        mockMvc.perform(put("/grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testMemberGradeRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        verify(memberGradeService).modifyMemberGrade(any(), any());
+        verify(memberGradeService).modifyMemberGrade(any());
     }
 
     @Test

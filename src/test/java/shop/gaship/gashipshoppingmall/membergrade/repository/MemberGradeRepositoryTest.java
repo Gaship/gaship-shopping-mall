@@ -45,7 +45,7 @@ class MemberGradeRepositoryTest {
     private MemberGradeRequestDto memberGradeRequestDto;
     @BeforeEach
     void setUp() {
-        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
+        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1, "일반", 0L);
         renewalPeriod = StatusCodeDummy.dummy();
         memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
     }
@@ -76,7 +76,7 @@ class MemberGradeRepositoryTest {
         MemberGrade newMemberGrade = memberGradeRepository.save(memberGrade);
 
         // when
-        newMemberGrade.modifyDetails(MemberGradeDtoDummy.requestDummy("새싹", 1L));
+        newMemberGrade.modifyDetails(MemberGradeDtoDummy.requestDummy(1, "새싹", 1L));
         memberGradeRepository.saveAndFlush(newMemberGrade);
         testEntityManager.clear();
 

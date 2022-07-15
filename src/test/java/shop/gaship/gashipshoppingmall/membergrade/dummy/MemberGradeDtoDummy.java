@@ -17,8 +17,9 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequest
 public class MemberGradeDtoDummy {
     private MemberGradeDtoDummy(){}
 
-    public static MemberGradeRequestDto requestDummy(String name, Long accumulateAmount) {
+    public static MemberGradeRequestDto requestDummy(Integer no, String name, Long accumulateAmount) {
         MemberGradeRequestDto memberGradeRequestDto = new MemberGradeRequestDto();
+        memberGradeRequestDto.setNo(no);
         memberGradeRequestDto.setName(name);
         memberGradeRequestDto.setAccumulateAmount(accumulateAmount);
 

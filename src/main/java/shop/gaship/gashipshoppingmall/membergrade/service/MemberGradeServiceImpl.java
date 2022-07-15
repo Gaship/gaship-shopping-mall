@@ -73,14 +73,13 @@ public class MemberGradeServiceImpl implements MemberGradeService {
      * 기준누적금액이 회원등급끼리 중복되는 부분을 방지하기 위해
      * 해당 기준누적금액과 동일한 기준누적금액을 가지고 있는 다른 회원등급이 존재하면 수정 불가
      *
-     * @param memberGradeNo 수정하려는 회원등급의 식별 번호 (Integer)
      * @param request       수정된 내용이 담긴 requestDto (MemberGradeRequest)
      */
     @Transactional
     @Override
-    public void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request) {
+    public void modifyMemberGrade(MemberGradeRequestDto request) {
         MemberGrade memberGrade = memberGradeRepository
-                .findById(memberGradeNo)
+                .findById(request.getNo())
                 .orElseThrow(MemberGradeNotFoundException::new);
 
         if (!memberGrade.getAccumulateAmount().equals(request.getAccumulateAmount())) {

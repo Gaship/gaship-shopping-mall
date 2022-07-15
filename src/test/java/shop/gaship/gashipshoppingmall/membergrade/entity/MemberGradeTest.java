@@ -31,7 +31,7 @@ class MemberGradeTest {
     @BeforeEach
     void setUp() {
         renewalPeriod = StatusCodeDummy.dummy();
-        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
+        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1,"일반", 0L);
     }
 
     @DisplayName("회원등급 getNo 메서드 테스트")
@@ -83,7 +83,7 @@ class MemberGradeTest {
         String dummyName = "VIP";
         Long dummyAccumulateAmount = 100_000_000L;
         MemberGrade result = MemberGrade.create(renewalPeriod,
-                MemberGradeDtoDummy.requestDummy(dummyName, dummyAccumulateAmount));
+                MemberGradeDtoDummy.requestDummy(1, dummyName, dummyAccumulateAmount));
 
         // then
         assertThat(result).isNotNull();
@@ -101,7 +101,7 @@ class MemberGradeTest {
         MemberGrade memberGrade = MemberGradeDummy
                 .dummy(memberGradeRequestDto, renewalPeriod);
         MemberGradeRequestDto modifyRequestDto = MemberGradeDtoDummy
-                .requestDummy(modifyNameData, modifyAccumulateAmountData);
+                .requestDummy(1, modifyNameData, modifyAccumulateAmountData);
 
         // when
         memberGrade.modifyDetails(modifyRequestDto);

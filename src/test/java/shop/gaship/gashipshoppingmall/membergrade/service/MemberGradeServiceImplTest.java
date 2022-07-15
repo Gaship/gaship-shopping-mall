@@ -61,7 +61,7 @@ class MemberGradeServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
+        memberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1, "일반", 0L);
         testMemberGradeNo = 1;
     }
 
@@ -203,7 +203,7 @@ class MemberGradeServiceImplTest {
     @Test
     void modifyMemberGrade_whenMemberGradeIsPresent() {
         // given
-        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy("새싹", 0L);
+        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1, "새싹", 0L);
 
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
@@ -217,7 +217,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(modifyMemberGrade);
 
         // when
-        memberGradeService.modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequestDto);
+        memberGradeService.modifyMemberGrade(modifyMemberGradeRequestDto);
 
         // then
         verify(memberGradeRepository).findById(any());
@@ -231,7 +231,7 @@ class MemberGradeServiceImplTest {
     @Test
     void modifyMemberGrade_whenMemberGradeIsPresent_modifyAccumulate(){
         // given
-        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy("새싹", 1L);
+        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1, "새싹", 1L);
 
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
@@ -247,7 +247,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(modifyMemberGrade);
 
         // when
-        memberGradeService.modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequestDto);
+        memberGradeService.modifyMemberGrade(modifyMemberGradeRequestDto);
 
         // then
         verify(memberGradeRepository).findById(any());
@@ -260,7 +260,7 @@ class MemberGradeServiceImplTest {
     @Test
     void modifyMemberGrade_whenMemberGradeIsEmpty_throwMemberGradeNotFoundException() {
         // given
-        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy("새싹", 0L);
+        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1,"새싹", 0L);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -268,7 +268,7 @@ class MemberGradeServiceImplTest {
 
         // when&then
         assertThatThrownBy(() -> memberGradeService
-                .modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequestDto))
+                .modifyMemberGrade(modifyMemberGradeRequestDto))
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
         verify(memberGradeRepository).findById(any());

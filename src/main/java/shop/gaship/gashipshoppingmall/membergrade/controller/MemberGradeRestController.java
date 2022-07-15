@@ -53,14 +53,12 @@ public class MemberGradeRestController {
      * author : Semi Kim
      * description : 회원등급 수정을 위한 RestController 메서드
      *
-     * @param memberGradeNo 수정하려는 회원등급 식별 번호 (Integer)
      * @param request       MemberGradeRequest
      * @return responseEntity
      */
-    @PutMapping("/{memberGradeNo}")
-    public ResponseEntity<Void> memberGradeModify(@PathVariable Integer memberGradeNo,
-                                                  @RequestBody MemberGradeRequestDto request) {
-        memberGradeService.modifyMemberGrade(memberGradeNo, request);
+    @PutMapping
+    public ResponseEntity<Void> memberGradeModify(@RequestBody MemberGradeRequestDto request) {
+        memberGradeService.modifyMemberGrade(request);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

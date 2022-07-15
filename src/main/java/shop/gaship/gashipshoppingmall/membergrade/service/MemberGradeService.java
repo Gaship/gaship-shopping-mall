@@ -21,7 +21,7 @@ public interface MemberGradeService {
 
     void addMemberGrade(MemberGradeRequestDto request);
 
-    void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request);
+    void modifyMemberGrade(MemberGradeRequestDto request);
 
     void removeMemberGrade(Integer memberGradeNo);
 
