@@ -1,15 +1,11 @@
 package shop.gaship.gashipshoppingmall.category.exception;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.category.exception
- * fileName       : CategoryRemainLowerCategory
- * author         : 김보민
- * date           : 2022-07-11
- * description    : 하위 카테고리를 가지는 카테고리를 삭제하려할 때 던질 예외
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-11        김보민       최초 생성
+ *
+ * 카테고리 삭제 시 하위 카테고리가 존재할 때 던질 예외
+ *
+ * @author : 김보민
+ * @since 1.0
  */
 public class CategoryRemainLowerCategoryException extends RuntimeException {
     public CategoryRemainLowerCategoryException() {

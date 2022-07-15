@@ -7,15 +7,11 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.category.dto
- * fileName       : CategoryCreateRequest
- * author         : 김보민
- * date           : 2022-07-09
- * description    : 카테고리 생성 리퀘스트
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-09        김보민       최초 생성
+ *
+ * 카테고리 생성 요청에 담기는 데이터 객체
+ *
+ * @author : 김보민
+ * @since 1.0
  */
 @NoArgsConstructor
 @AllArgsConstructor

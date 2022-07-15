@@ -6,18 +6,14 @@ import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.category.repository.custom
- * fileName       : CategoryRepositoryCustom
- * author         : 김보민
- * date           : 2022-07-11
- * description    : 카테고리 레퍼지토리 커스텀
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-11        김보민       최초 생성
+ * 카테고리 레퍼지토리 커스텀
+ *
+ * @author : 김보민
+ * @since 1.0
  */
 @NoRepositoryBean
 public interface CategoryRepositoryCustom {
+
     Optional<CategoryResponseDto> findCategoryById(Integer categoryNo);
 
     List<CategoryResponseDto> findAllCategories();

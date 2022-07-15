@@ -17,15 +17,12 @@ import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.category.service.impl
- * fileName       : CategoryServiceImpl
- * author         : 김보민
- * date           : 2022-07-09
- * description    : 카테고리 서비스
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-09        김보민       최초 생성
+ *
+ * 카테고리 서비스 구현체
+ *
+ * @see shop.gaship.gashipshoppingmall.category.service.CategoryService
+ * @author : 김보민
+ * @since 1.0
  */
 @Service
 @RequiredArgsConstructor
@@ -34,11 +31,11 @@ public class CategoryServiceImpl implements CategoryService {
     private final ProductRepository productRepository;
 
     /**
-     * methodName : addCategory
-     * author : 김보민
-     * description : 카테고리 생성
-     *
-     * @param createRequest category create request
+     * 
+     * root 카테고리 추가
+     * 
+     * @param createRequest 카테고리 생성 요청
+     * @author 김보민
      */
     @Transactional
     @Override
@@ -51,6 +48,14 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category);
     }
 
+    /**
+     * 
+     * 하위 카테고리 추가
+     * 
+     * @param createRequest 카테고리 생성 요청
+     * @throws CategoryNotFoundException 카테고리를 못찾음
+     * @author 김보민
+     */
     @Transactional
     @Override
     public void addLowerCategory(CategoryCreateRequestDto createRequest) {
@@ -66,11 +71,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * methodName : modifyCategory
-     * author : 김보민
-     * description : 카테고리 수정
      *
-     * @param modifyRequest category modify request
+     * 카테고리 수정
+     *
+     * @param modifyRequest 카테고리 수정 요청
+     * @throws CategoryNotFoundException 카테고리를 못찾음
+     * @author 김보민
      */
     @Transactional
     @Override
@@ -82,13 +88,15 @@ public class CategoryServiceImpl implements CategoryService {
 
         categoryRepository.save(category);
     }
-
+    
     /**
-     * methodName : findCategory
-     * author : 김보민
-     * description : 카테고리 단건 조회
-     *
-     * @param categoryNo category no
+     * 
+     * 카테고리 단건 조회
+     * 
+     * @param categoryNo 조회할 카테고리 번호
+     * @return CategoryResponseDto 카테고리 데이터
+     * @throws CategoryNotFoundException 카테고리를 못찾음
+     * @author 김보민
      */
     @Override
     public CategoryResponseDto findCategory(Integer categoryNo) {
@@ -97,10 +105,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * methodName : findCategories
-     * author : 김보민
-     * description : 카테고리 다건 조회
-     *
+     * 
+     * 카테고리 전체 조회
+     * 
+     * @return list 카테고리 목록 데이터
+     * @author 김보민
      */
     @Override
     public List<CategoryResponseDto> findCategories() {
@@ -108,11 +117,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * methodName : removeCategory
-     * author : 김보민
-     * description : 카테고리 삭제
-     *
-     * @param categoryNo category no
+     * 
+     * 하위 카테고리 조회
+     * 
+     * @param categoryNo 하위카테고리를 조회할 상위 카테고리 번호
+     * @throws CategoryNotFoundException 카테고리를 못찾음
+     * @throws CategoryRemainLowerCategoryException 하위 카테고리가 존재할 시 삭제 불가
+     * @throws CategoryRemainProductException 해당 카테고리에 속한 상품이 있을 경우 삭제 불가
+     * @author 김보민
      */
     @Transactional
     @Override
@@ -137,6 +149,15 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(categoryNo);
     }
 
+    /**
+     *
+     * 하위 카테고리 조회
+     *
+     * @param categoryNo 하위 카테고리를 조회할 상위 카테고리
+     * @return list 하위 카테고리 목록
+     * @throws CategoryNotFoundException 카테고리를 못찾음
+     * @author 김보민
+     */
     @Override
     public List<CategoryResponseDto> findLowerCategories(Integer categoryNo) {
         Category category = categoryRepository.findById(categoryNo)

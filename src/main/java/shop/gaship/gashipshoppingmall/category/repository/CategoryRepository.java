@@ -6,15 +6,11 @@ import shop.gaship.gashipshoppingmall.category.repository.custom.CategoryReposit
 
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.category.repository
- * fileName       : CategoryRepository
- * author         : 김보민
- * date           : 2022-07-09
- * description    : 카테고리 레퍼지토리 인터페이스
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-08        김보민       최초 생성
+ *
+ * 카테고리 jpa 레퍼지토리
+ *
+ * @author : 김보민
+ * @since 1.0
  */
 public interface CategoryRepository
         extends JpaRepository<Category, Integer>, CategoryRepositoryCustom {

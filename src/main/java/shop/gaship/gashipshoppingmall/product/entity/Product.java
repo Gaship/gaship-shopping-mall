@@ -6,17 +6,6 @@ import lombok.*;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.product.entity
- * fileName       : Product
- * author         : 김보민
- * date           : 2022-07-11
- * description    : 상품 엔티티
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-11        김보민       최초 생성
- */
 @Entity
 @Getter
 @NoArgsConstructor

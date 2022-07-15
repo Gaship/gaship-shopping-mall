@@ -10,29 +10,26 @@ import shop.gaship.gashipshoppingmall.category.entity.QCategory;
 import shop.gaship.gashipshoppingmall.category.repository.custom.CategoryRepositoryCustom;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.category.repository.impl
- * fileName       : CategoryRepositoryImpl
- * author         : 김보민
- * date           : 2022-07-11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-11        김보민       최초 생성
+ *
+ * 카테고리 레퍼지토리 구현체
+ *
+ * @see org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
+ * @see shop.gaship.gashipshoppingmall.category.repository.custom.CategoryRepositoryCustom
+ * @author : 김보민
+ * @since 1.0
  */
 public class CategoryRepositoryImpl
         extends QuerydslRepositorySupport implements CategoryRepositoryCustom {
     public CategoryRepositoryImpl() {
         super(Category.class);
     }
-
     /**
-     * methodName : findCategoryById
-     * author : 김보민
-     * description : 카테고리 단건 조회
      *
-     * @param categoryNo category no
-     * @return optional
+     * 카테고리 단건 조회
+     *
+     * @param categoryNo 조회할 카테괼 번호
+     * @return optional 카테고리 정보를 담은 optional
+     * @author 김보민
      */
     @Override
     public Optional<CategoryResponseDto> findCategoryById(Integer categoryNo) {
@@ -51,13 +48,12 @@ public class CategoryRepositoryImpl
         );
     }
 
-
     /**
-     * methodName : findAllCategories
-     * author : 김보민
-     * description : 카테고리 다건 조회
      *
-     * @return list
+     * 카테고리 전체 조회
+     *
+     * @return list 카테고리 목록 정보를 담은 list
+     * @author 김보민
      */
     @Override
     public List<CategoryResponseDto> findAllCategories() {
@@ -75,12 +71,12 @@ public class CategoryRepositoryImpl
     }
 
     /**
-     * methodName : findAllLowerCategories
-     * author : 김보민
-     * description : 하위 카테고리 조회
      *
-     * @param categoryNo category no
-     * @return list
+     * 하위 카테고리 조회
+     *
+     * @param categoryNo 하위 카테고리를 조회할 상위 카테고리 번호
+     * @return list 하위 카테고리 목록 정보를 담은 list
+     * @author 김보민
      */
     @Override
     public List<CategoryResponseDto> findAllLowerCategories(Integer categoryNo) {

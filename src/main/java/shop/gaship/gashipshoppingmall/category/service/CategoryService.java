@@ -6,17 +6,14 @@ import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequest
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.category.service
- * fileName       : CategoryService
- * author         : 김보민
- * date           : 2022-07-09
- * description    : 카테고리 서비스 인터페이스
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-09        김보민       최초 생성
+ *
+ * 카테고리 서비스 인터페이스
+ *
+ * @author : 김보민
+ * @since 1.0
  */
 public interface CategoryService {
+
     void addRootCategory(CategoryCreateRequestDto createRequest);
 
     void addLowerCategory(CategoryCreateRequestDto createRequest);

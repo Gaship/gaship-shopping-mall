@@ -15,17 +15,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.category.repository
- * fileName       : CategoryRepositoryTest
- * author         : 김보민
- * date           : 2022-07-09
- * description    : 카테고리 레퍼지토리 테스트
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-08        김보민       최초 생성
- */
 @DataJpaTest
 class CategoryRepositoryTest {
 

@@ -1,21 +1,19 @@
 package shop.gaship.gashipshoppingmall.category.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.category.entity
- * fileName       : Category
- * author         : 김보민
- * date           : 2022-07-09
- * description    : 카테고리 엔티티
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-08        김보민       최초 생성
+ *
+ * 카테고리 엔티티
+ *
+ * @author : 김보민
+ * @since 1.0
  */
 @Entity
 @Getter
@@ -28,10 +26,10 @@ public class Category {
     @Column(name = "category_no", nullable = false)
     private Integer no;
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
-    @Column(nullable = false)
+    @NotNull
     private Integer level;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -41,12 +39,19 @@ public class Category {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "upper_category_no", referencedColumnName = "category_no")
     private List<Category> lowerCategories = new ArrayList<>();
-
+    
     public Category(String name, Integer level) {
         this.name = name;
         this.level = level;
     }
 
+    /**
+     *
+     * 하위 카테고리를 생성하는 메서드 입니다.
+     *
+     * @param lowerCategory 추가할 하위 카테고리
+     * @author 김보민
+     */
     public void insertLowerCategory(Category lowerCategory) {
         lowerCategory.updateUpperCategory(this);
 
@@ -54,22 +59,22 @@ public class Category {
     }
 
     /**
-     * methodName : updateUpperCategory
-     * author : 김보민
-     * description : 카테고리 엔티티 상위 카테고리 변경
      *
-     * @param category category
+     * 카테고리의 상위 카테고리를 업데이트하는 메서드 입니다.
+     *
+     * @param category 업데이트할 상위 카테고리
+     * @author 김보민
      */
     public void updateUpperCategory(Category category) {
         this.upperCategory = category;
     }
 
     /**
-     * methodName : updateCategoryName
-     * author : 김보민
-     * description : 카테고리 엔티티 이름 변경
      *
-     * @param name update name
+     * 카테고리의 이름을 업데이트하는 메서드 입니다.
+     *
+     * @param name 업데이트할 이름
+     * @author 김보민
      */
     public void updateCategoryName(String name) {
         this.name = name;

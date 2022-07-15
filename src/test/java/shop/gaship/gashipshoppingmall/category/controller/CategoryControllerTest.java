@@ -22,17 +22,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.category.controller
- * fileName       : CategoryControllerTest
- * author         : 김보민
- * date           : 2022-07-09
- * description    : 카테고리 컨트롤러 테스트
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022-07-09        김보민       최초 생성
- */
 @WebMvcTest({ CategoryController.class })
 class CategoryControllerTest {
     @Autowired
