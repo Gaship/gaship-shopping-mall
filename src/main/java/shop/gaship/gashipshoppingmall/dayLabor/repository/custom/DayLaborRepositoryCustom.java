@@ -1,6 +1,6 @@
-package shop.gaship.gashipshoppingmall.config.dayLabor.repository.custom;
+package shop.gaship.gashipshoppingmall.dayLabor.repository.custom;
 
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.response.GetDayLaborResponseDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
 
 import java.util.List;
 

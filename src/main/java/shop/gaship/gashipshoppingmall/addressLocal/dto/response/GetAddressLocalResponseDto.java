@@ -5,15 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.addressLocal.dto.response
- * fileName       : GetAddressLocalResponseDto
- * author         : 유호철
- * date           : 2022/07/14
- * description    : 배송지조회시 반환받게되는 형태의 클래스입니다.
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/14         유호철             최초 생성
+ * 주소지를 반환받기위한 클래스입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 
 @Getter

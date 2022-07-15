@@ -1,8 +1,8 @@
-package shop.gaship.gashipshoppingmall.config.dayLabor.service;
+package shop.gaship.gashipshoppingmall.dayLabor.service;
 
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.CreateDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.FixDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.response.GetDayLaborResponseDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
 
 import java.util.List;
 

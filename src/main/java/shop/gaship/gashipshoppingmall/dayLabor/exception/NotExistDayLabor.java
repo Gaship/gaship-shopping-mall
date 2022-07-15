@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.config.dayLabor.exception;
+package shop.gaship.gashipshoppingmall.dayLabor.exception;
 
 /**
  * 관련지역물량이 없을경우 예외를 표기해주기위한 클래스입니다.

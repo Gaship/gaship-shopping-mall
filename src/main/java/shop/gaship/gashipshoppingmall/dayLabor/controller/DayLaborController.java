@@ -1,12 +1,12 @@
-package shop.gaship.gashipshoppingmall.config.dayLabor.controller;
+package shop.gaship.gashipshoppingmall.dayLabor.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.CreateDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.FixDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.response.GetDayLaborResponseDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.service.DayLaborService;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
+import shop.gaship.gashipshoppingmall.dayLabor.service.DayLaborService;
 
 import javax.validation.Valid;
 import java.util.List;

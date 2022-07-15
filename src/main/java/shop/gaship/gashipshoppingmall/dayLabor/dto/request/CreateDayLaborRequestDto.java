@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.config.dayLabor.dto.request;
+package shop.gaship.gashipshoppingmall.dayLabor.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

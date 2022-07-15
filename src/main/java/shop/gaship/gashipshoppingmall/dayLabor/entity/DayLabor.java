@@ -1,10 +1,10 @@
-package shop.gaship.gashipshoppingmall.config.dayLabor.entity;
+package shop.gaship.gashipshoppingmall.dayLabor.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.CreateDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.FixDayLaborRequestDto;
 
 import javax.persistence.*;
 

@@ -1,12 +1,12 @@
-package shop.gaship.gashipshoppingmall.config.dayLabor.repository.impl;
+package shop.gaship.gashipshoppingmall.dayLabor.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.QAddressLocal;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.response.GetDayLaborResponseDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.entity.DayLabor;
-import shop.gaship.gashipshoppingmall.config.dayLabor.repository.custom.DayLaborRepositoryCustom;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
+import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.QDayLabor;
+import shop.gaship.gashipshoppingmall.dayLabor.repository.custom.DayLaborRepositoryCustom;
 
 import java.util.List;
 

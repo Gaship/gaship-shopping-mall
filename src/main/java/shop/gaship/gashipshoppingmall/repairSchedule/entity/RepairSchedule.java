@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.repairSchedule.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.gaship.gashipshoppingmall.config.dayLabor.entity.DayLabor;
+import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.pk.RepairSchedulePk;
 
 import javax.persistence.*;

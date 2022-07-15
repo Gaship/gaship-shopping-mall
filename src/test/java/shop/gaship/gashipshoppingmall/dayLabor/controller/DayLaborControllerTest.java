@@ -8,14 +8,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.gaship.gashipshoppingmall.config.dayLabor.controller.DayLaborController;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.CreateDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.FixDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.response.GetDayLaborResponseDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.CreateDayLaborRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.FixDayLaborRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.GetDayLaborResponseDtoDummy;
-import shop.gaship.gashipshoppingmall.config.dayLabor.service.DayLaborService;
+import shop.gaship.gashipshoppingmall.dayLabor.service.DayLaborService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

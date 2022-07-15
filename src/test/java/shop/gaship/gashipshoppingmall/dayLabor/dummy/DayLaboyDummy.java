@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.dayLabor.dummy;
 
-import shop.gaship.gashipshoppingmall.config.dayLabor.entity.DayLabor;
+import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.dayLabor.dummy

@@ -1,8 +1,8 @@
-package shop.gaship.gashipshoppingmall.config.dayLabor.repository;
+package shop.gaship.gashipshoppingmall.dayLabor.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import shop.gaship.gashipshoppingmall.config.dayLabor.entity.DayLabor;
-import shop.gaship.gashipshoppingmall.config.dayLabor.repository.custom.DayLaborRepositoryCustom;
+import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
+import shop.gaship.gashipshoppingmall.dayLabor.repository.custom.DayLaborRepositoryCustom;
 
 /**
  * 지역별 물량을 다루기위한 레포지토리 인터페이스 입니다.

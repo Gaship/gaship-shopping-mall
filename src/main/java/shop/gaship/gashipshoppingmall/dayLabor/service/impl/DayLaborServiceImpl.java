@@ -1,15 +1,15 @@
-package shop.gaship.gashipshoppingmall.config.dayLabor.service.impl;
+package shop.gaship.gashipshoppingmall.dayLabor.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.CreateDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.FixDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.dto.response.GetDayLaborResponseDto;
-import shop.gaship.gashipshoppingmall.config.dayLabor.entity.DayLabor;
-import shop.gaship.gashipshoppingmall.config.dayLabor.exception.NotExistDayLabor;
-import shop.gaship.gashipshoppingmall.config.dayLabor.repository.DayLaborRepository;
-import shop.gaship.gashipshoppingmall.config.dayLabor.service.DayLaborService;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
+import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
+import shop.gaship.gashipshoppingmall.dayLabor.exception.NotExistDayLabor;
+import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
+import shop.gaship.gashipshoppingmall.dayLabor.service.DayLaborService;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
 
 import javax.transaction.Transactional;
