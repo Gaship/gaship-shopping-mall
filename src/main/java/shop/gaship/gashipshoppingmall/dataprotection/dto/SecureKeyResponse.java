@@ -2,16 +2,12 @@ package shop.gaship.gashipshoppingmall.dataprotection.dto;
 
 import lombok.Getter;
 
+
 /**
- * packageName    : shop.gaship.gashipshoppingmall.dataprotection.vo <br/>
- * fileName       : SecureKeyResponse <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/10 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/10           김민수               최초 생성                         <br/>
+ * NHN Secure Key Manager에서 Secure Key의 응답 메세지 타입입니다.
+ *
+ * @author 김민수
+ * @since 1.0
  */
 @Getter
 public class SecureKeyResponse {

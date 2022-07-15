@@ -3,16 +3,12 @@ package shop.gaship.gashipshoppingmall.member.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member.dto <br/>
- * fileName       : MemberNumberPresence <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/14 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/14           김민수               최초 생성                         <br/>
+ * 회원의 고유식별번호가 담긴 객체입니다.
+ *
+ * @author 김민수
+ * @since 1.0
  */
 @Getter
 @AllArgsConstructor

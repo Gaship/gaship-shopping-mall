@@ -63,7 +63,7 @@ class MemberControllerTest {
         doNothing().when(memberService)
             .registerMember(MemberCreationRequestDummy.dummy());
 
-        mockMvc.perform(post("/members/signUp")
+        mockMvc.perform(post("/members")
             .contentType(MediaType.APPLICATION_JSON)
             .content(contentBody))
             .andDo(print())
@@ -82,7 +82,7 @@ class MemberControllerTest {
             .writeValueAsString(dummy);
 
 
-        mockMvc.perform(post("/members/signUp")
+        mockMvc.perform(post("/members")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(contentBody))
             .andDo(print())

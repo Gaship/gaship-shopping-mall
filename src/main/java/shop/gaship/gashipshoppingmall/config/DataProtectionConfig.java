@@ -4,7 +4,6 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,18 +11,12 @@ import shop.gaship.gashipshoppingmall.dataprotection.dto.SecureKeyResponse;
 import shop.gaship.gashipshoppingmall.dataprotection.exception.NotFoundDataProtectionReposeData;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.config <br/>
- * fileName       : DataProtectionConfig <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/10 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/10           김민수               최초 생성                         <br/>
+ * 서버의 환경설정을 수행하는 클래스입니다.
+ *
+ * @author 김민수
+ * @since 1.0
  */
 @Configuration
-@PropertySource("classpath:application.properties")
 public class DataProtectionConfig {
     @Value("${secure.keymanager.url}")
     private String secureKeyUrl;

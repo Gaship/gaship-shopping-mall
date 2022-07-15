@@ -3,7 +3,9 @@ package shop.gaship.gashipshoppingmall.member.entity;
 import com.google.common.base.Objects;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,6 +18,13 @@ import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
+
+/**
+ * 회원의 엔티티 클래스입니다.
+ *
+ * @author 김민수
+ * @since 1.0
+ */
 @Entity(name = "members")
 @Getter
 @Builder
@@ -26,18 +35,19 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer memberNo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recommend_member_no")
     private Member recommendMember;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_status_no", nullable = false)
     private StatusCode status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_grade_no", nullable = false)
     private MemberGrade grade;
 
+    @Column(unique = true)
     private String email;
 
     private String password;
@@ -48,6 +58,7 @@ public class Member {
 
     private LocalDate birthDate;
 
+    @Column(unique = true)
     private String nickname;
 
     private String gender;

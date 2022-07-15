@@ -18,20 +18,22 @@ import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundExc
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member.service.impl <br/>
- * fileName       : MemberServiceImpl <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/10 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/10           김민수               최초 생성                         <br/>
+ * MemberService를 구현하는 클래스입니다.
+ *
+ * @see MemberService
+ * @author 김민수
+ * @since 1.0
  */
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+    /**
+     * 신규회훤의 기본 상태 번호입니다.
+     */
     private static final int MEMBER_STATUS_ID = 2;
+    /**
+     * 신규 회원의 기본등급 번호입니다.
+     */
     private static final int MEMBER_GRADE_ID = 1;
 
     private final MemberRepository memberRepository;
@@ -40,8 +42,8 @@ public class MemberServiceImpl implements MemberService {
     private final Aes aes;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
     @Override
+    @Transactional
     public void registerMember(MemberCreationRequest memberCreationRequest) {
         Member recommendMember = memberRepository
             .findById(memberCreationRequest.getRecommendMemberNo())
@@ -61,6 +63,12 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.saveAndFlush(savedMember);
     }
 
+    /**
+     * 회원 정보 중 중요한 정보를 암호화하여 저장하는 메서드입니다.
+     *
+     * @param memberCreationRequest 회원 가입할 정보가 담긴 객체
+     * @return 중요 정보가 암호화 된 회원정보 객체
+     */
     private MemberCreationRequest encodePrivacyUserInformation(
         MemberCreationRequest memberCreationRequest) {
         memberCreationRequest.setEmail(aes.aesECBEncode(memberCreationRequest.getEmail()));

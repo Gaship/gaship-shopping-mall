@@ -1,15 +1,10 @@
 package shop.gaship.gashipshoppingmall.member.exception;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member.exception <br/>
- * fileName       : SignUpDenyException <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/13 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/13           김민수               최초 생성                         <br/>
+ * 회원가입 요청이 거부되었을 때 발생하는 예외입니다.
+ *
+ * @author 김민수
+ * @since 1.0
  */
 public class SignUpDenyException extends RuntimeException {
     public SignUpDenyException(String message) {

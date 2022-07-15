@@ -8,15 +8,10 @@ import org.springframework.stereotype.Component;
 import shop.gaship.gashipshoppingmall.dataprotection.exception.EncodeFailureException;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.dataprotection.util <br/>
- * fileName       : Aes <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/10 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/10           김민수               최초 생성                         <br/>
+ * Secure Key Manager에서 응답이 제대로 받지 못하거나, 잘못 요청했을때 발생하는 예외입니다.
+ *
+ * @author 김민수
+ * @since 1.0
  */
 @Component
 public class Aes {
@@ -31,6 +26,13 @@ public class Aes {
     }
 
 
+    /**
+     * Aes-256 알고리즘으로 평문을 암호화하는 메서드입니다.
+     *
+     * @throws EncodeFailureException EncodeFailureException
+     * @param plainText 평문입니다.
+     * @return 암호화된 문자열입니다.
+     */
     public String aesECBEncode(String plainText) {
         try {
             Cipher c = Cipher.getInstance(TRANSFORMATION);
@@ -44,6 +46,13 @@ public class Aes {
         }
     }
 
+    /**
+     * Aes-256 알고리즘으로 암호화된 문자열을 평문을 복호화하는 메서드입니다.
+     *
+     * @throws EncodeFailureException EncodeFailureException
+     * @param encodedText 암호화된 문자열입니다.
+     * @return 복호화 된 평문입니다.
+     */
     public String aesECBDecode(String encodedText) {
         try {
             Cipher c = Cipher.getInstance(TRANSFORMATION);

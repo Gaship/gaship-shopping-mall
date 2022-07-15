@@ -105,7 +105,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하는 경우")
+    @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하지 않는 경우")
     void findMemberFromEmailCaseNotFounded() {
         given(memberRepository.findByEmail(anyString()))
             .willReturn(Optional.empty());
@@ -126,7 +126,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하는 경우")
+    @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하지 않는 경우")
     void findMemberFromNicknameCaseNotFounded() {
         given(memberRepository.findByNickname(anyString()))
             .willReturn(Optional.empty());

@@ -5,15 +5,10 @@ import lombok.Getter;
 
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member.dto <br/>
- * fileName       : FailureRequestDto <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/13 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/13           김민수               최초 생성                         <br/>
+ * 요청의 결과가 실패했을떄의 결과값을 담은 클래스입니다..
+ *
+ * @author 김민수
+ * @since 1.0
  */
 @Getter
 @AllArgsConstructor

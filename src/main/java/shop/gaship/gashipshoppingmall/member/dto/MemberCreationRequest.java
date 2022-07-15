@@ -11,15 +11,10 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member.dto <br/>
- * fileName       : MemberCreationRequest <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/10 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/10           김민수               최초 생성                         <br/>
+ * 회원가입의 요청이 들어올떄 회원가입을 할 데이터들이 담겨진 클래스입니다.
+ *
+ * @author 김민수
+ * @since 1.0
  */
 @Data
 @Builder

@@ -1,15 +1,11 @@
 package shop.gaship.gashipshoppingmall.member.exception;
 
+
 /**
- * packageName    : shop.gaship.gashipshoppingmall.exception <br/>
- * fileName       : MemberNotFoundException <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/11 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/11           김민수               최초 생성                         <br/>
+ * 회원의 정보를 찾지 못하였을 때 발생하는 예외입니다.
+ *
+ * @author 김민수
+ * @since 1.0
  */
 public class MemberNotFoundException extends RuntimeException{
     public MemberNotFoundException() {

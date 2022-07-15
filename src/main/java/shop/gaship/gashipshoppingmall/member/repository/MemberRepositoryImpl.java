@@ -6,15 +6,10 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.QMember;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member.repository <br/>
- * fileName       : MemberRepositoryImpl <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/13 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/13           김민수               최초 생성                         <br/>
+ * MemberRepositoryCustom 인터페이스에서 제작한 커스텀 쿼리를 구현하는 클래스입니다.
+ *
+ * @author 김민수
+ * @since 1.0
  */
 public class MemberRepositoryImpl extends QuerydslRepositorySupport
     implements MemberRepositoryCustom {
