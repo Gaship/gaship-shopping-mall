@@ -1,6 +1,8 @@
 package shop.gaship.gashipshoppingmall.membergrade.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import lombok.*;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
@@ -32,7 +34,7 @@ public class MemberGrade {
     @JoinColumn(name = "renewal_period_no", nullable = false)
     private StatusCode renewalPeriodStatusCode;
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
     @Column(name = "accumulate_amount", unique = true, nullable = false)
