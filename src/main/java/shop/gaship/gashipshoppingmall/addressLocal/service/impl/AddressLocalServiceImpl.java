@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.addressLocal.service.impl;
 
-import java.util.List;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.AddressSearchRequestDto;
@@ -11,6 +9,9 @@ import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.exception.NotExistAddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
+
+import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.addressLocal.service.impl fileName       :
@@ -29,7 +30,7 @@ public class AddressLocalServiceImpl implements AddressLocalService {
     @Override
     public void modifyLocalDelivery(ModifyAddressRequestDto modifyDto) {
         AddressLocal addressLocal = repository.findById(modifyDto.getLocalNo())
-            .orElseThrow(NotExistAddressLocal::new);
+                .orElseThrow(NotExistAddressLocal::new);
 
         addressLocal.allowDelivery(modifyDto.isDelivery());
         repository.save(addressLocal);

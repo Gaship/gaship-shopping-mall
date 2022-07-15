@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.dayLabor.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +12,8 @@ import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.dayLabor.repository fileName       :

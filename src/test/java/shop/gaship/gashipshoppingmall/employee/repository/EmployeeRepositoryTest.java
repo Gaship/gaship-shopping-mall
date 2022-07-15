@@ -1,8 +1,5 @@
 package shop.gaship.gashipshoppingmall.employee.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +17,8 @@ import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * packageName    : shop.gaship.gashipshoppingmall.employee.repository
  * fileName       : EmployeeRepositoryTest
@@ -33,25 +32,18 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 @DataJpaTest
 class EmployeeRepositoryTest {
 
-    private Employee employee;
-
-    private AddressLocal addressLocal;
-
-    private StatusCode code;
-
-    private DayLabor labor;
-
     @Autowired
     EmployeeRepository repository;
-
     @Autowired
     AddressLocalRepository localRepository;
-
     @Autowired
     StatusCodeRepository codeRepository;
-
     @Autowired
     DayLaborRepository laborRepository;
+    private Employee employee;
+    private AddressLocal addressLocal;
+    private StatusCode code;
+    private DayLabor labor;
 
     @BeforeEach
     void setUp() {

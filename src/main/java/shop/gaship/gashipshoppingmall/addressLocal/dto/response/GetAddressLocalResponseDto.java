@@ -1,12 +1,11 @@
 package shop.gaship.gashipshoppingmall.addressLocal.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *packageName    : shop.gaship.gashipshoppingmall.addressLocal.dto.response
+ * packageName    : shop.gaship.gashipshoppingmall.addressLocal.dto.response
  * fileName       : GetAddressLocalResponseDto
  * author         : 유호철
  * date           : 2022/07/14

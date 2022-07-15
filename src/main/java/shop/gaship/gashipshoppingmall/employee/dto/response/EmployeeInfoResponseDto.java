@@ -1,13 +1,14 @@
 package shop.gaship.gashipshoppingmall.employee.dto.response;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.employee.dto
+ * packageName    : shop.gaship.gashipshoppingmall.employee.dto
  * fileName       : GetEmployee
  * author         : 유호철
  * date           : 2022/07/10
@@ -21,7 +22,7 @@ import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 public class EmployeeInfoResponseDto {
 
     @NotNull
-    @Length(min = 1,max = 20)
+    @Length(min = 1, max = 20)
     private String name;
 
     @Email

@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.addressLocal.dummy;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 
 /**
- *packageName    : shop.gaship.gashipshoppingmall.addressLocal.dummy
+ * packageName    : shop.gaship.gashipshoppingmall.addressLocal.dummy
  * fileName       : ModifyAddressRequestDtoDummy
  * author         : 유호철
  * date           : 2022/07/14
@@ -14,11 +14,11 @@ import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequ
  * 2022/07/14       유호철       최초 생성
  */
 public class ModifyAddressRequestDtoDummy {
-    private ModifyAddressRequestDtoDummy(){
+    private ModifyAddressRequestDtoDummy() {
 
     }
 
-    public static ModifyAddressRequestDto dummy(){
-        return new ModifyAddressRequestDto(1,true);
+    public static ModifyAddressRequestDto dummy() {
+        return new ModifyAddressRequestDto(1, true);
     }
 }

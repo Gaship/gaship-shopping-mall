@@ -1,13 +1,5 @@
 package shop.gaship.gashipshoppingmall.employee.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
@@ -15,8 +7,10 @@ import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequest
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
+import javax.persistence.*;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.employee.entity
+ * packageName    : shop.gaship.gashipshoppingmall.employee.entity
  * fileName       : Employee
  * author         : 유호철
  * date           : 2022/07/10
@@ -46,21 +40,21 @@ public class Employee {
     @JoinColumn(name = "responsibility_address_no")
     private AddressLocal addressLocal;
 
-    @Column(name = "name",unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
-    @Column(name = "email",unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name = "phone_number",unique = true)
+    @Column(name = "phone_number", unique = true)
     private String phoneNo;
 
     public Employee(StatusCode statusCode, AddressLocal addressLocal,
-        String name,
-        String email, String password, String phoneNo) {
+                    String name,
+                    String email, String password, String phoneNo) {
         this.statusCode = statusCode;
         this.addressLocal = addressLocal;
         this.name = name;
@@ -87,7 +81,7 @@ public class Employee {
      *
      * @param dto ModifyEmployeeDto
      */
-    public void modifyEmployee(ModifyEmployeeRequestDto dto){
+    public void modifyEmployee(ModifyEmployeeRequestDto dto) {
         this.name = dto.getName();
         this.email = dto.getEmail();
         this.phoneNo = dto.getPhoneNo();
@@ -111,7 +105,7 @@ public class Employee {
      *
      * @param dto CreateEmployeeDto
      */
-    public void registerEmployee(CreateEmployeeRequestDto dto){
+    public void registerEmployee(CreateEmployeeRequestDto dto) {
         this.name = dto.getName();
         this.phoneNo = dto.getPhoneNo();
         this.email = dto.getEmail();

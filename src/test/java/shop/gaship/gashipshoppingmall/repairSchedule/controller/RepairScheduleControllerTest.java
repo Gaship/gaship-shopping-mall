@@ -1,23 +1,6 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +11,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.ModifyScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.SchedulePageRequestDto;
@@ -37,8 +19,19 @@ import shop.gaship.gashipshoppingmall.repairSchedule.dummy.CreateScheduleRequest
 import shop.gaship.gashipshoppingmall.repairSchedule.dummy.GetRepairScheduleResponseDtoDummy;
 import shop.gaship.gashipshoppingmall.repairSchedule.service.RepairScheduleService;
 
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.repairSchedule.controller
+ * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.controller
  * fileName       : RepairScheduleControllerTest
  * author         : 유호철
  * date           : 2022/07/14
@@ -70,12 +63,12 @@ class RepairScheduleControllerTest {
         doNothing().when(service).registerSchedule(dto);
 
         mvc.perform(post("/repair-schedule")
-            .contentType(MediaType.APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8)
-            .content(objectMapper.writeValueAsString(dto))
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated())
-            .andDo(print());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andDo(print());
 
         verify(service, times(1)).registerSchedule(dto);
     }
@@ -90,22 +83,22 @@ class RepairScheduleControllerTest {
         doNothing().when(service).modifySchedule(dto);
 
         mvc.perform(put("/repair-schedule")
-            .contentType(MediaType.APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8)
-            .content(objectMapper.writeValueAsString(dto))
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(print());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
 
         //then
-        verify(service,times(1)).modifySchedule(any());
+        verify(service, times(1)).modifySchedule(any());
     }
 
     @DisplayName("모든 스케줄 조회 테스트")
     @Test
     void getAllSchedule() throws Exception {
         //given
-        SchedulePageRequestDto dto = new SchedulePageRequestDto(1,10);
+        SchedulePageRequestDto dto = new SchedulePageRequestDto(1, 10);
         PageRequest pageRequest = PageRequest.of(1, 10);
         List<GetRepairScheduleResponseDto> list = new ArrayList<>();
         GetRepairScheduleResponseDto responseDto1 = GetRepairScheduleResponseDtoDummy.dummy1();
@@ -113,18 +106,18 @@ class RepairScheduleControllerTest {
         list.add(responseDto1);
         list.add(responseDto2);
         Page<GetRepairScheduleResponseDto> pages = new PageImpl<>(list, pageRequest,
-            list.size());
+                list.size());
         //when
         when(service.getAllSchedule(dto))
-            .thenReturn(pages);
+                .thenReturn(pages);
 
         mvc.perform(get("/repair-schedule")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-                .characterEncoding(StandardCharsets.UTF_8)
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(print());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
 
         verify(service, times(1)).getAllSchedule(dto);
     }
@@ -140,15 +133,15 @@ class RepairScheduleControllerTest {
         list.add(responseDto2);
         //when & then
         when(service.findScheduleByDate(now))
-            .thenReturn(list);
+                .thenReturn(list);
 
-       mvc.perform(get("/repair-schedule/date")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(now))
-                .characterEncoding(StandardCharsets.UTF_8)
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(print());
+        mvc.perform(get("/repair-schedule/date")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(now))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
 
         //then
         verify(service, times(1)).findScheduleByDate(any());

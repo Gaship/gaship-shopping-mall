@@ -1,9 +1,5 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.LocalDate;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +19,11 @@ import shop.gaship.gashipshoppingmall.repairSchedule.dto.response.GetRepairSched
 import shop.gaship.gashipshoppingmall.repairSchedule.dummy.RepairScheduleDummy;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.RepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.pk.RepairSchedulePk;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.repairSechedule.repository fileName
@@ -145,7 +146,7 @@ class RepairScheduleRepositoryTest {
 
     @DisplayName("이미 있는 id 인지 찾기")
     @Test
-    void findAddressNoAndDate(){
+    void findAddressNoAndDate() {
         //given
         AddressLocal a1 = AddressLocalDummy.dummy1();
         DayLabor d1 = DayLaboyDummy.dummy1();
@@ -165,7 +166,7 @@ class RepairScheduleRepositoryTest {
 
         //then
         RepairSchedule result = repository.findByPk_AddressNoAndPk_Date(
-            r1.pk.getAddressNo(), r1.pk.getDate()).get();
+                r1.pk.getAddressNo(), r1.pk.getDate()).get();
 
         assertThat(result.getDayLabor()).isEqualTo(d1);
 

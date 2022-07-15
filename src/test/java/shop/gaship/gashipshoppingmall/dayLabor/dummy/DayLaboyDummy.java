@@ -14,10 +14,10 @@ import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
  * 2022/07/12        유호철       최초생성
  */
 public class DayLaboyDummy {
-    private DayLaboyDummy(){
+    private DayLaboyDummy() {
     }
 
-    public static DayLabor dummy1(){
+    public static DayLabor dummy1() {
         return new DayLabor(null, 10);
     }
 

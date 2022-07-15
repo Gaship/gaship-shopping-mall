@@ -1,8 +1,9 @@
 package shop.gaship.gashipshoppingmall.dayLabor.dto.request;
 
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.dayLabor.dto.request

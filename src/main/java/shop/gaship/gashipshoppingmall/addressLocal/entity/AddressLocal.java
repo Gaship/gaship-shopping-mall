@@ -1,20 +1,11 @@
 package shop.gaship.gashipshoppingmall.addressLocal.entity;
 
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
+
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.address.entity fileName       : AddressLocal
@@ -50,11 +41,10 @@ public class AddressLocal {
     @JoinColumn(name = "upper_address_local_no")
     private AddressLocal upperLocal;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "upperLocal")
-    private  List<AddressLocal> subLocal;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "upperLocal")
+    private List<AddressLocal> subLocal;
 
-    public AddressLocal(String addressName, Integer level, boolean allowDelivery, DayLabor dayLabor,
-        AddressLocal upperLocal,List<AddressLocal> subLocal) {
+    public AddressLocal(String addressName, Integer level, boolean allowDelivery, DayLabor dayLabor, AddressLocal upperLocal, List<AddressLocal> subLocal) {
         this.addressName = addressName;
         this.level = level;
         this.allowDelivery = allowDelivery;
@@ -92,7 +82,7 @@ public class AddressLocal {
      *
      * @param list AddressLocal
      */
-    public void addSubLocal(List<AddressLocal> list){
+    public void addSubLocal(List<AddressLocal> list) {
         this.subLocal = list;
     }
 

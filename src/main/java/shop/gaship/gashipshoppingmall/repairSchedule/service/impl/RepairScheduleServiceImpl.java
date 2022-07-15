@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.service.impl;
 
-import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,17 +18,20 @@ import shop.gaship.gashipshoppingmall.repairSchedule.exception.NotExistSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.repository.RepairScheduleRepository;
 import shop.gaship.gashipshoppingmall.repairSchedule.service.RepairScheduleService;
 
+import java.time.LocalDate;
+import java.util.List;
+
 /**
  * packageName    : shop.gaship.gashipshoppingmall.repairSechedule.service.impl fileName       :
- * RepairSecheduleServiceImpl author         : 유호철 date           : 2022/07/13 description    :
- * =========================================================== DATE              AUTHOR
- * NOTE ----------------------------------------------------------- 2022/07/13       유호철       최초
- * 생성
+ * * RepairSecheduleServiceImpl author         : 유호철 date           : 2022/07/13 description    :
+ * * =========================================================== DATE              AUTHOR NOTE
+ * * ----------------------------------------------------------- 2022/07/13       유호철       최초 생성
  */
 
 @Service
 @RequiredArgsConstructor
 public class RepairScheduleServiceImpl implements RepairScheduleService {
+
     private final RepairScheduleRepository repository;
 
     private final DayLaborRepository dayLaborRepository;
@@ -42,22 +43,22 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
         }
 
         DayLabor dayLabor = dayLaborRepository.findById(dto.getLabor())
-            .orElseThrow(NotExistDayLabor::new);
+                .orElseThrow(NotExistDayLabor::new);
 
         repository.save(
-            RepairSchedule.builder()
-                .pk(new RepairSchedulePk(dto.getDate(),dto.getLocalNo()))
-                .labor(dto.getLabor())
-                .dayLabor(dayLabor)
-                .build()
+                RepairSchedule.builder()
+                        .pk(new RepairSchedulePk(dto.getDate(), dto.getLocalNo()))
+                        .labor(dto.getLabor())
+                        .dayLabor(dayLabor)
+                        .build()
         );
     }
 
     @Override
     public void modifySchedule(ModifyScheduleRequestDto modify) {
         RepairSchedule repairSchedule = repository.findByPk_AddressNoAndPk_Date(modify.getLocalNo(),
-                modify.getDate())
-            .orElseThrow(NotExistSchedule::new);
+                        modify.getDate())
+                .orElseThrow(NotExistSchedule::new);
 
         repairSchedule.fixLabor(modify.getLabor());
         repository.save(repairSchedule);
@@ -71,6 +72,6 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
     @Override
     public Page<GetRepairScheduleResponseDto> getAllSchedule(SchedulePageRequestDto request) {
 
-        return repository.findAllSortDate(PageRequest.of(request.getPage(),request.getSize()));
+        return repository.findAllSortDate(PageRequest.of(request.getPage(), request.getSize()));
     }
 }

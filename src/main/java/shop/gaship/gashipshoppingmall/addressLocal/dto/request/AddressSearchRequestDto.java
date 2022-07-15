@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *packageName    : shop.gaship.gashipshoppingmall.addressLocal.dto.request
+ * packageName    : shop.gaship.gashipshoppingmall.addressLocal.dto.request
  * fileName       : AddressSearchRequestDto
  * author         : 유호철
  * date           : 2022/07/14

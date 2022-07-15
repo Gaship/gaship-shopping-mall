@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.dayLabor.dummy;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
 
 /**
- *packageName    : shop.gaship.gashipshoppingmall.dayLabor.dummy
+ * packageName    : shop.gaship.gashipshoppingmall.dayLabor.dummy
  * fileName       : FixDayLaborRequestDtoDummy
  * author         : 유호철
  * date           : 2022/07/13
@@ -15,12 +15,12 @@ import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto
  */
 public class FixDayLaborRequestDtoDummy {
 
-    private FixDayLaborRequestDtoDummy(){
+    private FixDayLaborRequestDtoDummy() {
 
     }
 
-    public static FixDayLaborRequestDto dummy(){
-        return new FixDayLaborRequestDto(1,22);
+    public static FixDayLaborRequestDto dummy() {
+        return new FixDayLaborRequestDto(1, 22);
     }
 
 }

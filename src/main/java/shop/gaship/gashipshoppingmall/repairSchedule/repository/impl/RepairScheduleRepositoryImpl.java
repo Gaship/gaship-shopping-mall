@@ -2,9 +2,6 @@ package shop.gaship.gashipshoppingmall.repairSchedule.repository.impl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPQLQuery;
-import java.time.LocalDate;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +13,11 @@ import shop.gaship.gashipshoppingmall.repairSchedule.entity.QRepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.RepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.repository.custom.RepairScheduleRepositoryCustom;
 
+import java.time.LocalDate;
+import java.util.List;
+
 /**
- *packageName     : shop.gaship.gashipshoppingmall.repairSechedule.repository.impl
+ * packageName     : shop.gaship.gashipshoppingmall.repairSechedule.repository.impl
  * fileName       : RepairScheduleRepositoryImpl
  * author         : 유호철
  * date           : 2022/07/13
@@ -29,7 +29,7 @@ import shop.gaship.gashipshoppingmall.repairSchedule.repository.custom.RepairSch
  */
 
 public class RepairScheduleRepositoryImpl extends QuerydslRepositorySupport implements
-    RepairScheduleRepositoryCustom {
+        RepairScheduleRepositoryCustom {
 
     public RepairScheduleRepositoryImpl() {
         super(RepairSchedule.class);
@@ -42,17 +42,17 @@ public class RepairScheduleRepositoryImpl extends QuerydslRepositorySupport impl
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
 
         return from(repairSchedule)
-            .leftJoin(repairSchedule.dayLabor,dayLabor)
-            .innerJoin(dayLabor.addressLocal,addressLocal)
-            .where(repairSchedule.pk.date.eq(date))
-            .select(
-                Projections.bean(GetRepairScheduleResponseDto.class,
-                    addressLocal.addressName.as("localName"),
-                    repairSchedule.pk.date.as("localDate"),
-                    repairSchedule.labor.as("labor")
-                    )
-            )
-            .fetch();
+                .leftJoin(repairSchedule.dayLabor, dayLabor)
+                .innerJoin(dayLabor.addressLocal, addressLocal)
+                .where(repairSchedule.pk.date.eq(date))
+                .select(
+                        Projections.bean(GetRepairScheduleResponseDto.class,
+                                addressLocal.addressName.as("localName"),
+                                repairSchedule.pk.date.as("localDate"),
+                                repairSchedule.labor.as("labor")
+                        )
+                )
+                .fetch();
     }
 
     @Override
@@ -62,21 +62,21 @@ public class RepairScheduleRepositoryImpl extends QuerydslRepositorySupport impl
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
 
         QueryResults<GetRepairScheduleResponseDto> result = from(
-            repairSchedule)
-            .leftJoin(repairSchedule.dayLabor, dayLabor)
-            .innerJoin(dayLabor.addressLocal, addressLocal)
-            .select(
-                Projections.bean(GetRepairScheduleResponseDto.class,
-                    addressLocal.addressName.as("localName"),
-                    repairSchedule.pk.date.as("localDate"),
-                    repairSchedule.labor.as("labor")
+                repairSchedule)
+                .leftJoin(repairSchedule.dayLabor, dayLabor)
+                .innerJoin(dayLabor.addressLocal, addressLocal)
+                .select(
+                        Projections.bean(GetRepairScheduleResponseDto.class,
+                                addressLocal.addressName.as("localName"),
+                                repairSchedule.pk.date.as("localDate"),
+                                repairSchedule.labor.as("labor")
+                        )
                 )
-            )
-            .orderBy(repairSchedule.pk.date.desc())
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetchResults();
+                .orderBy(repairSchedule.pk.date.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
 
-        return new PageImpl<>(result.getResults(),pageable,result.getTotal());
+        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
     }
 }

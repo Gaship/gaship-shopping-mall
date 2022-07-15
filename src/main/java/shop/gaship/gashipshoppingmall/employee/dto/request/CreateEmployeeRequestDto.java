@@ -1,14 +1,15 @@
 package shop.gaship.gashipshoppingmall.employee.dto.request;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.employee.dto
+ * packageName    : shop.gaship.gashipshoppingmall.employee.dto
  * fileName       : CreateEmployeeDto
  * author         : 유호철
  * date           : 2022/07/10
@@ -30,7 +31,7 @@ public class CreateEmployeeRequestDto {
     private Integer addressNo;
 
     @NotNull
-    @Length(min = 1,max = 20)
+    @Length(min = 1, max = 20)
     private String name;
 
     @NotNull

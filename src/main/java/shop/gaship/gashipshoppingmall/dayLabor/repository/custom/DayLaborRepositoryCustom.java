@@ -1,10 +1,11 @@
 package shop.gaship.gashipshoppingmall.dayLabor.repository.custom;
 
-import java.util.List;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
 
+import java.util.List;
+
 /**
- *packageName     : shop.gaship.gashipshoppingmall.dayLabor.repository.custom
+ * packageName     : shop.gaship.gashipshoppingmall.dayLabor.repository.custom
  * fileName       : DayLaborRepositoryCustom
  * author         : 유호철
  * date           : 2022/07/13

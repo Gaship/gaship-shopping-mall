@@ -1,10 +1,11 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.dummy;
 
-import java.time.LocalDate;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.ModifyScheduleRequestDto;
 
+import java.time.LocalDate;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dummy
+ * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dummy
  * fileName       : ModifyScheduleRequestDtoDummy
  * author         : 유호철
  * date           : 2022/07/14
@@ -16,15 +17,15 @@ import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.ModifyScheduleR
  */
 public class ModifyScheduleRequestDtoDummy {
 
-     private ModifyScheduleRequestDtoDummy(){
+    private ModifyScheduleRequestDtoDummy() {
 
-     }
+    }
 
-     public static ModifyScheduleRequestDto dummy(){
-         return ModifyScheduleRequestDto.builder()
-             .date(LocalDate.now())
-             .labor(10)
-             .localNo(1)
-             .build();
+    public static ModifyScheduleRequestDto dummy() {
+        return ModifyScheduleRequestDto.builder()
+                .date(LocalDate.now())
+                .labor(10)
+                .localNo(1)
+                .build();
     }
 }

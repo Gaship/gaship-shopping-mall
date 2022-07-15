@@ -1,15 +1,5 @@
 package shop.gaship.gashipshoppingmall.addressLocal.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,8 +20,17 @@ import shop.gaship.gashipshoppingmall.addressLocal.exception.NotExistAddressLoca
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.addressLocal.service.impl.AddressLocalServiceImpl;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.addressLocal.service
+ * packageName    : shop.gaship.gashipshoppingmall.addressLocal.service
  * fileName       : AddressLocalServiceTest
  * author         : 유호철
  * date           : 2022/07/14
@@ -52,6 +51,8 @@ class AddressLocalServiceTest {
     GetAddressLocalResponseDto responseDto;
     AddressSearchRequestDto requestDto;
     ArgumentCaptor<AddressLocal> captor;
+    @MockBean
+    AddressLocalRepository addressLocalRepository;
 
     @BeforeEach
     void setUp() {
@@ -62,34 +63,31 @@ class AddressLocalServiceTest {
         modifyDto = ModifyAddressRequestDtoDummy.dummy();
     }
 
-    @MockBean
-    AddressLocalRepository addressLocalRepository;
-
     @DisplayName("배송여부 수정을 위한 테스트 주소를 찾지못한경우")
     @Test
-    void modifyAddressLocal_delivery_Fail(){
+    void modifyAddressLocal_delivery_Fail() {
         //given & when
         given(addressLocalRepository.findById(any()))
-            .willReturn(Optional.empty());
+                .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(()->service.modifyLocalDelivery(modifyDto))
-            .isInstanceOf(NotExistAddressLocal.class);
+        assertThatThrownBy(() -> service.modifyLocalDelivery(modifyDto))
+                .isInstanceOf(NotExistAddressLocal.class);
     }
 
     @DisplayName("배송여부 수정을 위한 테스트 성공한 경우 테스트")
     @Test
-    void modifyAddressLocal_delivery_Success(){
+    void modifyAddressLocal_delivery_Success() {
         //given
         given(addressLocalRepository.findById(any()))
-            .willReturn(Optional.of(addressLocal));
+                .willReturn(Optional.of(addressLocal));
 
         //when
         service.modifyLocalDelivery(modifyDto);
 
         //then
-        verify(addressLocalRepository,timeout(1))
-            .save(captor.capture());
+        verify(addressLocalRepository, timeout(1))
+                .save(captor.capture());
 
         AddressLocal test = captor.getValue();
         assertThat(test.getAddressName()).isEqualTo(addressLocal.getAddressName());
@@ -100,16 +98,16 @@ class AddressLocalServiceTest {
 
     @DisplayName("배송지 검색테스트")
     @Test
-    void searchAddressLocal(){
+    void searchAddressLocal() {
         //given
         given(addressLocalRepository.findAllAddress(any()))
-            .willReturn(List.of(responseDto));
+                .willReturn(List.of(responseDto));
 
         //when & then
         service.searchAddress(requestDto);
         //then
         verify(addressLocalRepository, times(1))
-            .findAllAddress(any());
+                .findAllAddress(any());
     }
 
 }

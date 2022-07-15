@@ -1,21 +1,16 @@
 package shop.gaship.gashipshoppingmall.dayLabor.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
 
+import javax.persistence.*;
+
 /**
  * packageName    : shop.gaship.gashipshoppingmall.address.entity fileName       : DayLabor author
- *       : HoChul date           : 2022/07/08 description    :
+ * : HoChul date           : 2022/07/08 description    :
  * =========================================================== DATE              AUTHOR
  * NOTE ----------------------------------------------------------- 2022/07/08        HoChul
  * 최초 생성
@@ -38,7 +33,7 @@ public class DayLabor {
     @Column(name = "day_max_labor")
     private Integer maxLabor;
 
-    public DayLabor(Integer addressNo,Integer maxLabor){
+    public DayLabor(Integer addressNo, Integer maxLabor) {
         this.addressNo = addressNo;
         this.maxLabor = maxLabor;
     }

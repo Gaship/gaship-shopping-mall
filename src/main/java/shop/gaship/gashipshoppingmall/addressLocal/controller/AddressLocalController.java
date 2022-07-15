@@ -1,19 +1,15 @@
 package shop.gaship.gashipshoppingmall.addressLocal.controller;
 
-import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.AddressSearchRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.addressLocal.controller
@@ -41,9 +37,10 @@ public class AddressLocalController {
      */
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    void addressLocalModify(@Valid @RequestBody ModifyAddressRequestDto dto){
+    void addressLocalModify(@Valid @RequestBody ModifyAddressRequestDto dto) {
         service.modifyLocalDelivery(dto);
     }
+
     /**
      * methodName : getAddressLocal
      * author : 유호철

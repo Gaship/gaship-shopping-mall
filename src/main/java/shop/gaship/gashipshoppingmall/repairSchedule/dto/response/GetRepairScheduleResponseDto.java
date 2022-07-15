@@ -1,14 +1,14 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.dto.response;
 
-import java.time.LocalDate;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dto.response
+ * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dto.response
  * fileName       : GetRepairScheduleResponseDto
  * author         : 유호철
  * date           : 2022/07/13

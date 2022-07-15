@@ -1,23 +1,11 @@
 package shop.gaship.gashipshoppingmall.employee.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -27,8 +15,8 @@ import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalReposi
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
-import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dummy.CreateEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.dummy.ModifyEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
@@ -40,6 +28,16 @@ import shop.gaship.gashipshoppingmall.employee.service.impl.EmployeeServiceImpl;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.employee.service
@@ -115,24 +113,26 @@ class EmployeeServiceTest {
     void WrongStatusCodeException_createEmployeeTest() {
         //when
         given(codeRepository.findById(dto.getAuthorityNo()))
-            .willReturn(Optional.empty());
+                .willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> service.createEmployee(dto)).isInstanceOf(
-            WrongStatusCodeException.class);
+                WrongStatusCodeException.class);
     }
+
     @DisplayName("지역이 없는 지역이여서 생기는 에러")
     @Test
-    void WrongAddressException_createEmployeeTest(){
+    void WrongAddressException_createEmployeeTest() {
         //when
         given(codeRepository.findById(dto.getAuthorityNo()))
-            .willReturn(Optional.of(code));
+                .willReturn(Optional.of(code));
         given(localRepository.findById(dto.getAddressNo()))
-            .willReturn(Optional.empty());
+                .willReturn(Optional.empty());
         //then
         assertThatThrownBy(() -> service.createEmployee(dto)).isInstanceOf(
-            WrongAddressException.class);
+                WrongAddressException.class);
     }
+
     @DisplayName("직원 생성 테스트")
     @Test
     void createEmployeeTest() {
@@ -141,20 +141,20 @@ class EmployeeServiceTest {
         employee.fixLocation(addressLocal);
 
         given(repository.save(any()))
-            .willReturn(employee);
+                .willReturn(employee);
 
         given(codeRepository.findById(any()))
-            .willReturn(Optional.of(code));
+                .willReturn(Optional.of(code));
 
         given(localRepository.findById(any()))
-            .willReturn(Optional.of(addressLocal));
+                .willReturn(Optional.of(addressLocal));
 
         //when
         service.createEmployee(dto);
 
         //then
         verify(repository, timeout(1))
-            .save(captor.capture());
+                .save(captor.capture());
 
         Employee test = captor.getValue();
         assertThat(dto.getEmail()).isEqualTo(test.getEmail());
@@ -168,15 +168,15 @@ class EmployeeServiceTest {
     void successModifyEmployeeTest() {
         //given
         given(repository.save(any()))
-            .willReturn(employee);
+                .willReturn(employee);
         given(repository.findById(any()))
-            .willReturn(Optional.of(employee));
+                .willReturn(Optional.of(employee));
         //when
         service.modifyEmployee(modifyEmployeeDto);
 
         //then
         verify(repository, times(1))
-            .save(captor.capture());
+                .save(captor.capture());
         Employee employee1 = captor.getValue();
 
         assertThat(employee1.getEmail()).isEqualTo(modifyEmployeeDto.getEmail());
@@ -189,11 +189,11 @@ class EmployeeServiceTest {
     void failModifyEmployeeAndFailGetEmployeeTest() {
         //given
         given(repository.findById(any()))
-            .willReturn(Optional.empty());
+                .willReturn(Optional.empty());
 
         //when & then
         assertThatThrownBy(() -> service.modifyEmployee(modifyEmployeeDto))
-            .isInstanceOf(EmployeeNotFoundException.class);
+                .isInstanceOf(EmployeeNotFoundException.class);
     }
 
     @DisplayName("직원 가져오기 단건")
@@ -201,25 +201,25 @@ class EmployeeServiceTest {
     void successGetEmployeeTest() {
         //given
         given(repository.save(any()))
-            .willReturn(employee);
+                .willReturn(employee);
 
         given(repository.findById(any()))
-            .willReturn(Optional.of(employee));
+                .willReturn(Optional.of(employee));
 
         given(codeRepository.findById(any()))
-            .willReturn(Optional.of(code));
+                .willReturn(Optional.of(code));
 
         given(localRepository.findById(any()))
-            .willReturn(Optional.of(addressLocal));
+                .willReturn(Optional.of(addressLocal));
         //when
         service.createEmployee(dto);
         EmployeeInfoResponseDto test = service.getEmployee(employee.getEmployeeNo());
 
         //then
         verify(repository, times(1))
-            .save(captor.capture());
+                .save(captor.capture());
         verify(repository, times(1))
-            .findById(any());
+                .findById(any());
 
         Employee value = captor.getValue();
         assertThat(test.getEmail()).isEqualTo(value.getEmail());
@@ -232,21 +232,21 @@ class EmployeeServiceTest {
     void getAllEmployees() {
         //given
         Employee employee1 = new Employee(code, addressLocal, "t", "t@naver.com", "aaaa",
-            "01010101");
+                "01010101");
         List<Employee> list = new ArrayList<>();
 
         list.add(employee);
         list.add(employee1);
 
         given(repository.findAll())
-            .willReturn(list);
+                .willReturn(list);
 
         //when
         List<EmployeeInfoResponseDto> allEmployees = service.getAllEmployees();
 
         //then
         verify(repository, times(1))
-            .findAll();
+                .findAll();
 
         assertThat(allEmployees.get(0).getEmail()).isEqualTo(getEmployee.getEmail());
         assertThat(allEmployees.get(1).getName()).isEqualTo(employee1.getName());

@@ -1,8 +1,6 @@
 package shop.gaship.gashipshoppingmall.dayLabor.repository.impl;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPQLQuery;
-import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
@@ -10,8 +8,10 @@ import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.QDayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.repository.custom.DayLaborRepositoryCustom;
 
+import java.util.List;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.dayLabor.repository.impl
+ * packageName    : shop.gaship.gashipshoppingmall.dayLabor.repository.impl
  * fileName       : DayLaborRepositoryImpl
  * author         : 유호철
  * date           : 2022/07/13
@@ -23,7 +23,7 @@ import shop.gaship.gashipshoppingmall.dayLabor.repository.custom.DayLaborReposit
  */
 //
 public class DayLaborRepositoryImpl extends QuerydslRepositorySupport implements
-    DayLaborRepositoryCustom {
+        DayLaborRepositoryCustom {
 
     public DayLaborRepositoryImpl() {
         super(DayLabor.class);
@@ -36,11 +36,11 @@ public class DayLaborRepositoryImpl extends QuerydslRepositorySupport implements
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
 
         return from(dayLabor)
-            .leftJoin(dayLabor,addressLocal.dayLabor)
-            .select(
-                Projections.bean(GetDayLaborResponseDto.class,
-                addressLocal.addressName.as("local"),
-                dayLabor.maxLabor))
-            .fetch();
+                .leftJoin(dayLabor, addressLocal.dayLabor)
+                .select(
+                        Projections.bean(GetDayLaborResponseDto.class,
+                                addressLocal.addressName.as("local"),
+                                dayLabor.maxLabor))
+                .fetch();
     }
 }

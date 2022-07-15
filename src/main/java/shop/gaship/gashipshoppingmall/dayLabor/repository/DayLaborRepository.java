@@ -16,7 +16,7 @@ import shop.gaship.gashipshoppingmall.dayLabor.repository.custom.DayLaborReposit
  * -----------------------------------------------------------
  * 2022/07/09        HoChul     최초 생성
  */
-public interface DayLaborRepository extends JpaRepository<DayLabor,Integer>,
-    DayLaborRepositoryCustom {
+public interface DayLaborRepository extends JpaRepository<DayLabor, Integer>,
+        DayLaborRepositoryCustom {
 
 }

@@ -1,12 +1,14 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.dto.request;
 
-import java.time.LocalDate;
-import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dto.request
+ * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dto.request
  * fileName       : ModifySheduleRequestDto
  * author         : 유호철
  * date           : 2022/07/14
@@ -21,13 +23,13 @@ import lombok.Getter;
 public class ModifyScheduleRequestDto {
 
     @NotNull
-    private Integer labor;
+    private final Integer labor;
 
     @NotNull
-    private LocalDate date;
+    private final LocalDate date;
 
     @NotNull
-    private Integer localNo;
+    private final Integer localNo;
 
     @Builder
     public ModifyScheduleRequestDto(Integer labor, LocalDate date, Integer localNo) {

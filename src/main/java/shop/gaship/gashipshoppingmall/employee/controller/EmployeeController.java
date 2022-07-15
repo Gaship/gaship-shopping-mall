@@ -1,21 +1,15 @@
 package shop.gaship.gashipshoppingmall.employee.controller;
 
-import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
-import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * The type Employee controller.
@@ -36,7 +30,7 @@ public class EmployeeController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void postEmployee(@Valid @RequestBody CreateEmployeeRequestDto dto){
+    public void postEmployee(@Valid @RequestBody CreateEmployeeRequestDto dto) {
         employeeService.createEmployee(dto);
     }
 
@@ -50,7 +44,7 @@ public class EmployeeController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public void putEmployee(@Valid @RequestBody ModifyEmployeeRequestDto dto){
+    public void putEmployee(@Valid @RequestBody ModifyEmployeeRequestDto dto) {
 
         employeeService.modifyEmployee(dto);
     }
@@ -66,7 +60,7 @@ public class EmployeeController {
 
     @GetMapping("/{employeeNo}")
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeInfoResponseDto getEmployee(@PathVariable("employeeNo") Integer employeeNo){
+    public EmployeeInfoResponseDto getEmployee(@PathVariable("employeeNo") Integer employeeNo) {
 
         return employeeService.getEmployee(employeeNo);
     }
@@ -76,13 +70,12 @@ public class EmployeeController {
      * author : 유호철
      * description : Employee get 다건 요청
      *
-     *
      * @return List<GetEmployee>
      */
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeInfoResponseDto> getEmployees(){
+    public List<EmployeeInfoResponseDto> getEmployees() {
 
         return employeeService.getAllEmployees();
     }

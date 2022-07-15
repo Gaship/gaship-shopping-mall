@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.exception;
 
 /**
- *packageName    : shop.gaship.gashipshoppingmall.repairSchedule.exception
+ * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.exception
  * fileName       : AlreadyExistSchedule
  * author         : 유호철
  * date           : 2022/07/14

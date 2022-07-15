@@ -1,12 +1,13 @@
 package shop.gaship.gashipshoppingmall.employee.dto.request;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.employee.dto
+ * packageName    : shop.gaship.gashipshoppingmall.employee.dto
  * fileName       : ModifyEmployeeDto
  * author         : 유호철
  * date           : 2022/07/10

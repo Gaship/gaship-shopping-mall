@@ -1,10 +1,11 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.dto.request;
 
-import java.time.LocalDate;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dto.request

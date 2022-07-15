@@ -1,25 +1,8 @@
 package shop.gaship.gashipshoppingmall.addressLocal.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,8 +16,19 @@ import shop.gaship.gashipshoppingmall.addressLocal.dummy.GetAddressLocalResponse
 import shop.gaship.gashipshoppingmall.addressLocal.dummy.ModifyAddressRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.addressLocal.controller
+ * packageName    : shop.gaship.gashipshoppingmall.addressLocal.controller
  * fileName       : AddressLocalControllerTest
  * author         : 유호철
  * date           : 2022/07/14
@@ -68,15 +62,15 @@ class AddressLocalControllerTest {
         doNothing().when(service).modifyLocalDelivery(dto);
 
         mvc.perform(put("/addressLocals")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding(StandardCharsets.UTF_8)
-                .content(objectMapper.writeValueAsString(dto))
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(print());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
 
         //then
-        verify(service,times(1)).modifyLocalDelivery(any());
+        verify(service, times(1)).modifyLocalDelivery(any());
     }
 
     @DisplayName("주소지 검색 테스트")
@@ -90,16 +84,16 @@ class AddressLocalControllerTest {
         list.add(dto);
         //when
         when(service.searchAddress(requestDto))
-            .thenReturn(list);
+                .thenReturn(list);
 
         MvcResult mvcResult = mvc.perform(get("/addressLocals")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDto))
-                .characterEncoding(StandardCharsets.UTF_8)
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andReturn();
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
 
         //then
         verify(service, times(1)).searchAddress(any());

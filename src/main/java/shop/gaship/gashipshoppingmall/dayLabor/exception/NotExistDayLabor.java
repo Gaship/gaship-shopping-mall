@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.dayLabor.exception;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.dayLabor.exception
+ * packageName    : shop.gaship.gashipshoppingmall.dayLabor.exception
  * fileName       : NotExistDayLabor
  * author         : 유호철
  * date           : 2022/07/13

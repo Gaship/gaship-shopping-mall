@@ -1,12 +1,13 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.dto.request;
 
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import javax.validation.constraints.NotNull;
+
 /**
- *packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dto.request
+ * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dto.request
  * fileName       : SchedulePageRequestDto
  * author         : 유호철
  * date           : 2022/07/14
@@ -23,7 +24,7 @@ import lombok.Getter;
 public class SchedulePageRequestDto {
     @NotNull
     private Integer page;
-    
+
     @NotNull
     private Integer size;
 }

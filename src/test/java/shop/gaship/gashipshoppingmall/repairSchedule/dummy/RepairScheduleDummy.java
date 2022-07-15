@@ -1,8 +1,9 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.dummy;
 
-import java.time.LocalDate;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.RepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.pk.RepairSchedulePk;
+
+import java.time.LocalDate;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.repairSechedule.dummy fileName       :
@@ -12,13 +13,13 @@ import shop.gaship.gashipshoppingmall.repairSchedule.entity.pk.RepairSchedulePk;
  * 생성
  */
 public class RepairScheduleDummy {
-    private RepairScheduleDummy(){
+    private RepairScheduleDummy() {
 
     }
 
-    public static RepairSchedule dummy(){
+    public static RepairSchedule dummy() {
 
-        return new RepairSchedule(new RepairSchedulePk(LocalDate.now(), 1),10);
+        return new RepairSchedule(new RepairSchedulePk(LocalDate.now(), 1), 10);
     }
 
 }

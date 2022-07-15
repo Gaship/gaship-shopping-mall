@@ -1,18 +1,12 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.entity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.pk.RepairSchedulePk;
+
+import javax.persistence.*;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.repairSechedule.entity fileName       :
@@ -44,7 +38,7 @@ public class RepairSchedule {
         this.dayLabor = dayLabor;
     }
 
-    public RepairSchedule(RepairSchedulePk pk,Integer labor) {
+    public RepairSchedule(RepairSchedulePk pk, Integer labor) {
         this.pk = pk;
         this.labor = labor;
     }

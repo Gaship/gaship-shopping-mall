@@ -10,11 +10,12 @@ import shop.gaship.gashipshoppingmall.employee.entity.Employee;
  * 생성
  */
 public class EmployeeDummy {
-    private EmployeeDummy(){}
+    private EmployeeDummy() {
+    }
 
-    public static Employee dummy(){
+    public static Employee dummy() {
         return new Employee(null, null, "잠온다", "test@naver.com", "password",
-            "01011111111");
+                "01011111111");
     }
 
 }

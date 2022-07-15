@@ -1,7 +1,8 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.dummy;
 
-import java.time.LocalDate;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.CreateScheduleRequestDto;
+
+import java.time.LocalDate;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dummy fileName       :
@@ -12,9 +13,10 @@ import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.CreateScheduleR
  */
 
 public class CreateScheduleRequestDtoDummy {
-    private CreateScheduleRequestDtoDummy(){
+    private CreateScheduleRequestDtoDummy() {
 
     }
+
     public static CreateScheduleRequestDto dummy() {
         return new CreateScheduleRequestDto(LocalDate.now(), 1, 10);
     }

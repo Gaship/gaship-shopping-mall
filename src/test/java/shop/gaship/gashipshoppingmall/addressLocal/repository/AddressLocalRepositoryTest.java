@@ -1,9 +1,5 @@
 package shop.gaship.gashipshoppingmall.addressLocal.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +13,11 @@ import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -32,6 +33,7 @@ class AddressLocalRepositoryTest {
     AddressLocal upper;
     AddressLocal child1;
     AddressLocal child2;
+
     @BeforeEach
     void setUp() {
         upper = AddressLocalDummy.dummy1();
@@ -76,9 +78,9 @@ class AddressLocalRepositoryTest {
 
     @DisplayName("지역 검색시 관련 하위 지역들 나오는지 테스트")
     @Test
-    void address_searchTest(){
+    void address_searchTest() {
         //given
-        GetAddressLocalResponseDto d1 = new GetAddressLocalResponseDto(upper.getAddressName(),child1.getAddressName());
+        GetAddressLocalResponseDto d1 = new GetAddressLocalResponseDto(upper.getAddressName(), child1.getAddressName());
         List<AddressLocal> list = new ArrayList<>();
         list.add(child1);
         list.add(child2);
@@ -97,7 +99,7 @@ class AddressLocalRepositoryTest {
         repository.save(child2);
 
         List<GetAddressLocalResponseDto> result = repository.findAllAddress(
-            upper.getAddressName());
+                upper.getAddressName());
         assertThat(result.get(0).getUpperAddressName()).isEqualTo(upper.getAddressName());
         assertThat(result.get(0).getAddressName()).isEqualTo(child1.getAddressName());
         assertThat(result.get(1).getUpperAddressName()).isEqualTo(upper.getAddressName());
