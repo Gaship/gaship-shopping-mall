@@ -197,6 +197,9 @@ class MemberGradeServiceImplTest {
         verify(memberGradeRepository, never()).save(any());
     }
 
+    @DisplayName("회원등급 수정시 " +
+            "회원등급이 존재하고 " +
+            "수정하려는 기준누적금액이 기존 값과 동일할 경우")
     @Test
     void modifyMemberGrade_whenMemberGradeIsPresent() {
         // given
@@ -218,9 +221,42 @@ class MemberGradeServiceImplTest {
 
         // then
         verify(memberGradeRepository).findById(any());
+        verify(memberGradeRepository, never()).existsByAccumulateAmountEquals(any());
         verify(memberGradeRepository).save(any());
     }
 
+    @DisplayName("회원등급 수정시 " +
+            "회원등급이 존재하고 " +
+            "수정하려는 기준누적금액이 기존 값과 다를 경우")
+    @Test
+    void modifyMemberGrade_whenMemberGradeIsPresent_modifyAccumulate(){
+        // given
+        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy("새싹", 1L);
+
+        StatusCode renewalPeriod = StatusCodeDummy.dummy();
+        MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
+
+        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(modifyMemberGradeRequestDto, renewalPeriod);
+
+        // mocking
+        when(memberGradeRepository.findById(any()))
+                .thenReturn(Optional.of(memberGrade));
+        when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
+                .thenReturn(false);
+        when(memberGradeRepository.save(any()))
+                .thenReturn(modifyMemberGrade);
+
+        // when
+        memberGradeService.modifyMemberGrade(testMemberGradeNo, modifyMemberGradeRequestDto);
+
+        // then
+        verify(memberGradeRepository).findById(any());
+        verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
+        verify(memberGradeRepository).save(any());
+    }
+
+    @DisplayName("회원등급 수정시 " +
+            "해당 회원등급이 존재하지 않을 경우")
     @Test
     void modifyMemberGrade_whenMemberGradeIsEmpty_throwMemberGradeNotFoundException() {
         // given
