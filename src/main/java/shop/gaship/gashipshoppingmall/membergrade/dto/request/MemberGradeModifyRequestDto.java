@@ -21,10 +21,10 @@ public class MemberGradeModifyRequestDto {
     @NotNull
     private Integer no;
     @Size(min = 1, max = 10)
-    @NotBlank
+    @NotBlank(message = "name 은 필수 입력값입니다.")
     private String name;
-    @NotNull
+    @NotNull(message = "accumulateAmount 는 필수 입력값입니다.")
     private Long accumulateAmount;
-    @NotNull
+    @NotNull(message = "isDefault 는 필수 입력값입니다.")
     private Boolean isDefault;
 }

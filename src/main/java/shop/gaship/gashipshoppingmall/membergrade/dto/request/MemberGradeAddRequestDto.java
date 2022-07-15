@@ -18,11 +18,12 @@ import lombok.Data;
  */
 @Data
 public class MemberGradeAddRequestDto {
-    @NotBlank
+    @NotBlank(message = "name 은 필수 입력값입니다.")
     @Size(min = 1, max = 10)
     private String name;
-    @NotNull
+    @NotNull(message = "accumulateAmount 은 필수 입력값입니다.")
     private Long accumulateAmount;
-    @NotNull
+    @NotNull(message = "isDefault 는 필수 입력값입니다.")
     private Boolean isDefault;
 }
+

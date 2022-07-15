@@ -15,6 +15,7 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyR
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
 import java.util.List;
@@ -46,11 +47,11 @@ class MemberGradeRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private MemberGradeAddRequestDto testMemberGradeAddRequestDto;
+    private MemberGradeAddRequestDto addRequestDummy;
 
     @BeforeEach
     void setUp() {
-        testMemberGradeAddRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
+        addRequestDummy = MemberGradeDtoDummy.requestDummy("일반", 0L);
     }
 
     @DisplayName("회원등급을 등록하는 경우")
@@ -58,7 +59,7 @@ class MemberGradeRestControllerTest {
     void memberGradeAdd() throws Exception {
         mockMvc.perform(post("/grades")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testMemberGradeAddRequestDto))
+                        .content(objectMapper.writeValueAsString(addRequestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -70,13 +71,13 @@ class MemberGradeRestControllerTest {
             "name 이 null 인 경우")
     @Test
     void memberGradeAdd_whenNameIsNull() throws Exception{
-        testMemberGradeAddRequestDto.setName(null);
+        addRequestDummy.setName(null);
 
         mockMvc.perform(post("/grades")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testMemberGradeAddRequestDto))
+                        .content(objectMapper.writeValueAsString(addRequestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isInternalServerError());
 
         verify(memberGradeService, never()).addMemberGrade(any());
     }
@@ -106,7 +107,7 @@ class MemberGradeRestControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isInternalServerError());
 
         verify(memberGradeService, never()).modifyMemberGrade(any());
     }
@@ -166,5 +167,28 @@ class MemberGradeRestControllerTest {
                 .andExpect(jsonPath("$[0].name", equalTo("일반")))
                 .andExpect(jsonPath("$[0].accumulateAmount", equalTo(0)))
                 .andExpect(jsonPath("$[0].renewalPeriodStatusCode", equalTo("12개월")));
+    }
+
+    @DisplayName("Exception Handler 테스트")
+    @Test
+    void exceptionHandler_whenThrowMemberGradeNotFoundException() throws Exception{
+        // given
+        int testMemberGradeNo = 100;
+        MemberGradeNotFoundException memberGradeNotFoundException = new MemberGradeNotFoundException();
+        String errorMessage = memberGradeNotFoundException.getMessage();
+
+        // mocking
+        when(memberGradeService.findMemberGrade(any()))
+                .thenThrow(memberGradeNotFoundException);
+
+        // when&then
+        mockMvc.perform(get("/grades/" + testMemberGradeNo)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", equalTo(errorMessage)));
+
+        verify(memberGradeService).findMemberGrade(any());
     }
 }
