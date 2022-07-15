@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.membergrade.entity;
 
 import javax.persistence.*;
 import lombok.*;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -90,10 +91,10 @@ public class MemberGrade {
      * author : Semi Kim
      * description : 회원등급의 세부 내용(회원등급명, 기준누적금액) 수정시 사용되는 메서드
      *
-     * @param memberGradeRequestDto MemberGradeRequestDto
+     * @param modifyRequestDto MemberGradeModifyRequestDto
      */
-    public void modifyDetails(MemberGradeRequestDto memberGradeRequestDto) {
-        this.name = memberGradeRequestDto.getName();
-        this.accumulateAmount = memberGradeRequestDto.getAccumulateAmount();
+    public void modifyDetails(MemberGradeModifyRequestDto modifyRequestDto) {
+        this.name = modifyRequestDto.getName();
+        this.accumulateAmount = modifyRequestDto.getAccumulateAmount();
     }
 }

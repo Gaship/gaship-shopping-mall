@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.membergrade.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
@@ -19,8 +21,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -64,19 +65,36 @@ class MemberGradeRestControllerTest {
         verify(memberGradeService).addMemberGrade(any());
     }
 
+    @DisplayName("회원등급을 수정하는 경우")
     @Test
     void memberGradeModify() throws Exception {
-        int testMemberGradeNo = 1;
+        MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 0L);
 
         mockMvc.perform(put("/grades")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testMemberGradeRequestDto))
+                        .content(objectMapper.writeValueAsString(requestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
         verify(memberGradeService).modifyMemberGrade(any());
     }
+
+    @DisplayName("회원등급 수정시 " +
+            "request 의 name 이 null 인 경우")
+    @Test
+    void memberGradeModify_whenNameIsNull_throwExp() throws Exception {
+        MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, null, 0L);
+
+        mockMvc.perform(put("/grades")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDummy))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+
+        verify(memberGradeService, never()).modifyMemberGrade(any());
+    }
+
 
     @Test
     void memberGradeRemove() throws Exception {

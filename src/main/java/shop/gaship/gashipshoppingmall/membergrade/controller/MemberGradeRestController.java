@@ -1,15 +1,18 @@
 package shop.gaship.gashipshoppingmall.membergrade.controller;
 
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
+
 
 
 /**
@@ -53,11 +56,12 @@ public class MemberGradeRestController {
      * author : Semi Kim
      * description : 회원등급 수정을 위한 RestController 메서드
      *
-     * @param request       MemberGradeRequest
+     * @param request       MemberGradeModifyRequestDto
      * @return responseEntity
      */
     @PutMapping
-    public ResponseEntity<Void> memberGradeModify(@RequestBody MemberGradeRequestDto request) {
+    public ResponseEntity<Void>
+    memberGradeModify(@Valid @RequestBody MemberGradeModifyRequestDto request) {
         memberGradeService.modifyMemberGrade(request);
 
         return ResponseEntity.status(HttpStatus.OK)

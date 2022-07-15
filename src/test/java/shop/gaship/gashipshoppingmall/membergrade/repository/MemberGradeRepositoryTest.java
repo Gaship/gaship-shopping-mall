@@ -76,7 +76,7 @@ class MemberGradeRepositoryTest {
         MemberGrade newMemberGrade = memberGradeRepository.save(memberGrade);
 
         // when
-        newMemberGrade.modifyDetails(MemberGradeDtoDummy.requestDummy(1, "새싹", 1L));
+        newMemberGrade.modifyDetails(MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 1L));
         memberGradeRepository.saveAndFlush(newMemberGrade);
         testEntityManager.clear();
 

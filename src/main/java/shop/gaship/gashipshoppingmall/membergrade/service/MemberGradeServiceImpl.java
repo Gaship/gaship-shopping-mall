@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
@@ -73,11 +74,11 @@ public class MemberGradeServiceImpl implements MemberGradeService {
      * 기준누적금액이 회원등급끼리 중복되는 부분을 방지하기 위해
      * 해당 기준누적금액과 동일한 기준누적금액을 가지고 있는 다른 회원등급이 존재하면 수정 불가
      *
-     * @param request       수정된 내용이 담긴 requestDto (MemberGradeRequest)
+     * @param request       수정된 내용이 담긴 requestDto (MemberGradeModifyRequestDto)
      */
     @Transactional
     @Override
-    public void modifyMemberGrade(MemberGradeRequestDto request) {
+    public void modifyMemberGrade(MemberGradeModifyRequestDto request) {
         MemberGrade memberGrade = memberGradeRepository
                 .findById(request.getNo())
                 .orElseThrow(MemberGradeNotFoundException::new);

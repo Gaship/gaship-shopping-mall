@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
@@ -100,8 +101,8 @@ class MemberGradeTest {
 
         MemberGrade memberGrade = MemberGradeDummy
                 .dummy(memberGradeRequestDto, renewalPeriod);
-        MemberGradeRequestDto modifyRequestDto = MemberGradeDtoDummy
-                .requestDummy(1, modifyNameData, modifyAccumulateAmountData);
+        MemberGradeModifyRequestDto modifyRequestDto = MemberGradeDtoDummy
+                .modifyRequestDummy(1, modifyNameData, modifyAccumulateAmountData);
 
         // when
         memberGrade.modifyDetails(modifyRequestDto);

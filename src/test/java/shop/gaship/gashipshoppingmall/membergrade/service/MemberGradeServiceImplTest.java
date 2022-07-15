@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
@@ -203,12 +204,13 @@ class MemberGradeServiceImplTest {
     @Test
     void modifyMemberGrade_whenMemberGradeIsPresent() {
         // given
-        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1, "새싹", 0L);
+        MemberGradeModifyRequestDto modifyRequestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 0L);
 
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
 
-        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(modifyMemberGradeRequestDto, renewalPeriod);
+        memberGradeRequestDto.setName("새싹");
+        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -217,7 +219,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(modifyMemberGrade);
 
         // when
-        memberGradeService.modifyMemberGrade(modifyMemberGradeRequestDto);
+        memberGradeService.modifyMemberGrade(modifyRequestDummy);
 
         // then
         verify(memberGradeRepository).findById(any());
@@ -231,12 +233,12 @@ class MemberGradeServiceImplTest {
     @Test
     void modifyMemberGrade_whenMemberGradeIsPresent_modifyAccumulate(){
         // given
-        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1, "새싹", 1L);
+        MemberGradeModifyRequestDto modifyRequestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 1L);
 
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
 
-        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(modifyMemberGradeRequestDto, renewalPeriod);
+        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeRequestDto, renewalPeriod);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -247,7 +249,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(modifyMemberGrade);
 
         // when
-        memberGradeService.modifyMemberGrade(modifyMemberGradeRequestDto);
+        memberGradeService.modifyMemberGrade(modifyRequestDummy);
 
         // then
         verify(memberGradeRepository).findById(any());
@@ -260,7 +262,7 @@ class MemberGradeServiceImplTest {
     @Test
     void modifyMemberGrade_whenMemberGradeIsEmpty_throwMemberGradeNotFoundException() {
         // given
-        MemberGradeRequestDto modifyMemberGradeRequestDto = MemberGradeDtoDummy.requestDummy(1,"새싹", 0L);
+        MemberGradeModifyRequestDto modifyRequestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 0L);
 
         // mocking
         when(memberGradeRepository.findById(any()))
@@ -268,7 +270,7 @@ class MemberGradeServiceImplTest {
 
         // when&then
         assertThatThrownBy(() -> memberGradeService
-                .modifyMemberGrade(modifyMemberGradeRequestDto))
+                .modifyMemberGrade(modifyRequestDummy))
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
         verify(memberGradeRepository).findById(any());
