@@ -2,16 +2,17 @@ package shop.gaship.gashipshoppingmall.addressLocal.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
+import shop.gaship.gashipshoppingmall.config.dayLabor.entity.DayLabor;
 
 import javax.persistence.*;
 import java.util.List;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.address.entity fileName       : AddressLocal
- * author         : HoChul date           : 2022/07/08 description    :
- * =========================================================== DATE              AUTHOR NOTE
- * ----------------------------------------------------------- 2022/07/08        HoChul 최초 생성
+ *
+ * 데이터베이스에 있는 주소지와 연동하기위한 클래스입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 @Entity
 @Table(name = "address_locals")
@@ -54,38 +55,41 @@ public class AddressLocal {
     }
 
     /**
-     * methodName : registerDayLoabor
-     * author : 유호철
-     * description : DayLoabor 수정시 / 등록시
+     * 지역별물량을 수정/등록하기위한 메서드입니다.
      *
-     * @param dayLabor DayLabor
+     * @param dayLabor 지역별물량에대한 정보가 들어있습니다.
+     * @author 유호철
      */
     public void registerDayLabor(DayLabor dayLabor) {
         this.dayLabor = dayLabor;
     }
 
     /**
-     * methodName : registerUpperLocal
-     * author : 유호철
-     * description : 상위주소 수정시
+     * 상위주소 수정시 사용되는 메서드입니다.
      *
-     * @param addressLocal AddressLocal
+     * @param addressLocal 주소지정보를담고있습니다.
+     * @author 유호철
      */
     public void registerUpperLocal(AddressLocal addressLocal) {
         this.upperLocal = addressLocal;
     }
 
     /**
-     * methodName : addSubLocal
-     * author : 유호철
-     * description : 하위주소에 값이 추가될경우
+     * 하위주소가 추가될경우에 사용됩니다.
      *
      * @param list AddressLocal
+     * @author 유호철
      */
     public void addSubLocal(List<AddressLocal> list) {
         this.subLocal = list;
     }
 
+    /**
+     * 배송여부의 수정이있을때 사용됩니다.
+     *
+     * @param allowDelivery 배송가능/불가능한 정보를 가지고있습니다.
+     * @author 유호철
+     */
     public void allowDelivery(boolean allowDelivery) {
         this.allowDelivery = allowDelivery;
     }

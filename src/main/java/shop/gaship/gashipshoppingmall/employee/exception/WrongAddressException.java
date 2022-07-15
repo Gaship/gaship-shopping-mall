@@ -1,15 +1,11 @@
 package shop.gaship.gashipshoppingmall.employee.exception;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.employee.exception
- * fileName       : WrongAddressException
- * author         : 유호철
- * date           : 2022/07/11
- * description    : 주소기입이잘못되었을시 예외
- * ===========================================================
- * DATE              AUTHOR NOTE
- * -----------------------------------------------------------
- * 2022/07/11        유호철 최초 생성
+ * 주소지가 잘못되었을경우 사용되는 클래스입니다.
+ *
+ * @see RuntimeException
+ * @author : 유호철
+ * @since 1.0
  */
 public class WrongAddressException extends RuntimeException {
 

@@ -10,15 +10,10 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import javax.persistence.*;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.employee.entity
- * fileName       : Employee
- * author         : 유호철
- * date           : 2022/07/10
- * description    : 직원 엔티티
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/10        유호철       최초 생성
+ * 데이터베이스에 있는 직원에대한 정보를 사용하기위한 클래스입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 
 @Getter
@@ -64,22 +59,20 @@ public class Employee {
     }
 
     /**
-     * methodName : registerLocal
-     * author : 유호철
-     * description :
+     * 직원에대한 지역을 수정하기위한 메서드입니다.
      *
-     * @param addressLocal AddressLocal
+     * @param addressLocal 수정되어야할 지역정보가 담겨져있습니다.
+     * @author 유호철
      */
     public void fixLocation(AddressLocal addressLocal) {
         this.addressLocal = addressLocal;
     }
 
     /**
-     * methodName : modifyEmployee
-     * author : 유호철
-     * description : Employee 정보수정
+     * 직원자체의 정보를 수정하기위한 메서드입니다.
      *
-     * @param dto ModifyEmployeeDto
+     * @param dto 수정하기위한 기본정보들이 담겨져있습니다
+     * @author 유호철
      */
     public void modifyEmployee(ModifyEmployeeRequestDto dto) {
         this.name = dto.getName();
@@ -88,22 +81,21 @@ public class Employee {
     }
 
     /**
-     * methodName : registerCode
-     * author : 유호철
-     * description : code 변경시 주입
+     * 직원에 있는 공통코드의 권한을 변경하기위한 메서드입니다.
      *
-     * @param code StatusCode
+     *
+     * @param code 변경되어야할 권한이 들어옵니다.
+     * @author 유호철
      */
     public void fixCode(StatusCode code) {
         this.statusCode = code;
     }
 
     /**
-     * methodName : registerEmployee
-     * author : 유호철
-     * description : employee 생성시 주입
+     * 직원생성을 위한 메서드니다.
      *
-     * @param dto CreateEmployeeDto
+     * @param dto 직원생성을위한 정보들이 담겨있습니다.
+     * @author 유호철
      */
     public void registerEmployee(CreateEmployeeRequestDto dto) {
         this.name = dto.getName();

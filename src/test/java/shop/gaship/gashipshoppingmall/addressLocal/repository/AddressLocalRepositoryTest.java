@@ -11,8 +11,8 @@ import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalR
 import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
-import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
-import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
+import shop.gaship.gashipshoppingmall.config.dayLabor.entity.DayLabor;
+import shop.gaship.gashipshoppingmall.config.dayLabor.repository.DayLaborRepository;
 
 import java.util.ArrayList;
 import java.util.List;

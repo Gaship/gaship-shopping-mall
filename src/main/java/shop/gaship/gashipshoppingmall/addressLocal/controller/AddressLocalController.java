@@ -10,18 +10,13 @@ import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
 
 import javax.validation.Valid;
 import java.util.List;
-
 /**
- * packageName    : shop.gaship.gashipshoppingmall.addressLocal.controller
- * fileName       : AddressLocalController
- * author         : 유호철
- * date           : 2022/07/12
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/12        유호철       최초 생성
+ * 주소지정보를 위한 요청을 다루기 위한 컨트롤러입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/addressLocals")
@@ -29,11 +24,10 @@ public class AddressLocalController {
     private final AddressLocalService service;
 
     /**
-     * methodName : addressLocalModify
-     * author : 유호철
-     * description : 배송일자 수정을 위한 메서드
+     * put 요청이 왔을시 수정을 할수있도록 수행하는 메서드입니다.
      *
-     * @param dto ModifyAddressRequestDto
+     * @param dto : 배송여부를 수정할 정보가들어있는 dto 입니다
+     * @author 유호철
      */
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
@@ -41,12 +35,13 @@ public class AddressLocalController {
         service.modifyLocalDelivery(dto);
     }
 
+
     /**
-     * methodName : getAddressLocal
-     * author : 유호철
-     * description : 주소지로 주소지를 조회하기위한 메서드
+     * get 요청시 조회를 할수있는 메서드입니다.
      *
-     * @param dto AddressSearchRequestDto
+     * @param dto : 검색할 주소지가 담긴 dto 입니다.
+     * @return list : 검색된 주소지와 하위주소지가 담긴 리스트입니다.
+     * @author 유호철
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

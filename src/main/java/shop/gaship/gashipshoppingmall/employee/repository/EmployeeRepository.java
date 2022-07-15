@@ -6,25 +6,21 @@ import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import java.util.Optional;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.employee.repository
- * fileName       : EmplyeeRepository
- * author         : 유호철
- * date           : 2022/07/10
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/10        유호철       최초 생성
+ * 직원을 다루기위한 레포지토리 인터페이스 입니다.
+ * JPA 를 사용합니다.
+ *
+ * @see JpaRepository
+ * @author : 유호철
+ * @since 1.0
  */
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     /**
-     * methodName : findByEmail
-     * author : 유호철
-     * description : 중복 email 확인
+     * 이메일을통해 직원을 조회하기위한 메서드입니다.
      *
-     * @param email String
-     * @return optional
+     * @param email 조회하고싶은 email 이 들어있습니다.
+     * @return optional 직원에대한 정보를 optional 로 반환합니다.
+     * @author 유호철
      */
     Optional<Employee> findByEmail(String email);
 }

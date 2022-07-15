@@ -8,15 +8,10 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dto.request
- * fileName       : CreateScheduleRequestDto
- * author         : 유호철
- * date           : 2022/07/14
- * description    : 직원스케줄을 생성을 위한 클래스
- * ===========================================================
- * DATE         AUTHOR      NOTE
- * -----------------------------------------------------------
- * 2022/07/14   유호철       최초 생성
+ * 수리설치스케줄을 생성하기위한 클래스입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 
 @Getter

@@ -1,15 +1,11 @@
 package shop.gaship.gashipshoppingmall.employee.exception;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.employee.exception
- * fileName       : EmployeeNotFoundException
- * author         : 유호철
- * date           : 2022/07/10
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/10        유호철       최초 생성
+ * 직원이 존재하지않을경우 보여주는 클래스입니다.
+ *
+ * @see RuntimeException
+ * @author : 유호철
+ * @since 1.0
  */
 public class EmployeeNotFoundException extends RuntimeException {
 

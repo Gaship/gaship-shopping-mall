@@ -7,23 +7,45 @@ import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponse
 import java.util.List;
 
 /**
- * packageName     : shop.gaship.gashipshoppingmall.employee.service
- * fileName       : EmployeeService
- * author         : 유호철
- * date           : 2022/07/10
- * description    : Employee Service 를 위한 class
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/10        유호철       최초 생성
+ * 직원을 서비스레이어에서 사용하기위한 인터페이스 클래스입니다.
+ *
+ *
+ * @see
+ * @author 유호철
+ * @since 1.0
  */
 public interface EmployeeService {
 
+    /**
+     * 직원을 생성하기위한 메서드입니다.
+     *
+     * @param dto 직원을생성하기위한 정보가들어있습니다
+     * @author 유호철
+     */
     void createEmployee(CreateEmployeeRequestDto dto);
 
+    /**
+     * 직원의 정보를수정하기위한 메서드입니다.
+     *
+     * @param dto 수정되어야할 직원의 정보들이 담겨져있습니다.
+     * @author 유호철
+     */
     void modifyEmployee(ModifyEmployeeRequestDto dto);
 
+    /**
+     * 직원번호를 통해 직원에대한 정보를 얻는 메서드입니다.
+     *
+     * @param employeeNo 직원번호 입니다.
+     * @return employeeInfoResponseDto 반환되어야할 직원정보들이 반환됩니다.
+     * @author 유호철
+     */
     EmployeeInfoResponseDto getEmployee(Integer employeeNo);
 
+    /**
+     * 모든직원들의 정보를 반환하기위한 메서드입니다.
+     *
+     * @return list 반환되어야할 직원정보들이 리스트형태로 반환됩니다.
+     * @author 유호철
+     */
     List<EmployeeInfoResponseDto> getAllEmployees();
 }

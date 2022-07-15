@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.dayLabor.dummy;
 
-import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.CreateDayLaborRequestDto;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.dayLabor.dummy

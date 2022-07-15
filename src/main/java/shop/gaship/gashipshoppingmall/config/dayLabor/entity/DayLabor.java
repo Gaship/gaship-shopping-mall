@@ -1,20 +1,20 @@
-package shop.gaship.gashipshoppingmall.dayLabor.entity;
+package shop.gaship.gashipshoppingmall.config.dayLabor.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.CreateDayLaborRequestDto;
+import shop.gaship.gashipshoppingmall.config.dayLabor.dto.request.FixDayLaborRequestDto;
 
 import javax.persistence.*;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.address.entity fileName       : DayLabor author
- * : HoChul date           : 2022/07/08 description    :
- * =========================================================== DATE              AUTHOR
- * NOTE ----------------------------------------------------------- 2022/07/08        HoChul
- * 최초 생성
+ * 실제 데이터베이스에있는 지역별물량을 사용하기위한 클래스입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -39,11 +39,10 @@ public class DayLabor {
     }
 
     /**
-     * methodName : fixLocation
-     * author : 유호철
-     * description : 지역 수정
+     * 주소지를 수정하기위한 메서드입니다.
      *
-     * @param addressLocal AddressLocal
+     * @param addressLocal 주소지에대한 정보가 들어있습니다.
+     * @author 유호철
      */
     public void fixLocation(AddressLocal addressLocal) {
         this.addressNo = addressLocal.getAddressNo();
@@ -51,17 +50,22 @@ public class DayLabor {
     }
 
     /**
-     * methodName : registerDayLabor
-     * author : 유호철
-     * description : 클래스 dto 생성
+     * 지역별 물량을 등록하기위한 메서드입니다.
      *
-     * @param dto
+     * @param dto 생성시 들어가야할 물량에대한 정보들이 들어있습니다.
+     * @author 유호철
      */
     public void registerDayLabor(CreateDayLaborRequestDto dto) {
         this.addressNo = dto.getLocalNo();
         this.maxLabor = dto.getMaxLabor();
     }
 
+    /**
+     * 최대일량을 수정하기위한 메서드입니다.
+     *
+     * @param dto 최대일량에대한 정보가 들어있습니다.
+     * @author 유호철
+     */
     public void fixMaxLabor(FixDayLaborRequestDto dto) {
         this.maxLabor = dto.getMaxLabor();
     }

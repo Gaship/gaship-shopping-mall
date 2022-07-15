@@ -7,34 +7,27 @@ import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalR
 import java.util.List;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.addressLocal.service
- * fileName       : AddressLocalService
- * author         : 유호철
- * date           : 2022/07/12
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/12        유호철       최초 생성
+ * 주소지를 Service 레이어에서 다루기위한 인터페이스 입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 public interface AddressLocalService {
 
     /**
-     * methodName : modifyLocalDelivery
-     * author : 유호철
-     * description : 배송여부를 수정하기위한 메소드
+     * 배달가능여부를 수정을 위한 메서드입니다.
      *
-     * @param modifyDto ModifyAddressRequestDto
+     * @param modifyDto 조회를할 주소지정보와 배달가능여부가들어있습니다.
+     * @author 유호철
      */
     void modifyLocalDelivery(ModifyAddressRequestDto modifyDto);
 
     /**
-     * methodName : searchAddress
-     * author : 유호철
-     * description : 하위 주소지를 찾기위한 메소드
+     * 주소지를 검색하기위한 메서드입니다.
      *
-     * @param requestDto AddressSearchRequestDto
-     * @return list
+     * @param requestDto 검색을할 주소지가 입력되어있습니다.
+     * @return list : 검색된 주소지와 그 주소지의 하위주소지들이 들어있습니다.
+     * @author 유호철
      */
     List<GetAddressLocalResponseDto> searchAddress(AddressSearchRequestDto requestDto);
 }

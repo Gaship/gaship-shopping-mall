@@ -7,23 +7,24 @@ import shop.gaship.gashipshoppingmall.addressLocal.repository.custom.AddressLoca
 import java.util.List;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.addressLocal.repository
- * fileName       : AddressLocalRepository
- * author         : HoChul
- * date           : 2022/07/09
- * description    :
- * =========================================================== DATE              AUTHOR NOTE
- * ----------------------------------------------------------- 2022/07/09        HoChul 최초 생성
+ * 주소지를 다루기위한 레포지토리 인터페이스 입니다.
+ * JPA 를 사용하고 QueryDsl 을 사용합니다.
+ *
+ * @see JpaRepository
+ * @see AddressLocalRepositoryCustom
+ * @author : 유호철
+ * @since 1.0
  */
 public interface AddressLocalRepository extends JpaRepository<AddressLocal, Integer>,
         AddressLocalRepositoryCustom {
 
+
     /**
-     * methodName : findByLevel author : Hochul
-     * description : level 별로 지역들을 조회
+     * 계층을 통해서 조회를 맞는계층에있는 주소를 다 조회하기위한 메서드입니다.
      *
-     * @param level Integer
-     * @return list
+     * @param level : 계층을 의미합니다.
+     * @return list : 계층별로 맞는 주소지가 반환됩니다.
+     * @author 유호철
      */
     List<AddressLocal> findByLevel(Integer level);
 

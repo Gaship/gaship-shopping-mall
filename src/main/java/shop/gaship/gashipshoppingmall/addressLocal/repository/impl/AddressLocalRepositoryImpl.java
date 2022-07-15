@@ -10,11 +10,12 @@ import shop.gaship.gashipshoppingmall.addressLocal.repository.custom.AddressLoca
 import java.util.List;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.addressLocal.repository.impl fileName       :
- * AddressLocalRepositoryImpl author         : 유호철 date           : 2022/07/14 description    :
- * =========================================================== DATE              AUTHOR
- * NOTE ----------------------------------------------------------- 2022/07/14       유호철       최초
- * 생성
+ * 주소지를 QueryDsl 을 통해 사용하는 클래스입니다.
+ *
+ * @see QuerydslRepositorySupport
+ * @see AddressLocalRepositoryCustom
+ * @author : 유호철
+ * @since 1.0
  */
 public class AddressLocalRepositoryImpl extends QuerydslRepositorySupport
         implements AddressLocalRepositoryCustom {
@@ -23,6 +24,13 @@ public class AddressLocalRepositoryImpl extends QuerydslRepositorySupport
         super(AddressLocal.class);
     }
 
+    /**
+     * 조회된 주소로 전체주소가 조회되는 메서드입니다.
+     *
+     * @param addressName 검색하고싶은 주소지가 입력됩니다.
+     * @return list : 조회된 상위주소, 하위주소들이 반환됩니다.
+     * @author 유호철
+     */
     @Override
     public List<GetAddressLocalResponseDto> findAllAddress(String addressName) {
         QAddressLocal addressLocal = QAddressLocal.addressLocal;

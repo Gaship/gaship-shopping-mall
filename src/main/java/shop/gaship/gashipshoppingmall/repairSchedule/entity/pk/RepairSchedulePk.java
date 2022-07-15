@@ -11,16 +11,14 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.repairSechedule.entity.pk
- * fileName       : RepairSchedulePk
- * author         : HoChul
- * date           : 2022/07/09
- * description    :
- * ===========================================================
- * DATE              AUTHOR     NOTE
- * -----------------------------------------------------------
- * 2022/07/09        HoChul     최초 생성
+ * 직원스케줄에대한 Pk 들이 있는 클래스입니다.
+ *
+ *
+ * @see Serializable
+ * @author : 유호철
+ * @since 1.0
  */
+
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor

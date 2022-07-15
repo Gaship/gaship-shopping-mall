@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.dto.response;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,15 +7,11 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dto.response
- * fileName       : GetRepairScheduleResponseDto
- * author         : 유호철
- * date           : 2022/07/13
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/13       유호철       최초 생성
+ * 스케줄에대한 정보를 반환받기위한 클래스입니다.
+ *
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 @Getter
 @Setter
@@ -28,10 +23,4 @@ public class GetRepairScheduleResponseDto {
 
     private Integer labor;
 
-    @Builder
-    public GetRepairScheduleResponseDto(String localName, LocalDate localDate, Integer labor) {
-        this.localName = localName;
-        this.localDate = localDate;
-        this.labor = labor;
-    }
 }

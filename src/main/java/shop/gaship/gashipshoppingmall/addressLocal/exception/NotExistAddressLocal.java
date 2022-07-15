@@ -1,11 +1,11 @@
 package shop.gaship.gashipshoppingmall.addressLocal.exception;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.addressLocal.exception fileName       :
- * NotExistAddressLocal author         : 유호철 date           : 2022/07/14 description    :
- * =========================================================== DATE              AUTHOR
- * NOTE ----------------------------------------------------------- 2022/07/14       유호철       최초
- * 생성
+ *
+ * 주소지가 존재하지않을경우 예외를 보낼 클래스입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 public class NotExistAddressLocal extends RuntimeException {
 

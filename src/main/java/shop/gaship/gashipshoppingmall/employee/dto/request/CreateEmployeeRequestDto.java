@@ -9,15 +9,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.employee.dto
- * fileName       : CreateEmployeeDto
- * author         : 유호철
- * date           : 2022/07/10
- * description    : Employee 생성을 위한 dto
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/10        유호철       최초 생성
+ * 직원을생성하기위한 정보들이 담겨져있는 클래스입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 @Getter
 @AllArgsConstructor

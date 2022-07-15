@@ -22,15 +22,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.employee.service.impl
- * fileName       : EmployeeServiceImpl
- * author         : 유호철
- * date           : 2022/07/10
- * description    : EmployeeService 구현체
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/10        유호철       최초 생성
+ * 서비스레이어에서 직원에대한 요청을 사용하기위한 구현체 클래스입니다.
+ *
+ * @see EmployeeService
+ * @author : 유호철
+ * @since 1.0
  */
 
 @Service
@@ -40,6 +36,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final StatusCodeRepository statusCodeRepository;
     private final AddressLocalRepository localRepository;
 
+    /**
+     * 직원을 생성하기위한 메서드입니다.
+     *
+     *
+     * @param dto 직원을 생성하기위한 정보들이 담겨있습니다.
+     * @throws WrongStatusCodeException 잘못된코드가들어갈경우.
+     * @throws WrongAddressException 잘못된주소가들어갈경우.
+     * @author 유호철
+     */
     @Override
     @Transactional
     public void createEmployee(CreateEmployeeRequestDto dto) {
@@ -57,6 +62,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         repository.save(employee);
     }
 
+    /**
+     * 직원에대한 정보를 수정하기위한 메서드입니다.
+     *
+     * @param dto 수정할 직원의 정보들이 담겨져있습니다.
+     * @throws EmployeeNotFoundException 직원이없을경우.
+     * @author 유호철
+     */
     @Override
     @Transactional
     @Modifying
@@ -68,6 +80,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         repository.save(employee);
     }
 
+    /**
+     * 직원번호로 하나의 직원에대한 정보를 반환받기위한 메서드입니다.
+     *
+     * @param employeeNo 조회하기위한 직원번호입니다.
+     * @return employeeInfoResponseDto 반환받게되는 직원정보들이 담겨있습니다.
+     * @throws EmployeeNotFoundException 직원이 없을경우.
+     * @author 유호철
+     */
     @Override
     public EmployeeInfoResponseDto getEmployee(Integer employeeNo) {
         Employee employee = repository.findById(employeeNo)
@@ -76,6 +96,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new EmployeeInfoResponseDto(employee);
     }
 
+    /**
+     * 전체직원에대한 정보를 조회하기위한 메서드입니다.
+     *
+     *
+     * @return list 직원의 정보들이 반환됩니다.
+     * @author 유호철
+     */
     @Override
     public List<EmployeeInfoResponseDto> getAllEmployees() {
         return repository.findAll().stream()

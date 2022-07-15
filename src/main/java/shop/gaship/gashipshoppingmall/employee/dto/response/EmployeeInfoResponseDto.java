@@ -8,15 +8,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.employee.dto
- * fileName       : GetEmployee
- * author         : 유호철
- * date           : 2022/07/10
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/10        유호철       최초 생성
+ * 직원정보에대한 반환값이 담겨져있는 클래스입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 @Getter
 public class EmployeeInfoResponseDto {

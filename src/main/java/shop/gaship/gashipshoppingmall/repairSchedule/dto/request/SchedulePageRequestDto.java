@@ -7,15 +7,11 @@ import lombok.Getter;
 import javax.validation.constraints.NotNull;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.dto.request
- * fileName       : SchedulePageRequestDto
- * author         : 유호철
- * date           : 2022/07/14
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/14       유호철       최초 생성
+ * page 정보를 담고있는 클래스입니다.
+ *
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 
 @Getter

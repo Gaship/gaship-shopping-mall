@@ -14,11 +14,11 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.addressLocal.service.impl fileName       :
- * AddressLocalServiceipml author         : 유호철 date           : 2022/07/12 description    :
- * =========================================================== DATE              AUTHOR
- * NOTE ----------------------------------------------------------- 2022/07/12        유호철       최초
- * 생성
+ * 주소를 서비스레이어에서 사용할수있게하는 구현 클래스입니다.
+ *
+ * @see AddressLocalService
+ * @author : 유호철
+ * @since 1.0
  */
 @Service
 @RequiredArgsConstructor
@@ -26,6 +26,13 @@ public class AddressLocalServiceImpl implements AddressLocalService {
 
     private final AddressLocalRepository repository;
 
+    /**
+     * 배송여부를 수정하기위한 메소드입니다.
+     *
+     * @param modifyDto 조회할 주소지정보와 수정해야할 배송가능여부를 포함합니다.
+     * @throws NotExistAddressLocal 주소지를 찾을수없습니다.
+     * @author 유호철
+     */
     @Transactional
     @Override
     public void modifyLocalDelivery(ModifyAddressRequestDto modifyDto) {
@@ -36,6 +43,13 @@ public class AddressLocalServiceImpl implements AddressLocalService {
         repository.save(addressLocal);
     }
 
+    /**
+     * 배송지 정보를 찾기위한 메소드입니다.
+     *
+     * @param requestDto 검색할 주소지가 기입되어있습니다.
+     * @return list : 검색된 주소지들이 반환됩니다.
+     * @author 유호철
+     */
     @Override
     public List<GetAddressLocalResponseDto> searchAddress(AddressSearchRequestDto requestDto) {
         return repository.findAllAddress(requestDto.getAddress());

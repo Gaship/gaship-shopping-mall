@@ -9,11 +9,11 @@ import lombok.Setter;
  * fileName       : GetAddressLocalResponseDto
  * author         : 유호철
  * date           : 2022/07/14
- * description    :
+ * description    : 배송지조회시 반환받게되는 형태의 클래스입니다.
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2022/07/14       유호철       최초 생성
+ * 2022/07/14         유호철             최초 생성
  */
 
 @Getter

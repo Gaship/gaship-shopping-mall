@@ -7,15 +7,11 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 
 /**
- *packageName    : shop.gaship.gashipshoppingmall.addressLocal.dto.request
- * fileName       : ModifyAddressRequestDto
- * author         : 유호철
- * date           : 2022/07/14
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/14       유호철       최초 생성
+ *
+ * 수정하려는 주소지번호와 배송가능여부를 수정하기위한 값이들어있는 클래스입니다.
+ *
+ * @author : 유호철
+ * @since 1.0
  */
 @Getter
 @AllArgsConstructor
