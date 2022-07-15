@@ -34,6 +34,19 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     private final StatusCodeRepository statusCodeRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * .
+     * methodName : addMemberGrade
+     * author : Semi Kim
+     * description : 회원등급 등록을 위한 메서드
+     * 모든 회원등급의 갱신기간은 동일하게 적용된다.
+     * 요청에 담겨있는 기준누적금액에 해당하는 기존의 다른 회원등급이 존재하면 등록 불가.
+     * 해당 회원등급 등록 요청의 isDefault 값이 true 일때 (기본회원등급 등록을 할때)
+     * 기존에 기본회원등급이 존재한다면 등록 불가.
+     * request 의 isDefault 값에 따라 기본회원등급 등록 / 이외의 회원등급 등록 으로 나뉜다.
+     *
+     * @param request MemberGradeRequest
+     */
     @Transactional
     @Override
     public void addMemberGrade(MemberGradeRequestDto request) {
@@ -51,6 +64,18 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         }
     }
 
+    /**
+     * .
+     * methodName : modifyMemberGrade
+     * author : Semi Kim
+     * description : 회원등급 수정을 위한 메서드
+     * 기준누적금액을 수정하려고 하는 경우 해당 기준누적금액이 기존과 다를때
+     * 기준누적금액이 회원등급끼리 중복되는 부분을 방지하기 위해
+     * 해당 기준누적금액과 동일한 기준누적금액을 가지고 있는 다른 회원등급이 존재하면 수정 불가
+     *
+     * @param memberGradeNo 수정하려는 회원등급의 식별 번호 (Integer)
+     * @param request       수정된 내용이 담긴 requestDto (MemberGradeRequest)
+     */
     @Transactional
     @Override
     public void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request) {
@@ -58,11 +83,24 @@ public class MemberGradeServiceImpl implements MemberGradeService {
                 .findById(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
 
+        if (!memberGrade.getAccumulateAmount().equals(request.getAccumulateAmount())) {
+            checkOverlapAccumulateAmount(request.getAccumulateAmount());
+        }
+
         memberGrade.modifyDetails(request);
 
         memberGradeRepository.save(memberGrade);
     }
 
+    /**
+     * .
+     * methodName : removeMemberGrade
+     * author : Semi Kim
+     * description : 회원등급 삭제를 위한 메서드
+     * 기본 회원 등급은 삭제할 수 없으며 해당 회원등급을 사용중인 member 가 존재하면 삭제할 수 없다.
+     *
+     * @param memberGradeNo 삭제하려는 회원등급의 식별 번호 (Integer)
+     */
     @Transactional
     @Override
     public void removeMemberGrade(Integer memberGradeNo) {
@@ -81,17 +119,40 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         memberGradeRepository.delete(memberGrade);
     }
 
+    /**.
+     * methodName : findMemberGrade
+     * author : Semi Kim
+     * description : 회원등급 단건 조회를 위한 메서드
+     *
+     * @param memberGradeNo 조회하려는 회원등급의 식별 번호 (Integer)
+     * @return memberGradeResponseDto
+     */
     @Override
     public MemberGradeResponseDto findMemberGrade(Integer memberGradeNo) {
         return memberGradeRepository.getMemberGradeBy(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
     }
 
+    /**.
+     * methodName : findMemberGrades
+     * author : Semi Kim
+     * description : pagination 이 적용된 다건 조회를 위한 메서드
+     *
+     * @param pageable Pageable
+     * @return list
+     */
     @Override
     public List<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
         return memberGradeRepository.getMemberGrades(pageable);
     }
 
+    /**.
+     * methodName : checkOverlapAccumulateAmount
+     * author : Semi Kim
+     * description : 회원등급의 기준누적금액 중복을 방지하기 위해 check 하는 메서드
+     *
+     * @param accumulateAmount 회원등급 승급의 기준이 되는 기준누적금액 (Long)
+     */
     private void checkOverlapAccumulateAmount(Long accumulateAmount) {
         if (memberGradeRepository.existsByAccumulateAmountEquals(accumulateAmount)) {
             throw new AccumulateAmountIsOverlap("동일한 기준누적금액에 해당하는 등급이 존재합니다. 기준누적금액 : "
@@ -99,6 +160,11 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         }
     }
 
+    /**.
+     * methodName : checkExistDefaultMemberGrade
+     * author : Semi Kim
+     * description : 기본회원등급 재등록을 방지하기 위해 check 하는 메서드
+     */
     private void checkExistDefaultMemberGrade() {
         if (memberGradeRepository.existsByIsDefaultIsTrue()) {
             throw new DefaultMemberGradeIsExist("기본 회원등급이 이미 존재합니다.");

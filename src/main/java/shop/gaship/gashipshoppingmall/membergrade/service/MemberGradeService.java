@@ -18,35 +18,11 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeRespon
  * 2022/07/09        Semi Kim       최초 생성
  */
 public interface MemberGradeService {
-    /**
-     * .
-     * methodName : addMemberGrade
-     * author : Semi Kim
-     * description :
-     *
-     * @param request MemberGradeRequest
-     */
+
     void addMemberGrade(MemberGradeRequestDto request);
 
-    /**
-     * .
-     * methodName : modifyMemberGrade
-     * author : Semi Kim
-     * description :
-     *
-     * @param memberGradeNo Integer
-     * @param request       MemberGradeRequest
-     */
     void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request);
 
-    /**
-     * .
-     * methodName : removeMemberGrade
-     * author : Semi Kim
-     * description :
-     *
-     * @param memberGradeNo Integer
-     */
     void removeMemberGrade(Integer memberGradeNo);
 
     MemberGradeResponseDto findMemberGrade(Integer memberGradeNo);
