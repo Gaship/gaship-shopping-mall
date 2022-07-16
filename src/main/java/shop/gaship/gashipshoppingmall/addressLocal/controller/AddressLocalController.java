@@ -35,7 +35,7 @@ public class AddressLocalController {
     public ResponseEntity<Void> addressLocalModify(@Valid @RequestBody ModifyAddressRequestDto dto) {
         service.modifyLocalDelivery(dto);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }

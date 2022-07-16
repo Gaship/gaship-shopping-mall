@@ -54,7 +54,7 @@ class EmployeeControllerTest {
         CreateEmployeeRequestDto dto = CreateEmployeeDtoDummy.dummy();
 
         //when
-        doNothing().when(service).createEmployee(dto);
+        doNothing().when(service).addEmployee(dto);
 
         mvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +64,7 @@ class EmployeeControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        verify(service, times(1)).createEmployee(dto);
+        verify(service, times(1)).addEmployee(dto);
     }
 
     @DisplayName("직원 정보 수정 controller test")
@@ -94,7 +94,7 @@ class EmployeeControllerTest {
         EmployeeInfoResponseDto e1 = GetEmployeeDummy.dummy();
 
         //when
-        when(service.getEmployee(1)).thenReturn(e1);
+        when(service.findEmployee(1)).thenReturn(e1);
 
         MvcResult mvcResult = mvc.perform(get("/employees/" + 1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +103,7 @@ class EmployeeControllerTest {
                 .andDo(print())
                 .andReturn();
 
-        verify(service, times(1)).getEmployee(any());
+        verify(service, times(1)).findEmployee(any());
 
         String response = mvcResult.getResponse().getContentAsString();
         String name = JsonPath.parse(response).read("$.name");
@@ -122,7 +122,7 @@ class EmployeeControllerTest {
         list.add(e1);
         list.add(e2);
         //when
-        when(service.getAllEmployees()).thenReturn(list);
+        when(service.findEmployees()).thenReturn(list);
 
         MvcResult mvcResult = mvc.perform(get("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -131,7 +131,7 @@ class EmployeeControllerTest {
                 .andDo(print())
                 .andReturn();
 
-        verify(service, times(1)).getAllEmployees();
+        verify(service, times(1)).findEmployees();
 
         String response = mvcResult.getResponse().getContentAsString();
         String name1 = JsonPath.parse(response).read("$[0].name");

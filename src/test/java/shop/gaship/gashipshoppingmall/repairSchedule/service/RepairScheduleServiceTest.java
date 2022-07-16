@@ -95,7 +95,7 @@ class RepairScheduleServiceTest {
                 .willReturn(Optional.of(schedule));
 
         //when & then
-        assertThatThrownBy(() -> service.registerSchedule(dto))
+        assertThatThrownBy(() -> service.addRepairSchedule(dto))
                 .isInstanceOf(AlreadyExistSchedule.class);
     }
 
@@ -109,7 +109,7 @@ class RepairScheduleServiceTest {
         given(dayLaborRepository.findById(dto.getLocalNo()))
                 .willReturn(Optional.empty());
         //when & then
-        assertThatThrownBy(() -> service.registerSchedule(dto))
+        assertThatThrownBy(() -> service.addRepairSchedule(dto))
                 .isInstanceOf(NotExistDayLabor.class);
     }
 
@@ -123,7 +123,7 @@ class RepairScheduleServiceTest {
                 .willReturn(Optional.of(dayLabor));
 
         //when
-        service.registerSchedule(dto);
+        service.addRepairSchedule(dto);
 
         //then
         verify(repository, timeout(1))
@@ -143,7 +143,7 @@ class RepairScheduleServiceTest {
         given(repository.findByPk(modify.getLocalNo(), modify.getDate()))
                 .willReturn(Optional.empty());
         //when & then
-        assertThatThrownBy(() -> service.modifySchedule(modify))
+        assertThatThrownBy(() -> service.modifyRepairSchedule(modify))
                 .isInstanceOf(NotExistSchedule.class);
     }
 
@@ -154,14 +154,11 @@ class RepairScheduleServiceTest {
         given(repository.findByPk(modify.getLocalNo(), modify.getDate()))
                 .willReturn(Optional.of(schedule));
         //when
-        service.modifySchedule(modify);
+        service.modifyRepairSchedule(modify);
 
         //then
         verify(repository, times(1))
-                .save(captor.capture());
-
-        RepairSchedule test = captor.getValue();
-        assertThat(test.getLabor()).isEqualTo(modify.getLabor());
+                .findByPk(any(),any());
     }
 
     @DisplayName("스케줄 일자별 조회 테스트")
@@ -174,7 +171,7 @@ class RepairScheduleServiceTest {
                 .willReturn(list);
 
         //when
-        List<GetRepairScheduleResponseDto> test = service.findScheduleByDate(now);
+        List<GetRepairScheduleResponseDto> test = service.findSchedulesByDate(now);
 
         //then
         verify(repository, times(1))
@@ -197,7 +194,7 @@ class RepairScheduleServiceTest {
                 .willReturn(pages);
 
         //when
-        Page<GetRepairScheduleResponseDto> test = service.getAllSchedule(pageRequestDto);
+        Page<GetRepairScheduleResponseDto> test = service.findRepairSchedules(pageRequestDto);
 
         //then
         assertThat(test.getSize()).isEqualTo(pages.getSize());

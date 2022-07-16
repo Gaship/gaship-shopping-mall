@@ -60,7 +60,7 @@ class RepairScheduleControllerTest {
         CreateScheduleRequestDto dto = CreateScheduleRequestDtoDummy.dummy();
 
         //when & then
-        doNothing().when(service).registerSchedule(dto);
+        doNothing().when(service).addRepairSchedule(dto);
 
         mvc.perform(post("/repair-schedule")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +70,7 @@ class RepairScheduleControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        verify(service, times(1)).registerSchedule(dto);
+        verify(service, times(1)).addRepairSchedule(dto);
     }
 
     @DisplayName("스케줄 건수 수정")
@@ -80,7 +80,7 @@ class RepairScheduleControllerTest {
         ModifyScheduleRequestDto dto = new ModifyScheduleRequestDto(10, LocalDate.now(), 1);
 
         //when & then
-        doNothing().when(service).modifySchedule(dto);
+        doNothing().when(service).modifyRepairSchedule(dto);
 
         mvc.perform(put("/repair-schedule")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +91,7 @@ class RepairScheduleControllerTest {
                 .andDo(print());
 
         //then
-        verify(service, times(1)).modifySchedule(any());
+        verify(service, times(1)).modifyRepairSchedule(any());
     }
 
     @DisplayName("모든 스케줄 조회 테스트")
@@ -108,7 +108,7 @@ class RepairScheduleControllerTest {
         Page<GetRepairScheduleResponseDto> pages = new PageImpl<>(list, pageRequest,
                 list.size());
         //when
-        when(service.getAllSchedule(dto))
+        when(service.findRepairSchedules(dto))
                 .thenReturn(pages);
 
         mvc.perform(get("/repair-schedule")
@@ -119,7 +119,7 @@ class RepairScheduleControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(service, times(1)).getAllSchedule(dto);
+        verify(service, times(1)).findRepairSchedules(dto);
     }
 
     @Test
@@ -132,7 +132,7 @@ class RepairScheduleControllerTest {
         list.add(responseDto1);
         list.add(responseDto2);
         //when & then
-        when(service.findScheduleByDate(now))
+        when(service.findSchedulesByDate(now))
                 .thenReturn(list);
 
         mvc.perform(get("/repair-schedule/date")
@@ -144,6 +144,6 @@ class RepairScheduleControllerTest {
                 .andDo(print());
 
         //then
-        verify(service, times(1)).findScheduleByDate(any());
+        verify(service, times(1)).findSchedulesByDate(any());
     }
 }

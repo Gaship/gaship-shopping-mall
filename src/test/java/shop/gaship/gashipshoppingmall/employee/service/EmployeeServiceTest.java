@@ -94,8 +94,7 @@ class EmployeeServiceTest {
 
         captor = ArgumentCaptor.forClass(Employee.class);
 
-        getEmployee = new EmployeeInfoResponseDto(employee);
-
+        getEmployee = new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(), employee.getPhoneNo());
         labor = DayLaboyDummy.dummy1();
 
         addressLocal = AddressLocalDummy.dummy1();
@@ -116,7 +115,7 @@ class EmployeeServiceTest {
                 .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> service.createEmployee(dto)).isInstanceOf(
+        assertThatThrownBy(() -> service.addEmployee(dto)).isInstanceOf(
                 WrongStatusCodeException.class);
     }
 
@@ -129,7 +128,7 @@ class EmployeeServiceTest {
         given(localRepository.findById(dto.getAddressNo()))
                 .willReturn(Optional.empty());
         //then
-        assertThatThrownBy(() -> service.createEmployee(dto)).isInstanceOf(
+        assertThatThrownBy(() -> service.addEmployee(dto)).isInstanceOf(
                 WrongAddressException.class);
     }
 
@@ -150,7 +149,7 @@ class EmployeeServiceTest {
                 .willReturn(Optional.of(addressLocal));
 
         //when
-        service.createEmployee(dto);
+        service.addEmployee(dto);
 
         //then
         verify(repository, timeout(1))
@@ -176,12 +175,8 @@ class EmployeeServiceTest {
 
         //then
         verify(repository, times(1))
-                .save(captor.capture());
-        Employee employee1 = captor.getValue();
+                .findById(any());
 
-        assertThat(employee1.getEmail()).isEqualTo(modifyEmployeeDto.getEmail());
-        assertThat(employee1.getPhoneNo()).isEqualTo(modifyEmployeeDto.getPhoneNo());
-        assertThat(employee1.getName()).isEqualTo(modifyEmployeeDto.getName());
     }
 
     @DisplayName("직원 정보 수정 테스트 실패")
@@ -212,8 +207,8 @@ class EmployeeServiceTest {
         given(localRepository.findById(any()))
                 .willReturn(Optional.of(addressLocal));
         //when
-        service.createEmployee(dto);
-        EmployeeInfoResponseDto test = service.getEmployee(employee.getEmployeeNo());
+        service.addEmployee(dto);
+        EmployeeInfoResponseDto test = service.findEmployee(employee.getEmployeeNo());
 
         //then
         verify(repository, times(1))
@@ -242,7 +237,7 @@ class EmployeeServiceTest {
                 .willReturn(list);
 
         //when
-        List<EmployeeInfoResponseDto> allEmployees = service.getAllEmployees();
+        List<EmployeeInfoResponseDto> allEmployees = service.findEmployees();
 
         //then
         verify(repository, times(1))

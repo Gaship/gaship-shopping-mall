@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.addressLocal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.AddressSearchRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
@@ -21,7 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mysema.commons.lang.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -86,7 +83,7 @@ class AddressLocalControllerTest {
         List<GetAddressLocalResponseDto> list = new ArrayList<>();
         list.add(dto);
         //when
-        when(service.searchAddress(any()))
+        when(service.findAddressLocals(any()))
                 .thenReturn(list);
 
         mvc.perform(get("/addressLocals")
@@ -100,7 +97,7 @@ class AddressLocalControllerTest {
                 .andDo(print());
 
         //then
-        verify(service, times(1)).searchAddress(any());
+        verify(service, times(1)).findAddressLocals(any());
 
     }
 }

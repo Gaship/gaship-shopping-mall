@@ -94,7 +94,7 @@ class DayLaborServiceTest {
         given(localRepository.findById(dto.getLocalNo()))
                 .willReturn(Optional.empty());
         //then
-        assertThatThrownBy(() -> service.createDayLabor(dto))
+        assertThatThrownBy(() -> service.addDayLabor(dto))
                 .isInstanceOf(WrongAddressException.class);
     }
 
@@ -108,7 +108,7 @@ class DayLaborServiceTest {
                 .willReturn(dayLabor);
 
         //when
-        service.createDayLabor(dto);
+        service.addDayLabor(dto);
 
         //then
         verify(dayLaborRepository, timeout(1))
@@ -144,11 +144,7 @@ class DayLaborServiceTest {
 
         //then
         verify(dayLaborRepository, times(1))
-                .save(captor.capture());
-
-        DayLabor test = captor.getValue();
-
-        assertThat(test.getMaxLabor()).isEqualTo(fixDto.getMaxLabor());
+                .findById(any());
     }
 
     @DisplayName("지역별 물량 전체조회하기")
@@ -171,7 +167,7 @@ class DayLaborServiceTest {
                 .willReturn(getlist);
 
         //when
-        List<GetDayLaborResponseDto> allDayLabors = service.getAllDayLabors();
+        List<GetDayLaborResponseDto> allDayLabors = service.findDayLabors();
 
         //then
         verify(dayLaborRepository, times(1))

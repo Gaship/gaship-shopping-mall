@@ -87,13 +87,7 @@ class AddressLocalServiceTest {
 
         //then
         verify(addressLocalRepository, timeout(1))
-                .save(captor.capture());
-
-        AddressLocal test = captor.getValue();
-        assertThat(test.getAddressName()).isEqualTo(addressLocal.getAddressName());
-        assertThat(test.getAddressNo()).isEqualTo(addressLocal.getAddressNo());
-        assertThat(test.isAllowDelivery()).isEqualTo(modifyDto.isDelivery());
-
+                .findById(any());
     }
 
     @DisplayName("배송지 검색테스트")
@@ -104,7 +98,7 @@ class AddressLocalServiceTest {
                 .willReturn(List.of(responseDto));
 
         //when & then
-        service.searchAddress(requestDto);
+        service.findAddressLocals(requestDto);
         //then
         verify(addressLocalRepository, times(1))
                 .findAllAddress(any());

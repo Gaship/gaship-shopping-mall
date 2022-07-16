@@ -52,7 +52,7 @@ class DayLaborControllerTest {
         //given
         CreateDayLaborRequestDto dto = CreateDayLaborRequestDtoDummy.dummy();
         //when
-        doNothing().when(service).createDayLabor(dto);
+        doNothing().when(service).addDayLabor(dto);
 
         mvc.perform(post("/dayLabors")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -63,7 +63,7 @@ class DayLaborControllerTest {
                 .andDo(print());
 
         //then
-        verify(service, times(1)).createDayLabor(any());
+        verify(service, times(1)).addDayLabor(any());
     }
 
     @DisplayName("지역별 물량 (물량값 수정)")
@@ -98,7 +98,7 @@ class DayLaborControllerTest {
         list.add(d2);
 
         //when
-        when(service.getAllDayLabors()).thenReturn(list);
+        when(service.findDayLabors()).thenReturn(list);
 
         mvc.perform(get("/dayLabors")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -110,7 +110,7 @@ class DayLaborControllerTest {
                 .andExpect(jsonPath("$[1].local").value(d2.getLocal()))
                 .andExpect(jsonPath("$[1].maxLabor").value(d2.getMaxLabor()));
 
-        verify(service, times(1)).getAllDayLabors();
+        verify(service, times(1)).findDayLabors();
 
     }
 }
