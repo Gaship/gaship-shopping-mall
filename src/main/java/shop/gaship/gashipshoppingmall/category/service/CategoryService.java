@@ -6,8 +6,7 @@ import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequest
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 
 /**
- *
- * 카테고리 서비스 인터페이스
+ * 카테고리 서비스 인터페이스입니다.
  *
  * @author : 김보민
  * @since 1.0

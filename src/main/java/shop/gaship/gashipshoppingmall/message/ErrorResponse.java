@@ -1,8 +1,7 @@
 package shop.gaship.gashipshoppingmall.message;
 
 /**
- *
- * 에러 발생 시 응답 바디에 포함할 객체
+ * 에러 발생 시 응답 바디에 포함할 객체입니다.
  *
  * @author : 김보민
  * @since 1.0

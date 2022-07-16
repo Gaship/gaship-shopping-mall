@@ -4,7 +4,7 @@ import lombok.*;
 
 /**
  *
- * 카테고리 조회 응답 시 담기는 데이터 객체
+ * 카테고리 조회 응답 시 담기는 데이터 객체입니다.
  *
  * @author : 김보민
  * @since 1.0
@@ -21,7 +21,11 @@ public class CategoryResponseDto {
     private String upperCategoryName;
 
     @Builder
-    public CategoryResponseDto(Integer no, String name, Integer level, Integer upperCategoryNo, String upperCategoryName) {
+    public CategoryResponseDto(Integer no,
+                               String name,
+                               Integer level,
+                               Integer upperCategoryNo,
+                               String upperCategoryName) {
         this.no = no;
         this.name = name;
         this.level = level;

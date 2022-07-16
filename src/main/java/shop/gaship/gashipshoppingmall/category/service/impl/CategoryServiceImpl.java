@@ -18,7 +18,7 @@ import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 
 /**
  *
- * 카테고리 서비스 구현체
+ * 카테고리 서비스 구현체입니다.
  *
  * @see shop.gaship.gashipshoppingmall.category.service.CategoryService
  * @author : 김보민
@@ -31,8 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final ProductRepository productRepository;
 
     /**
-     * 
-     * root 카테고리 추가
+     * root 카테고리 추가 메서드입니다.
      * 
      * @param createRequest 카테고리 생성 요청
      * @author 김보민
@@ -49,8 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 
-     * 하위 카테고리 추가
+     * 하위 카테고리 추가 메서드입니다.
      * 
      * @param createRequest 카테고리 생성 요청
      * @throws CategoryNotFoundException 카테고리를 못찾음
@@ -71,8 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     *
-     * 카테고리 수정
+     * 카테고리 수정 메서드입니다.
      *
      * @param modifyRequest 카테고리 수정 요청
      * @throws CategoryNotFoundException 카테고리를 못찾음
@@ -90,8 +87,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
     
     /**
-     * 
-     * 카테고리 단건 조회
+     * 카테고리 단건 조회 메서드입니다.
      * 
      * @param categoryNo 조회할 카테고리 번호
      * @return CategoryResponseDto 카테고리 데이터
@@ -105,9 +101,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 
-     * 카테고리 전체 조회
-     * 
+     * 카테고리 전체 조회 메서드입니다.
+     *
      * @return list 카테고리 목록 데이터
      * @author 김보민
      */
@@ -117,8 +112,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 
-     * 하위 카테고리 조회
+     * 하위 카테고리 조회 메서드입니다.
      * 
      * @param categoryNo 하위카테고리를 조회할 상위 카테고리 번호
      * @throws CategoryNotFoundException 카테고리를 못찾음
@@ -150,8 +144,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     *
-     * 하위 카테고리 조회
+     * 하위 카테고리 조회 메서드입니다.
      *
      * @param categoryNo 하위 카테고리를 조회할 상위 카테고리
      * @return list 하위 카테고리 목록

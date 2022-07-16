@@ -6,8 +6,7 @@ import shop.gaship.gashipshoppingmall.category.repository.custom.CategoryReposit
 
 
 /**
- *
- * 카테고리 jpa 레퍼지토리
+ * 카테고리 jpa 레퍼지토리입니다.
  *
  * @author : 김보민
  * @since 1.0

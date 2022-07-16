@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * 카테고리 엔티티
+ * 카테고리 엔티티입니다.
  *
  * @author : 김보민
  * @since 1.0
@@ -46,7 +45,6 @@ public class Category {
     }
 
     /**
-     *
      * 하위 카테고리를 생성하는 메서드 입니다.
      *
      * @param lowerCategory 추가할 하위 카테고리
@@ -59,7 +57,6 @@ public class Category {
     }
 
     /**
-     *
      * 카테고리의 상위 카테고리를 업데이트하는 메서드 입니다.
      *
      * @param category 업데이트할 상위 카테고리
@@ -70,7 +67,6 @@ public class Category {
     }
 
     /**
-     *
      * 카테고리의 이름을 업데이트하는 메서드 입니다.
      *
      * @param name 업데이트할 이름

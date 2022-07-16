@@ -9,7 +9,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryRemainLowerCategoryException;
@@ -96,7 +95,8 @@ class CategoryServiceTest {
 
         when(categoryRepository.findById(createRequest.getUpperCategoryNo())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> categoryService.addLowerCategory(createRequest)).isInstanceOf(CategoryNotFoundException.class);
+        assertThatThrownBy(() -> categoryService.addLowerCategory(createRequest))
+                .isInstanceOf(CategoryNotFoundException.class);
 
         verify(categoryRepository).findById(createRequest.getUpperCategoryNo());
     }
@@ -133,7 +133,8 @@ class CategoryServiceTest {
 
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> categoryService.modifyCategory(modifyRequest)).isInstanceOf(CategoryNotFoundException.class);
+        assertThatThrownBy(() -> categoryService.modifyCategory(modifyRequest))
+                .isInstanceOf(CategoryNotFoundException.class);
 
         verify(categoryRepository).findById(categoryNo);
     }
@@ -207,7 +208,8 @@ class CategoryServiceTest {
 
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> categoryService.removeCategory(categoryNo)).isInstanceOf(CategoryNotFoundException.class);
+        assertThatThrownBy(() -> categoryService.removeCategory(categoryNo))
+                .isInstanceOf(CategoryNotFoundException.class);
 
         verify(categoryRepository).findById(categoryNo);
     }
@@ -222,7 +224,8 @@ class CategoryServiceTest {
         when(categoryRepository.findById(categoryNo)).thenReturn(Optional.of(upperCategory));
         when(categoryRepository.findAllLowerCategories(categoryNo)).thenReturn(List.of(lowerCategory));
 
-        assertThatThrownBy(() -> categoryService.removeCategory(categoryNo)).isInstanceOf(CategoryRemainLowerCategoryException.class);
+        assertThatThrownBy(() -> categoryService.removeCategory(categoryNo))
+                .isInstanceOf(CategoryRemainLowerCategoryException.class);
 
         verify(categoryRepository).findById(categoryNo);
         verify(categoryRepository).findAllLowerCategories(categoryNo);
@@ -239,7 +242,8 @@ class CategoryServiceTest {
         when(categoryRepository.findAllLowerCategories(categoryNo)).thenReturn(Collections.emptyList());
         when(productRepository.findAllByCategoryNo(categoryNo)).thenReturn(List.of(product));
 
-        assertThatThrownBy(() -> categoryService.removeCategory(category.getNo())).isInstanceOf(CategoryRemainProductException.class);
+        assertThatThrownBy(() -> categoryService.removeCategory(category.getNo()))
+                .isInstanceOf(CategoryRemainProductException.class);
 
         verify(categoryRepository).findById(categoryNo);
         verify(categoryRepository).findAllLowerCategories(categoryNo);

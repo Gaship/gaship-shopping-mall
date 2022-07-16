@@ -6,7 +6,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 
 /**
- * 카테고리 레퍼지토리 커스텀
+ * 카테고리 레퍼지토리 커스텀입니다.
  *
  * @author : 김보민
  * @since 1.0
