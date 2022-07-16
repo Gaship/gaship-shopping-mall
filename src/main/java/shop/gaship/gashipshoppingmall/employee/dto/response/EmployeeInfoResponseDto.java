@@ -2,7 +2,6 @@ package shop.gaship.gashipshoppingmall.employee.dto.response;
 
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
-import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -27,11 +26,6 @@ public class EmployeeInfoResponseDto {
     @NotNull
     private String phoneNo;
 
-    public EmployeeInfoResponseDto(Employee employee) {
-        this.name = employee.getName();
-        this.email = employee.getEmail();
-        this.phoneNo = employee.getPhoneNo();
-    }
 
     public EmployeeInfoResponseDto(String name, String email, String phoneNo) {
         this.name = name;

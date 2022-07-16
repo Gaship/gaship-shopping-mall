@@ -29,5 +29,5 @@ public interface AddressLocalService {
      * @return list : 검색된 주소지와 그 주소지의 하위주소지들이 들어있습니다.
      * @author 유호철
      */
-    List<GetAddressLocalResponseDto> searchAddress(AddressSearchRequestDto requestDto);
+    List<GetAddressLocalResponseDto> findAddressLocals(AddressSearchRequestDto requestDto);
 }

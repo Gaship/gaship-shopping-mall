@@ -3,9 +3,11 @@ package shop.gaship.gashipshoppingmall.repairSchedule.repository.custom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.response.GetRepairScheduleResponseDto;
+import shop.gaship.gashipshoppingmall.repairSchedule.entity.RepairSchedule;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * QueryDsl 을 사용하기위한 인터페이스 입니다.
@@ -13,7 +15,6 @@ import java.util.List;
  * @author : 유호철
  * @since 1.0
  */
-
 public interface RepairScheduleRepositoryCustom {
 
     /**
@@ -36,4 +37,14 @@ public interface RepairScheduleRepositoryCustom {
      */
     Page<GetRepairScheduleResponseDto> findAllSortDate(Pageable pageable);
 
+
+    /**
+     * pk 값을 각자넣어서 반환받기위한 메서드.
+     *
+     * @param localNo 조회할 지역번호
+     * @param date 조회할 일자
+     * @return optional 수리스케줄을 optional 을 씌워서 반환합니다.
+     * @author 유호철
+     */
+    Optional<RepairSchedule> findByPk(Integer localNo, LocalDate date);
 }

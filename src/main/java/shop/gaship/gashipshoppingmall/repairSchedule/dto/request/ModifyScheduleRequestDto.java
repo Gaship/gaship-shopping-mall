@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.repairSchedule.dto.request;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -22,7 +23,7 @@ public class ModifyScheduleRequestDto {
 
     @NotNull
     private final LocalDate date;
-
+    @Min(1)
     @NotNull
     private final Integer localNo;
 

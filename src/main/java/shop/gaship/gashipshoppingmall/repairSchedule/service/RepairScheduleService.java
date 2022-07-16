@@ -25,7 +25,7 @@ public interface RepairScheduleService {
      * @param dto 생성할 스케줄에대한 정보들이 담겨있습니다.
      * @author 유호철
      */
-    void registerSchedule(CreateScheduleRequestDto dto);
+    void addRepairSchedule(CreateScheduleRequestDto dto);
 
     /**
      * 스케줄의 수정을위한 메서드입니다.
@@ -34,7 +34,7 @@ public interface RepairScheduleService {
      * @param modify 수정할 스케줄에대한 정보들이 담겨있습니다.
      * @author 유호철
      */
-    void modifySchedule(ModifyScheduleRequestDto modify);
+    void modifyRepairSchedule(ModifyScheduleRequestDto modify);
 
     /**
      * 날짜를 통해 스케줄들을 조회하기위한 메서드입니다.
@@ -44,7 +44,7 @@ public interface RepairScheduleService {
      * @return list 조회된 스케줄정보들이 반환됩니다.
      * @author 유호철
      */
-    List<GetRepairScheduleResponseDto> findScheduleByDate(LocalDate now);
+    List<GetRepairScheduleResponseDto> findSchedulesByDate(LocalDate now);
 
     /**
      * 페이징처리를 위한 스케줄정보가 담겨있습니다.
@@ -54,5 +54,5 @@ public interface RepairScheduleService {
      * @return page 페이지정보가 담긴 수리스케줄이 반환됩니다.
      * @author 유호철
      */
-    Page<GetRepairScheduleResponseDto> getAllSchedule(SchedulePageRequestDto request);
+    Page<GetRepairScheduleResponseDto> findRepairSchedules(SchedulePageRequestDto request);
 }

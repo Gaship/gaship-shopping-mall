@@ -5,8 +5,6 @@ import shop.gaship.gashipshoppingmall.repairSchedule.entity.RepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.pk.RepairSchedulePk;
 import shop.gaship.gashipshoppingmall.repairSchedule.repository.custom.RepairScheduleRepositoryCustom;
 
-import java.time.LocalDate;
-import java.util.Optional;
 
 /**
  * 수리스케줄을 다루기위한 레포지토리 인터페이스 입니다.
@@ -19,7 +17,5 @@ import java.util.Optional;
  */
 public interface RepairScheduleRepository extends JpaRepository<RepairSchedule, RepairSchedulePk>,
         RepairScheduleRepositoryCustom {
-
-    Optional<RepairSchedule> findByPk_AddressNoAndPk_Date(Integer localNo, LocalDate date);
 
 }

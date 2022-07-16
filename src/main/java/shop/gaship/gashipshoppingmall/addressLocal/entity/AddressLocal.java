@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,20 +39,19 @@ public class AddressLocal {
     private DayLabor dayLabor;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "upper_address_local_no")
     private AddressLocal upperLocal;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "upperLocal")
-    private List<AddressLocal> subLocal;
+    private List<AddressLocal> subLocal = new ArrayList<>();
 
-    public AddressLocal(String addressName, Integer level, boolean allowDelivery, DayLabor dayLabor, AddressLocal upperLocal, List<AddressLocal> subLocal) {
+    public AddressLocal(String addressName, Integer level, boolean allowDelivery, DayLabor dayLabor, AddressLocal upperLocal) {
         this.addressName = addressName;
         this.level = level;
         this.allowDelivery = allowDelivery;
         this.dayLabor = dayLabor;
         this.upperLocal = upperLocal;
-        this.subLocal = subLocal;
     }
 
     /**
@@ -80,7 +80,7 @@ public class AddressLocal {
      * @param list AddressLocal
      * @author 유호철
      */
-    public void addSubLocal(List<AddressLocal> list) {
+    public void updateSubLocal(List<AddressLocal> list) {
         this.subLocal = list;
     }
 

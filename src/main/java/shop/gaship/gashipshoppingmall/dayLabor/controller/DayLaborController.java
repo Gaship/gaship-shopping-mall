@@ -2,6 +2,8 @@ package shop.gaship.gashipshoppingmall.dayLabor.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
@@ -30,9 +32,11 @@ public class DayLaborController {
      * @author 유호철
      */
     @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    void modifyDayLabor(@Valid @RequestBody FixDayLaborRequestDto requestDto) {
+    public ResponseEntity<Void> dayLaborModify(@Valid @RequestBody FixDayLaborRequestDto requestDto) {
         service.modifyDayLabor(requestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
 
@@ -43,9 +47,11 @@ public class DayLaborController {
      * @author 유호철
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    void registerDayLabor(@Valid @RequestBody CreateDayLaborRequestDto requestDto) {
-        service.createDayLabor(requestDto);
+    public ResponseEntity<Void> dayLaborAdd(@Valid @RequestBody CreateDayLaborRequestDto requestDto) {
+        service.addDayLabor(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
@@ -55,8 +61,9 @@ public class DayLaborController {
      * @author 유호철
      */
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    List<GetDayLaborResponseDto> getAllDayLabor() {
-        return service.getAllDayLabors();
+    public ResponseEntity<List<GetDayLaborResponseDto>> dayLaborList() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findDayLabors());
     }
 }

@@ -2,6 +2,8 @@ package shop.gaship.gashipshoppingmall.addressLocal.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.AddressSearchRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
@@ -30,9 +32,12 @@ public class AddressLocalController {
      * @author 유호철
      */
     @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    void addressLocalModify(@Valid @RequestBody ModifyAddressRequestDto dto) {
+    public ResponseEntity<Void> addressLocalModify(@Valid @RequestBody ModifyAddressRequestDto dto) {
         service.modifyLocalDelivery(dto);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
 
@@ -44,8 +49,9 @@ public class AddressLocalController {
      * @author 유호철
      */
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    List<GetAddressLocalResponseDto> getAddressLocal(@Valid @RequestBody AddressSearchRequestDto dto) {
-        return service.searchAddress(dto);
+    public ResponseEntity<List<GetAddressLocalResponseDto>> addressLocalList(@Valid @RequestBody AddressSearchRequestDto dto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findAddressLocals(dto));
     }
 }

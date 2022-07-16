@@ -36,8 +36,8 @@ public class AddressLocalRepositoryImpl extends QuerydslRepositorySupport
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
 
         return from(addressLocal)
-                .where(addressLocal.addressName.contains(addressName))
-                .where(addressLocal.level.eq(1))
+                .where(addressLocal.addressName.contains(addressName)
+                        .and(addressLocal.level.eq(1)))
                 .select(Projections.bean(GetAddressLocalResponseDto.class,
                         addressLocal.addressName.as("upperAddressName"),
                         addressLocal.subLocal.any().addressName.as("addressName")))

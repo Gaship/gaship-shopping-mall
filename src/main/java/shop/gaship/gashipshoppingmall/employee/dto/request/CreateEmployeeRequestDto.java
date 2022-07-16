@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -18,10 +19,10 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class CreateEmployeeRequestDto {
-
+    @Min(1)
     @NotNull
     private Integer authorityNo;
-
+    @Min(1)
     @NotNull
     private Integer addressNo;
 

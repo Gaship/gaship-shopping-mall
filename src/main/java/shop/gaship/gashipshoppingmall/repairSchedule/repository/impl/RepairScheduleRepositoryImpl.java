@@ -15,6 +15,8 @@ import shop.gaship.gashipshoppingmall.repairSchedule.repository.custom.RepairSch
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
 
 /**
  * 수리스케줄에대해서 Query Dsl 을 쓰기위한 구현 클래스입니다.
@@ -90,5 +92,24 @@ public class RepairScheduleRepositoryImpl extends QuerydslRepositorySupport impl
                 .fetchResults();
 
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+    }
+
+    /**
+     * pk 값을 각자넣어서 반환받기위한 메서드.
+     *
+     * @param localNo 조회할 지역번호
+     * @param date 조회할 일자
+     * @return optional 수리스케줄을 optional 을 씌워서 반환합니다.
+     * @author 유호철
+     */
+    @Override
+    public Optional<RepairSchedule> findByPk(Integer localNo, LocalDate date) {
+        QRepairSchedule schedule = QRepairSchedule.repairSchedule;
+
+        return Optional.ofNullable(from(schedule)
+                .where(schedule.pk.date.eq(date)
+                        .and(schedule.pk.addressNo.eq(localNo)))
+                        .select(schedule)
+                .fetchOne());
     }
 }

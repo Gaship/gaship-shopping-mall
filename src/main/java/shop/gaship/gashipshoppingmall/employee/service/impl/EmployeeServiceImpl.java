@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.employee.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
@@ -24,8 +23,8 @@ import java.util.stream.Collectors;
 /**
  * 서비스레이어에서 직원에대한 요청을 사용하기위한 구현체 클래스입니다.
  *
- * @see EmployeeService
  * @author : 유호철
+ * @see EmployeeService
  * @since 1.0
  */
 
@@ -33,21 +32,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository repository;
+
     private final StatusCodeRepository statusCodeRepository;
+
     private final AddressLocalRepository localRepository;
+
 
     /**
      * 직원을 생성하기위한 메서드입니다.
      *
-     *
      * @param dto 직원을 생성하기위한 정보들이 담겨있습니다.
      * @throws WrongStatusCodeException 잘못된코드가들어갈경우.
-     * @throws WrongAddressException 잘못된주소가들어갈경우.
+     * @throws WrongAddressException    잘못된주소가들어갈경우.
      * @author 유호철
      */
     @Override
     @Transactional
-    public void createEmployee(CreateEmployeeRequestDto dto) {
+    public void addEmployee(CreateEmployeeRequestDto dto) {
 
         StatusCode statusCode = statusCodeRepository.findById(dto.getAuthorityNo())
                 .orElseThrow(WrongStatusCodeException::new);
@@ -71,13 +72,10 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     @Transactional
-    @Modifying
     public void modifyEmployee(ModifyEmployeeRequestDto dto) {
         Employee employee = repository.findById(dto.getEmployeeNo())
                 .orElseThrow(EmployeeNotFoundException::new);
         employee.modifyEmployee(dto);
-
-        repository.save(employee);
     }
 
     /**
@@ -89,24 +87,24 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @author 유호철
      */
     @Override
-    public EmployeeInfoResponseDto getEmployee(Integer employeeNo) {
+    public EmployeeInfoResponseDto findEmployee(Integer employeeNo) {
         Employee employee = repository.findById(employeeNo)
                 .orElseThrow(EmployeeNotFoundException::new);
 
-        return new EmployeeInfoResponseDto(employee);
+        return new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(), employee.getPhoneNo());
     }
 
     /**
      * 전체직원에대한 정보를 조회하기위한 메서드입니다.
      *
-     *
      * @return list 직원의 정보들이 반환됩니다.
      * @author 유호철
      */
     @Override
-    public List<EmployeeInfoResponseDto> getAllEmployees() {
-        return repository.findAll().stream()
-                .map(EmployeeInfoResponseDto::new)
+    public List<EmployeeInfoResponseDto> findEmployees() {
+        return repository.findAll()
+                .stream()
+                .map(employee -> new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(), employee.getPhoneNo()))
                 .collect(Collectors.toList());
     }
 }

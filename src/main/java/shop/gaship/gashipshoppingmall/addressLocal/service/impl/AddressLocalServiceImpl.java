@@ -40,7 +40,6 @@ public class AddressLocalServiceImpl implements AddressLocalService {
                 .orElseThrow(NotExistAddressLocal::new);
 
         addressLocal.allowDelivery(modifyDto.isDelivery());
-        repository.save(addressLocal);
     }
 
     /**
@@ -51,7 +50,7 @@ public class AddressLocalServiceImpl implements AddressLocalService {
      * @author 유호철
      */
     @Override
-    public List<GetAddressLocalResponseDto> searchAddress(AddressSearchRequestDto requestDto) {
+    public List<GetAddressLocalResponseDto> findAddressLocals(AddressSearchRequestDto requestDto) {
         return repository.findAllAddress(requestDto.getAddress());
     }
 }

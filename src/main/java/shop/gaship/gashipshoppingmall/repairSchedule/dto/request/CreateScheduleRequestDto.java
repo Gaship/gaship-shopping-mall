@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -21,7 +22,7 @@ public class CreateScheduleRequestDto {
 
     @NotNull
     private LocalDate date;
-
+    @Min(1)
     @NotNull
     private Integer localNo;
 

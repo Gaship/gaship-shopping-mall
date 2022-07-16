@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @AllArgsConstructor
 public class ModifyEmployeeRequestDto {
-
+    @Min(1)
     @NotNull
     private Integer employeeNo;
 

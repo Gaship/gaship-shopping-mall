@@ -18,6 +18,7 @@ import shop.gaship.gashipshoppingmall.repairSchedule.exception.NotExistSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.repository.RepairScheduleRepository;
 import shop.gaship.gashipshoppingmall.repairSchedule.service.RepairScheduleService;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,9 +37,10 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
 
     private final DayLaborRepository dayLaborRepository;
 
+    @Transactional
     @Override
-    public void registerSchedule(CreateScheduleRequestDto dto) {
-        if (repository.findByPk_AddressNoAndPk_Date(dto.getLocalNo(), dto.getDate()).isPresent()) {
+    public void addRepairSchedule(CreateScheduleRequestDto dto) {
+        if (repository.findByPk(dto.getLocalNo(), dto.getDate()).isPresent()) {
             throw new AlreadyExistSchedule();
         }
 
@@ -54,23 +56,23 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
         );
     }
 
+    @Transactional
     @Override
-    public void modifySchedule(ModifyScheduleRequestDto modify) {
-        RepairSchedule repairSchedule = repository.findByPk_AddressNoAndPk_Date(modify.getLocalNo(),
+    public void modifyRepairSchedule(ModifyScheduleRequestDto modify) {
+        RepairSchedule repairSchedule = repository.findByPk(modify.getLocalNo(),
                         modify.getDate())
                 .orElseThrow(NotExistSchedule::new);
 
         repairSchedule.fixLabor(modify.getLabor());
-        repository.save(repairSchedule);
     }
 
     @Override
-    public List<GetRepairScheduleResponseDto> findScheduleByDate(LocalDate now) {
+    public List<GetRepairScheduleResponseDto> findSchedulesByDate(LocalDate now) {
         return repository.findAllByDate(now);
     }
 
     @Override
-    public Page<GetRepairScheduleResponseDto> getAllSchedule(SchedulePageRequestDto request) {
+    public Page<GetRepairScheduleResponseDto> findRepairSchedules(SchedulePageRequestDto request) {
 
         return repository.findAllSortDate(PageRequest.of(request.getPage(), request.getSize()));
     }

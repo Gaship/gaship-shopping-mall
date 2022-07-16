@@ -2,6 +2,8 @@ package shop.gaship.gashipshoppingmall.employee.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
@@ -31,9 +33,11 @@ public class EmployeeController {
      * @author 유호철
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void postEmployee(@Valid @RequestBody CreateEmployeeRequestDto dto) {
-        employeeService.createEmployee(dto);
+    public ResponseEntity<Void> addEmployee(@Valid @RequestBody CreateEmployeeRequestDto dto) {
+        employeeService.addEmployee(dto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
@@ -43,10 +47,12 @@ public class EmployeeController {
      * @author 유호철
      */
     @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    public void putEmployee(@Valid @RequestBody ModifyEmployeeRequestDto dto) {
+    public ResponseEntity<Void> modifyEmployee(@Valid @RequestBody ModifyEmployeeRequestDto dto) {
 
         employeeService.modifyEmployee(dto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
@@ -57,10 +63,10 @@ public class EmployeeController {
      * @author 유호철
      */
     @GetMapping("/{employeeNo}")
-    @ResponseStatus(HttpStatus.OK)
-    public EmployeeInfoResponseDto getEmployee(@PathVariable("employeeNo") Integer employeeNo) {
-
-        return employeeService.getEmployee(employeeNo);
+    public ResponseEntity<EmployeeInfoResponseDto> employeeDetails(@PathVariable("employeeNo") Integer employeeNo) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(employeeService.findEmployee(employeeNo));
     }
 
     /**
@@ -70,10 +76,10 @@ public class EmployeeController {
      * @author 유호철
      */
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeInfoResponseDto> getEmployees() {
-
-        return employeeService.getAllEmployees();
+    public ResponseEntity<List<EmployeeInfoResponseDto>> employeeList() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(employeeService.findEmployees());
     }
 
 }

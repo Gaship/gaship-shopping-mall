@@ -38,7 +38,7 @@ public class DayLaborServiceImpl implements DayLaborService {
      */
     @Transactional
     @Override
-    public void createDayLabor(CreateDayLaborRequestDto dto) {
+    public void addDayLabor(CreateDayLaborRequestDto dto) {
         if (localRepository.findById(dto.getLocalNo()).isEmpty()) {
             throw new WrongAddressException();
         }
@@ -60,7 +60,6 @@ public class DayLaborServiceImpl implements DayLaborService {
     public void modifyDayLabor(FixDayLaborRequestDto fixDto) {
         DayLabor dayLabor = repository.findById(fixDto.getLocalNo()).orElseThrow(NotExistDayLabor::new);
         dayLabor.fixMaxLabor(fixDto);
-        repository.save(dayLabor);
     }
 
     /**
@@ -70,7 +69,7 @@ public class DayLaborServiceImpl implements DayLaborService {
      * @author 유호철
      */
     @Override
-    public List<GetDayLaborResponseDto> getAllDayLabors() {
+    public List<GetDayLaborResponseDto> findDayLabors() {
         return repository.findAllDayLabor();
     }
 }

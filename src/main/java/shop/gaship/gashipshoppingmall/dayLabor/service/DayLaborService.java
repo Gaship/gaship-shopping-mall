@@ -20,7 +20,7 @@ public interface DayLaborService {
      * @param dto  지역별물량을 생성하기위한 지역번호와 최대물량이 담겨져있습니다.
      * @author 유호철
      */
-    void createDayLabor(CreateDayLaborRequestDto dto);
+    void addDayLabor(CreateDayLaborRequestDto dto);
 
     /**
      * 지역별물량을 수정하기위한 메서드입니다.
@@ -36,5 +36,5 @@ public interface DayLaborService {
      * @return list 조회한 지역별물량에대한 정보들이 담겨있습니다.
      * @author 유호철
      */
-    List<GetDayLaborResponseDto> getAllDayLabors();
+    List<GetDayLaborResponseDto> findDayLabors();
 }

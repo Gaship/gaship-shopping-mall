@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.dto.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,4 +24,10 @@ public class GetRepairScheduleResponseDto {
 
     private Integer labor;
 
+    @Builder
+    public GetRepairScheduleResponseDto(String localName, LocalDate localDate, Integer labor) {
+        this.localName = localName;
+        this.localDate = localDate;
+        this.labor = labor;
+    }
 }

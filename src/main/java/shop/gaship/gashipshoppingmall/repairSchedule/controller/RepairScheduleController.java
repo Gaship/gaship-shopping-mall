@@ -3,6 +3,8 @@ package shop.gaship.gashipshoppingmall.repairSchedule.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.ModifyScheduleRequestDto;
@@ -34,9 +36,12 @@ public class RepairScheduleController {
      * @author 유호철
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    void addRepairSchedule(@Valid @RequestBody CreateScheduleRequestDto dto) {
-        service.registerSchedule(dto);
+    public ResponseEntity<Void> addRepairSchedule(
+            @Valid @RequestBody CreateScheduleRequestDto dto) {
+        service.addRepairSchedule(dto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
@@ -46,9 +51,12 @@ public class RepairScheduleController {
      * @author 유호철
      */
     @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    void fixRepairSchedule(@Valid @RequestBody ModifyScheduleRequestDto dto) {
-        service.modifySchedule(dto);
+    public ResponseEntity<Void> modifyRepairSchedule(
+            @Valid @RequestBody ModifyScheduleRequestDto dto) {
+        service.modifyRepairSchedule(dto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
@@ -59,9 +67,11 @@ public class RepairScheduleController {
      * @author 유호철
      */
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    Page<GetRepairScheduleResponseDto> getAllSchedule(@Valid @RequestBody SchedulePageRequestDto request) {
-        return service.getAllSchedule(request);
+    public ResponseEntity<Page<GetRepairScheduleResponseDto>> scheduleListPage(
+            @Valid @RequestBody SchedulePageRequestDto request) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findRepairSchedules(request));
     }
 
     /**
@@ -72,8 +82,9 @@ public class RepairScheduleController {
      * @author 유호철
      */
     @GetMapping("/date")
-    @ResponseStatus(HttpStatus.OK)
-    List<GetRepairScheduleResponseDto> getScheduleByDate(LocalDate date) {
-        return service.findScheduleByDate(date);
+    public ResponseEntity<List<GetRepairScheduleResponseDto>> scheduleList(LocalDate date) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findSchedulesByDate(date));
     }
 }

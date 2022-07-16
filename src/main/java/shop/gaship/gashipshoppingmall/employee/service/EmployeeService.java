@@ -22,7 +22,7 @@ public interface EmployeeService {
      * @param dto 직원을생성하기위한 정보가들어있습니다
      * @author 유호철
      */
-    void createEmployee(CreateEmployeeRequestDto dto);
+    void addEmployee(CreateEmployeeRequestDto dto);
 
     /**
      * 직원의 정보를수정하기위한 메서드입니다.
@@ -39,7 +39,7 @@ public interface EmployeeService {
      * @return employeeInfoResponseDto 반환되어야할 직원정보들이 반환됩니다.
      * @author 유호철
      */
-    EmployeeInfoResponseDto getEmployee(Integer employeeNo);
+    EmployeeInfoResponseDto findEmployee(Integer employeeNo);
 
     /**
      * 모든직원들의 정보를 반환하기위한 메서드입니다.
@@ -47,5 +47,5 @@ public interface EmployeeService {
      * @return list 반환되어야할 직원정보들이 리스트형태로 반환됩니다.
      * @author 유호철
      */
-    List<EmployeeInfoResponseDto> getAllEmployees();
+    List<EmployeeInfoResponseDto> findEmployees();
 }

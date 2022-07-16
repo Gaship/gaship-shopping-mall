@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.dayLabor.dto.request;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @NoArgsConstructor
 public class CreateDayLaborRequestDto {
+    @Min(1)
     @NotNull
     private Integer localNo;
     @NotNull
