@@ -91,7 +91,7 @@ class RepairScheduleServiceTest {
     @Test
     void wrongAddressException_ScheduleTest() {
         //given
-        given(repository.findByPk_AddressNoAndPk_Date(dto.getLocalNo(), dto.getDate()))
+        given(repository.findByPk(dto.getLocalNo(), dto.getDate()))
                 .willReturn(Optional.of(schedule));
 
         //when & then
@@ -103,7 +103,7 @@ class RepairScheduleServiceTest {
     @Test
     void wrongDayLaborException_ScheduleTest() {
         //given
-        given(repository.findByPk_AddressNoAndPk_Date(dto.getLocalNo(), dto.getDate()))
+        given(repository.findByPk(dto.getLocalNo(), dto.getDate()))
                 .willReturn(Optional.empty());
 
         given(dayLaborRepository.findById(dto.getLocalNo()))
@@ -117,7 +117,7 @@ class RepairScheduleServiceTest {
     @Test
     void success_ScheduleTest() {
         //given
-        given(repository.findByPk_AddressNoAndPk_Date(dto.getLocalNo(), dto.getDate()))
+        given(repository.findByPk(dto.getLocalNo(), dto.getDate()))
                 .willReturn(Optional.empty());
         given(dayLaborRepository.findById(dto.getLabor()))
                 .willReturn(Optional.of(dayLabor));
@@ -140,7 +140,7 @@ class RepairScheduleServiceTest {
     @Test
     void modify_ScheduleFail() {
         //given
-        given(repository.findByPk_AddressNoAndPk_Date(modify.getLocalNo(), modify.getDate()))
+        given(repository.findByPk(modify.getLocalNo(), modify.getDate()))
                 .willReturn(Optional.empty());
         //when & then
         assertThatThrownBy(() -> service.modifySchedule(modify))
@@ -151,7 +151,7 @@ class RepairScheduleServiceTest {
     @Test
     void modify_ScheduleSuccess() {
         //given
-        given(repository.findByPk_AddressNoAndPk_Date(modify.getLocalNo(), modify.getDate()))
+        given(repository.findByPk(modify.getLocalNo(), modify.getDate()))
                 .willReturn(Optional.of(schedule));
         //when
         service.modifySchedule(modify);

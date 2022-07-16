@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.addressLocal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mysema.commons.lang.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -83,19 +86,21 @@ class AddressLocalControllerTest {
         List<GetAddressLocalResponseDto> list = new ArrayList<>();
         list.add(dto);
         //when
-        when(service.searchAddress(requestDto))
+        when(service.searchAddress(any()))
                 .thenReturn(list);
 
-        MvcResult mvcResult = mvc.perform(get("/addressLocals")
+        mvc.perform(get("/addressLocals")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(print())
-                .andReturn();
+                .andExpect(jsonPath("$[0].upperAddressName").value(dto.getUpperAddressName()))
+                .andExpect(jsonPath("$[0].addressName").value(dto.getAddressName()))
+                .andDo(print());
 
         //then
         verify(service, times(1)).searchAddress(any());
+
     }
 }

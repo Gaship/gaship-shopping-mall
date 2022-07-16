@@ -46,13 +46,11 @@ class AddressLocalRepositoryTest {
     @Test
     void selectTest() {
         //given
-        List<AddressLocal> list = new ArrayList<>();
-        list.add(child1);
-        list.add(child2);
-
         labor.fixLocation(upper);
+
+        upper.getSubLocal().add(child1);
+        upper.getSubLocal().add(child2);
         upper.registerDayLabor(labor);
-        upper.addSubLocal(list);
 
         child1.registerUpperLocal(upper);
         child2.registerUpperLocal(upper);
@@ -87,7 +85,7 @@ class AddressLocalRepositoryTest {
 
         labor.fixLocation(upper);
         upper.registerDayLabor(labor);
-        upper.addSubLocal(list);
+        upper.updateSubLocal(list);
 
         child1.registerUpperLocal(upper);
         child2.registerUpperLocal(upper);

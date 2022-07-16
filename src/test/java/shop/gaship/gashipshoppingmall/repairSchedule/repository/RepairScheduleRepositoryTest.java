@@ -165,7 +165,7 @@ class RepairScheduleRepositoryTest {
         repository.save(r1);
 
         //then
-        RepairSchedule result = repository.findByPk_AddressNoAndPk_Date(
+        RepairSchedule result = repository.findByPk(
                 r1.pk.getAddressNo(), r1.pk.getDate()).get();
 
         assertThat(result.getDayLabor()).isEqualTo(d1);
