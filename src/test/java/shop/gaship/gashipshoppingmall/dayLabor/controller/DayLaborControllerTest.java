@@ -66,6 +66,27 @@ class DayLaborControllerTest {
         verify(service, times(1)).addDayLabor(any());
     }
 
+    @DisplayName("지역별 물량등록 유효성 검사 실패 테스트")
+    @Test
+    void postDayLaborFail() throws Exception {
+        //given
+        CreateDayLaborRequestDto dto =
+                new CreateDayLaborRequestDto(null,10);
+        //when & then
+        doNothing().when(service).addDayLabor(dto);
+
+        mvc.perform(post("/dayLabors")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 지역번호를 입력하세요"))
+                .andDo(print());
+
+    }
+
+
     @DisplayName("지역별 물량 (물량값 수정)")
     @Test
     void modifyDayLabor() throws Exception {
@@ -85,6 +106,27 @@ class DayLaborControllerTest {
 
         //then
         verify(service, times(1)).modifyDayLabor(any());
+    }
+
+    @DisplayName("지역별 물량 (물량값 수정) 실패테스트")
+    @Test
+    void modifyDayLaborFail() throws Exception {
+        //given
+        FixDayLaborRequestDto dto =
+               new FixDayLaborRequestDto(1,null);
+
+        //when & then
+        doNothing().when(service).modifyDayLabor(dto);
+
+        mvc.perform(put("/dayLabors")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 최대물량을 입력하세요"))
+                .andDo(print());
+
     }
 
     @DisplayName("지역별 일량 전체 조회")
@@ -111,6 +153,5 @@ class DayLaborControllerTest {
                 .andExpect(jsonPath("$[1].maxLabor").value(d2.getMaxLabor()));
 
         verify(service, times(1)).findDayLabors();
-
     }
 }

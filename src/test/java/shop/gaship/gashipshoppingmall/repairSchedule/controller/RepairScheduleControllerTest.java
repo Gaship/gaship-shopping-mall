@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -72,6 +73,25 @@ class RepairScheduleControllerTest {
         verify(service, times(1)).addRepairSchedule(dto);
     }
 
+    @DisplayName("스케줄 생성실패 테스트")
+    @Test
+    void addRepairScheduleFail() throws Exception {
+        //given
+        CreateScheduleRequestDto dto = new CreateScheduleRequestDto(null,1,10);
+
+        //when & then
+        doNothing().when(service).addRepairSchedule(dto);
+
+        mvc.perform(post("/repair-schedule")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 일자를 기입해주세요"))
+                .andDo(print());
+    }
+
     @DisplayName("스케줄 건수 수정")
     @Test
     void fixRepairSchedule() throws Exception {
@@ -91,6 +111,26 @@ class RepairScheduleControllerTest {
 
         //then
         verify(service, times(1)).modifyRepairSchedule(any());
+    }
+
+    @DisplayName("스케줄 건수 수정실패 ")
+    @Test
+    void fixRepairScheduleFail() throws Exception {
+        //given
+        ModifyScheduleRequestDto dto = new ModifyScheduleRequestDto(10, null, 1);
+
+        //when & then
+        doNothing().when(service).modifyRepairSchedule(dto);
+
+        mvc.perform(put("/repair-schedule")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 일자를 기입해주세요"))
+                .andDo(print());
+
     }
 
     @DisplayName("모든 스케줄 조회 테스트")

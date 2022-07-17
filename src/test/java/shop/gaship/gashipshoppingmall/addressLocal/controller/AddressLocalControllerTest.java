@@ -72,6 +72,22 @@ class AddressLocalControllerTest {
         verify(service, times(1)).modifyLocalDelivery(any());
     }
 
+    @DisplayName("지역 배달가능 여부 수정 실패 테스트")
+    @Test
+    void modifyAddressLocalFailTest() throws Exception{
+        //given
+        ModifyAddressRequestDto dto = new ModifyAddressRequestDto(null, true);
+
+        //when & then
+        mvc.perform(put("/addressLocals")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 지역을 입력하세요"))
+                .andDo(print());
+    }
     @DisplayName("주소지 검색 테스트")
     @Test
     void findAddressLocalTest() throws Exception {
