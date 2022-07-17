@@ -1,23 +1,21 @@
 package shop.gaship.gashipshoppingmall.dataprotection.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.util.ReflectionUtils.findMethod;
 
+import java.lang.reflect.Method;
+import javax.crypto.spec.SecretKeySpec;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.ReflectionUtils;
+import shop.gaship.gashipshoppingmall.dataprotection.exception.DecodeFailureException;
+import shop.gaship.gashipshoppingmall.dataprotection.exception.EncodeFailureException;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.dataprotection.protection <br/>
- * fileName       : AesTest <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/10 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/10           김민수               최초 생성                         <br/>
- */
 @SpringBootTest
 class AesTest {
     @Autowired
@@ -32,4 +30,28 @@ class AesTest {
 
         assertThat(decodedText).isEqualTo(text);
     }
+
+
+    @Test
+    @DisplayName("개인정보 복호화 실패 오류 확인")
+    void aesECBDecodeFailure() {
+        Method method = findMethod(aes.getClass(), "aesECBDecode", String.class);
+        ReflectionUtils.declaresException(method, DecodeFailureException.class);
+        String text = "01012345678";
+        assertThatThrownBy(() -> aes.aesECBDecode(text))
+            .isInstanceOf(DecodeFailureException.class);
+    }
+
+    @Test
+    @DisplayName("개인정보 암호화 실패 오류 확인")
+    @Disabled
+    void aesECBEncodeFailure() {
+        Method method = findMethod(aes.getClass(), "aesECBEncode", String.class);
+        ReflectionTestUtils.setField(aes, "secretKeySpec",
+            new SecretKeySpec("1234".repeat(30).getBytes(), "AES"));
+        String text = "01012345678";
+        assertThatThrownBy(() -> aes.aesECBEncode(text))
+            .isInstanceOf(EncodeFailureException.class);
+    }
+
 }
