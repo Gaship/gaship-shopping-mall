@@ -2,13 +2,13 @@ package shop.gaship.gashipshoppingmall.repairSchedule.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.ModifyScheduleRequestDto;
-import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.SchedulePageRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.service.RepairScheduleService;
 
@@ -60,29 +60,33 @@ public class RepairScheduleController {
     }
 
     /**
-     * get 요청으로 모든 스케줄정보를 들고오기위한 메서드입니다.
+     * 스케줄에대한 정보를 페이징으로 보여주기위한 메서드입니다.
      *
-     * @param request 페이지요청정보입니다.
-     * @return page 페이지 리스트형식으로 스케줄들이 반환됩니다.
+     * @param page 페이지 정보입니다.
+     * @param size 페이지 사이즈정보.
+     * @return response entity 페이지 정보가담긴 객체를 반환한다.
      * @author 유호철
      */
     @GetMapping
     public ResponseEntity<Page<GetRepairScheduleResponseDto>> scheduleListPage(
-            @Valid @RequestBody SchedulePageRequestDto request) {
+            @RequestParam ("page")int page,
+            @RequestParam ("size")int size) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findRepairSchedules(request));
+                .body(service.findRepairSchedules(page, size));
     }
 
     /**
-     * get/date 로 일자로 스케줄을 받기위한 메서드입니다.
+     * 일짜별로 조회하기위한 메서드입니다.
      *
-     * @param date 일자정보입니다.
-     * @return list 일자정보에대한 스케줄들이 반환됩니다.
+     * @param date 조회할 날짜.
+     * @return response entity 날짜별로 조회된 스케줄정보를 반환합니다.
      * @author 유호철
      */
     @GetMapping("/date")
-    public ResponseEntity<List<GetRepairScheduleResponseDto>> scheduleList(LocalDate date) {
+    public ResponseEntity<List<GetRepairScheduleResponseDto>> scheduleList(
+            @RequestParam("date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(service.findSchedulesByDate(date));

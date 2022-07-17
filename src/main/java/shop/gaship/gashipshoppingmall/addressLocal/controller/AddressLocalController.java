@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.addressLocal.dto.request.AddressSearchRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
@@ -44,14 +43,14 @@ public class AddressLocalController {
     /**
      * get 요청시 조회를 할수있는 메서드입니다.
      *
-     * @param dto : 검색할 주소지가 담긴 dto 입니다.
+     * @param address  : 검색할 주소지 입니다.
      * @return list : 검색된 주소지와 하위주소지가 담긴 리스트입니다.
      * @author 유호철
      */
     @GetMapping
-    public ResponseEntity<List<GetAddressLocalResponseDto>> addressLocalList(@Valid @RequestBody AddressSearchRequestDto dto) {
+    public ResponseEntity<List<GetAddressLocalResponseDto>> addressLocalList(@RequestParam("address") String address) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findAddressLocals(dto));
+                .body(service.findAddressLocals(address));
     }
 }
