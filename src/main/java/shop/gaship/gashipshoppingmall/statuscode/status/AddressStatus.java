@@ -2,16 +2,11 @@ package shop.gaship.gashipshoppingmall.statuscode.status;
 
 import lombok.Getter;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.statuscode.status
- * fileName       : AddressStatus
- * author         : Semi Kim
- * date           : 2022/07/17
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/17        Semi Kim       최초 생성
+/**.
+ * 배송지 목록에서 사용되는 배송지 상태값
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @Getter
 public enum AddressStatus {

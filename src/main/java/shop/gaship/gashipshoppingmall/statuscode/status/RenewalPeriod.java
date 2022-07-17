@@ -2,22 +2,17 @@ package shop.gaship.gashipshoppingmall.statuscode.status;
 
 import lombok.Getter;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.statuscode.enumm
- * fileName       : Status
- * author         : Semi Kim
- * date           : 2022/07/16
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/16        Semi Kim       최초 생성
+/**.
+ * 회원등급에 사용되는 갱신기간 값
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @Getter
 public enum RenewalPeriod {
-    PERIOD("갱신기간");
+    PERIOD("기간");
 
-    public static final String GROUP = "회원상태";
+    public static final String GROUP = "갱신기간";
 
     private final String value;
 

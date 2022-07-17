@@ -2,16 +2,11 @@ package shop.gaship.gashipshoppingmall.statuscode.status;
 
 import lombok.Getter;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.statuscode.status
- * fileName       : RepairClassification
- * author         : Semi Kim
- * date           : 2022/07/17
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/17        Semi Kim       최초 생성
+/**.
+ * Gaship Care + 에 사용되는 수리분류 상태값
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @Getter
 public enum RepairClassification {

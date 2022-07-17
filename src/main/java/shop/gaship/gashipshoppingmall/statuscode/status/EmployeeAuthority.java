@@ -2,16 +2,11 @@ package shop.gaship.gashipshoppingmall.statuscode.status;
 
 import lombok.Getter;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.statuscode.status
- * fileName       : EmployeeAuthority
- * author         : Semi Kim
- * date           : 2022/07/17
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/17        Semi Kim       최초 생성
+/**.
+ * 직원에 사용되는 직원 권한 값
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @Getter
 public enum EmployeeAuthority {
