@@ -16,9 +16,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CreateDayLaborRequestDto {
     @Min(1)
-    @NotNull
+    @NotNull(message = "지역번호를 입력하세요")
     private Integer localNo;
-    @NotNull
+    @NotNull(message = "최대물량을 기입하세요")
     private Integer maxLabor;
 
     public CreateDayLaborRequestDto(Integer localNo, Integer maxLabor) {
