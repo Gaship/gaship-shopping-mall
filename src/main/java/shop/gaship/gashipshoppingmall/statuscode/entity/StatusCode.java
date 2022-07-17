@@ -9,15 +9,10 @@ import lombok.NoArgsConstructor;
 
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.statuscode.entity
- * fileName       : StatusCode
- * author         : Semi Kim
- * date           : 2022/07/09
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/09        Semi Kim       최초 생성
+ * 상태코드 entity class.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @Entity
 @Table(name = "status_codes")
@@ -44,6 +39,14 @@ public class StatusCode {
 
     private String explanation;
 
+    /**
+     * Instantiates a new Status code.
+     *
+     * @param statusCodeName the status code name
+     * @param priority       the priority
+     * @param groupCodeName  the group code name
+     * @param explanation    the explanation
+     */
     @Builder
     public StatusCode(String statusCodeName, Integer priority,
                       String groupCodeName, String explanation) {
@@ -52,5 +55,9 @@ public class StatusCode {
         this.priority = priority;
         this.groupCodeName = groupCodeName;
         this.explanation = explanation;
+    }
+
+    public void modifyRenewalPeriod(String period) {
+        this.statusCodeName = period;
     }
 }
