@@ -5,18 +5,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.gaship.gashipshoppingmall.member.dto.MemberAddRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,38 +41,36 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public void register(MemberRegisterRequestDto memberRegisterRequestDto) {
-        Member recommendMember = memberRepository.findByNickname(memberRegisterRequestDto.getRecommendMemberNickname()).orElseThrow(RuntimeException::new);
-        MemberGrade memberGrade = memberGradeRepository.findById(0).orElseThrow(RuntimeException::new);
+    public void addMember(MemberAddRequestDto request) {
+        Member recommendMember = memberRepository.findByNickname(request.getRecommendMemberNickname()).orElseThrow(MemberNotFoundException::new);
+        MemberGrade memberGrade = memberGradeRepository.findById(0).orElseThrow(MemberGradeNotFoundException::new);
         StatusCode statusCode = statusCodeRepository.findByStatusCodeName("활성").orElseThrow(RuntimeException::new);
-        Member member = dtoToEntity(memberRegisterRequestDto, recommendMember,statusCode,memberGrade,false);
+        Member member = dtoToEntity(request, recommendMember, statusCode, memberGrade, false);
         memberRepository.save(member);
     }
 
     @Transactional
     @Override
-    public void modify(MemberModifyRequestDto memberModifyRequestDto) {
-        Member member = memberRepository.findById(memberModifyRequestDto.getMemberNo()).orElseThrow(RuntimeException::new);
-        member.modifyMember(memberModifyRequestDto);
+    public void modifyMember(MemberModifyRequestDto request) {
+        Member member = memberRepository.findById(request.getMemberNo()).orElseThrow(MemberNotFoundException::new);
+        member.modifyMember(request);
         memberRepository.save(member);
     }
 
     @Transactional
     @Override
-    public void delete(Integer memberNo) {
+    public void removeMember(Integer memberNo) {
         memberRepository.deleteById(memberNo);
     }
 
     @Override
-    public MemberResponseDto get(Integer memberNo) {
-        return entityToDto(memberRepository.findById(memberNo).orElseThrow(RuntimeException::new));
+    public MemberResponseDto findMember(Integer memberNo) {
+        return entityToDto(memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new));
     }
 
     @Override
-    public List<MemberResponseDto> getList(Pageable pageable) {
-        Function<Member,MemberResponseDto> converter = (this::entityToDto);
+    public List<MemberResponseDto> findMembers(Pageable pageable) {
         Page<Member> members = memberRepository.findAll(pageable);
-        List<MemberResponseDto> collect = members.stream().map(converter).collect(Collectors.toList());
-        return collect;
+        return members.stream().map(this::entityToDto).collect(Collectors.toList());
     }
 }

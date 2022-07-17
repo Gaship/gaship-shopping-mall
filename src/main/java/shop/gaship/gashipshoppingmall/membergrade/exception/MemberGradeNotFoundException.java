@@ -11,7 +11,7 @@ package shop.gaship.gashipshoppingmall.membergrade.exception;
  * -----------------------------------------------------------
  * 2022/07/13        choijungwoo       최초 생성
  */
-public class MemberGradeNotFoundException extends Throwable{
+public class MemberGradeNotFoundException extends RuntimeException{
     public MemberGradeNotFoundException() {
         super("");
     }

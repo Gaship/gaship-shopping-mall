@@ -4,13 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shop.gaship.gashipshoppingmall.member.dto.MemberAddRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,35 +21,45 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
-
+//todo:  valid
     @PostMapping("/signUp")
-    public ResponseEntity<Void> register(@RequestBody MemberRegisterRequestDto memberRegisterRequestDto) {
-        memberService.register(memberRegisterRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Void> memberAdd(@Valid @RequestBody MemberAddRequestDto request) {
+        memberService.addMember(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     @PutMapping("/members/{memberNo}")
-    public ResponseEntity<Void> modify(@RequestBody MemberModifyRequestDto memberModifyRequestDto) {
-        memberService.modify(memberModifyRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Void> memberModify(@Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
+        memberService.modifyMember(memberModifyRequestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     @DeleteMapping("/members/{memberNo}")
-    public ResponseEntity<Void> delete(@PathVariable Integer memberNo) {
-        memberService.delete(memberNo);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Void> memberRemove(@PathVariable Integer memberNo) {
+        memberService.removeMember(memberNo);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     @GetMapping("/members/{memberNo}")
-    public ResponseEntity<MemberResponseDto> get(@PathVariable Integer memberNo) {
-        MemberResponseDto memberResponseDto = memberService.get(memberNo);
-        return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
+    public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable Integer memberNo) {
+        MemberResponseDto memberResponseDto = memberService.findMember(memberNo);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(memberResponseDto);
     }
 
     @GetMapping("/members")
-    public ResponseEntity<List<MemberResponseDto>> getList(Pageable pageable) {
-        List<MemberResponseDto> list = memberService.getList(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+    public ResponseEntity<List<MemberResponseDto>> memberList(Pageable pageable) {
+        List<MemberResponseDto> list = memberService.findMembers(pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(list);
     }
 
 

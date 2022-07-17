@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
-import shop.gaship.gashipshoppingmall.member.memberTestUtils.MemberTestUtils;
+import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
 import java.util.List;
@@ -52,8 +52,8 @@ class MemberControllerTest {
     @DisplayName("회원 등록 테스트")
     @Test
     void registerMemberTest() throws Exception {
-        String body = objectMapper.writeValueAsString(MemberTestUtils.memberRegisterRequestDto());
-        doNothing().when(memberService).register(MemberTestUtils.memberRegisterRequestDto());
+        String body = objectMapper.writeValueAsString(MemberTestDummy.memberRegisterRequestDto());
+        doNothing().when(memberService).addMember(MemberTestDummy.memberRegisterRequestDto());
 
         mockMvc.perform(post("/signUp")
                         .accept(MediaType.APPLICATION_JSON)
@@ -61,14 +61,14 @@ class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
-        verify(memberService).register(any());
+        verify(memberService).addMember(any());
     }
 
     @DisplayName("회원 정보 수정 테스트")
     @Test
     void modifyMemberTest() throws Exception {
-        String body = objectMapper.writeValueAsString(MemberTestUtils.memberModifyRequestDto());
-        doNothing().when(memberService).modify(MemberTestUtils.memberModifyRequestDto());
+        String body = objectMapper.writeValueAsString(MemberTestDummy.memberModifyRequestDto());
+        doNothing().when(memberService).modifyMember(MemberTestDummy.memberModifyRequestDto());
 
         mockMvc.perform(put("/members/1")
                         .accept(MediaType.APPLICATION_JSON)
@@ -76,25 +76,25 @@ class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(memberService).modify(any());
+        verify(memberService).modifyMember(any());
     }
 
     @DisplayName("회원 삭제 테스트(실삭제(db 에서 삭제))")
     @Test
     void deleteMemberTest() throws Exception {
-        doNothing().when(memberService).delete(any(Integer.class));
+        doNothing().when(memberService).removeMember(any(Integer.class));
         mockMvc.perform(delete("/members/1")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(memberService).delete(any());
+        verify(memberService).removeMember(any());
     }
 
     @DisplayName("회원 단건 조회 테스트")
     @Test
     void getMemberTest() throws Exception {
-        when(memberService.get(any(Integer.class))).thenReturn(MemberTestUtils.memberResponseDto());
+        when(memberService.findMember(any(Integer.class))).thenReturn(MemberTestDummy.memberResponseDto());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/members/1")
                         .accept(MediaType.APPLICATION_JSON)
@@ -102,14 +102,14 @@ class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        verify(memberService).get(any());
+        verify(memberService).findMember(any());
     }
 
     @DisplayName("회원 다건 조회 테스트")
     @Test
     void getMemberListTest() throws Exception {
-        List<MemberResponseDto> memberResponseDtoList = List.of(MemberTestUtils.memberResponseDto(), MemberTestUtils.memberResponseDto());
-        when(memberService.getList(any(Pageable.class))).thenReturn(memberResponseDtoList);
+        List<MemberResponseDto> memberResponseDtoList = List.of(MemberTestDummy.memberResponseDto(), MemberTestDummy.memberResponseDto());
+        when(memberService.findMembers(any(Pageable.class))).thenReturn(memberResponseDtoList);
 
         mockMvc.perform(get("/members")
                         .queryParam("page", "0")
@@ -120,6 +120,6 @@ class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        verify(memberService).getList(PageRequest.of(0, 10, Sort.by("title")));
+        verify(memberService).findMembers(PageRequest.of(0, 10, Sort.by("title")));
     }
 }

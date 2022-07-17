@@ -2,27 +2,28 @@ package shop.gaship.gashipshoppingmall.member.service;
 
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberRegisterRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.MemberAddRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface MemberService {
-    void register(MemberRegisterRequestDto memberRegisterRequestDto);
+    void addMember(MemberAddRequestDto memberRegisterRequestDto) throws MemberGradeNotFoundException;
 
-    void modify(MemberModifyRequestDto memberModifyRequestDto);
+    void modifyMember(MemberModifyRequestDto memberModifyRequestDto);
 
-    void delete(Integer memberNo);
+    void removeMember(Integer memberNo);
 
-    MemberResponseDto get(Integer memberNo);
+    MemberResponseDto findMember(Integer memberNo);
 
-    List<MemberResponseDto> getList(Pageable pageable);
+    List<MemberResponseDto> findMembers(Pageable pageable);
 
-    default Member dtoToEntity(MemberRegisterRequestDto request, Member recommendMember, StatusCode statusCode, MemberGrade memberGrade,Boolean isBlackMember) {
+    default Member dtoToEntity(MemberAddRequestDto request, Member recommendMember, StatusCode statusCode, MemberGrade memberGrade, Boolean isBlackMember) {
         return Member.builder()
                 .recommendMember(recommendMember)
                 .memberStatusCodes(statusCode)
