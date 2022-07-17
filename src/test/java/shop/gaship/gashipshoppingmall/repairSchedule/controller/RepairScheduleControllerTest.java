@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.ModifyScheduleRequestDto;
-import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.SchedulePageRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dummy.CreateScheduleRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.repairSchedule.dummy.GetRepairScheduleResponseDtoDummy;
@@ -98,7 +97,6 @@ class RepairScheduleControllerTest {
     @Test
     void getAllSchedule() throws Exception {
         //given
-        SchedulePageRequestDto dto = new SchedulePageRequestDto(1, 10);
         PageRequest pageRequest = PageRequest.of(1, 10);
         List<GetRepairScheduleResponseDto> list = new ArrayList<>();
         GetRepairScheduleResponseDto responseDto1 = GetRepairScheduleResponseDtoDummy.dummy1();
@@ -108,18 +106,19 @@ class RepairScheduleControllerTest {
         Page<GetRepairScheduleResponseDto> pages = new PageImpl<>(list, pageRequest,
                 list.size());
         //when
-        when(service.findRepairSchedules(dto))
+        when(service.findRepairSchedules(pageRequest.getPageNumber(),pageRequest.getPageSize()))
                 .thenReturn(pages);
 
         mvc.perform(get("/repair-schedule")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto))
                         .characterEncoding(StandardCharsets.UTF_8)
+                        .queryParam("page", objectMapper.writeValueAsString(pageRequest.getPageSize()))
+                        .queryParam("size", objectMapper.writeValueAsString(pageRequest.getPageNumber()))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(service, times(1)).findRepairSchedules(dto);
+        verify(service, times(1)).findRepairSchedules(any(Integer.class), any(Integer.class));
     }
 
     @Test
@@ -137,8 +136,8 @@ class RepairScheduleControllerTest {
 
         mvc.perform(get("/repair-schedule/date")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(now))
                         .characterEncoding(StandardCharsets.UTF_8)
+                        .queryParam("date",now.toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
