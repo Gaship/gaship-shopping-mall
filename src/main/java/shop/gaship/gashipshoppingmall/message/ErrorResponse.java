@@ -13,6 +13,11 @@ public class ErrorResponse {
         this.message = message;
     }
 
+    /**
+     * 에러메세지를 반환합니다.
+     *
+     * @return 메세지 문자열을 반환합니다.
+     */
     public String getMessage() {
         return message;
     }
