@@ -10,8 +10,8 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 import shop.gaship.gashipshoppingmall.statuscode.service.StatusCodeService;
 import shop.gaship.gashipshoppingmall.statuscode.status.RenewalPeriod;
 
-/**.
- * 상태코드 서비스 구현체
+/**
+ * 상태코드 Service 구현체.
  *
  * @author : 김세미
  * @see shop.gaship.gashipshoppingmall.statuscode.service.StatusCodeService
