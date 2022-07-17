@@ -13,15 +13,7 @@ import shop.gaship.gashipshoppingmall.tag.service.TagService;
 import java.util.List;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.controller
- * fileName       : TagController
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
+ * The type Tag controller.
  */
 @RestController
 @Slf4j
@@ -31,13 +23,10 @@ public class TagController {
     private final TagService tagService;
 
     /**
-     * .
-     * methodName : register
-     * author : choijungwoo
-     * description : Tag PostMapping
+     * Register response entity.
      *
-     * @param tagRequestDto TagRequestDto
-     * @return response entity
+     * @param tagRequestDto the tag request dto
+     * @return the response entity
      */
     @PostMapping("/admin/{adminNo}/tags")
     public ResponseEntity<TagResponseDto> register(@RequestBody TagRequestDto tagRequestDto) {
@@ -46,13 +35,10 @@ public class TagController {
     }
 
     /**
-     * .
-     * methodName : modify
-     * author : choijungwoo
-     * description : Tag PutMapping
+     * Modify response entity.
      *
-     * @param tagRequestDto TagRequestDto
-     * @return response entity
+     * @param tagRequestDto the tag request dto
+     * @return the response entity
      */
     @PutMapping("/admin/{adminNo}/tags/{tagNo}")
     public ResponseEntity<TagResponseDto> modify(@RequestBody TagRequestDto tagRequestDto) {
@@ -61,12 +47,9 @@ public class TagController {
     }
 
     /**
-     * .
-     * methodName : delete
-     * author : choijungwoo
-     * description : Tag PostMapping
+     * Delete.
      *
-     * @return response entity
+     * @param tagNo the tag no
      */
     @DeleteMapping("/admin/{adminNo}/tags/{tagNo}")
     public void delete(@PathVariable Integer tagNo) {
@@ -74,13 +57,10 @@ public class TagController {
     }
 
     /**
-     * .
-     * methodName : get
-     * author : choijungwoo
-     * description : Tag GetMapping
+     * Get response entity.
      *
-     * @param tagNo Integer
-     * @return response entity
+     * @param tagNo the tag no
+     * @return the response entity
      */
     @GetMapping("/admin/{adminNo}/tags/{tagNo}")
     public ResponseEntity<TagResponseDto> get(@PathVariable Integer tagNo) {
@@ -89,12 +69,10 @@ public class TagController {
     }
 
     /**
-     * .
-     * methodName : getList
-     * author : choijungwoo
-     * description : Tag GetMapping
+     * Gets list.
      *
-     * @return response entity
+     * @param pageable the pageable
+     * @return the list
      */
     @GetMapping("/admin/{adminNo}/tags")
     public ResponseEntity<List<TagResponseDto>> getList(Pageable pageable) {
