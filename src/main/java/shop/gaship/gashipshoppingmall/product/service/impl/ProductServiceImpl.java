@@ -54,4 +54,9 @@ public class ProductServiceImpl implements ProductService {
 
         return repository.findProductByCategory(no);
     }
+
+    @Override
+    public List<ProductResponseDto> findProductByName(String name) {
+        return repository.findByProductName(name);
+    }
 }

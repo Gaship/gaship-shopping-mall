@@ -85,6 +85,16 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .fetch();
     }
 
+    @Override
+    public List<ProductResponseDto> findByProductName(String name) {
+        QProduct product = QProduct.product;
+
+        return from(product)
+                .where(product.name.contains(name))
+                .select(getProduct(product))
+                .fetch();
+    }
+
     private QBean<ProductResponseDto> getProduct(QProduct product) {
         return Projections.bean(ProductResponseDto.class,
                 product.no,

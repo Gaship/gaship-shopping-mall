@@ -60,4 +60,12 @@ public interface ProductService {
      * @author 유호철
      */
     List<ProductResponseDto> findProductByCategory(Integer no);
+
+    /**
+     * 이름을 통해 알맞은 상품을 조호하는 메서드입니다.
+     *
+     * @param name 조회할 상품의 이름.
+     * @author 유호철
+     */
+    List<ProductResponseDto> findProductByName(String name);
 }

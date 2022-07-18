@@ -73,7 +73,7 @@ public class ProductController {
     }
 
     /**
-     * 금액으로 제품들을 정렬하기위한 메서드입니다.
+     * get 요청을 받아서 금액으로 제품들을 정렬하기위한 메서드입니다.
      *
      * @param minAmount 최소금액입니다.
      * @param maxAmount 최대금액입니다.
@@ -91,7 +91,7 @@ public class ProductController {
     }
 
     /**
-     * 카테고리 번호를 통해 전체상품들을 조회하는 메서드입니다.
+     * get 요청을 받아서 카테고리 번호를 통해 전체상품들을 조회하는 메서드입니다.
      *
      * @param categoryNo 조회할 카테고리 번호가들어간다.
      * @return response entity 조회된 상품들이 반환됩니다.
@@ -105,5 +105,21 @@ public class ProductController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(service.findProductByCategory(categoryNo));
 
+    }
+
+    /**
+     * get 요청을 받아서 상품이름을 통해 전체상품들을 조회하는 메서드입니다.
+     *
+     * @param name 조회할 상품의 이름이 들어갑니다.
+     * @return response entity 조회된 상품들이 반환됩니다.
+     * @author 유호철
+     */
+    @GetMapping("/name")
+    public ResponseEntity<List<ProductResponseDto>> productNameList(
+            @RequestParam("name") String name) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findProductByName(name));
     }
 }

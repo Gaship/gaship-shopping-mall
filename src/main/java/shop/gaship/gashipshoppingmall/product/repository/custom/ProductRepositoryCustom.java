@@ -27,7 +27,6 @@ public interface ProductRepositoryCustom {
      * 페이징된 제품들을 조회하기위해 만든 메서드입니다.
      *
      * @param pageable 페이징 하기위한 객체입니다.
-     *
      * @return page 페이징된 제품들이 반환됩니다.
      * @author 유호철
      */
@@ -60,4 +59,13 @@ public interface ProductRepositoryCustom {
      * @author 유호철
      */
     List<ProductResponseDto> findProductByCategory(Integer categoryNo);
+
+    /**
+     * 상품이름을 기준으로 조회하는 메서드입니다.
+     *
+     * @param name 조회할 상품의 이름이 들어갑니다.
+     * @return list 조회된 상품들의 정보가 반환됩니다.
+     * @author 유호철
+     */
+    List<ProductResponseDto> findByProductName(String name);
 }
