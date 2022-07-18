@@ -28,12 +28,22 @@ class TagRepositoryTest {
 
     @DisplayName("레포지토리 태그 등록 테스트")
     @Test
-    void saveTagTest(){
+    void saveTagTest() {
         Tag tag = TestDummy.CreateTestTagEntity();
 
         Tag savedTag = tagRepository.save(tag);
 
         assertThat(tag.getTagNo()).isEqualTo(savedTag.getTagNo());
         assertThat(tag.getTitle()).isEqualTo(savedTag.getTitle());
+    }
+
+    @DisplayName("레포지토리 태그 등록 테스트2")
+    @Test
+    void saveTagTest2() {
+        Tag tag = TestDummy.CreateTestTagEntity();
+
+        tagRepository.save(tag);
+
+        assertThat(tagRepository.existsByTitle("title....1")).isTrue();
     }
 }

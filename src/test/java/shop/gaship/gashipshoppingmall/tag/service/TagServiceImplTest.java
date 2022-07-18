@@ -10,6 +10,8 @@ import org.springframework.data.domain.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
+import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
+import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 import shop.gaship.gashipshoppingmall.tag.utils.TestDummy;
 
@@ -17,9 +19,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.tag.service
@@ -41,56 +43,101 @@ class TagServiceImplTest {
     @MockBean
     private TagRepository tagRepository;
 
-    @DisplayName("tagService register 테스트")
+    @DisplayName("tagService addTag 테스트")
     @Test
-    void register() {
+    void addTagTest() {
         when(tagRepository.save(any(Tag.class))).thenReturn(TestDummy.CreateTestTagEntity());
-        tagService.register(TestDummy.CreateTestTagRequestDto());
+        tagService.addTag(TestDummy.CreateTestTagRequestDto());
 
         verify(tagRepository).save(any(Tag.class));
     }
 
-    @DisplayName("tagService modify 테스트")
+    @DisplayName("tagService addTag fail 테스트(title 중복)")
     @Test
-    void modify() {
+    void addSameTitleTagTest() {
+        when(tagRepository.existsByTitle(any())).thenReturn(true);
+        when(tagRepository.save(any(Tag.class))).thenReturn(TestDummy.CreateTestTagEntity());
+        assertThatThrownBy(() -> tagService.addTag(TestDummy.CreateTestTagRequestDto()))
+                .isInstanceOf(DuplicatedTagTitleException.class)
+                        .hasMessage("중복된 태그명입니다");
+
+        verify(tagRepository).existsByTitle(any());
+        verify(tagRepository, never()).save(any(Tag.class));
+    }
+
+    @DisplayName("tagService modifyTag 테스트")
+    @Test
+    void modifyTagTest() {
         Tag tag = TestDummy.CreateTestTagEntity();
         when(tagRepository.findById(any())).thenReturn(Optional.of(tag));
         when(tagRepository.save(any(Tag.class))).thenReturn(tag);
+        when(tagRepository.existsByTitle(any())).thenReturn(false);
 
-        tagService.modify(TestDummy.CreateTestTagRequestDto());
+        tagService.modifyTag(TestDummy.CreateTestTagRequestDto());
 
         verify(tagRepository).findById(any());
+        verify(tagRepository).existsByTitle(any());
         verify(tagRepository).save(any(Tag.class));
     }
 
-    @DisplayName("tagService delete 테스트")
+    @DisplayName("tagService modifyTag 테스트(이미 등록 된 태그명으로 변경하려는 경우)")
     @Test
-    void delete() {
-        tagService.delete(1);
+    void modifyTagTitleToExistTitleTest() {
+        Tag tag = TestDummy.CreateTestTagEntity();
+        when(tagRepository.findById(any())).thenReturn(Optional.of(tag));
+        when(tagRepository.save(any(Tag.class))).thenReturn(tag);
+        when(tagRepository.existsByTitle(any())).thenReturn(true);
+
+        assertThatThrownBy(()->tagService.modifyTag(TestDummy.CreateTestTagRequestDto()))
+                .isInstanceOf(DuplicatedTagTitleException.class)
+                        .hasMessage("중복된 태그명입니다");
+
+        verify(tagRepository).existsByTitle(any());
+        verify(tagRepository,never()).findById(any());
+        verify(tagRepository,never()).save(any(Tag.class));
+    }
+
+    @DisplayName("tagService removeTag 테스트")
+    @Test
+    void removeTagTest() {
+        tagService.removeTag(1);
 
         verify(tagRepository).deleteById(any());
     }
 
-    @DisplayName("tagService get 테스트")
+    @DisplayName("tagService findTag 테스트")
     @Test
-    void get() {
+    void findTagTest() {
         Tag tag = TestDummy.CreateTestTagEntity();
         when(tagRepository.findById(any())).thenReturn(Optional.of(tag));
 
-        tagService.get(0);
+        tagService.findTag(0);
 
         verify(tagRepository).findById(any());
     }
 
-    @DisplayName("tagService getList 테스트")
+    @DisplayName("tagService findTag 테스트(못 찾는 경우)")
     @Test
-    void getList() {
+    void findTagFailTest() {
+        Tag tag = TestDummy.CreateTestTagEntity();
+        when(tagRepository.findById(any())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(()->tagService.findTag(0))
+                .isInstanceOf(TagNotFoundException.class)
+                        .hasMessage("해당 태그를 찾을 수 없습니다");
+
+        verify(tagRepository).findById(any());
+    }
+
+    @DisplayName("tagService findTags 테스트")
+    @Test
+    void findTagsTest() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("title"));
         List<Tag> tagList = TestDummy.CreateTestTagEntityList();
         Page<Tag> page = new PageImpl<>(tagList);
         when(tagRepository.findAll(pageable)).thenReturn(page);
 
-        List<TagResponseDto> list = tagService.getList(pageable);
+        List<TagResponseDto> list = tagService.findTags(pageable);
 
         verify(tagRepository).findAll(pageable);
         assertThat(list).hasSize(100);

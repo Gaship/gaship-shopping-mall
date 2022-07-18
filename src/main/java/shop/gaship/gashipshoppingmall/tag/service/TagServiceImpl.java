@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
+import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
+import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 
 import java.util.List;
@@ -32,33 +34,38 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     @Override
-    public TagResponseDto register(TagRequestDto tagRequestDto) {
-        Tag tag = dtoToEntity(tagRequestDto);
-        Tag save = tagRepository.save(tag);
-        return entityToDto(save);
+    public void addTag(TagRequestDto request) {
+        if(tagRepository.existsByTitle(request.getTitle())){
+            throw new DuplicatedTagTitleException();
+        }
+        Tag tag = dtoToEntity(request);
+        tagRepository.save(tag);
     }
 
     @Transactional
     @Override
-    public TagResponseDto modify(TagRequestDto tagRequestDto) {
-        Tag tag = tagRepository.findById(tagRequestDto.getTagNo()).orElseThrow(RuntimeException::new);
-        tag.modifyEntity(tagRequestDto);
-        return entityToDto(tagRepository.save(tag));
+    public void modifyTag(TagRequestDto request) {
+        if(tagRepository.existsByTitle(request.getTitle())){
+            throw new DuplicatedTagTitleException();
+        }
+        Tag tag = tagRepository.findById(request.getTagNo()).orElseThrow(TagNotFoundException::new);
+        tag.modifyEntity(request);
+        tagRepository.save(tag);
     }
     @Transactional
     @Override
-    public void delete(Integer tagNo) {
+    public void removeTag(Integer tagNo) {
         tagRepository.deleteById(tagNo);
     }
 
     @Override
-    public TagResponseDto get(Integer tagNo) {
-        Tag tag = tagRepository.findById(tagNo).orElseThrow(RuntimeException::new);
+    public TagResponseDto findTag(Integer tagNo) {
+        Tag tag = tagRepository.findById(tagNo).orElseThrow(TagNotFoundException::new);
         return entityToDto(tag);
     }
 
     @Override
-    public List<TagResponseDto> getList(Pageable pageable) {
+    public List<TagResponseDto> findTags(Pageable pageable) {
         Page<Tag> page = tagRepository.findAll(pageable);
         return page.stream().map(this::entityToDto).collect(Collectors.toList());
     }

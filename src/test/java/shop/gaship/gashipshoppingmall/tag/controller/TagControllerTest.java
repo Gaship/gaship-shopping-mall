@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,9 +21,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,6 +38,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(TagController.class)
 class TagControllerTest {
+    private final String title = "테스트 타이틀";
+    private final int tagNo = 1;
+
     @Autowired
     MockMvc mockMvc;
 
@@ -50,12 +50,9 @@ class TagControllerTest {
     @MockBean
     TagService tagService;
 
-    private final String title = "테스트 타이틀";
-    private final int tagNo = 1;
-
     @DisplayName("태그 등록 테스트")
     @Test
-    void registerTagTest() throws Exception {
+    void addTagTest() throws Exception {
         String body = objectMapper.writeValueAsString(TestDummy.CreateTestTagRequestDto());
 
         mockMvc.perform(post("/admin/1/tags")
@@ -64,12 +61,7 @@ class TagControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
-        verify(tagService).register(any(TagRequestDto.class));
-    }
-
-    @DisplayName("이름이 동일한 태그 등록")
-    @Test
-    void registerSameTitleTag() throws Exception {
+        verify(tagService).addTag(any(TagRequestDto.class));
     }
 
     @DisplayName("태그 수정 테스트")
@@ -83,47 +75,47 @@ class TagControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(tagService).modify(any(TagRequestDto.class));
+        verify(tagService).modifyTag(any(TagRequestDto.class));
     }
 
     @DisplayName("태그 삭제 테스트")
     @Test
-    void delete() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/1/tags/1"))
+    void removeTagTest() throws Exception {
+        mockMvc.perform(delete("/admin/1/tags/1"))
                 .andExpect(status().isOk());
     }
 
     @DisplayName("태그 단건 조회 테스트")
     @Test
-    void getTagTest() throws Exception{
+    void findTagTest() throws Exception {
         TagResponseDto tagResponseDto = TestDummy.CreateTestTagResponseDto(title);
 
-        when(tagService.get(any()))
+        when(tagService.findTag(any()))
                 .thenReturn(tagResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/admin/1/tags/" + tagNo)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(tagService).get(tagNo);
+        verify(tagService).findTag(tagNo);
     }
 
     @DisplayName("태그 다건 조회 테스트")
     @Test
-    void getTagListTest() throws Exception{
+    void findTagsTest() throws Exception {
         List<TagResponseDto> tagResponseDtoList = List.of(TestDummy.CreateTestTagResponseDto(title));
-        when(tagService.getList(any())).thenReturn(tagResponseDtoList);
+        when(tagService.findTags(any())).thenReturn(tagResponseDtoList);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/admin/1/tags")
-                        .queryParam("page","0")
-                        .queryParam("size","10")
-                        .queryParam("sort","title")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON))
+                        .queryParam("page", "0")
+                        .queryParam("size", "10")
+                        .queryParam("sort", "title")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        verify(tagService).getList(PageRequest.of(0,10, Sort.by("title")));
+        verify(tagService).findTags(PageRequest.of(0, 10, Sort.by("title")));
     }
 }

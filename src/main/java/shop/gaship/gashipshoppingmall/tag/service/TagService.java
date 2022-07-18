@@ -23,46 +23,51 @@ public interface TagService {
      * .
      * methodName : register
      * author : choijungwoo
+     * description : 태그를 등록하는 메서드
      *
-     * @param tagRequestDto TagRequestDto
+     * @param request the request
      */
-    TagResponseDto register(TagRequestDto tagRequestDto);
+    void addTag(TagRequestDto request);
 
     /**
      * .
      * methodName : modify
      * author : choijungwoo
+     * description : 태그를 수정하는 메서드(title만 바뀐다)
      *
-     * @param tagRequestDto TagRequestDto
+     * @param request the request
      */
-    TagResponseDto modify(TagRequestDto tagRequestDto);
+    void modifyTag(TagRequestDto request);
 
     /**
      * .
      * methodName : delete
      * author : choijungwoo
-     *
+     * description : 태그를 삭제하는 메서드
      * @param tagNo TagNo
      */
-    void delete(Integer tagNo);
+    void removeTag(Integer tagNo);
 
     /**
      * .
      * methodName : get
      * author : choijungwoo
+     * description : 태그를 조회하는 메서드
      *
      * @param tagNo Integer
+     * @return the tag response dto
      */
-    TagResponseDto get(Integer tagNo);
+    TagResponseDto findTag(Integer tagNo);
 
     /**
      * .
      * methodName : getList
      * author : choijungwoo
-     *
+     * description : 태그를 페이징하는 메서드
      * @param pageable Pageable
+     * @return the list
      */
-    List<TagResponseDto> getList(Pageable pageable);
+    List<TagResponseDto> findTags(Pageable pageable);
 
     /**
      * .
@@ -70,6 +75,7 @@ public interface TagService {
      * author : choijungwoo
      *
      * @param dto TagRequestDto
+     * @return the tag
      */
     default Tag dtoToEntity(TagRequestDto dto){
         return Tag.builder()
@@ -83,6 +89,7 @@ public interface TagService {
      * author : choijungwoo
      *
      * @param tag Tag
+     * @return the tag response dto
      */
     default TagResponseDto entityToDto(Tag tag){
         return TagResponseDto.builder()

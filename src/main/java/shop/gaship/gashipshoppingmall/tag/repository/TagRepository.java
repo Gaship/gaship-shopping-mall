@@ -16,4 +16,11 @@ import shop.gaship.gashipshoppingmall.tag.entity.Tag;
  * 2022/07/11        choijungwoo       최초 생성
  */
 public interface TagRepository extends JpaRepository<Tag,Integer> {
+    /**
+     * Exists by title boolean.
+     *
+     * @param title the title
+     * @return the boolean
+     */
+    boolean existsByTitle(String title);
 }

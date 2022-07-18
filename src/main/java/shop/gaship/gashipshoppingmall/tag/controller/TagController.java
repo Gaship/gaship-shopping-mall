@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
@@ -23,61 +24,75 @@ public class TagController {
     private final TagService tagService;
 
     /**
-     * Register response entity.
+     * Tag add response entity.
+     * description : 태그를 등록하는 컨트롤러
      *
-     * @param tagRequestDto the tag request dto
+     * @param request the request
      * @return the response entity
      */
     @PostMapping("/admin/{adminNo}/tags")
-    public ResponseEntity<TagResponseDto> register(@RequestBody TagRequestDto tagRequestDto) {
-        TagResponseDto tagResponseDto = tagService.register(tagRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(tagResponseDto);
+    public ResponseEntity<Void> TagAdd(@RequestBody TagRequestDto request) {
+        tagService.addTag(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
-     * Modify response entity.
-     *
-     * @param tagRequestDto the tag request dto
+     * Tag modify response entity.
+     * description : 태그를 수정하는 컨트롤러
+     * @param request the request
      * @return the response entity
      */
     @PutMapping("/admin/{adminNo}/tags/{tagNo}")
-    public ResponseEntity<TagResponseDto> modify(@RequestBody TagRequestDto tagRequestDto) {
-        TagResponseDto tagResponseDto = tagService.modify(tagRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).body(tagResponseDto);
+    public ResponseEntity<Void> TagModify(@RequestBody TagRequestDto request) {
+        tagService.modifyTag(request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
-     * Delete.
-     *
+     * Tag remove response entity.
+     * description : 태그를 삭제하는 컨트롤러
      * @param tagNo the tag no
+     * @return the response entity
      */
     @DeleteMapping("/admin/{adminNo}/tags/{tagNo}")
-    public void delete(@PathVariable Integer tagNo) {
-        tagService.delete(tagNo);
+    public ResponseEntity<Void> TagRemove(@PathVariable Integer tagNo) {
+        tagService.removeTag(tagNo);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
-     * Get response entity.
-     *
+     * Tag details response entity.
+     * description : 태그를 단건조회하는 컨트롤러
      * @param tagNo the tag no
      * @return the response entity
      */
     @GetMapping("/admin/{adminNo}/tags/{tagNo}")
-    public ResponseEntity<TagResponseDto> get(@PathVariable Integer tagNo) {
-        TagResponseDto tagResponseDto = tagService.get(tagNo);
-        return ResponseEntity.status(HttpStatus.OK).body(tagResponseDto);
+    public ResponseEntity<TagResponseDto> TagDetails(@PathVariable Integer tagNo) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(tagService.findTag(tagNo));
     }
 
     /**
-     * Gets list.
-     *
+     * Tag list response entity.
+     * description : 태그를 다건조회하는 컨트롤러
      * @param pageable the pageable
-     * @return the list
+     * @return the response entity
      */
     @GetMapping("/admin/{adminNo}/tags")
-    public ResponseEntity<List<TagResponseDto>> getList(Pageable pageable) {
-        List<TagResponseDto> tagResponseDtoList = tagService.getList(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(tagResponseDtoList);
+    public ResponseEntity<List<TagResponseDto>> TagList(Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(tagService.findTags(pageable));
     }
 
 }
