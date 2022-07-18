@@ -2,21 +2,17 @@ package shop.gaship.gashipshoppingmall.member.entity;
 
 import com.google.common.base.Objects;
 import java.time.LocalDate;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.membertag.entity.MemberTag;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 
@@ -48,6 +44,9 @@ public class Member extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_grade_no", nullable = false)
     private MemberGrade memberGrades;
+
+    @OneToMany(mappedBy = "member")
+    private List<MemberTag> memberTags = new ArrayList<>();
 
     @Column(unique = true)
     private String email;
