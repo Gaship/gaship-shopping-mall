@@ -6,6 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
+import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.dataprotection.protection <br/>
@@ -19,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * 2022/07/10           김민수               최초 생성                         <br/>
  */
 @SpringBootTest
+@TestPropertySource(value = {"classpath:application-dev.properties"})
 class AesTest {
     @Autowired
     Aes aes;

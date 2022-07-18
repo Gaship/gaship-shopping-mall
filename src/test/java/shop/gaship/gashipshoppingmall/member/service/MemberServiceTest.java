@@ -18,10 +18,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.TestPropertySource;
+import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
@@ -35,8 +38,8 @@ import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
+import shop.gaship.gashipshoppingmall.member.service.impl.MemberServiceImpl;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
-import shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 /**
@@ -51,6 +54,9 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
  * 2022/07/10           김민수               최초 생성                         <br/>
  */
 @SpringBootTest
+@Import({DataSourceConfig.class})
+@TestPropertySource(
+    value = {"classpath:application.properties", "classpath:application-dev.properties"})
 class MemberServiceTest {
     @Autowired
     MemberService memberService;
