@@ -76,7 +76,7 @@ public class TagController {
      * @param tagNo the tag no
      * @return the response entity
      */
-    @GetMapping("/admin/{adminNo}/tags/{tagNo}")
+    @GetMapping("/admins/{adminNo}/tags/{tagNo}")
     public ResponseEntity<TagResponseDto> TagDetails(@PathVariable Integer tagNo) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +89,7 @@ public class TagController {
      * @param pageable the pageable
      * @return the response entity
      */
-    @GetMapping("/admin/{adminNo}/tags")
+    @GetMapping("/admins/{adminNo}/tags")
     public ResponseEntity<TagPageResponseDto> TagList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

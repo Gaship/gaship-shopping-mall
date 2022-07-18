@@ -1,9 +1,6 @@
 package shop.gaship.gashipshoppingmall.tag.utils;
 
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
@@ -54,12 +51,14 @@ public class TestDummy {
     }
 
     public static TagPageResponseDto<TagResponseDto, Tag> CreateTestTagPageResponseDto() {
+        Pageable pageable = PageRequest.of(0,10);
         Function<Tag, TagResponseDto> fn = (Tag tag)-> (TagResponseDto.builder()
                 .title(tag.getTitle())
                 .registerDatetime(tag.getRegisterDatetime())
                 .modifiedDatetime(tag.getModifiedDatetime())
                 .build());
+        Page<Tag> page = new PageImpl<>(TestDummy.CreateTestTagEntityList(),pageable,100);
 
-        return new TagPageResponseDto<>(new PageImpl<>(TestDummy.CreateTestTagEntityList()),fn);
+        return new TagPageResponseDto<>(page,fn);
     }
 }

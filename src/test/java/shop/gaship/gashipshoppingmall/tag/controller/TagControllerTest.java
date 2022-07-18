@@ -57,7 +57,7 @@ class TagControllerTest {
     void addTagTest() throws Exception {
         String body = objectMapper.writeValueAsString(TestDummy.CreateTestTagRequestDto());
 
-        mockMvc.perform(post("/admin/1/tags")
+        mockMvc.perform(post("/admins/1/tags")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -71,7 +71,7 @@ class TagControllerTest {
     void modifyTagTest() throws Exception {
         String body = objectMapper.writeValueAsString(TestDummy.CreateTestTagRequestDto());
 
-        mockMvc.perform(put("/admin/1/tags/1")
+        mockMvc.perform(put("/admins/1/tags")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -83,7 +83,7 @@ class TagControllerTest {
     @DisplayName("태그 삭제 테스트")
     @Test
     void removeTagTest() throws Exception {
-        mockMvc.perform(delete("/admin/1/tags/1"))
+        mockMvc.perform(delete("/admins/1/tags/1"))
                 .andExpect(status().isOk());
     }
 
@@ -95,7 +95,7 @@ class TagControllerTest {
         when(tagService.findTag(any()))
                 .thenReturn(tagResponseDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/1/tags/" + tagNo)
+        mockMvc.perform(get("/admins/1/tags/" + tagNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -109,7 +109,7 @@ class TagControllerTest {
         TagPageResponseDto<TagResponseDto, Tag> tagPageResponseDto = TestDummy.CreateTestTagPageResponseDto();
         when(tagService.findTags(any())).thenReturn(tagPageResponseDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/1/tags")
+        mockMvc.perform(get("/admins/1/tags")
                         .queryParam("page", "0")
                         .queryParam("size", "10")
                         .queryParam("sort", "title")
