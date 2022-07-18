@@ -42,6 +42,7 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("멤버 엔티티 jpa 테스트")
     void saveAndCheck() {
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
         entityManager.persist(memberDummy.getMemberStatusCodes());
         entityManager.persist(memberDummy.getMemberGrades());
 
@@ -55,6 +56,7 @@ class MemberRepositoryTest {
     @DisplayName("custom query findByEmail 테스트")
     void findByEmailTest() {
         // 임의의 멤버 한명 저장
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
         entityManager.persist(memberDummy.getMemberStatusCodes());
         entityManager.persist(memberDummy.getMemberGrades());
         Member cachedMember = memberRepository.save(memberDummy);
@@ -78,6 +80,7 @@ class MemberRepositoryTest {
     @DisplayName("custom query findByNickname Optional 테스트")
     void findByNicknameTest() {
         // 임의의 멤버 한명 저장
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
         entityManager.persist(memberDummy.getMemberStatusCodes());
         entityManager.persist(memberDummy.getMemberGrades());
         Member cachedMember = memberRepository.save(memberDummy);

@@ -1,25 +1,24 @@
 package shop.gaship.gashipshoppingmall.membergrade.repository;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.entity.QMemberGrade;
 
-
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.repository
- * fileName       : MemberGradeRepositoryImpl
- * author         : Semi Kim
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        Semi Kim       최초 생성
+ * 회원등급 Custom Repository 구현체.
+ *
+ * @author : 김세미
+ * @since 1.0
+ * @see shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepositoryCustom
+ * @see org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
  */
 public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
         implements MemberGradeRepositoryCustom {
@@ -42,18 +41,24 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public List<MemberGradeResponseDto> getMemberGrades(Pageable pageable) {
+    public Page<MemberGradeResponseDto> getMemberGrades(Pageable pageable) {
         QMemberGrade memberGrade = QMemberGrade.memberGrade;
 
-        return from(memberGrade)
-                .innerJoin(memberGrade.renewalPeriodStatusCode)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+        QueryResults<MemberGradeResponseDto> results =
+                from(memberGrade)
+                        .innerJoin(memberGrade.renewalPeriodStatusCode)
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
                 .select(Projections.bean(MemberGradeResponseDto.class,
-                        memberGrade.no,
-                        memberGrade.name,
-                        memberGrade.accumulateAmount,
-                        memberGrade.renewalPeriodStatusCode.statusCodeName))
-                .fetch();
+                memberGrade.no,
+                memberGrade.name,
+                memberGrade.accumulateAmount,
+                memberGrade.renewalPeriodStatusCode.statusCodeName))
+                .fetchResults();
+
+        List<MemberGradeResponseDto> content = results.getResults();
+        long total = results.getTotal();
+
+        return new PageImpl<>(content, pageable, total);
     }
 }

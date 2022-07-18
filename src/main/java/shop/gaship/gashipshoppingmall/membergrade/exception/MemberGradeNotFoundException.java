@@ -1,18 +1,18 @@
 package shop.gaship.gashipshoppingmall.membergrade.exception;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.exception
- * fileName       : MemberGradeNotFoundException
- * author         : Semi Kim
- * date           : 2022/07/10
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/10        Semi Kim       최초 생성
+ * 존재하지 않는 회원 등급 Exception.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 public class MemberGradeNotFoundException extends RuntimeException {
+    private static final String MESSAGE = "해당 회원 등급을 찾을 수 없습니다.";
+
+    /**
+     * Instantiates a new MemberGradeNotFoundException.
+     */
     public MemberGradeNotFoundException() {
-        super("찾는 회원등급의 결과가 존재하지 않습니다.");
+        super(MESSAGE);
     }
 }
