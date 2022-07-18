@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
@@ -133,13 +134,13 @@ class TagServiceImplTest {
     @Test
     void findTagsTest() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("title"));
-        List<Tag> tagList = TestDummy.CreateTestTagEntityList();
-        Page<Tag> page = new PageImpl<>(tagList);
+        Page<Tag> page = new PageImpl<>(TestDummy.CreateTestTagEntityList(),pageable,100);
         when(tagRepository.findAll(pageable)).thenReturn(page);
 
-        List<TagResponseDto> list = tagService.findTags(pageable);
+        TagPageResponseDto<TagResponseDto, Tag> tags = tagService.findTags(pageable);
 
         verify(tagRepository).findAll(pageable);
-        assertThat(list).hasSize(100);
+        assertThat(tags.getDtoList()).hasSize(100);
+        assertThat(tags.getTotalPage()).isEqualTo(10);
     }
 }

@@ -11,8 +11,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
+import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.service.TagService;
 import shop.gaship.gashipshoppingmall.tag.utils.TestDummy;
 
@@ -104,8 +106,8 @@ class TagControllerTest {
     @DisplayName("태그 다건 조회 테스트")
     @Test
     void findTagsTest() throws Exception {
-        List<TagResponseDto> tagResponseDtoList = List.of(TestDummy.CreateTestTagResponseDto(title));
-        when(tagService.findTags(any())).thenReturn(tagResponseDtoList);
+        TagPageResponseDto<TagResponseDto, Tag> tagPageResponseDto = TestDummy.CreateTestTagPageResponseDto();
+        when(tagService.findTags(any())).thenReturn(tagPageResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/admin/1/tags")
                         .queryParam("page", "0")

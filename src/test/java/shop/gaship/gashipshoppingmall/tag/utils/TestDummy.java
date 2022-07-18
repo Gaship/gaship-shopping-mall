@@ -1,12 +1,20 @@
 package shop.gaship.gashipshoppingmall.tag.utils;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
+import shop.gaship.gashipshoppingmall.tag.service.TagService;
+import shop.gaship.gashipshoppingmall.tag.service.TagServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 /**
@@ -20,6 +28,7 @@ import java.util.stream.IntStream;
  * -----------------------------------------------------------
  * 2022/07/12        choijungwoo       최초 생성
  */
+
 public class TestDummy {
     public static TagRequestDto CreateTestTagRequestDto() {
         TagRequestDto tagRequestDto = TagRequestDto.builder().title("테스트 타이틀").build();
@@ -42,5 +51,15 @@ public class TestDummy {
             list.add(tag);
         });
         return list;
+    }
+
+    public static TagPageResponseDto<TagResponseDto, Tag> CreateTestTagPageResponseDto() {
+        Function<Tag, TagResponseDto> fn = (Tag tag)-> (TagResponseDto.builder()
+                .title(tag.getTitle())
+                .registerDatetime(tag.getRegisterDatetime())
+                .modifiedDatetime(tag.getModifiedDatetime())
+                .build());
+
+        return new TagPageResponseDto<>(new PageImpl<>(TestDummy.CreateTestTagEntityList()),fn);
     }
 }
