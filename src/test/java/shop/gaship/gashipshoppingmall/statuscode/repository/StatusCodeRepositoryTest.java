@@ -73,4 +73,19 @@ class StatusCodeRepositoryTest {
                 .isNotEmpty()
                 .hasSize(3);
     }
+
+    @Test
+    void findByStatusCodeName() {
+        StatusCode dummy = StatusCodeDummy.dummy();
+        testEntityManager.persistAndFlush(dummy);
+        testEntityManager.clear();
+
+        Optional<StatusCode> result = statusCodeRepository
+                .findByStatusCodeName(SalesStatus.SALE.getValue());
+
+        assertThat(result).isPresent();
+        assertThat(result.get())
+                .isNotNull()
+                .isEqualTo(dummy);
+    }
 }

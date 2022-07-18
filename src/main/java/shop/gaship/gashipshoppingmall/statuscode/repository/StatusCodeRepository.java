@@ -13,4 +13,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 public interface StatusCodeRepository
         extends JpaRepository<StatusCode, Integer>, StatusCodeRepositoryCustom {
     Optional<StatusCode> findByGroupCodeName(String group);
+
+    Optional<StatusCode> findByStatusCodeName(String statusCodeName);
 }
