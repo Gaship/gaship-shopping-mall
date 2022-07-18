@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
+import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductResponseDtoDummy;
@@ -25,7 +27,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -48,9 +49,13 @@ class ProductServiceTest {
     @MockBean
     ProductRepository repository;
 
+    @MockBean
+    CategoryRepository categoryRepository;
+
     ProductResponseDto responseDto;
 
     Product product;
+
     @BeforeEach
     void setUp() {
         product = ProductDummy.dummy2();
@@ -70,24 +75,7 @@ class ProductServiceTest {
         //then
         verify(repository, times(1))
                 .findByCode(any());
-        assertThat(result.get(0).getRegisterDatetime()).isEqualTo(responseDto.getRegisterDatetime());
-        assertThat(result.get(0).getAmount()).isEqualTo(responseDto.getAmount());
-        assertThat(result.get(0).getName()).isEqualTo(responseDto.getName());
-        assertThat(result.get(0).getColor()).isEqualTo(responseDto.getColor());
-        assertThat(result.get(0).getManufacturer()).isEqualTo(responseDto.getManufacturer());
-        assertThat(result.get(0).getManufacturerCountry()).isEqualTo(responseDto.getManufacturerCountry());
-        assertThat(result.get(0).getSeller()).isEqualTo(responseDto.getSeller());
-        assertThat(result.get(0).getImporter()).isEqualTo(responseDto.getImporter());
-        assertThat(result.get(0).getShippingInstallationCost()).isEqualTo(responseDto.getShippingInstallationCost());
-        assertThat(result.get(0).getQualityAssuranceStandard()).isEqualTo(responseDto.getQualityAssuranceStandard());
-        assertThat(result.get(0).getStockQuantity()).isEqualTo(responseDto.getStockQuantity());
-        assertThat(result.get(0).getImageLink1()).isEqualTo(responseDto.getImageLink1());
-        assertThat(result.get(0).getImageLink2()).isEqualTo(responseDto.getImageLink2());
-        assertThat(result.get(0).getImageLink3()).isEqualTo(responseDto.getImageLink3());
-        assertThat(result.get(0).getImageLink4()).isEqualTo(responseDto.getImageLink4());
-        assertThat(result.get(0).getImageLink5()).isEqualTo(responseDto.getImageLink5());
-        assertThat(result.get(0).getExplanation()).isEqualTo(responseDto.getExplanation());
-        assertThat(result.get(0).getProductCode()).isEqualTo(responseDto.getProductCode());
+        assertThatResponseDtoList(result.get(0));
     }
 
     @DisplayName("상품전체조회 페이징")
@@ -111,7 +99,7 @@ class ProductServiceTest {
 
     @DisplayName("상품단건 조회 테스트")
     @Test
-    void productFindOneTest(){
+    void productFindOneTest() {
         //given
         given(repository.findByProductNo(any()))
                 .willReturn(Optional.of(responseDto));
@@ -122,6 +110,70 @@ class ProductServiceTest {
         //then
         verify(repository, times(1))
                 .findByProductNo(any());
+        assertThatResponseDtoList(result);
+    }
+
+    @DisplayName("상품 단건 조회테스트 실패")
+    @Test
+    void productFineOneTestFail() {
+        //given
+        given(repository.findByProductNo(any()))
+                .willReturn(Optional.empty());
+
+        //when & then
+        assertThatThrownBy(() -> service.findProduct(1))
+                .isInstanceOf(ProductNotFoundException.class);
+    }
+
+    @DisplayName("상품 금액으로 조회")
+    @Test
+    void productFindByPrice() {
+        //given
+        given(repository.findByPrice(0L, responseDto.getAmount()))
+                .willReturn(List.of(responseDto));
+
+        //when
+        List<ProductResponseDto> result = service.findProductByPrice(0L, responseDto.getAmount());
+
+        //then
+        verify(repository, times(1))
+                .findByPrice(any(Long.class), any(Long.class));
+
+        assertThatResponseDtoList(result.get(0));
+    }
+
+    @DisplayName("카테고리 번호로 조회하기 실패")
+    @Test
+    void productFindByCategoryFail() {
+        //given
+        given(categoryRepository.findById(responseDto.getNo()))
+                .willReturn(Optional.empty());
+        given(repository.findProductByCategory(responseDto.getNo()))
+                .willReturn(List.of(responseDto));
+        //when
+        assertThatThrownBy(() -> service.findProductByCategory(responseDto.getNo()))
+                .isInstanceOf(CategoryNotFoundException.class);
+    }
+
+    @DisplayName("카테고리 번호로 조회하기 성공")
+    @Test
+    void productFindByCategorySuccess(){
+        //given
+        given(categoryRepository.findById(product.getCategory().getNo()))
+                .willReturn(Optional.of(product.getCategory()));
+        given(repository.findProductByCategory(product.getCategory().getNo()))
+                .willReturn(List.of(responseDto));
+
+        //when
+        List<ProductResponseDto> result = service.findProductByCategory(product.getCategory().getNo());
+
+        //then
+        verify(repository,times(1)).findProductByCategory(any());
+
+        assertThatResponseDtoList(result.get(0));
+    }
+
+    private void assertThatResponseDtoList(ProductResponseDto result) {
         assertThat(result.getRegisterDatetime()).isEqualTo(responseDto.getRegisterDatetime());
         assertThat(result.getAmount()).isEqualTo(responseDto.getAmount());
         assertThat(result.getName()).isEqualTo(responseDto.getName());
@@ -140,51 +192,5 @@ class ProductServiceTest {
         assertThat(result.getImageLink5()).isEqualTo(responseDto.getImageLink5());
         assertThat(result.getExplanation()).isEqualTo(responseDto.getExplanation());
         assertThat(result.getProductCode()).isEqualTo(responseDto.getProductCode());
-    }
-
-    @DisplayName("상품 단건 조회테스트 실패")
-    @Test
-    void productFineOneTestFail(){
-        //given
-        given(repository.findByProductNo(any()))
-                .willReturn(Optional.empty());
-
-        //when & then
-        assertThatThrownBy(() -> service.findProduct(1))
-                .isInstanceOf(ProductNotFoundException.class);
-    }
-
-    @DisplayName("상품 금액으로 조회")
-    @Test
-    void productFindByPrice(){
-        //given
-        given(repository.findByPrice(0L, responseDto.getAmount()))
-                .willReturn(List.of(responseDto));
-
-        //when
-        List<ProductResponseDto> result = service.findProductByPrice(0L, responseDto.getAmount());
-
-        //then
-        verify(repository, times(1))
-                .findByPrice(any(Long.class),any(Long.class));
-
-        assertThat(result.get(0).getRegisterDatetime()).isEqualTo(responseDto.getRegisterDatetime());
-        assertThat(result.get(0).getAmount()).isEqualTo(responseDto.getAmount());
-        assertThat(result.get(0).getName()).isEqualTo(responseDto.getName());
-        assertThat(result.get(0).getColor()).isEqualTo(responseDto.getColor());
-        assertThat(result.get(0).getManufacturer()).isEqualTo(responseDto.getManufacturer());
-        assertThat(result.get(0).getManufacturerCountry()).isEqualTo(responseDto.getManufacturerCountry());
-        assertThat(result.get(0).getSeller()).isEqualTo(responseDto.getSeller());
-        assertThat(result.get(0).getImporter()).isEqualTo(responseDto.getImporter());
-        assertThat(result.get(0).getShippingInstallationCost()).isEqualTo(responseDto.getShippingInstallationCost());
-        assertThat(result.get(0).getQualityAssuranceStandard()).isEqualTo(responseDto.getQualityAssuranceStandard());
-        assertThat(result.get(0).getStockQuantity()).isEqualTo(responseDto.getStockQuantity());
-        assertThat(result.get(0).getImageLink1()).isEqualTo(responseDto.getImageLink1());
-        assertThat(result.get(0).getImageLink2()).isEqualTo(responseDto.getImageLink2());
-        assertThat(result.get(0).getImageLink3()).isEqualTo(responseDto.getImageLink3());
-        assertThat(result.get(0).getImageLink4()).isEqualTo(responseDto.getImageLink4());
-        assertThat(result.get(0).getImageLink5()).isEqualTo(responseDto.getImageLink5());
-        assertThat(result.get(0).getExplanation()).isEqualTo(responseDto.getExplanation());
-        assertThat(result.get(0).getProductCode()).isEqualTo(responseDto.getProductCode());
     }
 }

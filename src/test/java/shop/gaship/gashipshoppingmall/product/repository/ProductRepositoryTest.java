@@ -81,24 +81,7 @@ class ProductRepositoryTest {
         //then
         List<ProductResponseDto> result
                 = repository.findByCode(product.getProductCode());
-        assertThat(result.get(0).getNo()).isEqualTo(product.getNo());
-        assertThat(result.get(0).getAmount()).isEqualTo(product.getAmount());
-        assertThat(result.get(0).getName()).isEqualTo(product.getName());
-        assertThat(result.get(0).getColor()).isEqualTo(product.getColor());
-        assertThat(result.get(0).getManufacturer()).isEqualTo(product.getManufacturer());
-        assertThat(result.get(0).getManufacturerCountry()).isEqualTo(product.getManufacturerCountry());
-        assertThat(result.get(0).getSeller()).isEqualTo(product.getSeller());
-        assertThat(result.get(0).getImporter()).isEqualTo(product.getImporter());
-        assertThat(result.get(0).getShippingInstallationCost()).isEqualTo(product.getShippingInstallationCost());
-        assertThat(result.get(0).getQualityAssuranceStandard()).isEqualTo(product.getQualityAssuranceStandard());
-        assertThat(result.get(0).getStockQuantity()).isEqualTo(product.getStockQuantity());
-        assertThat(result.get(0).getImageLink1()).isEqualTo(product.getImageLink1());
-        assertThat(result.get(0).getImageLink2()).isEqualTo(product.getImageLink2());
-        assertThat(result.get(0).getImageLink3()).isEqualTo(product.getImageLink3());
-        assertThat(result.get(0).getImageLink4()).isEqualTo(product.getImageLink4());
-        assertThat(result.get(0).getImageLink5()).isEqualTo(product.getImageLink5());
-        assertThat(result.get(0).getExplanation()).isEqualTo(product.getExplanation());
-        assertThat(result.get(0).getProductCode()).isEqualTo(product.getProductCode());
+        checkListResponse(result);
     }
 
     @DisplayName("단건 조회 테스트입니다.")
@@ -143,7 +126,24 @@ class ProductRepositoryTest {
 
         //then
         List<ProductResponseDto> result = repository.findByPrice(0L, product.getAmount());
+        checkListResponse(result);
+    }
 
+    @DisplayName("카테고리 번호로 조회하기")
+    @Test
+    void productListCategory(){
+        //given & when
+        codeRepository.save(code);
+        categoryRepository.save(upper);
+        categoryRepository.save(category);
+        repository.save(product);
+
+        //then
+        List<ProductResponseDto> result = repository.findProductByCategory(product.getCategory().getNo());
+        checkListResponse(result);
+    }
+
+    private void checkListResponse(List<ProductResponseDto> result) {
         assertThat(result.get(0).getNo()).isEqualTo(product.getNo());
         assertThat(result.get(0).getAmount()).isEqualTo(product.getAmount());
         assertThat(result.get(0).getName()).isEqualTo(product.getName());

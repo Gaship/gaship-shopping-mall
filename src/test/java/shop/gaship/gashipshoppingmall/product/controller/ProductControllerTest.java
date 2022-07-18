@@ -13,8 +13,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
+import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductResponseDtoDummy;
+import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
 import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
 import shop.gaship.gashipshoppingmall.repairSchedule.controller.RepairScheduleController;
@@ -51,8 +54,11 @@ class ProductControllerTest {
     ObjectMapper objectMapper;
 
     ProductResponseDto responseDto;
+
+    Product product;
     @BeforeEach
     void setUp() {
+        product = ProductDummy.dummy2();
         responseDto = ProductResponseDtoDummy.dummy();
     }
 
@@ -162,13 +168,68 @@ class ProductControllerTest {
         when(service.findProductByPrice(0L, responseDto.getAmount()))
                 .thenReturn(List.of(responseDto));
 
-        mvc.perform(get("/products/price")
+         mvc.perform(get("/products/price")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .accept(MediaType.APPLICATION_JSON)
                         .queryParam("min", objectMapper.writeValueAsString(0L))
                         .queryParam("max", objectMapper.writeValueAsString(responseDto.getAmount())))
                 .andExpect(status().isOk())
+                 .andExpect(jsonPath("$[0].no").value(responseDto.getNo()))
+                 .andExpect(jsonPath("$[0].name").value(responseDto.getName()))
+                 .andExpect(jsonPath("$[0].amount").value(responseDto.getAmount()))
+                 .andExpect(jsonPath("$[0].manufacturer").value(responseDto.getManufacturer()))
+                 .andExpect(jsonPath("$[0].manufacturerCountry").value(responseDto.getManufacturerCountry()))
+                 .andExpect(jsonPath("$[0].seller").value(responseDto.getSeller()))
+                 .andExpect(jsonPath("$[0].importer").value(responseDto.getImporter()))
+                 .andExpect(jsonPath("$[0].shippingInstallationCost").value(responseDto.getShippingInstallationCost()))
+                 .andExpect(jsonPath("$[0].qualityAssuranceStandard").value(responseDto.getQualityAssuranceStandard()))
+                 .andExpect(jsonPath("$[0].color").value(responseDto.getColor()))
+                 .andExpect(jsonPath("$[0].stockQuantity").value(responseDto.getStockQuantity()))
+                 .andExpect(jsonPath("$[0].imageLink1").value(responseDto.getImageLink1()))
+                 .andExpect(jsonPath("$[0].imageLink2").value(responseDto.getImageLink2()))
+                 .andExpect(jsonPath("$[0].imageLink3").value(responseDto.getImageLink3()))
+                 .andExpect(jsonPath("$[0].imageLink4").value(responseDto.getImageLink4()))
+                 .andExpect(jsonPath("$[0].imageLink5").value(responseDto.getImageLink5()))
+                 .andExpect(jsonPath("$[0].explanation").value(responseDto.getExplanation()))
+                 .andExpect(jsonPath("$[0].productCode").value(responseDto.getProductCode()))
                 .andDo(print());
+
+    }
+
+    @DisplayName("상품 다건조회 - 카테고리번호로 조회 테스트")
+    @Test
+    void getProductsByCategoryNo() throws Exception {
+        //given & when
+        when(service.findProductByCategory(any()))
+                .thenReturn(List.of(responseDto));
+
+        //then
+        mvc.perform(get("/products/category/{categoryNo}",1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].no").value(responseDto.getNo()))
+                .andExpect(jsonPath("$[0].name").value(responseDto.getName()))
+                .andExpect(jsonPath("$[0].amount").value(responseDto.getAmount()))
+                .andExpect(jsonPath("$[0].manufacturer").value(responseDto.getManufacturer()))
+                .andExpect(jsonPath("$[0].manufacturerCountry").value(responseDto.getManufacturerCountry()))
+                .andExpect(jsonPath("$[0].seller").value(responseDto.getSeller()))
+                .andExpect(jsonPath("$[0].importer").value(responseDto.getImporter()))
+                .andExpect(jsonPath("$[0].shippingInstallationCost").value(responseDto.getShippingInstallationCost()))
+                .andExpect(jsonPath("$[0].qualityAssuranceStandard").value(responseDto.getQualityAssuranceStandard()))
+                .andExpect(jsonPath("$[0].color").value(responseDto.getColor()))
+                .andExpect(jsonPath("$[0].stockQuantity").value(responseDto.getStockQuantity()))
+                .andExpect(jsonPath("$[0].imageLink1").value(responseDto.getImageLink1()))
+                .andExpect(jsonPath("$[0].imageLink2").value(responseDto.getImageLink2()))
+                .andExpect(jsonPath("$[0].imageLink3").value(responseDto.getImageLink3()))
+                .andExpect(jsonPath("$[0].imageLink4").value(responseDto.getImageLink4()))
+                .andExpect(jsonPath("$[0].imageLink5").value(responseDto.getImageLink5()))
+                .andExpect(jsonPath("$[0].explanation").value(responseDto.getExplanation()))
+                .andExpect(jsonPath("$[0].productCode").value(responseDto.getProductCode()))
+                .andDo(print());
+
+        verify(service, times(1)).findProductByCategory(any());
     }
 }
