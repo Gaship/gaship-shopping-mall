@@ -10,16 +10,12 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member.dto
- * fileName       : MemberResponseDto
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
+ * 멤버 정보 수정을 위한 정보를 담는 dto 입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 @Getter
 public class MemberResponseDto {
@@ -37,6 +33,23 @@ public class MemberResponseDto {
     private LocalDateTime modifyDatetime;
     private Boolean isBlackMember;
 
+    /**
+     * Instantiates a new Member response dto.
+     *
+     * @param recommendMemberNickname  the recommend member nickname
+     * @param email                    the email
+     * @param password                 the password
+     * @param phoneNumber              the phone number
+     * @param name                     the name
+     * @param birthDate                the birth date
+     * @param nickname                 the nickname
+     * @param gender                   the gender
+     * @param accumulatePurchaseAmount the accumulate purchase amount
+     * @param nextRenewalGradeDate     the next renewal grade date
+     * @param registerDatetime         the register datetime
+     * @param modifyDatetime           the modify datetime
+     * @param isBlackMember            the is black member
+     */
     @Builder
     public MemberResponseDto(String recommendMemberNickname, String email, String password, String phoneNumber, String name, LocalDate birthDate, String nickname, String gender, Long accumulatePurchaseAmount, LocalDate nextRenewalGradeDate, LocalDateTime registerDatetime, LocalDateTime modifyDatetime, Boolean isBlackMember) {
         this.recommendMemberNickname = recommendMemberNickname;

@@ -12,6 +12,12 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * member 엔티티입니다.
+ *
+ * @author 최정우
+ * @since 1.0
+ */
 @Entity
 @Table(name = "members")
 @NoArgsConstructor
@@ -65,10 +71,9 @@ public class Member extends BaseEntity{
     @Column(name = "modify_datetime")
     private LocalDateTime modifyDatetime;
 
-    @Column(name = "is_black_member")
-    private Boolean isBlackMember;
-
     public void modifyMember(MemberModifyRequestDto memberModifyRequestDto) {
+        this.memberGrades = memberModifyRequestDto.getMemberGrade();
+        this.memberStatusCodes = memberModifyRequestDto.getStatusCode();
         this.email = memberModifyRequestDto.getEmail();
         this.password = memberModifyRequestDto.getPassword();
         this.phoneNumber = memberModifyRequestDto.getPhoneNumber();

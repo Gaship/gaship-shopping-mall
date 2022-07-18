@@ -5,16 +5,12 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
+
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member.dto
- * fileName       : MemberRequestDto
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
+ * 멤버 등록을 위한 정보를 담는 dto 입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 @Getter
 public class MemberAddRequestDto {
@@ -27,6 +23,18 @@ public class MemberAddRequestDto {
     private String nickname;
     private String gender;
 
+    /**
+     * Instantiates a new Member add request dto.
+     *
+     * @param recommendMemberNickname the recommend member nickname
+     * @param email                   the email
+     * @param password                the password
+     * @param phoneNumber             the phone number
+     * @param name                    the name
+     * @param birthDate               the birth date
+     * @param nickname                the nickname
+     * @param gender                  the gender
+     */
     @Builder
     public MemberAddRequestDto(String recommendMemberNickname, String email, String password, String phoneNumber, String name, LocalDate birthDate, String nickname, String gender) {
         this.recommendMemberNickname = recommendMemberNickname;

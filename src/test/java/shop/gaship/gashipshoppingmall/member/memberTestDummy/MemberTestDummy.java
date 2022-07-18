@@ -1,7 +1,12 @@
 package shop.gaship.gashipshoppingmall.member.memberTestDummy;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberAddRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
@@ -9,6 +14,10 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.IntStream;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.memberTestUtils
@@ -35,7 +44,6 @@ public class MemberTestDummy {
     private static final LocalDate nextRenewalGradeDate = LocalDate.now();
     private static final LocalDateTime registerDatetime = LocalDateTime.now();
     private static final LocalDateTime modifyDatetime = LocalDateTime.now();
-    private static final Boolean isBlackMember = false;
 
     public static MemberAddRequestDto memberRegisterRequestDto() {
 
@@ -78,8 +86,51 @@ public class MemberTestDummy {
                 .nextRenewalGradeDate(nextRenewalGradeDate)
                 .registerDatetime(registerDatetime)
                 .modifyDatetime(modifyDatetime)
-                .isBlackMember(isBlackMember)
                 .build();
+    }
+
+    public static List<Member> CreateTestMemberEntityList() {
+        List<Member> list = new ArrayList<>();
+        IntStream.rangeClosed(1, 100).forEach(i -> {
+            Member member = Member.builder().recommendMember(null)
+                    .memberStatusCodes(null)
+                    .memberGrades(null)
+                    .email("jwoo1016" +i + "@naver.com")
+                    .password("qwer1234")
+                    .phoneNumber("010531783" + String.valueOf((i - 1)/10) + String.valueOf((i - 1)%10))
+                            .name("최정우")
+                                    .birthDate(LocalDate.now())
+                                            .nickname(String.valueOf(i))
+                                                    .gender("남")
+                                                            .accumulatePurchaseAmount(0L)
+                                                                    .nextRenewalGradeDate(LocalDate.now())
+                                                                            .registerDatetime(LocalDateTime.now())
+                                                                                    .modifyDatetime(LocalDateTime.now())
+                                                                                            .build();
+            list.add(member);
+        });
+        return list;
+    }
+
+    public static MemberPageResponseDto<MemberResponseDto,Member> CreateTestMemberPageResponseDto(){
+        Pageable pageable = PageRequest.of(0,10);
+        Function<Member, MemberResponseDto> fn = (Member member)-> MemberResponseDto.builder()
+                .recommendMemberNickname(null)
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .phoneNumber(member.getPhoneNumber())
+                .name(member.getName())
+                .birthDate(member.getBirthDate())
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
+                .registerDatetime(member.getRegisterDatetime())
+                .modifyDatetime(member.getModifyDatetime())
+                .build();
+        Page<Member> page = new PageImpl<>(MemberTestDummy.CreateTestMemberEntityList(),pageable,100);
+
+        return new MemberPageResponseDto<>(page,fn);
     }
 
     public static Member member1() {
@@ -100,7 +151,6 @@ public class MemberTestDummy {
                 .nextRenewalGradeDate(nextRenewalGradeDate)
                 .registerDatetime(registerDatetime)
                 .modifyDatetime(modifyDatetime)
-                .isBlackMember(isBlackMember)
                 .build();
     }
 
@@ -122,7 +172,6 @@ public class MemberTestDummy {
                 .nextRenewalGradeDate(nextRenewalGradeDate)
                 .registerDatetime(registerDatetime)
                 .modifyDatetime(modifyDatetime)
-                .isBlackMember(isBlackMember)
                 .build();
     }
 
@@ -144,7 +193,6 @@ public class MemberTestDummy {
                 .nextRenewalGradeDate(nextRenewalGradeDate)
                 .registerDatetime(registerDatetime)
                 .modifyDatetime(modifyDatetime)
-                .isBlackMember(isBlackMember)
                 .build();
     }
 

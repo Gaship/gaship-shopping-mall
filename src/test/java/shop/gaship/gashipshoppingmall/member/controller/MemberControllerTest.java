@@ -13,7 +13,9 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
@@ -25,17 +27,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.member.controller
- * fileName       : MemberControllerTest
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
- */
 @WebMvcTest(MemberController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 class MemberControllerTest {
@@ -108,9 +99,8 @@ class MemberControllerTest {
     @DisplayName("회원 다건 조회 테스트")
     @Test
     void getMemberListTest() throws Exception {
-        List<MemberResponseDto> memberResponseDtoList = List.of(MemberTestDummy.memberResponseDto(), MemberTestDummy.memberResponseDto());
-        when(memberService.findMembers(any(Pageable.class))).thenReturn(memberResponseDtoList);
-
+        MemberPageResponseDto<MemberResponseDto, Member> memberResponseDto = MemberTestDummy.CreateTestMemberPageResponseDto();
+        when(memberService.findMembers(any(Pageable.class))).thenReturn(memberResponseDto);
         mockMvc.perform(get("/members")
                         .queryParam("page", "0")
                         .queryParam("size", "10")
@@ -121,5 +111,20 @@ class MemberControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
         verify(memberService).findMembers(PageRequest.of(0, 10, Sort.by("title")));
+    }
+
+    @DisplayName("관리자의 회원 정보 수정 테스트")
+    @Test
+    void modifyMemberByAdminTest() throws Exception {
+        String body = objectMapper.writeValueAsString(MemberTestDummy.memberModifyRequestDto());
+        doNothing().when(memberService).modifyMember(MemberTestDummy.memberModifyRequestDto());
+
+        mockMvc.perform(put("/admins/1/members")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(memberService).modifyMember(any());
     }
 }

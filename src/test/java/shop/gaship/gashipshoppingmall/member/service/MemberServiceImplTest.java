@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -116,13 +117,27 @@ class MemberServiceImplTest {
     @Test
     void getListTest() {
         Pageable pageable = PageRequest.of(0, 10);
-        List<Member> memberList = List.of(MemberTestDummy.member1(), MemberTestDummy.member2());
-        Page<Member> page = new PageImpl<>(memberList);
+        List<Member> memberList = MemberTestDummy.CreateTestMemberEntityList();
+        Page<Member> page = new PageImpl<>(memberList,pageable,100);
         when(memberRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        List<MemberResponseDto> list = memberService.findMembers(pageable);
-
-        assertThat(list).hasSize(2);
+        MemberPageResponseDto<MemberResponseDto, Member> list = memberService.findMembers(pageable);
+        assertThat(list.getSize()).isEqualTo(10);
+        assertThat(list.getTotalPage()).isEqualTo(10);
+        assertThat(list.getPage()).isEqualTo(1);
         verify(memberRepository).findAll(pageable);
+    }
+
+    @DisplayName("memberRepository modify Test")
+    @Test
+    void modifyByAdminTest() {
+        when(memberRepository.findById(1)).thenReturn(Optional.of(MemberTestDummy.member1()));
+
+        memberService.modifyMember(MemberTestDummy.memberModifyRequestDto());
+
+        verify(memberRepository, times(1))
+                .findById(any());
+        verify(memberRepository, times(1))
+                .save(any(Member.class));
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.member.dto.MemberAddRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -22,15 +23,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member.service
- * fileName       : MemberServiceImpl
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
+ * tagservice를 구현하는 구현체입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 @Service
 @RequiredArgsConstructor
@@ -69,8 +65,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberResponseDto> findMembers(Pageable pageable) {
-        Page<Member> members = memberRepository.findAll(pageable);
-        return members.stream().map(this::entityToDto).collect(Collectors.toList());
+    public MemberPageResponseDto findMembers(Pageable pageable) {
+        Page<Member> page = memberRepository.findAll(pageable);
+        Function<Member,MemberResponseDto> fn = (this::entityToDto);
+        return new MemberPageResponseDto<>(page,fn);
     }
 }

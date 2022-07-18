@@ -1,15 +1,10 @@
 package shop.gaship.gashipshoppingmall.member.exception;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member.exception
- * fileName       : MemberCouldNotFoundException
- * author         : choijungwoo
- * date           : 2022/07/17
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/17        choijungwoo       최초 생성
+ * 멤버조회시에 에러가 발생했을 때 발생하는 에러입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 public class MemberNotFoundException extends RuntimeException{
     public static final String MESSAGE = "해당 멤버를 찾을 수 없습니다";
