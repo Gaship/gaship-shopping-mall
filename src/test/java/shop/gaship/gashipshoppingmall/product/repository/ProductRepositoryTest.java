@@ -1,9 +1,12 @@
 package shop.gaship.gashipshoppingmall.product.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
@@ -42,16 +45,35 @@ class ProductRepositoryTest {
 
     Category category;
 
+    Category upper;
+    @BeforeEach
+    void setUp() {
+        product = ProductDummy.dummy2();
+        category = CategoryDummy.dummy();
+        upper = CategoryDummy.upperDummy();
+        code = StatusCodeDummy.dummy();
+    }
 
+    @DisplayName("전체 조회 paging 테스트 입니다.")
+    @Test
+    void productFindAllPageTest(){
+        //given & when
+        codeRepository.save(code);
+        categoryRepository.save(upper);
+        categoryRepository.save(category);
+        repository.save(product);
+
+        //then
+        PageRequest pageRequest = PageRequest.of(1, 10);
+        Page<ProductResponseDto> result = repository.findAllPage(pageRequest);
+
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getSize()).isEqualTo(pageRequest.getPageSize());
+    }
     @DisplayName("다건 조회  테스트 입니다.")
     @Test
     void productsFindCodeTest(){
-        //given
-        product = ProductDummy.dummy2();
-        category = CategoryDummy.dummy();
-        Category upper = CategoryDummy.upperDummy();
-        code = StatusCodeDummy.dummy();
-        //when
+        //given & when
         codeRepository.save(code);
         categoryRepository.save(upper);
         categoryRepository.save(category);

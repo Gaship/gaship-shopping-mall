@@ -2,6 +2,8 @@ package shop.gaship.gashipshoppingmall.product.dummy;
 
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 
+import java.time.LocalDateTime;
+
 /**
  * 더미객체
  *
@@ -28,6 +30,7 @@ public class ProductResponseDtoDummy {
                 .imageLink1("이미지")
                 .explanation("설명")
                 .productCode("code")
+                .registerDatetime(LocalDateTime.now())
                 .build();
     }
 

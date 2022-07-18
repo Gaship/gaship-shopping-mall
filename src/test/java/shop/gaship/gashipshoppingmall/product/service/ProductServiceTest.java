@@ -7,12 +7,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductResponseDtoDummy;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +63,7 @@ class ProductServiceTest {
         //then
         verify(repository,times(1))
                 .findByCode(any());
-
+        assertThat(result.get(0).getRegisterDatetime()).isEqualTo(responseDto.getRegisterDatetime());
         assertThat(result.get(0).getAmount()).isEqualTo(responseDto.getAmount());
         assertThat(result.get(0).getName()).isEqualTo(responseDto.getName());
         assertThat(result.get(0).getColor()).isEqualTo(responseDto.getColor());
@@ -79,4 +83,22 @@ class ProductServiceTest {
         assertThat(result.get(0).getProductCode()).isEqualTo(responseDto.getProductCode());
     }
 
+    @DisplayName("상품전체조회 페이징")
+    @Test
+    void productFindAllPage(){
+        //given
+        List<ProductResponseDto> list = new ArrayList<>();
+        list.add(responseDto);
+        PageRequest req = PageRequest.of(1, 10);
+        Page<ProductResponseDto> pages = new PageImpl<>(list, req, list.size());
+
+        given(repository.findAllPage(any()))
+                .willReturn(pages);
+
+        //when
+        Page<ProductResponseDto> result = service.findProducts(req.getPageNumber(), req.getPageSize());
+
+        assertThat(result.getTotalPages()).isEqualTo(pages.getTotalPages());
+        assertThat(result.getSize()).isEqualTo(req.getPageSize());
+    }
 }

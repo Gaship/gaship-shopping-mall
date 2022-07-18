@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
@@ -17,6 +20,7 @@ import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
 import shop.gaship.gashipshoppingmall.repairSchedule.controller.RepairScheduleController;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -66,5 +70,31 @@ class ProductControllerTest {
                 .andDo(print());
         //then
         verify(service, times(1)).findProductByCode(any());
+    }
+
+    @DisplayName("상품전체 조회 페이지네이션 테스트")
+    @Test
+    void getProductPageTest() throws Exception {
+        //given & when
+        List<ProductResponseDto> list = new ArrayList<>();
+        list.add(responseDto);
+        PageRequest req = PageRequest.of(1, 10);
+        Page<ProductResponseDto> pages = new PageImpl<>(list, req, list.size());
+
+        when(service.findProducts(1, 10))
+                .thenReturn(pages);
+
+        mvc.perform(get("/products/page")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .queryParam("page", objectMapper.writeValueAsString(req.getPageNumber()))
+                        .queryParam("size", objectMapper.writeValueAsString(req.getPageSize())))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        //then
+        verify(service, times(1)).findProducts(1,10);
+
     }
 }
