@@ -100,4 +100,67 @@ class ProductRepositoryTest {
         assertThat(result.get(0).getExplanation()).isEqualTo(product.getExplanation());
         assertThat(result.get(0).getProductCode()).isEqualTo(product.getProductCode());
     }
+
+    @DisplayName("단건 조회 테스트입니다.")
+    @Test
+    void productFindOne(){
+        //given & when
+        codeRepository.save(code);
+        categoryRepository.save(upper);
+        categoryRepository.save(category);
+        repository.save(product);
+        //then
+        ProductResponseDto result = repository.findByProductNo(product.getNo()).get();
+
+        assertThat(result.getNo()).isEqualTo(product.getNo());
+        assertThat(result.getAmount()).isEqualTo(product.getAmount());
+        assertThat(result.getName()).isEqualTo(product.getName());
+        assertThat(result.getColor()).isEqualTo(product.getColor());
+        assertThat(result.getManufacturer()).isEqualTo(product.getManufacturer());
+        assertThat(result.getManufacturerCountry()).isEqualTo(product.getManufacturerCountry());
+        assertThat(result.getSeller()).isEqualTo(product.getSeller());
+        assertThat(result.getImporter()).isEqualTo(product.getImporter());
+        assertThat(result.getShippingInstallationCost()).isEqualTo(product.getShippingInstallationCost());
+        assertThat(result.getQualityAssuranceStandard()).isEqualTo(product.getQualityAssuranceStandard());
+        assertThat(result.getStockQuantity()).isEqualTo(product.getStockQuantity());
+        assertThat(result.getImageLink1()).isEqualTo(product.getImageLink1());
+        assertThat(result.getImageLink2()).isEqualTo(product.getImageLink2());
+        assertThat(result.getImageLink3()).isEqualTo(product.getImageLink3());
+        assertThat(result.getImageLink4()).isEqualTo(product.getImageLink4());
+        assertThat(result.getImageLink5()).isEqualTo(product.getImageLink5());
+        assertThat(result.getExplanation()).isEqualTo(product.getExplanation());
+        assertThat(result.getProductCode()).isEqualTo(product.getProductCode());
+    }
+
+    @DisplayName("가격별로 정렬하기")
+    @Test
+    void productListPriceTest(){
+        //given & when
+        codeRepository.save(code);
+        categoryRepository.save(upper);
+        categoryRepository.save(category);
+        repository.save(product);
+
+        //then
+        List<ProductResponseDto> result = repository.findByPrice(0L, product.getAmount());
+
+        assertThat(result.get(0).getNo()).isEqualTo(product.getNo());
+        assertThat(result.get(0).getAmount()).isEqualTo(product.getAmount());
+        assertThat(result.get(0).getName()).isEqualTo(product.getName());
+        assertThat(result.get(0).getColor()).isEqualTo(product.getColor());
+        assertThat(result.get(0).getManufacturer()).isEqualTo(product.getManufacturer());
+        assertThat(result.get(0).getManufacturerCountry()).isEqualTo(product.getManufacturerCountry());
+        assertThat(result.get(0).getSeller()).isEqualTo(product.getSeller());
+        assertThat(result.get(0).getImporter()).isEqualTo(product.getImporter());
+        assertThat(result.get(0).getShippingInstallationCost()).isEqualTo(product.getShippingInstallationCost());
+        assertThat(result.get(0).getQualityAssuranceStandard()).isEqualTo(product.getQualityAssuranceStandard());
+        assertThat(result.get(0).getStockQuantity()).isEqualTo(product.getStockQuantity());
+        assertThat(result.get(0).getImageLink1()).isEqualTo(product.getImageLink1());
+        assertThat(result.get(0).getImageLink2()).isEqualTo(product.getImageLink2());
+        assertThat(result.get(0).getImageLink3()).isEqualTo(product.getImageLink3());
+        assertThat(result.get(0).getImageLink4()).isEqualTo(product.getImageLink4());
+        assertThat(result.get(0).getImageLink5()).isEqualTo(product.getImageLink5());
+        assertThat(result.get(0).getExplanation()).isEqualTo(product.getExplanation());
+        assertThat(result.get(0).getProductCode()).isEqualTo(product.getProductCode());
+    }
 }

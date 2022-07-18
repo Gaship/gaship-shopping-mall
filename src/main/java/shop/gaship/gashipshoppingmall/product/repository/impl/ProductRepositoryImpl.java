@@ -12,6 +12,7 @@ import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * QueryDsl 을 쓰기위한 Repo 구현체입니다.
@@ -83,6 +84,66 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
-        return new PageImpl<>(result.getResults(),pageable,result.getTotal());
+        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+    }
+
+    @Override
+    public Optional<ProductResponseDto> findByProductNo(Integer productNo) {
+        QProduct product = QProduct.product;
+
+        return Optional.of(from(product)
+                .where(product.no.eq(productNo))
+                .select(Projections.bean(ProductResponseDto.class,
+                        product.no,
+                        product.name,
+                        product.amount,
+                        product.manufacturer,
+                        product.manufacturerCountry,
+                        product.seller,
+                        product.importer,
+                        product.shippingInstallationCost,
+                        product.qualityAssuranceStandard,
+                        product.color,
+                        product.stockQuantity,
+                        product.imageLink1,
+                        product.imageLink2,
+                        product.imageLink3,
+                        product.imageLink4,
+                        product.imageLink5,
+                        product.explanation,
+                        product.productCode,
+                        product.registerDatetime))
+                .fetchOne());
+    }
+
+    @Override
+    public List<ProductResponseDto> findByPrice(Long minAmount, Long maxAmount) {
+        QProduct product = QProduct.product;
+
+
+        return from(product)
+                .where(product.amount.between(minAmount, maxAmount))
+                .select(Projections.bean(ProductResponseDto.class,
+                        product.no,
+                        product.name,
+                        product.amount,
+                        product.manufacturer,
+                        product.manufacturerCountry,
+                        product.seller,
+                        product.importer,
+                        product.shippingInstallationCost,
+                        product.qualityAssuranceStandard,
+                        product.color,
+                        product.stockQuantity,
+                        product.imageLink1,
+                        product.imageLink2,
+                        product.imageLink3,
+                        product.imageLink4,
+                        product.imageLink5,
+                        product.explanation,
+                        product.productCode,
+                        product.registerDatetime))
+                .orderBy(product.amount.asc())
+                .fetch();
     }
 }

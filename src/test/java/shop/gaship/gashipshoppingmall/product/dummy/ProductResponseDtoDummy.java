@@ -17,6 +17,7 @@ public class ProductResponseDtoDummy {
 
     public static  ProductResponseDto dummy(){
         return ProductResponseDto.builder()
+                .no(1)
                 .name("이름")
                 .amount(1000L)
                 .manufacturer("ㅇ")
