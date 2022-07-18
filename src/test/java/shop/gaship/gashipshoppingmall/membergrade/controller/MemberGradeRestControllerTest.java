@@ -29,15 +29,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.controller
- * fileName       : MemberGradeRestControllerTest
- * author         : Semi Kim
- * date           : 2022/07/09
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/09        Semi Kim       최초 생성
+ * 회원등급 RestController 테스트.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @WebMvcTest(MemberGradeRestController.class)
 class MemberGradeRestControllerTest {
@@ -112,7 +107,7 @@ class MemberGradeRestControllerTest {
         verify(memberGradeService, never()).modifyMemberGrade(any());
     }
 
-
+    @DisplayName("회원등급 삭제하는 경우")
     @Test
     void memberGradeRemove() throws Exception {
         int testMemberGradeNo = 1;
@@ -125,17 +120,15 @@ class MemberGradeRestControllerTest {
         verify(memberGradeService).removeMemberGrade(any());
     }
 
+    @DisplayName("회원등급 단건 조회하는 경우")
     @Test
     void memberGradeDetails() throws Exception {
-        // given
         int testMemberGradeNo = 1;
         MemberGradeResponseDto testMemberGradeResponseDto = MemberGradeDtoDummy.responseDummy("일반", 0L, "1개월");
 
-        // mocking
         when(memberGradeService.findMemberGrade(any()))
                 .thenReturn(testMemberGradeResponseDto);
 
-        // when&then
         mockMvc.perform(get("/grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -146,9 +139,9 @@ class MemberGradeRestControllerTest {
                 .andExpect(jsonPath("$.renewalPeriodStatusCode", equalTo(testMemberGradeResponseDto.getRenewalPeriodStatusCode())));
     }
 
+    @DisplayName("회원등급 다건 조회하는 경우")
     @Test
     void memberGradeList() throws Exception {
-        // given
         int page = 1;
         int size = 10;
         Pageable pageable = PageRequest.of(page, size);
@@ -157,12 +150,10 @@ class MemberGradeRestControllerTest {
                         0L,
                         "12개월");
 
-        // stubbing
         when(memberGradeService.findMemberGrades(pageable))
                 .thenReturn(new PageResponseDto<>(
                         new PageImpl<>(List.of(dummyMemberGradeResponseDto), pageable, 1)));
 
-        // when&then
         mockMvc.perform(get("/grades")
                         .queryParam("size", "10")
                         .queryParam("page", "1")
@@ -176,17 +167,14 @@ class MemberGradeRestControllerTest {
 
     @DisplayName("Exception Handler 테스트")
     @Test
-    void exceptionHandler_whenThrowMemberGradeNotFoundException() throws Exception{
-        // given
+    void exceptionHandler_whenThrowMemberGradeNotFoundException() throws Exception {
         int testMemberGradeNo = 100;
         MemberGradeNotFoundException memberGradeNotFoundException = new MemberGradeNotFoundException();
         String errorMessage = memberGradeNotFoundException.getMessage();
 
-        // mocking
         when(memberGradeService.findMemberGrade(any()))
                 .thenThrow(memberGradeNotFoundException);
 
-        // when&then
         mockMvc.perform(get("/grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))

@@ -5,15 +5,10 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeRespon
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.dummy
- * fileName       : MemberGradeDtoDummy
- * author         : Semi Kim
- * date           : 2022/07/13
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/13        Semi Kim       최초 생성
+ * 회원등급 dto dummy.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 public class MemberGradeDtoDummy {
     private MemberGradeDtoDummy(){}

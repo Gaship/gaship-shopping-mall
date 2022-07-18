@@ -3,15 +3,10 @@ package shop.gaship.gashipshoppingmall.membergrade.dummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.dummy
- * fileName       : StatusCodeDummy
- * author         : Semi Kim
- * date           : 2022/07/13
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/13        Semi Kim       최초 생성
+ * 상태코드 dummy.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 public class StatusCodeDummy {
     private StatusCodeDummy(){}

@@ -14,15 +14,10 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.entity
- * fileName       : MemberGradeTest
- * author         : Semi Kim
- * date           : 2022/07/14
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/14        Semi Kim       최초 생성
+ * 회원등급 entity test.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 class MemberGradeTest {
 
@@ -38,39 +33,31 @@ class MemberGradeTest {
     @DisplayName("회원등급 getNo 메서드 테스트")
     @Test
     void getNo(){
-        // given
         MemberGrade memberGrade = MemberGradeDummy
                 .dummy(memberGradeAddRequestDto, renewalPeriod);
         ReflectionTestUtils.setField(memberGrade, "no", 1);
 
-        // when
         Integer result = memberGrade.getNo();
 
-        // then
         assertThat(result).isOne();
     }
 
     @DisplayName("회원등급 getRenewalPeriodStatusCode 메서드 테스트")
     @Test
     void getRenewalPeriodStatusCode(){
-        // given
         MemberGrade memberGrade = MemberGradeDummy
                 .dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // when
         StatusCode result = memberGrade.getRenewalPeriodStatusCode();
 
-        // then
         assertThat(result).isEqualTo(renewalPeriod);
     }
 
     @DisplayName("기본 회원등급 생성 메서드 테스트")
     @Test
     void createDefault(){
-        // when
         MemberGrade result = MemberGrade.createDefault(renewalPeriod, memberGradeAddRequestDto);
 
-        // then
         assertThat(result).isNotNull();
         assertThat(result.getName()).isEqualTo("일반");
         assertThat(result.getAccumulateAmount()).isZero();
@@ -80,13 +67,11 @@ class MemberGradeTest {
     @DisplayName("기본 이외의 회원등급 생성 메서드 테스트")
     @Test
     void create(){
-        // when
         String dummyName = "VIP";
         Long dummyAccumulateAmount = 100_000_000L;
         MemberGrade result = MemberGrade.create(renewalPeriod,
                 MemberGradeDtoDummy.requestDummy(dummyName, dummyAccumulateAmount));
 
-        // then
         assertThat(result).isNotNull();
         assertThat(result.getName()).isEqualTo(dummyName);
         assertThat(result.getAccumulateAmount()).isEqualTo(dummyAccumulateAmount);
@@ -95,7 +80,6 @@ class MemberGradeTest {
     @DisplayName("회원등급 이름/기준누적금액 수정 메서드 테스트")
     @Test
     void modifyDetails(){
-        // given
         String modifyNameData = "새싹";
         Long modifyAccumulateAmountData = 1L;
 
@@ -104,10 +88,8 @@ class MemberGradeTest {
         MemberGradeModifyRequestDto modifyRequestDto = MemberGradeDtoDummy
                 .modifyRequestDummy(1, modifyNameData, modifyAccumulateAmountData);
 
-        // when
         memberGrade.modifyDetails(modifyRequestDto);
 
-        // then
         assertThat(memberGrade.getName()).isEqualTo(modifyNameData);
         assertThat(memberGrade.getAccumulateAmount()).isEqualTo(modifyAccumulateAmountData);
     }

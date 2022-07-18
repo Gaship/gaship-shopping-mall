@@ -37,15 +37,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.service
- * fileName       : MemberGradeServiceImplTest
- * author         : Semi Kim
- * date           : 2022/07/09
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/09        Semi Kim       최초 생성
+ * 회원등급 service 테스트
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @ExtendWith(SpringExtension.class)
 @Import(MemberGradeServiceImpl.class)
@@ -75,12 +70,10 @@ class MemberGradeServiceImplTest {
             "기존에 default 등급도 존재하지 않는 경우")
     @Test
     void addMemberGrade_whenRenewalPeriodIsPresent() {
-        // given
         memberGradeAddRequestDto.setIsDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade memberGrade = MemberGradeDummy.defaultDummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // mocking
         when(statusCodeRepository.findByGroupCodeName(any()))
                 .thenReturn(Optional.of(renewalPeriod));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
@@ -90,10 +83,8 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.save(any()))
                 .thenReturn(memberGrade);
 
-        // when
         memberGradeService.addMemberGrade(memberGradeAddRequestDto);
 
-        // then
         verify(statusCodeRepository).findByGroupCodeName(any());
         verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
         verify(memberGradeRepository).existsByIsDefaultIsTrue();
@@ -105,17 +96,14 @@ class MemberGradeServiceImplTest {
             "누적금액이 동일한 회원등급이 존재하는 경우")
     @Test
     void addMemberGrade_whenAccumulateAmountOverlapMemberGradeIsExist_throwExp(){
-        // given
         memberGradeAddRequestDto.setIsDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
 
-        // stubbing
         when(statusCodeRepository.findByGroupCodeName(any()))
                 .thenReturn(Optional.of(renewalPeriod));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
                 .thenReturn(true);
 
-        // when&then
         assertThatThrownBy(() -> memberGradeService.addMemberGrade(memberGradeAddRequestDto))
                 .isInstanceOf(AccumulateAmountIsOverlap.class)
                 .hasMessageContaining("동일한 기준누적금액");
@@ -132,11 +120,9 @@ class MemberGradeServiceImplTest {
             "기존에 default 등급이 존재하는 경우")
     @Test
     void addMemberGrade_whenDefaultMemberGradeIsExist_throwExp(){
-        // given
         memberGradeAddRequestDto.setIsDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
 
-        // stubbing
         when(statusCodeRepository.findByGroupCodeName(any()))
                 .thenReturn(Optional.of(renewalPeriod));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
@@ -144,7 +130,6 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.existsByIsDefaultIsTrue())
                 .thenReturn(true);
 
-        // when&then
         assertThatThrownBy(() -> memberGradeService.addMemberGrade(memberGradeAddRequestDto))
                 .isInstanceOf(DefaultMemberGradeIsExist.class)
                 .hasMessageContaining("기본 회원등급");
@@ -161,12 +146,10 @@ class MemberGradeServiceImplTest {
             "누적금액이 동일한 회원등급이 존재하지 않는 경우")
     @Test
     void addMemberGrade_whenNotDefaultMemberGrade(){
-        // given
         memberGradeAddRequestDto.setIsDefault(false);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // stubbing
         when(statusCodeRepository.findByGroupCodeName(any()))
                 .thenReturn(Optional.of(renewalPeriod));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
@@ -174,10 +157,8 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.save(any()))
                 .thenReturn(memberGrade);
 
-        // when
         memberGradeService.addMemberGrade(memberGradeAddRequestDto);
 
-        // then
         verify(statusCodeRepository).findByGroupCodeName(any());
         verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
         verify(memberGradeRepository).save(any());
@@ -187,10 +168,8 @@ class MemberGradeServiceImplTest {
     @DisplayName("등급 추가시 갱신가긴에 대한 StatusCode 가 존재하지 않는 경우")
     @Test
     void addMemberGrade_whenRenewalPeriodIsEmpty_throwStatusCodeNotFoundException() {
-        // stubbing
         when(statusCodeRepository.findByGroupCodeName(any())).thenReturn(Optional.empty());
 
-        // when&then
         assertThatThrownBy(() -> memberGradeService
                 .addMemberGrade(memberGradeAddRequestDto))
                 .isInstanceOf(StatusCodeNotFoundException.class);
@@ -206,7 +185,6 @@ class MemberGradeServiceImplTest {
             "수정하려는 기준누적금액이 기존 값과 동일할 경우")
     @Test
     void modifyMemberGrade_whenMemberGradeIsPresent() {
-        // given
         MemberGradeModifyRequestDto modifyRequestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 0L);
 
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
@@ -215,16 +193,13 @@ class MemberGradeServiceImplTest {
         memberGradeAddRequestDto.setName("새싹");
         MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(memberGrade));
         when(memberGradeRepository.save(any()))
                 .thenReturn(modifyMemberGrade);
 
-        // when
         memberGradeService.modifyMemberGrade(modifyRequestDummy);
 
-        // then
         verify(memberGradeRepository).findById(any());
         verify(memberGradeRepository, never()).existsByAccumulateAmountEquals(any());
         verify(memberGradeRepository).save(any());
@@ -235,7 +210,6 @@ class MemberGradeServiceImplTest {
             "수정하려는 기준누적금액이 기존 값과 다를 경우")
     @Test
     void modifyMemberGrade_whenMemberGradeIsPresent_modifyAccumulate(){
-        // given
         MemberGradeModifyRequestDto modifyRequestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 1L);
 
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
@@ -243,7 +217,6 @@ class MemberGradeServiceImplTest {
 
         MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(memberGrade));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
@@ -251,10 +224,8 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.save(any()))
                 .thenReturn(modifyMemberGrade);
 
-        // when
         memberGradeService.modifyMemberGrade(modifyRequestDummy);
 
-        // then
         verify(memberGradeRepository).findById(any());
         verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
         verify(memberGradeRepository).save(any());
@@ -264,14 +235,11 @@ class MemberGradeServiceImplTest {
             "해당 회원등급이 존재하지 않을 경우")
     @Test
     void modifyMemberGrade_whenMemberGradeIsEmpty_throwMemberGradeNotFoundException() {
-        // given
         MemberGradeModifyRequestDto modifyRequestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 0L);
 
-        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.empty());
 
-        // when&then
         assertThatThrownBy(() -> memberGradeService
                 .modifyMemberGrade(modifyRequestDummy))
                 .isInstanceOf(MemberGradeNotFoundException.class);
@@ -286,18 +254,15 @@ class MemberGradeServiceImplTest {
             "사용중이지 않은 회원등급인 경우")
     @Test
     void removeMemberGrade_notDefault_whenMemberGradeIsPresent_memberGradeIsNotUsed() {
-        // given
         memberGradeAddRequestDto.setIsDefault(false);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(testMemberGrade));
         when(memberRepository.findByMemberGrades(any()))
                 .thenReturn(List.of());
 
-        // when&then
         assertThatNoException().isThrownBy(() -> memberGradeService.removeMemberGrade(any()));
 
         verify(memberGradeRepository).findById(any());
@@ -311,18 +276,15 @@ class MemberGradeServiceImplTest {
             "사용중인 등급인 경우")
     @Test
     void removeMemberGrade_whenMemberGradeIsPresent_memberGradeIsUsed() {
-        // given
         memberGradeAddRequestDto.setIsDefault(false);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(testMemberGrade));
         when(memberRepository.findByMemberGrades(any()))
                 .thenReturn(List.of(MemberDummy.dummy(renewalPeriod, testMemberGrade)));
 
-        // when&then
         assertThatThrownBy(() -> memberGradeService.removeMemberGrade(1))
                 .isInstanceOf(MemberGradeInUseException.class);
 
@@ -335,10 +297,8 @@ class MemberGradeServiceImplTest {
             "등급이 존재하지 않는 경우")
     @Test
     void removeMemberGrade_whenMemberGradeIsEmpty_throwExp() {
-        // stubbing
         when(memberGradeRepository.findById(any())).thenReturn(Optional.empty());
 
-        // when&then
         assertThatThrownBy(() -> memberGradeService.removeMemberGrade(testMemberGradeNo))
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
@@ -352,18 +312,15 @@ class MemberGradeServiceImplTest {
             "기본 회원등급인 경우")
     @Test
     void removeMemberGrade_whenDefaultMemberGrade_throwExp(){
-        // given
         memberGradeAddRequestDto.setIsDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade testMemberGrade = MemberGradeDummy.defaultDummy(memberGradeAddRequestDto, renewalPeriod);
 
         ReflectionTestUtils.setField(testMemberGrade, "no", testMemberGradeNo);
 
-        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(testMemberGrade));
 
-        // when&then
         assertThatThrownBy(() -> memberGradeService.removeMemberGrade(testMemberGradeNo))
                 .isInstanceOf(RuntimeException.class)
                 .isInstanceOf(CannotDeleteDefaultMemberGrade.class)
@@ -375,17 +332,13 @@ class MemberGradeServiceImplTest {
 
     @Test
     void findMemberGrade_whenMemberGradeIsPresent() {
-        // given
         MemberGradeResponseDto testMemberGradeResponseDto = MemberGradeDtoDummy.responseDummy("일반", 0L, "12개월");
 
-        // stubbing
         when(memberGradeRepository.getMemberGradeBy(any()))
                 .thenReturn(Optional.of(testMemberGradeResponseDto));
 
-        // when
         MemberGradeResponseDto result = memberGradeService.findMemberGrade(testMemberGradeNo);
 
-        // then
         assertThat(result.getName()).isEqualTo(testMemberGradeResponseDto.getName());
         assertThat(result.getAccumulateAmount()).isEqualTo(testMemberGradeResponseDto.getAccumulateAmount());
 
@@ -394,11 +347,9 @@ class MemberGradeServiceImplTest {
 
     @Test
     void findMemberGrade_whenMemberGradeIsEmpty() {
-        // stubbing
         when(memberGradeRepository.getMemberGradeBy(any()))
                 .thenReturn(Optional.empty());
 
-        // when&then
         assertThatThrownBy(() -> memberGradeService.findMemberGrade(testMemberGradeNo))
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
@@ -407,7 +358,6 @@ class MemberGradeServiceImplTest {
 
     @Test
     void findMemberGrades() {
-        // given
         int page = 1;
         int size = 10;
         Pageable pageable = PageRequest.of(page, size);
@@ -416,14 +366,11 @@ class MemberGradeServiceImplTest {
                 0L,
                 "12개월");
 
-        // stubbing
         when(memberGradeRepository.getMemberGrades(pageable))
                 .thenReturn(new PageImpl<>(List.of(dummyMemberGradeResponseDto), pageable, 1));
 
-        // when
         PageResponseDto<MemberGradeResponseDto> result = memberGradeService.findMemberGrades(pageable);
 
-        // then
         assertThat(result.getPage()).isEqualTo(page + 1);
         assertThat(result.getSize()).isEqualTo(size);
         assertThat(result.getDtoList()).hasSize(1);

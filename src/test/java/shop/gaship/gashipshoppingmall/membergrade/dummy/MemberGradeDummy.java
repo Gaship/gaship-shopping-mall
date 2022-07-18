@@ -5,15 +5,10 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.dummy
- * fileName       : MemberGradeDummy
- * author         : Semi Kim
- * date           : 2022/07/13
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/13        Semi Kim       최초 생성
+ * 회원등급 dummy.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 public class MemberGradeDummy {
     private MemberGradeDummy(){}
