@@ -91,6 +91,11 @@ public class MemberController {
             memberService.findMemberFromNickname(nickname).getMemberNo()));
     }
 
+    /**
+     * 등록된 회원중 마지막 번호를 가진 회원의 번호를 검색하는 기능입니다.
+     *
+     * @return 회원번호를 반환합니다.
+     */
     @GetMapping("/members/lastNo")
     public ResponseEntity<Integer> retrieveLastNo() {
         return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(memberService.findLastNo());
