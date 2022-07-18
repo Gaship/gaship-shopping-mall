@@ -3,6 +3,8 @@ package shop.gaship.gashipshoppingmall.product.dummy;
 import java.time.LocalDateTime;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 public class ProductDummy {
 
@@ -21,6 +23,29 @@ public class ProductDummy {
                 .color("#FFFFFF")
                 .stockQuantity(10)
                 .imageLink1("이미지링크")
+                .build();
+    }
+
+    public static Product dummy2(){
+        return Product.builder()
+                .no(null)
+                .category(CategoryDummy.upperDummy())
+                .salesStatus(StatusCodeDummy.dummy())
+                .deliveryType(StatusCodeDummy.dummy())
+                .name("이름")
+                .amount(1000L)
+                .registerDatetime(LocalDateTime.now())
+                .manufacturer("ㅇㅇ")
+                .manufacturerCountry("ㅇㅇ")
+                .seller("가")
+                .importer("나")
+                .shippingInstallationCost(1L)
+                .qualityAssuranceStandard("다")
+                .color("빨강")
+                .stockQuantity(1)
+                .imageLink1("라")
+                .explanation("설명")
+                .productCode("code")
                 .build();
     }
 }

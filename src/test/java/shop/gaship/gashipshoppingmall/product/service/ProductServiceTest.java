@@ -1,6 +1,26 @@
 package shop.gaship.gashipshoppingmall.product.service;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
+import shop.gaship.gashipshoppingmall.product.dummy.ProductResponseDtoDummy;
+import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
+import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * 상품 서비스 테스트 입니다.
@@ -8,6 +28,55 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author : 김보민
  * @since 1.0
  */
+
+@ExtendWith(SpringExtension.class)
+@Import(ProductServiceImpl.class)
 class ProductServiceTest {
+
+    @Autowired
+    ProductService service;
+
+    @MockBean
+    ProductRepository repository;
+
+    ProductResponseDto responseDto;
+
+    @BeforeEach
+    void setUp() {
+        responseDto = ProductResponseDtoDummy.dummy();
+    }
+
+    @DisplayName("상품코드로 다건 조회하기")
+    @Test
+    void productFindByCodeTest(){
+        //given
+        given(repository.findByCode(responseDto.getProductCode()))
+                .willReturn(List.of(responseDto));
+        //when
+        List<ProductResponseDto> result
+                = service.findProductByCode(responseDto.getProductCode());
+
+        //then
+        verify(repository,times(1))
+                .findByCode(any());
+
+        assertThat(result.get(0).getAmount()).isEqualTo(responseDto.getAmount());
+        assertThat(result.get(0).getName()).isEqualTo(responseDto.getName());
+        assertThat(result.get(0).getColor()).isEqualTo(responseDto.getColor());
+        assertThat(result.get(0).getManufacturer()).isEqualTo(responseDto.getManufacturer());
+        assertThat(result.get(0).getManufacturerCountry()).isEqualTo(responseDto.getManufacturerCountry());
+        assertThat(result.get(0).getSeller()).isEqualTo(responseDto.getSeller());
+        assertThat(result.get(0).getImporter()).isEqualTo(responseDto.getImporter());
+        assertThat(result.get(0).getShippingInstallationCost()).isEqualTo(responseDto.getShippingInstallationCost());
+        assertThat(result.get(0).getQualityAssuranceStandard()).isEqualTo(responseDto.getQualityAssuranceStandard());
+        assertThat(result.get(0).getStockQuantity()).isEqualTo(responseDto.getStockQuantity());
+        assertThat(result.get(0).getImageLink1()).isEqualTo(responseDto.getImageLink1());
+        assertThat(result.get(0).getImageLink2()).isEqualTo(responseDto.getImageLink2());
+        assertThat(result.get(0).getImageLink3()).isEqualTo(responseDto.getImageLink3());
+        assertThat(result.get(0).getImageLink4()).isEqualTo(responseDto.getImageLink4());
+        assertThat(result.get(0).getImageLink5()).isEqualTo(responseDto.getImageLink5());
+        assertThat(result.get(0).getExplanation()).isEqualTo(responseDto.getExplanation());
+        assertThat(result.get(0).getProductCode()).isEqualTo(responseDto.getProductCode());
+    }
 
 }
