@@ -1,14 +1,14 @@
 package shop.gaship.gashipshoppingmall.member.exception;
 
-
 /**
- * 회원의 정보를 찾지 못하였을 때 발생하는 예외입니다.
+ * 멤버조회시에 에러가 발생했을 때 발생하는 에러입니다.
  *
- * @author 김민수
+ * @author 최정우
  * @since 1.0
  */
 public class MemberNotFoundException extends RuntimeException{
+    public static final String MESSAGE = "해당 멤버를 찾을 수 없습니다";
     public MemberNotFoundException() {
-        super("찿고있는 회원의 정보가 존재하지않습니다.");
+        super(MESSAGE);
     }
 }

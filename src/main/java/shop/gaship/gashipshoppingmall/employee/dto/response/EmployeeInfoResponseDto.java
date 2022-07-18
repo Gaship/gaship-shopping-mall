@@ -17,14 +17,14 @@ public class EmployeeInfoResponseDto {
 
     @NotNull
     @Length(min = 1, max = 20)
-    private String name;
+    private final String name;
 
     @Email
     @NotNull
-    private String email;
+    private final String email;
 
     @NotNull
-    private String phoneNo;
+    private final String phoneNo;
 
 
     public EmployeeInfoResponseDto(String name, String email, String phoneNo) {

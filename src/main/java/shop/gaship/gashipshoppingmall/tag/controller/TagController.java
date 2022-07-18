@@ -35,7 +35,7 @@ public class TagController {
      * @throws DuplicatedTagTitleException 태그를 등록할 때 등록하려는 태그명이 기존의 태그명중에 있을경우 에러가 발생합니다.
      */
     @PostMapping("/admins/{adminNo}/tags")
-    public ResponseEntity<Void> TagAdd(@RequestBody TagRequestDto request) {
+    public ResponseEntity<Void> tagAdd(@RequestBody TagRequestDto request) {
         tagService.addTag(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -52,7 +52,7 @@ public class TagController {
      * @throws DuplicatedTagTitleException 태그를 등록할 때 등록하려는 태그명이 기존의 태그명중에 있을경우 에러가 발생합니다.
      */
     @PutMapping("/admins/{adminNo}/tags")
-    public ResponseEntity<Void> TagModify(@RequestBody TagRequestDto request) {
+    public ResponseEntity<Void> tagModify(@RequestBody TagRequestDto request) {
         tagService.modifyTag(request);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -68,7 +68,7 @@ public class TagController {
      * @return the response entity
      */
     @DeleteMapping("/admins/{adminNo}/tags/{tagNo}")
-    public ResponseEntity<Void> TagRemove(@PathVariable Integer tagNo) {
+    public ResponseEntity<Void> tagRemove(@PathVariable Integer tagNo) {
         tagService.removeTag(tagNo);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -85,7 +85,7 @@ public class TagController {
      * * @throws TagNotFoundException 조회하려는 태그가 없을경우 발생하는 에러입니다.
      */
     @GetMapping("/admins/{adminNo}/tags/{tagNo}")
-    public ResponseEntity<TagResponseDto> TagDetails(@PathVariable Integer tagNo) {
+    public ResponseEntity<TagResponseDto> tagDetails(@PathVariable Integer tagNo) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(tagService.findTag(tagNo));
@@ -99,7 +99,7 @@ public class TagController {
      * @return the response entity
      */
     @GetMapping("/admins/{adminNo}/tags")
-    public ResponseEntity<TagPageResponseDto> TagList(Pageable pageable) {
+    public ResponseEntity<TagPageResponseDto> tagList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(tagService.findTags(pageable));

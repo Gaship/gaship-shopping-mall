@@ -31,8 +31,8 @@ public class MemberDummy extends Member {
         return MemberDummy.builder()
             .memberNo(1)
             .recommendMember(null)
-            .status(status)
-            .grade(MemberGrade.builder()
+            .memberStatusCodes(status)
+            .memberGrades(MemberGrade.builder()
                 .name("name")
                 .accumulateAmount(0L)
                 .renewalPeriod(status)
@@ -45,7 +45,6 @@ public class MemberDummy extends Member {
             .phoneNumber("01012341234")
             .gender("남")
             .accumulatePurchaseAmount(100000L)
-            .registerDatetime(LocalDateTime.now())
             .nextRenewalGradeDate(LocalDate.of(2022, 9, 16))
             .build();
     }

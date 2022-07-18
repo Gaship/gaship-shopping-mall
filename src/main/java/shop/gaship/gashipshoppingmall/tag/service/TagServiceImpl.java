@@ -13,7 +13,6 @@ import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
 import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 
-import java.util.List;
 import java.util.function.Function;
 
 /**

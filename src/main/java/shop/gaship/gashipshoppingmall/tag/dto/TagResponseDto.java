@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.tag.dto;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -14,9 +13,9 @@ import java.time.LocalDateTime;
  */
 @Getter
 public class TagResponseDto {
-    private String title;
-    private LocalDateTime registerDatetime;
-    private LocalDateTime modifiedDatetime;
+    private final String title;
+    private final LocalDateTime registerDatetime;
+    private final LocalDateTime modifiedDatetime;
 
     @Builder
     public TagResponseDto(String title, LocalDateTime registerDatetime, LocalDateTime modifiedDatetime) {

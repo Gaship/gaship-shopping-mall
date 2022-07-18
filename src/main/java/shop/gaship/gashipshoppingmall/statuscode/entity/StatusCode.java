@@ -57,6 +57,16 @@ public class StatusCode {
         this.explanation = explanation;
     }
 
+    @Builder(builderMethodName = "allBuilder")
+    public StatusCode(Integer statusCodeNo, String statusCodeName, Boolean isUsed, Integer priority, String groupCodeName, String explanation) {
+        this.statusCodeNo = statusCodeNo;
+        this.statusCodeName = statusCodeName;
+        this.isUsed = isUsed;
+        this.priority = priority;
+        this.groupCodeName = groupCodeName;
+        this.explanation = explanation;
+    }
+
     public void modifyRenewalPeriod(String period) {
         this.statusCodeName = period;
     }

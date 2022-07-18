@@ -28,9 +28,7 @@ import java.util.stream.IntStream;
 
 public class TestDummy {
     public static TagRequestDto CreateTestTagRequestDto() {
-        TagRequestDto tagRequestDto = TagRequestDto.builder().title("테스트 타이틀").build();
-
-        return tagRequestDto;
+        return TagRequestDto.builder().title("테스트 타이틀").build();
     }
 
     public static TagResponseDto CreateTestTagResponseDto(String title) {

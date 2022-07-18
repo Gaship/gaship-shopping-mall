@@ -6,8 +6,6 @@ import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
-import java.util.List;
-
 /**
  * tag crud를 담당하는 service 입니다.
  *

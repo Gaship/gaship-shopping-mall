@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.tag.dto;
+package shop.gaship.gashipshoppingmall.member.dto;
 
 import lombok.Getter;
 import org.springframework.data.domain.Page;
@@ -10,18 +10,18 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * 태그 리스트 요청을 한 후 반환값에 담기는 정보를 담는 dto 입니다.
+ * 멤버 리스트 요청을 한 후 반환값에 담기는 정보를 담는 dto 입니다.
  *
  * @author 최정우
  * @since 1.0
  */
 @Getter
-public class TagPageResponseDto<D, E> {
+public class MemberPageResponseDto<D,E> {
     //DTO리스트
-    private final List<D> dtoList;
+    private List<D> dtoList;
 
     //총 페이지 번호
-    private final int totalPage;
+    private int totalPage;
 
     //현재 페이지 번호
     private int page;
@@ -29,19 +29,15 @@ public class TagPageResponseDto<D, E> {
     private int size;
 
     //시작 페이지 번호, 끝 페이지 번호
-    private int start;
-
-    private int end;
+    private int start, end;
 
     //이전, 다음
-    private boolean prev;
-
-    private boolean next;
+    private boolean prev, next;
 
     //페이지 번호  목록
     private List<Integer> pageList;
 
-    public TagPageResponseDto(Page<E> result, Function<E,D> fn ){
+    public MemberPageResponseDto(Page<E> result, Function<E,D> fn ){
 
         dtoList = result.stream().map(fn).collect(Collectors.toList());
 
