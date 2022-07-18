@@ -60,6 +60,7 @@ public class MemberController {
      *
      * @param memberCreationRequestOauth 소셜 회원가입의 양식 데이터 객체입니다.
      */
+    // TODO : member가 맞지않을까요?
     @PostMapping("/members")
     public ResponseEntity<Void> memberAdd(@RequestBody MemberCreationRequestOauth memberCreationRequestOauth) {
         memberService.addMember(memberCreationRequestOauth);
@@ -88,6 +89,11 @@ public class MemberController {
         @RequestParam String nickname) {
         return ResponseEntity.ok(new MemberNumberPresence(
             memberService.findMemberFromNickname(nickname).getMemberNo()));
+    }
+
+    @GetMapping("/members/lastNo")
+    public ResponseEntity<Integer> retrieveLastNo() {
+        return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(memberService.findLastNo());
     }
 
     /**

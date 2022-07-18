@@ -187,4 +187,9 @@ public class MemberServiceImpl implements MemberService {
         Function<Member,MemberResponseDto> fn = (this::entityToDto);
         return new MemberPageResponseDto<>(page,fn);
     }
+
+    @Override
+    public Integer findLastNo() {
+        return memberRepository.findLastNo();
+    }
 }

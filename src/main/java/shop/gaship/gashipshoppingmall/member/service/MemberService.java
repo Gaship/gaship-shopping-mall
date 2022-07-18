@@ -167,4 +167,6 @@ public interface MemberService {
             .accumulatePurchaseAmount(0L)
             .build();
     }
+
+    Integer findLastNo();
 }
