@@ -9,15 +9,10 @@ import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import java.util.List;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.service
- * fileName       : TagService
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
+ * tag crud를 담당하는 service 입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 public interface TagService {
     /**

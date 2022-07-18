@@ -6,15 +6,10 @@ import lombok.Data;
 import lombok.Getter;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.dto
- * fileName       : TagRequestDto
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
+ * 태그를 등록 수정할 때 사용되는 dto 입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 @Getter
 public class TagRequestDto {

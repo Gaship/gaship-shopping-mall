@@ -7,15 +7,10 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.dto
- * fileName       : TagResponseDto
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
+ * 태그 단건 조회시에 필요한 값을 담는 dto입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 @Getter
 public class TagResponseDto {

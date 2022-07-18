@@ -11,15 +11,10 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.entity
- * fileName       : BaseEntity
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
+ * entity가 등록 또는 수정될때 자동으로 컬럼값이 바뀌게 해주는 어노테이션이 붙은 엔티티입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 @MappedSuperclass
 @EntityListeners(value = {AuditingEntityListener.class})

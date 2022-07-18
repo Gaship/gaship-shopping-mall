@@ -15,18 +15,12 @@ import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.service
- * fileName       : TagServiceImpl
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
+ * tagservice를 구현하는 구현체입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 @Service
 @RequiredArgsConstructor

@@ -10,20 +10,15 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.dto
- * fileName       : TagPageResponseDto
- * author         : choijungwoo
- * date           : 2022/07/18
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/18        choijungwoo       최초 생성
+ * 태그 리스트 요청을 한 후 반환값에 담기는 정보를 담는 dto 입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 @Getter
-public class TagPageResponseDto<DTO, EN> {
+public class TagPageResponseDto<D, E> {
     //DTO리스트
-    private List<DTO> dtoList;
+    private List<D> dtoList;
 
     //총 페이지 번호
     private int totalPage;
@@ -42,7 +37,7 @@ public class TagPageResponseDto<DTO, EN> {
     //페이지 번호  목록
     private List<Integer> pageList;
 
-    public TagPageResponseDto(Page<EN> result, Function<EN,DTO> fn ){
+    public TagPageResponseDto(Page<E> result, Function<E,D> fn ){
 
         dtoList = result.stream().map(fn).collect(Collectors.toList());
 

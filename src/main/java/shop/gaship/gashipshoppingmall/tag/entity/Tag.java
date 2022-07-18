@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.tag.entity;
 
 
-import com.google.common.base.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,16 +8,12 @@ import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 
 import javax.persistence.*;
+
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.entity
- * fileName       : Tag
- * author         : choijungwoo
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        choijungwoo       최초 생성
+ * 태그의 엔티티입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 @Entity
 @Table(name = "tags")
@@ -32,7 +27,7 @@ public class Tag extends BaseEntity {
     @Column(name = "tag_no")
     private Integer tagNo;
 
-    @Column(unique=true)
+    @Column(unique = true)
     private String title;
 
     public void modifyEntity(TagRequestDto tagRequestDto) {

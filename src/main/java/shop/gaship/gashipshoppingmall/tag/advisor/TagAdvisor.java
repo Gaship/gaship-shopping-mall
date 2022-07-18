@@ -10,15 +10,10 @@ import shop.gaship.gashipshoppingmall.tag.advisor.message.ErrorResponse;
 import shop.gaship.gashipshoppingmall.tag.controller.TagController;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.advisor
- * fileName       : ErrorResponse
- * author         : choijungwoo
- * date           : 2022/07/17
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/17        choijungwoo       최초 생성
+ * tag에 관련된 에러가 발생하면 에러를 가로채 대신 응답을 해주는 클래스입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 @RestControllerAdvice(basePackageClasses = TagController.class)
 public class TagAdvisor {

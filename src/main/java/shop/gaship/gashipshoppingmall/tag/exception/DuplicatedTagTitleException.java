@@ -1,15 +1,10 @@
 package shop.gaship.gashipshoppingmall.tag.exception;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.exception
- * fileName       : DuplicatedTagTitleException
- * author         : choijungwoo
- * date           : 2022/07/17
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/17        choijungwoo       최초 생성
+ * 태그명이 중복되었을때 발생하는 에러입니다.
+ *
+ * @author 최정우
+ * @since 1.0
  */
 public class DuplicatedTagTitleException extends RuntimeException {
     /**
