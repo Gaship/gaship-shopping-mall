@@ -140,10 +140,17 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
+    /**
+     * email로 member를 조회하고 memberResponseDto를 반환받기위한 기능입니다.
+     *
+     * @param email 회원을 찾을 매개체
+     * @return MemberResponseDto 조회한 member를 dto로 변경하여 반환합니다.
+     */
     @Override
-    public Member findMemberFromEmail(String email) {
-        return memberRepository.findByEmail(email)
+    public MemberResponseDto findMemberFromEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
             .orElseThrow(MemberNotFoundException::new);
+        return entityToDto(member);
     }
 
     @Override

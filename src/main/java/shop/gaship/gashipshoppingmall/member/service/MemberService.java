@@ -82,7 +82,7 @@ public interface MemberService {
      * @param email 이메일 문자열
      * @return 멤버 객체를 반환합니다.
      */
-    Member findMemberFromEmail(String email);
+    MemberResponseDto findMemberFromEmail(String email);
 
     /**
      * 회원을 닉네임으로 조회하는 메서드입니다.

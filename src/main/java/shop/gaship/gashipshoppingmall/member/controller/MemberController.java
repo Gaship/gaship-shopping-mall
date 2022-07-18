@@ -133,6 +133,21 @@ public class MemberController {
     }
 
     /**
+     * email로 member를 조회하고 memberResponseDto로 변경한뒤 responseEntity를 반환하는 기능입니다.
+     *
+     * @param email 요청받은 email 정보입니다.
+     * @return ResponseEntity<MemberResponseDto> 변경된 dto를 entity화시켜서 반환합니다.
+     */
+    // TODO : 회원entity에 소셜회원가입여부 추가 true false
+    @GetMapping("/members/{email}")
+    public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable String email) {
+        MemberResponseDto memberResponseDto = memberService.findMemberFromEmail(email);
+        return ResponseEntity.status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(memberResponseDto);
+    }
+
+    /**
      * Member list response entity.
      *
      * @param pageable the pageable
