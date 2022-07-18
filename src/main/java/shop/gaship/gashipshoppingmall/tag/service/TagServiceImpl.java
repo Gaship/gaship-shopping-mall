@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
@@ -65,8 +66,9 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagResponseDto> findTags(Pageable pageable) {
+    public TagPageResponseDto<TagResponseDto,Tag> findTags(Pageable pageable) {
         Page<Tag> page = tagRepository.findAll(pageable);
-        return page.stream().map(this::entityToDto).collect(Collectors.toList());
+        Function<Tag, TagResponseDto> fn = (this::entityToDto);
+        return new TagPageResponseDto<>(page,fn);
     }
 }

@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.tag.service;
 
 import org.springframework.data.domain.Pageable;
+import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
@@ -67,7 +68,7 @@ public interface TagService {
      * @param pageable Pageable
      * @return the list
      */
-    List<TagResponseDto> findTags(Pageable pageable);
+    TagPageResponseDto<TagResponseDto,Tag> findTags(Pageable pageable);
 
     /**
      * .

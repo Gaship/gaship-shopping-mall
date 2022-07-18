@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.service.TagService;
@@ -30,7 +31,7 @@ public class TagController {
      * @param request the request
      * @return the response entity
      */
-    @PostMapping("/admin/{adminNo}/tags")
+    @PostMapping("/admins/{adminNo}/tags")
     public ResponseEntity<Void> TagAdd(@RequestBody TagRequestDto request) {
         tagService.addTag(request);
 
@@ -45,7 +46,7 @@ public class TagController {
      * @param request the request
      * @return the response entity
      */
-    @PutMapping("/admin/{adminNo}/tags/{tagNo}")
+    @PutMapping("/admins/{adminNo}/tags")
     public ResponseEntity<Void> TagModify(@RequestBody TagRequestDto request) {
         tagService.modifyTag(request);
 
@@ -60,7 +61,7 @@ public class TagController {
      * @param tagNo the tag no
      * @return the response entity
      */
-    @DeleteMapping("/admin/{adminNo}/tags/{tagNo}")
+    @DeleteMapping("/admins/{adminNo}/tags/{tagNo}")
     public ResponseEntity<Void> TagRemove(@PathVariable Integer tagNo) {
         tagService.removeTag(tagNo);
 
@@ -89,7 +90,7 @@ public class TagController {
      * @return the response entity
      */
     @GetMapping("/admin/{adminNo}/tags")
-    public ResponseEntity<List<TagResponseDto>> TagList(Pageable pageable) {
+    public ResponseEntity<TagPageResponseDto> TagList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(tagService.findTags(pageable));
