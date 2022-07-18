@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -21,18 +23,23 @@ public class FileUploadUtil {
 
     private FileUploadUtil() {}
 
-    public static String uploadFile(String uploadDir, MultipartFile multipartFile)
+    public static List<String> uploadFile(String uploadDir, List<MultipartFile> multipartFiles)
             throws IOException {
+        List<String> fileNames = new ArrayList<>();
+
         Path uploadPath = Paths.get(UPLOAD_BASE_URL + uploadDir);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        String fileName = getFileName(multipartFile);
-        File destination = new File(uploadPath + File.separator + fileName);
-        multipartFile.transferTo(destination);
+        for (MultipartFile multipartFile : multipartFiles) {
+            String fileName = getFileName(multipartFile);
+            File destination = new File(uploadPath + File.separator + fileName);
+            multipartFile.transferTo(destination);
+            fileNames.add(fileName);
+        }
 
-        return fileName;
+        return fileNames;
     }
 
     private static String getFileName(MultipartFile multipartFile) {
