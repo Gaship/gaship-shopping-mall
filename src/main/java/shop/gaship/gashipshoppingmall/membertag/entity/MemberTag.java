@@ -20,13 +20,15 @@ import javax.persistence.*;
 @Builder
 @Table(name = "member_tags")
 public class MemberTag {
-    @ManyToOne
-    @JoinColumn(name = "member_No")
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer memberTagNo;
+
+    @ManyToOne
+    @JoinColumn(name = "member_no")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "tag_No")
-    @Id
+    @JoinColumn(name = "tag_no")
     private Tag tag;
 }
