@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.statuscode.status;
 import lombok.Getter;
 
 /**.
- * 설명작성
+ * 회원등급에 사용되는 갱신기간 값
  *
  * @author : 김세미
  * @since 1.0
