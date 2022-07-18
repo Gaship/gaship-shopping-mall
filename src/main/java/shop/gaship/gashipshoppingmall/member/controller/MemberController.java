@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.member.controller;
 
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.member.dto.EmailPresence;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberNumberPresence;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
@@ -26,7 +28,9 @@ import javax.validation.Valid;
 /**
  * member 등록, 수정, 삭제, 회원등록과 관련된 요청을 수행하는 restController 입니다.
  *
- * @author 김민수, 최정우
+ * @author 김민수
+ * @author 최정우
+ * @author 최겸준
  * @since 1.0
  */
 @RestController
@@ -49,6 +53,17 @@ public class MemberController {
         }
 
         throw new SignUpDenyException("이메일 중복확인 또는 이메일 검증이 필요합니다.");
+    }
+
+    /**
+     * 소셜계정으로의 회원가입을 요청을 받는 메서드입니다.
+     *
+     * @param memberCreationRequestOauth 소셜 회원가입의 양식 데이터 객체입니다.
+     */
+    @PostMapping("/members")
+    public ResponseEntity<Void> memberAdd(@RequestBody MemberCreationRequestOauth memberCreationRequestOauth) {
+        memberService.addMember(memberCreationRequestOauth);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**

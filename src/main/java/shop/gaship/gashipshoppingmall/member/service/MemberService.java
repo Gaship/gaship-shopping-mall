@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.member.service;
 import org.springframework.lang.Nullable;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
@@ -15,6 +16,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * member crud를 담당하는 service 입니다.
  *
  * @author 최정우
+ * @author 최겸준
  * @since 1.0
  */
 public interface MemberService {
@@ -26,6 +28,14 @@ public interface MemberService {
      * @param memberCreationRequest 회원가입을 위한 정보 객체입니다.
      */
     void addMember(MemberCreationRequest memberCreationRequest);
+
+    /**
+     * 소셜회원을 등록하는 메서드입니다.
+     *
+     * @param memberCreationRequest 회원가입을 위한 정보 객체입니다.
+     */
+    void addMember(MemberCreationRequestOauth memberCreationRequestOauth);
+
 
     /**
      * 멤버의 정보를 변경하는 메서드 입니다.
@@ -114,7 +124,7 @@ public interface MemberService {
      * @param defaultGrade          초기 등급
      * @return 신규 회원가입된 회원 객체를 반환합니다.
      */
-    default Member creationRequestToMemberEntity(MemberCreationRequest      memberCreationRequest,
+    default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest,
                                                  @Nullable Member recommendMember,
                                                  StatusCode defaultStatus,
                                                  MemberGrade defaultGrade) {
@@ -129,6 +139,31 @@ public interface MemberService {
             .phoneNumber(memberCreationRequest.getPhoneNumber())
             .birthDate(memberCreationRequest.getBirthDate())
             .gender(memberCreationRequest.getGender())
+            .accumulatePurchaseAmount(0L)
+            .build();
+    }
+
+    /**
+     * 필수정보를 받아 새로운 소셜 회원을 반환하는 메서드입니다.
+     *
+     * @param memberCreationRequestOauth 회원가입에 필요한 최소한의 요구 데이터.
+     * @param defaultStatus         신규회원의 초기 상태값
+     * @param defaultGrade          초기 등급
+     * @return 신규 회원가입된 회원 객체를 반환합니다.
+     */
+    default Member creationRequestToMemberEntity(MemberCreationRequestOauth memberCreationRequestOauth,
+                                                 StatusCode defaultStatus,
+                                                 MemberGrade defaultGrade) {
+        return Member.builder()
+            .memberStatusCodes(defaultStatus)
+            .memberGrades(defaultGrade)
+            .email(memberCreationRequestOauth.getEmail())
+            .nickname(memberCreationRequestOauth.getNickName())
+            .name(memberCreationRequestOauth.getName())
+            .password(memberCreationRequestOauth.getPassword())
+            .phoneNumber(memberCreationRequestOauth.getPhoneNumber())
+            .birthDate(memberCreationRequestOauth.getBirthDate())
+            .gender(memberCreationRequestOauth.getGender())
             .accumulatePurchaseAmount(0L)
             .build();
     }

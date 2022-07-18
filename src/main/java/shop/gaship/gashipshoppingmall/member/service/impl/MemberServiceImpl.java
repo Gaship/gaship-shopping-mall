@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.service.impl;
 
+import java.util.Objects;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
@@ -29,6 +31,7 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
  *
  * @see MemberService
  * @author 김민수
+ * @author 최겸준
  * @since 1.0
  */
 @Service
@@ -70,6 +73,23 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.saveAndFlush(savedMember);
     }
 
+    @Override
+    @Transactional
+    public void addMember(MemberCreationRequestOauth memberCreationRequestOauth) {
+        StatusCode defaultStatus = statusCodeRepository.findById(MEMBER_STATUS_ID)
+            .orElseThrow(StatusCodeNotFoundException::new);
+        MemberGrade defaultGrade = memberGradeRepository.findById(MEMBER_GRADE_ID)
+            .orElseThrow(MemberGradeNotFoundException::new);
+
+        Member savedMember = creationRequestToMemberEntity(
+            encodePrivacyUserInformation(memberCreationRequestOauth),
+            defaultStatus,
+            defaultGrade
+        );
+
+        memberRepository.saveAndFlush(savedMember);
+    }
+
     /**
      * 회원 정보 중 중요한 정보를 암호화하여 저장하는 메서드입니다.
      *
@@ -80,12 +100,34 @@ public class MemberServiceImpl implements MemberService {
         MemberCreationRequest memberCreationRequest) {
         memberCreationRequest.setEmail(aes.aesECBEncode(memberCreationRequest.getEmail()));
         memberCreationRequest.setName(aes.aesECBEncode(memberCreationRequest.getName()));
-        memberCreationRequest.setPhoneNumber(
+
+        if (!Objects.isNull(memberCreationRequest.getPhoneNumber())) {
+            memberCreationRequest.setPhoneNumber(
             aes.aesECBEncode(memberCreationRequest.getPhoneNumber()));
+        }
+
         memberCreationRequest.setPassword(
             passwordEncoder.encode(memberCreationRequest.getPassword()));
 
         return memberCreationRequest;
+    }
+
+    /**
+     * 소셜회원가입시 회원 정보 중 중요한 정보를 암호화하여 저장하는 메서드입니다.
+     *
+     * @param memberCreationRequestOauth 회원 가입할 정보가 담긴 객체
+     * @return 중요 정보가 암호화 된 회원정보 객체
+     */
+    private MemberCreationRequestOauth encodePrivacyUserInformation(
+        MemberCreationRequestOauth memberCreationRequestOauth) {
+        memberCreationRequestOauth.setEmail(aes.aesECBEncode(memberCreationRequestOauth.getEmail()));
+        memberCreationRequestOauth.setName(aes.aesECBEncode(memberCreationRequestOauth.getName()));
+        memberCreationRequestOauth.setPhoneNumber(
+            aes.aesECBEncode(memberCreationRequestOauth.getPhoneNumber()));
+        memberCreationRequestOauth.setPassword(
+            passwordEncoder.encode(memberCreationRequestOauth.getPassword()));
+
+        return memberCreationRequestOauth;
     }
 
     @Override
