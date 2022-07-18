@@ -1,66 +1,91 @@
 package shop.gaship.gashipshoppingmall.statuscode.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponseDto;
+import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
+import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeResponseDtoDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
-import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
+import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.statuscode.repository
- * fileName       : StatusCodeRepositoryTest
- * author         : 유호철
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR     NOTE
- * -----------------------------------------------------------
- * 2022/07/11        유호철       최초생성
+ * 상태코드 Repository 테스트.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @DataJpaTest
 class StatusCodeRepositoryTest {
+    @Autowired
+    private TestEntityManager testEntityManager;
 
     @Autowired
-    StatusCodeRepository repository;
+    private StatusCodeRepository statusCodeRepository;
 
-    StatusCode statusCode;
-
-    @BeforeEach
-    void setUp() {
-
-            statusCode = StatusCode.builder()
-                .statusCodeName("test")
-                .groupCodeName("tt")
-                .priority(1)
-                .explanation("ttt").build();
-
-    }
-
-    @DisplayName("공통코트 조회를 위한 테스트")
+    @DisplayName("상태코드 그룹명으로 상태코드 조회하는 경우")
     @Test
-    void statusCodeSelectTest(){
-        //given
-        repository.save(statusCode);
+    void findByGroupCodeName() {
+        StatusCode dummy = StatusCodeDummy.dummy();
+        testEntityManager.persistAndFlush(dummy);
+        testEntityManager.clear();
 
-        //when & then
-        StatusCode code = repository.findById(statusCode.getStatusCodeNo()).get();
+        Optional<StatusCode> result = statusCodeRepository
+                .findByGroupCodeName(SalesStatus.GROUP);
 
-        assertThat(code.getGroupCodeName()).isEqualTo(statusCode.getGroupCodeName());
-        assertThat(code.hashCode()).hasSameHashCodeAs(statusCode.hashCode());
-        assertThat(code).isEqualTo(statusCode);
-
+        assertThat(result).isPresent();
+        assertThat(result.get())
+                .isNotNull()
+                .isEqualTo(dummy);
     }
 
+    @DisplayName("상태코드 그룹명으로 상태코드 조회시 해당 상태코드가 없는 경우")
+    @Test
+    void findByGroupCodeName_whenStatusCodeIsEmpty() {
+        Optional<StatusCode> result = statusCodeRepository
+                .findByGroupCodeName(SalesStatus.GROUP);
+
+        assertThat(result).isEmpty();
+    }
+
+    @DisplayName("상태코드 그룹명으로 상태코드 목록 조회하는 경우")
+    @Test
+    void getStatusCodesByGroup() {
+        List.of(StatusCodeDummy.dummy(),
+                        StatusCodeDummy.dummy(),
+                        StatusCodeDummy.dummy())
+                .forEach(dummy -> testEntityManager
+                        .persistAndFlush(dummy));
+        testEntityManager.clear();
+
+        List<StatusCodeResponseDto> result = statusCodeRepository
+                .getStatusCodesByGroup(SalesStatus.GROUP);
+
+        assertThat(result)
+                .isNotEmpty()
+                .hasSize(3);
+    }
+
+    @Test
+    void findByStatusCodeName() {
+        StatusCode dummy = StatusCodeDummy.dummy();
+        testEntityManager.persistAndFlush(dummy);
+        testEntityManager.clear();
+
+        Optional<StatusCode> result = statusCodeRepository
+                .findByStatusCodeName(SalesStatus.SALE.getValue());
+
+        assertThat(result).isPresent();
+        assertThat(result.get())
+                .isNotNull()
+                .isEqualTo(dummy);
+    }
 }
