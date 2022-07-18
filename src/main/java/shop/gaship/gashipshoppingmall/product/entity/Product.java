@@ -1,11 +1,16 @@
 package shop.gaship.gashipshoppingmall.product.entity;
 
+import java.awt.image.Kernel;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import lombok.*;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 @Entity
@@ -13,7 +18,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@Builder
 @Table(name = "products")
 public class Product {
     @Id
@@ -82,4 +86,63 @@ public class Product {
 
     @NotNull
     String explanation;
+
+    @NotNull
+    String code;
+
+    @Builder
+    public Product(Category category, StatusCode deliveryType, String name,
+                   Long amount, LocalDateTime registerDatetime, String manufacturer,
+                   String manufacturerCountry, String seller, String importer,
+                   Long shippingInstallationCost, String qualityAssuranceStandard, String color,
+                   Integer stockQuantity, String explanation, String code) {
+        this.category = category;
+        this.deliveryType = deliveryType;
+        this.name = name;
+        this.amount = amount;
+        this.registerDatetime = registerDatetime;
+        this.manufacturer = manufacturer;
+        this.manufacturerCountry = manufacturerCountry;
+        this.seller = seller;
+        this.importer = importer;
+        this.shippingInstallationCost = shippingInstallationCost;
+        this.qualityAssuranceStandard = qualityAssuranceStandard;
+        this.color = color;
+        this.stockQuantity = stockQuantity;
+        this.explanation = explanation;
+        this.code = code;
+    }
+
+    public static Product create(Category category, StatusCode deliveryType, ProductCreateRequestDto createRequest) {
+        return Product.builder()
+                .category(category)
+                .deliveryType(deliveryType)
+                .amount(createRequest.getAmount())
+                .registerDatetime(LocalDateTime.now())
+                .manufacturer(createRequest.getManufacturer())
+                .manufacturerCountry(createRequest.getManufacturerCountry())
+                .seller(createRequest.getSeller())
+                .importer(createRequest.getImporter())
+                .shippingInstallationCost(createRequest.getShippingInstallationCost())
+                .qualityAssuranceStandard(createRequest.getQualityAssuranceStandard())
+                .color(createRequest.getColor())
+                .stockQuantity(createRequest.getStockQuantity())
+                .explanation(createRequest.getExplanation())
+                .build();
+    }
+
+    public void updateSalesStatus(StatusCode salesStatus) {
+        this.salesStatus = salesStatus;
+    }
+
+    public void updateImageLinks(List<String> imageLinks) {
+        String[] updatingImageLinks = new String[5];
+        IntStream.range(0, imageLinks.size()).forEach(i -> updatingImageLinks[i] = imageLinks.get(i));
+
+        this.imageLink1 = updatingImageLinks[0];
+        this.imageLink2 = updatingImageLinks[1];
+        this.imageLink3 = updatingImageLinks[2];
+        this.imageLink4 = updatingImageLinks[3];
+        this.imageLink5 = updatingImageLinks[4];
+    }
 }
