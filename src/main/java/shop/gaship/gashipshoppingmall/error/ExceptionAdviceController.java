@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.error;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,8 +27,10 @@ public class ExceptionAdviceController {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorResponse> validException(
             MethodArgumentNotValidException ex) {
-        ErrorResponse response = new ErrorResponse("유효성 검사를 실패했습니다 : " + ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        String message = ex.getBindingResult().getAllErrors().stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .reduce("", (accumulateMsg, nextMessage)  -> accumulateMsg + "\n" + nextMessage)
+                .trim();
+        return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
 }
