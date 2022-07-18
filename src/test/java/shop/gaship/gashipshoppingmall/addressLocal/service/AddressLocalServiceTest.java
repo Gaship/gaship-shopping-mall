@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import shop.gaship.gashipshoppingmall.addressLocal.dto.request.AddressSearchRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
@@ -49,14 +48,14 @@ class AddressLocalServiceTest {
     ModifyAddressRequestDto modifyDto;
     AddressLocal addressLocal;
     GetAddressLocalResponseDto responseDto;
-    AddressSearchRequestDto requestDto;
+    String requestDto;
     ArgumentCaptor<AddressLocal> captor;
     @MockBean
     AddressLocalRepository addressLocalRepository;
 
     @BeforeEach
     void setUp() {
-        requestDto = new AddressSearchRequestDto("마산턱별시");
+        requestDto = new String("마산턱별시");
         responseDto = GetAddressLocalResponseDtoDummy.dummy();
         captor = ArgumentCaptor.forClass(AddressLocal.class);
         addressLocal = AddressLocalDummy.dummy1();

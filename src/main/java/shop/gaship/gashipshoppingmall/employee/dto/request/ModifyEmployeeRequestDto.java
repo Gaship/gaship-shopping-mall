@@ -17,17 +17,17 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class ModifyEmployeeRequestDto {
     @Min(1)
-    @NotNull
+    @NotNull(message = "직원번호를 입력해주세요")
     private Integer employeeNo;
 
-    @NotNull
+    @NotNull(message = "이름을 입력해주세요")
     private String name;
 
     @Email
-    @NotNull
+    @NotNull(message = "이메일을 입력해주세요")
     private String email;
 
-    @NotNull
+    @NotNull(message = "휴대폰번호를 입력해주세요")
     private String phoneNo;
 
 }

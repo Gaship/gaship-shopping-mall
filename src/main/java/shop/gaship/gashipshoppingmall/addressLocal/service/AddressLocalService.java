@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.addressLocal.service;
 
-import shop.gaship.gashipshoppingmall.addressLocal.dto.request.AddressSearchRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 
@@ -25,9 +24,9 @@ public interface AddressLocalService {
     /**
      * 주소지를 검색하기위한 메서드입니다.
      *
-     * @param requestDto 검색을할 주소지가 입력되어있습니다.
+     * @param address 검색을할 주소지가 입력되어있습니다.
      * @return list : 검색된 주소지와 그 주소지의 하위주소지들이 들어있습니다.
      * @author 유호철
      */
-    List<GetAddressLocalResponseDto> findAddressLocals(AddressSearchRequestDto requestDto);
+    List<GetAddressLocalResponseDto> findAddressLocals(String address);
 }

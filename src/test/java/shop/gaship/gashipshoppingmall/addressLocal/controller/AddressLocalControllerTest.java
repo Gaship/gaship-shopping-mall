@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.gaship.gashipshoppingmall.addressLocal.dto.request.AddressSearchRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dummy.GetAddressLocalResponseDtoDummy;
@@ -73,12 +72,27 @@ class AddressLocalControllerTest {
         verify(service, times(1)).modifyLocalDelivery(any());
     }
 
+    @DisplayName("지역 배달가능 여부 수정 실패 테스트")
+    @Test
+    void modifyAddressLocalFailTest() throws Exception{
+        //given
+        ModifyAddressRequestDto dto = new ModifyAddressRequestDto(null, true);
+
+        //when & then
+        mvc.perform(put("/addressLocals")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("지역을 입력하세요"))
+                .andDo(print());
+    }
     @DisplayName("주소지 검색 테스트")
     @Test
     void findAddressLocalTest() throws Exception {
         //given
         GetAddressLocalResponseDto dto = GetAddressLocalResponseDtoDummy.dummy();
-        AddressSearchRequestDto requestDto = new AddressSearchRequestDto(dto.getUpperAddressName());
 
         List<GetAddressLocalResponseDto> list = new ArrayList<>();
         list.add(dto);
@@ -88,8 +102,8 @@ class AddressLocalControllerTest {
 
         mvc.perform(get("/addressLocals")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto))
                         .characterEncoding(StandardCharsets.UTF_8)
+                        .queryParam("address",dto.getUpperAddressName())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].upperAddressName").value(dto.getUpperAddressName()))

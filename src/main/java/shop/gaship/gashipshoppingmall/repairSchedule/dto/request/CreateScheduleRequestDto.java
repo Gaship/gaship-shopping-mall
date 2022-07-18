@@ -20,13 +20,13 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 public class CreateScheduleRequestDto {
 
-    @NotNull
+    @NotNull(message = "일자를 기입해주세요")
     private LocalDate date;
     @Min(1)
-    @NotNull
+    @NotNull(message = "지역번호를 기입해주세요")
     private Integer localNo;
 
-    @NotNull
+    @NotNull(message = "물량을 기입해주세요")
     private Integer labor;
 
 }

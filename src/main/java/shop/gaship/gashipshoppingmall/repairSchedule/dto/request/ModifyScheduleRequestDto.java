@@ -18,13 +18,13 @@ import java.time.LocalDate;
 @Getter
 public class ModifyScheduleRequestDto {
 
-    @NotNull
+    @NotNull(message = "물량을 기입해주세요")
     private final Integer labor;
 
-    @NotNull
+    @NotNull(message = "일자를 기입해주세요")
     private final LocalDate date;
     @Min(1)
-    @NotNull
+    @NotNull(message = "지역 번호를 기입해주세요ㅕ")
     private final Integer localNo;
 
     @Builder

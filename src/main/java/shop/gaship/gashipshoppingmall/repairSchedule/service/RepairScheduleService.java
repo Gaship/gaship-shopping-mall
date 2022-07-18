@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.repairSchedule.service;
 import org.springframework.data.domain.Page;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.ModifyScheduleRequestDto;
-import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.SchedulePageRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.response.GetRepairScheduleResponseDto;
 
 import java.time.LocalDate;
@@ -49,10 +48,10 @@ public interface RepairScheduleService {
     /**
      * 페이징처리를 위한 스케줄정보가 담겨있습니다.
      *
-     *
-     * @param request 페이지정보가 담겨있습니다.
+     * @param size 페이지사이즈 정보가 담겨있습니다.
+     * @param page 페이지정보가 담겨있습니다.
      * @return page 페이지정보가 담긴 수리스케줄이 반환됩니다.
      * @author 유호철
      */
-    Page<GetRepairScheduleResponseDto> findRepairSchedules(SchedulePageRequestDto request);
+    Page<GetRepairScheduleResponseDto> findRepairSchedules(int page, int size);
 }

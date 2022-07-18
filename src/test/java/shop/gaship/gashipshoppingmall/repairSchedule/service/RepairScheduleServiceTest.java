@@ -18,7 +18,6 @@ import shop.gaship.gashipshoppingmall.dayLabor.exception.NotExistDayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.ModifyScheduleRequestDto;
-import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.SchedulePageRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dummy.CreateScheduleRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.repairSchedule.dummy.GetRepairScheduleResponseDtoDummy;
@@ -185,7 +184,6 @@ class RepairScheduleServiceTest {
     @Test
     void searchSchedule_page() {
         //give
-        SchedulePageRequestDto pageRequestDto = new SchedulePageRequestDto(1, 10);
         PageRequest req = PageRequest.of(1, 10);
         Page<GetRepairScheduleResponseDto> pages = new PageImpl<>(list, req,
                 list.size());
@@ -194,12 +192,12 @@ class RepairScheduleServiceTest {
                 .willReturn(pages);
 
         //when
-        Page<GetRepairScheduleResponseDto> test = service.findRepairSchedules(pageRequestDto);
+        Page<GetRepairScheduleResponseDto> test = service.findRepairSchedules(req.getPageNumber(),req.getPageSize());
 
         //then
         assertThat(test.getSize()).isEqualTo(pages.getSize());
         assertThat(test.getPageable()).isEqualTo(req);
-        assertThat(test.getSize()).isEqualTo(pageRequestDto.getSize());
-        assertThat(req.getPageNumber()).isEqualTo(pageRequestDto.getPage());
+        assertThat(test.getSize()).isEqualTo(req.getPageSize());
+        assertThat(req.getPageNumber()).isEqualTo(req.getPageNumber());
     }
 }

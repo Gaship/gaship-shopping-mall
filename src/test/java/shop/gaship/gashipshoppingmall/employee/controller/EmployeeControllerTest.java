@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -67,6 +68,25 @@ class EmployeeControllerTest {
         verify(service, times(1)).addEmployee(dto);
     }
 
+    @DisplayName("직원 생성 유효성 검사 실패 controller post test")
+    @Test
+    void postEmployeeFail() throws Exception {
+        //given
+        CreateEmployeeRequestDto dto = new CreateEmployeeRequestDto(1,1,"이름",null,"1231321","01010101");
+
+        //when
+        doNothing().when(service).addEmployee(dto);
+
+        mvc.perform(post("/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("이메일을 입력해주세요"))
+                .andDo(print());
+    }
+
     @DisplayName("직원 정보 수정 controller test")
     @Test
     void putEmployee() throws Exception {
@@ -85,6 +105,25 @@ class EmployeeControllerTest {
                 .andDo(print());
         //then
         verify(service, times(1)).modifyEmployee(any());
+    }
+
+    @DisplayName("직원 정보 수정 유효성검사 실패 controller test")
+    @Test
+    void putEmployeeFail() throws Exception {
+        //given
+        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(null, "aa", "test@mail.com", "000000");
+
+        //when & then
+        doNothing().when(service).modifyEmployee(dto);
+
+        mvc.perform(put("/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("직원번호를 입력해주세요"))
+                .andDo(print());
     }
 
     @DisplayName("직원 단건 조회 test")

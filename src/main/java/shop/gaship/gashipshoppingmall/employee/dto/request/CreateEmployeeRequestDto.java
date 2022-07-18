@@ -20,24 +20,24 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode
 public class CreateEmployeeRequestDto {
     @Min(1)
-    @NotNull
+    @NotNull(message = "권한번호를 기입해주세요")
     private Integer authorityNo;
     @Min(1)
-    @NotNull
+    @NotNull(message = "지역번호를 입력해주세요")
     private Integer addressNo;
 
-    @NotNull
+    @NotNull(message = "이름을 입력해주세요")
     @Length(min = 1, max = 20)
     private String name;
 
-    @NotNull
+    @NotNull(message = "이메일을 입력해주세요")
     @Email
     private String email;
 
-    @NotNull
+    @NotNull(message = "비밀번호를 입력해주세요")
     private String password;
 
-    @NotNull
+    @NotNull(message = "휴대전화번호를 입력해주세요")
     private String phoneNo;
 
 }

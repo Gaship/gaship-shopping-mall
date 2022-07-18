@@ -9,7 +9,6 @@ import shop.gaship.gashipshoppingmall.dayLabor.exception.NotExistDayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.ModifyScheduleRequestDto;
-import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.SchedulePageRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.RepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.pk.RepairSchedulePk;
@@ -72,8 +71,8 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
     }
 
     @Override
-    public Page<GetRepairScheduleResponseDto> findRepairSchedules(SchedulePageRequestDto request) {
+    public Page<GetRepairScheduleResponseDto> findRepairSchedules(int page, int size) {
 
-        return repository.findAllSortDate(PageRequest.of(request.getPage(), request.getSize()));
+        return repository.findAllSortDate(PageRequest.of(page, size));
     }
 }

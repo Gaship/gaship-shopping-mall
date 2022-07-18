@@ -2,7 +2,6 @@ package shop.gaship.gashipshoppingmall.addressLocal.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import shop.gaship.gashipshoppingmall.addressLocal.dto.request.AddressSearchRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
@@ -45,12 +44,12 @@ public class AddressLocalServiceImpl implements AddressLocalService {
     /**
      * 배송지 정보를 찾기위한 메소드입니다.
      *
-     * @param requestDto 검색할 주소지가 기입되어있습니다.
+     * @param address 검색할 주소지가 기입되어있습니다.
      * @return list : 검색된 주소지들이 반환됩니다.
      * @author 유호철
      */
     @Override
-    public List<GetAddressLocalResponseDto> findAddressLocals(AddressSearchRequestDto requestDto) {
-        return repository.findAllAddress(requestDto.getAddress());
+    public List<GetAddressLocalResponseDto> findAddressLocals(String address) {
+        return repository.findAllAddress(address);
     }
 }
