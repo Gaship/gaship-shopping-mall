@@ -232,4 +232,40 @@ class ProductControllerTest {
 
         verify(service, times(1)).findProductByCategory(any());
     }
+
+    @DisplayName("제품다건조회 - 이름으로 조회")
+    @Test
+    void getProductByName() throws Exception {
+        //given & when
+        when(service.findProductByName(product.getName()))
+                .thenReturn(List.of(responseDto));
+
+        //then
+        mvc.perform(get("/products/name")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .accept(MediaType.APPLICATION_JSON)
+                .queryParam("name",product.getName()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].no").value(responseDto.getNo()))
+                .andExpect(jsonPath("$[0].name").value(responseDto.getName()))
+                .andExpect(jsonPath("$[0].amount").value(responseDto.getAmount()))
+                .andExpect(jsonPath("$[0].manufacturer").value(responseDto.getManufacturer()))
+                .andExpect(jsonPath("$[0].manufacturerCountry").value(responseDto.getManufacturerCountry()))
+                .andExpect(jsonPath("$[0].seller").value(responseDto.getSeller()))
+                .andExpect(jsonPath("$[0].importer").value(responseDto.getImporter()))
+                .andExpect(jsonPath("$[0].shippingInstallationCost").value(responseDto.getShippingInstallationCost()))
+                .andExpect(jsonPath("$[0].qualityAssuranceStandard").value(responseDto.getQualityAssuranceStandard()))
+                .andExpect(jsonPath("$[0].color").value(responseDto.getColor()))
+                .andExpect(jsonPath("$[0].stockQuantity").value(responseDto.getStockQuantity()))
+                .andExpect(jsonPath("$[0].imageLink1").value(responseDto.getImageLink1()))
+                .andExpect(jsonPath("$[0].imageLink2").value(responseDto.getImageLink2()))
+                .andExpect(jsonPath("$[0].imageLink3").value(responseDto.getImageLink3()))
+                .andExpect(jsonPath("$[0].imageLink4").value(responseDto.getImageLink4()))
+                .andExpect(jsonPath("$[0].imageLink5").value(responseDto.getImageLink5()))
+                .andExpect(jsonPath("$[0].explanation").value(responseDto.getExplanation()))
+                .andExpect(jsonPath("$[0].productCode").value(responseDto.getProductCode()))
+
+                .andDo(print());
+    }
 }

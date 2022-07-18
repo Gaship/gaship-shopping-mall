@@ -75,7 +75,7 @@ class ProductServiceTest {
         //then
         verify(repository, times(1))
                 .findByCode(any());
-        assertThatResponseDtoList(result.get(0));
+        checkDtoList(result.get(0));
     }
 
     @DisplayName("상품전체조회 페이징")
@@ -110,7 +110,7 @@ class ProductServiceTest {
         //then
         verify(repository, times(1))
                 .findByProductNo(any());
-        assertThatResponseDtoList(result);
+        checkDtoList(result);
     }
 
     @DisplayName("상품 단건 조회테스트 실패")
@@ -139,7 +139,7 @@ class ProductServiceTest {
         verify(repository, times(1))
                 .findByPrice(any(Long.class), any(Long.class));
 
-        assertThatResponseDtoList(result.get(0));
+        checkDtoList(result.get(0));
     }
 
     @DisplayName("카테고리 번호로 조회하기 실패")
@@ -170,10 +170,26 @@ class ProductServiceTest {
         //then
         verify(repository,times(1)).findProductByCategory(any());
 
-        assertThatResponseDtoList(result.get(0));
+        checkDtoList(result.get(0));
     }
 
-    private void assertThatResponseDtoList(ProductResponseDto result) {
+    @DisplayName("제품이름으로 조회하기")
+    @Test
+    void productFindByProductName(){
+        //given
+        given(repository.findByProductName(product.getName()))
+                .willReturn(List.of(responseDto));
+
+        //when
+        List<ProductResponseDto> result = service.findProductByName(product.getName());
+
+        //then
+        verify(repository, times(1)).findByProductName(any());
+
+        checkDtoList(result.get(0));
+    }
+
+    private void checkDtoList(ProductResponseDto result) {
         assertThat(result.getRegisterDatetime()).isEqualTo(responseDto.getRegisterDatetime());
         assertThat(result.getAmount()).isEqualTo(responseDto.getAmount());
         assertThat(result.getName()).isEqualTo(responseDto.getName());

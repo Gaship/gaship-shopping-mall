@@ -52,17 +52,16 @@ class ProductRepositoryTest {
         category = CategoryDummy.dummy();
         upper = CategoryDummy.upperDummy();
         code = StatusCodeDummy.dummy();
+
+        codeRepository.save(code);
+        categoryRepository.save(upper);
+        categoryRepository.save(category);
+        repository.save(product);
     }
 
     @DisplayName("전체 조회 paging 테스트 입니다.")
     @Test
     void productFindAllPageTest(){
-        //given & when
-        codeRepository.save(code);
-        categoryRepository.save(upper);
-        categoryRepository.save(category);
-        repository.save(product);
-
         //then
         PageRequest pageRequest = PageRequest.of(1, 10);
         Page<ProductResponseDto> result = repository.findAllPage(pageRequest);
@@ -73,28 +72,45 @@ class ProductRepositoryTest {
     @DisplayName("다건 조회  테스트 입니다.")
     @Test
     void productsFindCodeTest(){
-        //given & when
-        codeRepository.save(code);
-        categoryRepository.save(upper);
-        categoryRepository.save(category);
-        repository.save(product);
         //then
         List<ProductResponseDto> result
                 = repository.findByCode(product.getProductCode());
-        checkListResponse(result);
+        checkListResponse(result.get(0));
     }
 
     @DisplayName("단건 조회 테스트입니다.")
     @Test
     void productFindOne(){
-        //given & when
-        codeRepository.save(code);
-        categoryRepository.save(upper);
-        categoryRepository.save(category);
-        repository.save(product);
         //then
         ProductResponseDto result = repository.findByProductNo(product.getNo()).get();
+        checkListResponse(result);
+    }
 
+    @DisplayName("가격별로 정렬하기")
+    @Test
+    void productListPriceTest(){
+        //then
+        List<ProductResponseDto> result = repository.findByPrice(0L, product.getAmount());
+        checkListResponse(result.get(0));
+    }
+
+    @DisplayName("카테고리 번호로 조회하기")
+    @Test
+    void productListCategory(){
+        //then
+        List<ProductResponseDto> result = repository.findProductByCategory(product.getCategory().getNo());
+        checkListResponse(result.get(0));
+    }
+
+    @DisplayName("상품 이름으로 조회하기")
+    @Test
+    void productListProductName(){
+        //given
+        List<ProductResponseDto> result = repository.findByProductName(product.getName());
+        checkListResponse(result.get(0));
+    }
+
+    private void checkListResponse(ProductResponseDto result) {
         assertThat(result.getNo()).isEqualTo(product.getNo());
         assertThat(result.getAmount()).isEqualTo(product.getAmount());
         assertThat(result.getName()).isEqualTo(product.getName());
@@ -113,54 +129,5 @@ class ProductRepositoryTest {
         assertThat(result.getImageLink5()).isEqualTo(product.getImageLink5());
         assertThat(result.getExplanation()).isEqualTo(product.getExplanation());
         assertThat(result.getProductCode()).isEqualTo(product.getProductCode());
-    }
-
-    @DisplayName("가격별로 정렬하기")
-    @Test
-    void productListPriceTest(){
-        //given & when
-        codeRepository.save(code);
-        categoryRepository.save(upper);
-        categoryRepository.save(category);
-        repository.save(product);
-
-        //then
-        List<ProductResponseDto> result = repository.findByPrice(0L, product.getAmount());
-        checkListResponse(result);
-    }
-
-    @DisplayName("카테고리 번호로 조회하기")
-    @Test
-    void productListCategory(){
-        //given & when
-        codeRepository.save(code);
-        categoryRepository.save(upper);
-        categoryRepository.save(category);
-        repository.save(product);
-
-        //then
-        List<ProductResponseDto> result = repository.findProductByCategory(product.getCategory().getNo());
-        checkListResponse(result);
-    }
-
-    private void checkListResponse(List<ProductResponseDto> result) {
-        assertThat(result.get(0).getNo()).isEqualTo(product.getNo());
-        assertThat(result.get(0).getAmount()).isEqualTo(product.getAmount());
-        assertThat(result.get(0).getName()).isEqualTo(product.getName());
-        assertThat(result.get(0).getColor()).isEqualTo(product.getColor());
-        assertThat(result.get(0).getManufacturer()).isEqualTo(product.getManufacturer());
-        assertThat(result.get(0).getManufacturerCountry()).isEqualTo(product.getManufacturerCountry());
-        assertThat(result.get(0).getSeller()).isEqualTo(product.getSeller());
-        assertThat(result.get(0).getImporter()).isEqualTo(product.getImporter());
-        assertThat(result.get(0).getShippingInstallationCost()).isEqualTo(product.getShippingInstallationCost());
-        assertThat(result.get(0).getQualityAssuranceStandard()).isEqualTo(product.getQualityAssuranceStandard());
-        assertThat(result.get(0).getStockQuantity()).isEqualTo(product.getStockQuantity());
-        assertThat(result.get(0).getImageLink1()).isEqualTo(product.getImageLink1());
-        assertThat(result.get(0).getImageLink2()).isEqualTo(product.getImageLink2());
-        assertThat(result.get(0).getImageLink3()).isEqualTo(product.getImageLink3());
-        assertThat(result.get(0).getImageLink4()).isEqualTo(product.getImageLink4());
-        assertThat(result.get(0).getImageLink5()).isEqualTo(product.getImageLink5());
-        assertThat(result.get(0).getExplanation()).isEqualTo(product.getExplanation());
-        assertThat(result.get(0).getProductCode()).isEqualTo(product.getProductCode());
     }
 }
