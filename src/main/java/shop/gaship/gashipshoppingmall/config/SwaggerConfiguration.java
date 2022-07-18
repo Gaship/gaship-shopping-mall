@@ -14,11 +14,11 @@ public class SwaggerConfiguration {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("shop.gaship.gashipshoppingmall"))
-                .paths(PathSelectors.any())
-                .build();
+            .apiInfo(apiInfo())
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("shop.gaship.gashipshoppingmall"))
+            .paths(PathSelectors.any())
+            .build();
     }
 
     private ApiInfo apiInfo() {
