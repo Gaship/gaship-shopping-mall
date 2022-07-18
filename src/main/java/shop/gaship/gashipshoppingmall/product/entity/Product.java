@@ -11,30 +11,32 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode
 @Builder
+@AllArgsConstructor
 @Table(name = "products")
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_no")
     Integer no;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_no")
     Category category;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "delivery_type_no")
     StatusCode deliveryType;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sales_status_no")
     StatusCode salesStatus;
+
 
     @NotNull
     String name;
@@ -82,4 +84,8 @@ public class Product {
 
     @NotNull
     String explanation;
+
+    @NotNull
+    String productCode;
+
 }
