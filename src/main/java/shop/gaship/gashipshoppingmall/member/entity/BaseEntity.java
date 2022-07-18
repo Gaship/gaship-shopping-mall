@@ -23,10 +23,10 @@ public class BaseEntity {
     @CreatedDate
     @Column(name = "register_datetime",updatable=false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime registerDatetime;
+    public LocalDateTime registerDatetime;
 
     @LastModifiedDate
     @Column(name = "modified_datetime")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime modifiedDatetime;
+    public LocalDateTime modifiedDatetime;
 }

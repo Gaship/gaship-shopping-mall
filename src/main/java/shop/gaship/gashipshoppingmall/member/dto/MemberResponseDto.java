@@ -1,11 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.dto;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,18 +15,18 @@ import java.time.LocalDateTime;
  */
 @Getter
 public class MemberResponseDto {
-    private String recommendMemberNickname;
-    private String email;
-    private String password;
-    private String phoneNumber;
-    private String name;
-    private LocalDate birthDate;
-    private String nickname;
-    private String gender;
-    private Long accumulatePurchaseAmount;
-    private LocalDate nextRenewalGradeDate;
-    private LocalDateTime registerDatetime;
-    private LocalDateTime modifyDatetime;
+    private final String recommendMemberNickname;
+    private final String email;
+    private final String password;
+    private final String phoneNumber;
+    private final String name;
+    private final LocalDate birthDate;
+    private final String nickname;
+    private final String gender;
+    private final Long accumulatePurchaseAmount;
+    private final LocalDate nextRenewalGradeDate;
+    private final LocalDateTime registerDatetime;
+    private final LocalDateTime modifyDatetime;
 
     /**
      * Instantiates a new Member response dto.

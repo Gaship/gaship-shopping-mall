@@ -1,21 +1,16 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
+import javax.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
-
-import javax.transaction.Transactional;
-import java.util.List;
-
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.service
@@ -33,11 +28,10 @@ import java.util.List;
 public class MemberGradeServiceImpl implements MemberGradeService {
     private final MemberGradeRepository memberGradeRepository;
     private final StatusCodeRepository statusCodeRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
     @Override
-    public void addMemberGrade(MemberGradeRequestDto request) {
+    public void addMemberGrade(MemberGradeRequest request) {
         StatusCode renewalPeriod = statusCodeRepository
                 .findById(1)
                 .orElseThrow(StatusCodeNotFoundException::new);
@@ -53,24 +47,24 @@ public class MemberGradeServiceImpl implements MemberGradeService {
 
     @Transactional
     @Override
-    public void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request) throws MemberGradeNotFoundException {
+    public void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequest request) {
         MemberGrade memberGrade = memberGradeRepository
                 .findById(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
 
-        memberGrade.modify(request);
+        memberGrade.setName(request.getName());
+        memberGrade.setAccumulateAmount(request.getAccumulateAmount());
 
         memberGradeRepository.save(memberGrade);
     }
 
+    @Transactional
     @Override
-    public MemberGradeResponseDto findMemberGrade(Integer memberGradeNo) throws MemberGradeNotFoundException {
-        return memberGradeRepository.getMemberGradeBy(memberGradeNo)
+    public void removeMemberGrade(Integer memberGradeNo) {
+        MemberGrade memberGrade = memberGradeRepository
+                .findById(memberGradeNo)
                 .orElseThrow(MemberGradeNotFoundException::new);
-    }
 
-    @Override
-    public List<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
-        return memberGradeRepository.getMemberGrades(pageable);
+        memberGradeRepository.delete(memberGrade);
     }
 }

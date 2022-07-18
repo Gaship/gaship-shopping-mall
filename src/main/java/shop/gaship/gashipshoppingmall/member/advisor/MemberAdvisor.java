@@ -1,28 +1,34 @@
 package shop.gaship.gashipshoppingmall.member.advisor;
 
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import shop.gaship.gashipshoppingmall.member.advisor.message.ErrorResponse;
-import shop.gaship.gashipshoppingmall.member.controller.MemberController;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
+import shop.gaship.gashipshoppingmall.message.ErrorResponse;
 
 /**
- * member에 관련된 에러가 발생하면 에러를 가로채 대신 응답을 해주는 클래스입니다.
+ * 회원과 관련된 예외가 발생될 시 해당 클래스에서 예외를 처리합니다.
  *
- * @author 최정우
+ * @author 김민수
  * @since 1.0
  */
-@RestControllerAdvice(basePackageClasses = MemberController.class)
+@RestControllerAdvice
+@Slf4j
 public class MemberAdvisor {
-
-    @ExceptionHandler(MemberNotFoundException.class)
-    public ResponseEntity<ErrorResponse> exception(Exception e){
+    /**
+     * 회원과 관련하여 예상된 예외를 처리하는 메서드입니다.
+     *
+     * @param exception 예외 객체입니다.
+     * @return 예외의 메세지가 들어있는 객체를 반환합니다.
+     */
+    @ExceptionHandler({SignUpDenyException.class, MemberNotFoundException.class})
+    public ResponseEntity<ErrorResponse> memberExceptionAdvice(RuntimeException exception) {
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorResponse(e.getMessage()));
+            .badRequest()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(new ErrorResponse(exception.getMessage()));
     }
 }

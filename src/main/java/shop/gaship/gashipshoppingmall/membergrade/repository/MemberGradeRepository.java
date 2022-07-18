@@ -6,14 +6,14 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.repository
  * fileName       : MemberGradeRepository
- * author         : choijungwoo
- * date           : 2022/07/13
+ * author         : semi
+ * date           : 2022/07/09
  * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2022/07/13        choijungwoo       최초 생성
+ * 2022/07/09        semi       최초 생성
  */
-public interface MemberGradeRepository extends JpaRepository<MemberGrade, Integer>, MemberGradeRepositoryCustom {
+public interface MemberGradeRepository
+        extends JpaRepository<MemberGrade, Integer> {
 }
-

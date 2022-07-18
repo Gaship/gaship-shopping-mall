@@ -1,17 +1,12 @@
 package shop.gaship.gashipshoppingmall.membergrade.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
+import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
-
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.controller
@@ -40,7 +35,7 @@ public class MemberGradeRestController {
      * @return response entity
      */
     @PostMapping
-    public ResponseEntity<Void> memberGradeAdd(@RequestBody MemberGradeRequestDto request) {
+    public ResponseEntity<Void> memberGradeAdd(@RequestBody MemberGradeRequest request) {
         memberGradeService.addMemberGrade(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -60,7 +55,7 @@ public class MemberGradeRestController {
      */
     @PutMapping("/{memberGradeNo}")
     public ResponseEntity<Void> memberGradeModify(@PathVariable Integer memberGradeNo,
-                                                  @RequestBody MemberGradeRequestDto request) throws MemberGradeNotFoundException {
+                                                  @RequestBody MemberGradeRequest request) {
         memberGradeService.modifyMemberGrade(memberGradeNo, request);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -70,35 +65,19 @@ public class MemberGradeRestController {
 
     /**
      * .
-     * methodName : memberGradeDetails
+     * methodName : memberGradeRemove
      * author : Semi Kim
-     * description : MemberGrade Detail GetMapping
+     * description : MemberGrade DeleteMapping
      *
      * @param memberGradeNo Integer
      * @return response entity
      */
-    @GetMapping("/{memberGradeNo}")
-    public ResponseEntity<MemberGradeResponseDto>
-        memberGradeDetails(@PathVariable Integer memberGradeNo) throws MemberGradeNotFoundException {
+    @DeleteMapping("/{memberGradeNo}")
+    public ResponseEntity<Void> memberGradeRemove(@PathVariable Integer memberGradeNo) {
+        memberGradeService.removeMemberGrade(memberGradeNo);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(memberGradeService.findMemberGrade(memberGradeNo));
-    }
-
-    /**
-     * .
-     * methodName : memberGradeList
-     * author : Semi Kim
-     * description : MemberGrade List GetMapping
-     *
-     * @param pageable Pageable
-     * @return response entity
-     */
-    @GetMapping
-    public ResponseEntity<List<MemberGradeResponseDto>> memberGradeList(Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(memberGradeService.findMemberGrades(pageable));
+                .build();
     }
 }

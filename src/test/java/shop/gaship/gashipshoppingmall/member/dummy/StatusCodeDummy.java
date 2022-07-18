@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.member.dummy;
 
-import shop.gaship.gashipshoppingmall.member.service.MemberStatus;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**

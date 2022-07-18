@@ -6,13 +6,13 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 import java.util.Optional;
 
 /**
- * tag에 관련된 db 정보를 관리하는 repository입니다.
+ * 회원 테이블에 JPA를 통해서 접근가능한 클래스입니다.
  *
  * @author 최정우
  * @since 1.0
  */
-public interface MemberRepository extends JpaRepository<Member,Integer> {
+public interface MemberRepository extends JpaRepository<Member,Integer>, MemberRepositoryCustom{
     Optional<Member> findByNickname(String recommendMemberNickname);
 
-    boolean existsByNickName(String nickname);
+    boolean existsByNickname(String nickname);
 }

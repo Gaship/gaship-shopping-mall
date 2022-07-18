@@ -5,12 +5,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberAddRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.member.service.MemberStatus;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -46,20 +44,6 @@ public class MemberTestDummy {
     private static final LocalDate nextRenewalGradeDate = LocalDate.now();
     private static final LocalDateTime registerDatetime = LocalDateTime.now();
     private static final LocalDateTime modifyDatetime = LocalDateTime.now();
-
-    public static MemberAddRequestDto memberRegisterRequestDto() {
-
-        return MemberAddRequestDto.builder()
-                .recommendMemberNickname(recommendMemberNickname)
-                .email(email)
-                .password(password)
-                .phoneNumber(phoneNumber)
-                .name(name)
-                .birthDate(birthDate)
-                .nickname(nickname)
-                .gender(gender)
-                .build();
-    }
 
     public static MemberModifyRequestDto memberModifyRequestDto() {
         return MemberModifyRequestDto.builder()
@@ -101,16 +85,15 @@ public class MemberTestDummy {
                     .memberGrades(null)
                     .email("jwoo1016" +i + "@naver.com")
                     .password("qwer1234")
-                    .phoneNumber("010531783" + String.valueOf((i - 1)/10) + String.valueOf((i - 1)%10))
-                            .name("최정우")
-                                    .birthDate(LocalDate.now())
-                                            .nickname(String.valueOf(i))
-                                                    .gender("남")
-                                                            .accumulatePurchaseAmount(0L)
-                                                                    .nextRenewalGradeDate(LocalDate.now())
-                                                                            .registerDatetime(LocalDateTime.now())
-                                                                                    .modifyDatetime(LocalDateTime.now())
-                                                                                            .build();
+                    .phoneNumber("010531783" + (i - 1) / 10 + (i - 1) % 10)
+                    .name("최정우")
+                    .birthDate(LocalDate.now())
+                    .nickname(String.valueOf(i))
+                    .gender("남")
+                    .accumulatePurchaseAmount(0L)
+                    .nextRenewalGradeDate(LocalDate.now())
+                    .build();
+
             list.add(member);
         });
         return list;
@@ -130,7 +113,7 @@ public class MemberTestDummy {
                 .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
                 .nextRenewalGradeDate(member.getNextRenewalGradeDate())
                 .registerDatetime(member.getRegisterDatetime())
-                .modifyDatetime(member.getModifyDatetime())
+                .modifyDatetime(member.getModifiedDatetime())
                 .build();
         Page<Member> page = new PageImpl<>(MemberTestDummy.CreateTestMemberEntityList(),pageable,100);
 
@@ -153,8 +136,6 @@ public class MemberTestDummy {
                 .gender(gender)
                 .accumulatePurchaseAmount(accumulatePurchaseAmount)
                 .nextRenewalGradeDate(nextRenewalGradeDate)
-                .registerDatetime(registerDatetime)
-                .modifyDatetime(modifyDatetime)
                 .build();
     }
 
@@ -174,8 +155,6 @@ public class MemberTestDummy {
                 .gender(gender)
                 .accumulatePurchaseAmount(accumulatePurchaseAmount)
                 .nextRenewalGradeDate(nextRenewalGradeDate)
-                .registerDatetime(registerDatetime)
-                .modifyDatetime(modifyDatetime)
                 .build();
     }
 
@@ -195,8 +174,6 @@ public class MemberTestDummy {
                 .gender(gender)
                 .accumulatePurchaseAmount(accumulatePurchaseAmount)
                 .nextRenewalGradeDate(nextRenewalGradeDate)
-                .registerDatetime(registerDatetime)
-                .modifyDatetime(modifyDatetime)
                 .build();
     }
 

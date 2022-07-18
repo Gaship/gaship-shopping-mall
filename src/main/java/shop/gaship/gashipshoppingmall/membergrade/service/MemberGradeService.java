@@ -1,11 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
-import java.util.List;
-import org.springframework.data.domain.Pageable;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeRequestDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
-
+import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.membergrade.service
@@ -27,7 +22,7 @@ public interface MemberGradeService {
      *
      * @param request MemberGradeRequest
      */
-    void addMemberGrade(MemberGradeRequestDto request);
+    void addMemberGrade(MemberGradeRequest request);
 
     /**
      * .
@@ -38,7 +33,7 @@ public interface MemberGradeService {
      * @param memberGradeNo Integer
      * @param request       MemberGradeRequest
      */
-    void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequestDto request) throws MemberGradeNotFoundException;
+    void modifyMemberGrade(Integer memberGradeNo, MemberGradeRequest request);
 
     /**
      * .
@@ -48,7 +43,5 @@ public interface MemberGradeService {
      *
      * @param memberGradeNo Integer
      */
-    MemberGradeResponseDto findMemberGrade(Integer memberGradeNo) throws MemberGradeNotFoundException;
-
-    List<MemberGradeResponseDto> findMemberGrades(Pageable pageable);
+    void removeMemberGrade(Integer memberGradeNo);
 }
