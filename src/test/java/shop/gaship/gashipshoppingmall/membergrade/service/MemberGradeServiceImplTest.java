@@ -81,7 +81,7 @@ class MemberGradeServiceImplTest {
         MemberGrade memberGrade = MemberGradeDummy.defaultDummy(memberGradeAddRequestDto, renewalPeriod);
 
         // mocking
-        when(statusCodeRepository.findById(any()))
+        when(statusCodeRepository.findByGroupCodeName(any()))
                 .thenReturn(Optional.of(renewalPeriod));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
                 .thenReturn(false);
@@ -94,7 +94,7 @@ class MemberGradeServiceImplTest {
         memberGradeService.addMemberGrade(memberGradeAddRequestDto);
 
         // then
-        verify(statusCodeRepository).findById(any());
+        verify(statusCodeRepository).findByGroupCodeName(any());
         verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
         verify(memberGradeRepository).existsByIsDefaultIsTrue();
         verify(memberGradeRepository).save(any());
@@ -109,8 +109,8 @@ class MemberGradeServiceImplTest {
         memberGradeAddRequestDto.setIsDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
 
-        // mocking
-        when(statusCodeRepository.findById(any()))
+        // stubbing
+        when(statusCodeRepository.findByGroupCodeName(any()))
                 .thenReturn(Optional.of(renewalPeriod));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
                 .thenReturn(true);
@@ -120,7 +120,7 @@ class MemberGradeServiceImplTest {
                 .isInstanceOf(AccumulateAmountIsOverlap.class)
                 .hasMessageContaining("동일한 기준누적금액");
 
-        verify(statusCodeRepository).findById(any());
+        verify(statusCodeRepository).findByGroupCodeName(any());
         verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
         verify(memberGradeRepository, never()).existsByIsDefaultIsTrue();
         verify(memberGradeRepository, never()).save(any());
@@ -136,8 +136,8 @@ class MemberGradeServiceImplTest {
         memberGradeAddRequestDto.setIsDefault(true);
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
 
-        // mocking
-        when(statusCodeRepository.findById(any()))
+        // stubbing
+        when(statusCodeRepository.findByGroupCodeName(any()))
                 .thenReturn(Optional.of(renewalPeriod));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
                 .thenReturn(false);
@@ -149,7 +149,7 @@ class MemberGradeServiceImplTest {
                 .isInstanceOf(DefaultMemberGradeIsExist.class)
                 .hasMessageContaining("기본 회원등급");
 
-        verify(statusCodeRepository).findById(any());
+        verify(statusCodeRepository).findByGroupCodeName(any());
         verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
         verify(memberGradeRepository).existsByIsDefaultIsTrue();
         verify(memberGradeRepository, never()).save(any());
@@ -166,8 +166,8 @@ class MemberGradeServiceImplTest {
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // mocking
-        when(statusCodeRepository.findById(any()))
+        // stubbing
+        when(statusCodeRepository.findByGroupCodeName(any()))
                 .thenReturn(Optional.of(renewalPeriod));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
                 .thenReturn(false);
@@ -178,7 +178,7 @@ class MemberGradeServiceImplTest {
         memberGradeService.addMemberGrade(memberGradeAddRequestDto);
 
         // then
-        verify(statusCodeRepository).findById(any());
+        verify(statusCodeRepository).findByGroupCodeName(any());
         verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
         verify(memberGradeRepository).save(any());
         verify(memberGradeRepository, never()).existsByIsDefaultIsTrue();
@@ -187,15 +187,15 @@ class MemberGradeServiceImplTest {
     @DisplayName("등급 추가시 갱신가긴에 대한 StatusCode 가 존재하지 않는 경우")
     @Test
     void addMemberGrade_whenRenewalPeriodIsEmpty_throwStatusCodeNotFoundException() {
-        // mocking
-        when(statusCodeRepository.findById(any())).thenReturn(Optional.empty());
+        // stubbing
+        when(statusCodeRepository.findByGroupCodeName(any())).thenReturn(Optional.empty());
 
         // when&then
         assertThatThrownBy(() -> memberGradeService
                 .addMemberGrade(memberGradeAddRequestDto))
                 .isInstanceOf(StatusCodeNotFoundException.class);
 
-        verify(statusCodeRepository).findById(any());
+        verify(statusCodeRepository).findByGroupCodeName(any());
         verify(memberGradeRepository, never()).existsByAccumulateAmountEquals(any());
         verify(memberGradeRepository, never()).existsByIsDefaultIsTrue();
         verify(memberGradeRepository, never()).save(any());
@@ -215,7 +215,7 @@ class MemberGradeServiceImplTest {
         memberGradeAddRequestDto.setName("새싹");
         MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // mocking
+        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(memberGrade));
         when(memberGradeRepository.save(any()))
@@ -243,7 +243,7 @@ class MemberGradeServiceImplTest {
 
         MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // mocking
+        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(memberGrade));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
@@ -267,7 +267,7 @@ class MemberGradeServiceImplTest {
         // given
         MemberGradeModifyRequestDto modifyRequestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 0L);
 
-        // mocking
+        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.empty());
 
@@ -291,7 +291,7 @@ class MemberGradeServiceImplTest {
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // mocking
+        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(testMemberGrade));
         when(memberRepository.findByMemberGrades(any()))
@@ -316,7 +316,7 @@ class MemberGradeServiceImplTest {
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade testMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        // mocking
+        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(testMemberGrade));
         when(memberRepository.findByMemberGrades(any()))
@@ -335,7 +335,7 @@ class MemberGradeServiceImplTest {
             "등급이 존재하지 않는 경우")
     @Test
     void removeMemberGrade_whenMemberGradeIsEmpty_throwExp() {
-        // mocking
+        // stubbing
         when(memberGradeRepository.findById(any())).thenReturn(Optional.empty());
 
         // when&then
@@ -359,7 +359,7 @@ class MemberGradeServiceImplTest {
 
         ReflectionTestUtils.setField(testMemberGrade, "no", testMemberGradeNo);
 
-        // mocking
+        // stubbing
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(testMemberGrade));
 
@@ -378,7 +378,7 @@ class MemberGradeServiceImplTest {
         // given
         MemberGradeResponseDto testMemberGradeResponseDto = MemberGradeDtoDummy.responseDummy("일반", 0L, "12개월");
 
-        // mocking
+        // stubbing
         when(memberGradeRepository.getMemberGradeBy(any()))
                 .thenReturn(Optional.of(testMemberGradeResponseDto));
 

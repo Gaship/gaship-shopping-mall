@@ -63,8 +63,7 @@ class MemberGradeRestControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addRequestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(status().isCreated());
 
         verify(memberGradeService).addMemberGrade(any());
     }
@@ -93,8 +92,7 @@ class MemberGradeRestControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(status().isOk());
 
         verify(memberGradeService).modifyMemberGrade(any());
     }

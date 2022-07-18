@@ -15,6 +15,7 @@ import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeReposito
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.RenewalPeriod;
 
 
 /**
@@ -52,7 +53,7 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     @Override
     public void addMemberGrade(MemberGradeAddRequestDto request) {
         StatusCode renewalPeriod = statusCodeRepository
-                .findById(1)
+                .findByGroupCodeName(RenewalPeriod.GROUP)
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         checkOverlapAccumulateAmount(request.getAccumulateAmount());

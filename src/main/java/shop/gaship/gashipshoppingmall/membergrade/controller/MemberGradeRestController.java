@@ -47,7 +47,6 @@ public class MemberGradeRestController {
         memberGradeService.addMemberGrade(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
 
@@ -66,7 +65,6 @@ public class MemberGradeRestController {
         memberGradeService.modifyMemberGrade(request);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
 
@@ -84,7 +82,6 @@ public class MemberGradeRestController {
         memberGradeService.removeMemberGrade(memberGradeNo);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
 
