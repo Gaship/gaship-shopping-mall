@@ -8,15 +8,10 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.request
- * fileName       : MemberGradeAddRequest
- * author         : Semi Kim
- * date           : 2022/07/09
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/09        Semi Kim       최초 생성
+ * 회원등급 등록 요청 Data Transfer Object.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @Getter
 @Setter

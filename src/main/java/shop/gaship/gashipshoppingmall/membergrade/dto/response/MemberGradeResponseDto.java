@@ -4,15 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.dto
- * fileName       : MemberGradeDto
- * author         : Semi Kim
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        Semi Kim       최초 생성
+ * 회원등급 응답 Data Transfer Object.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @Getter
 @Setter

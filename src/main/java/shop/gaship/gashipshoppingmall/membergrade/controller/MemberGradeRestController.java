@@ -14,17 +14,11 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
 
-
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.controller
- * fileName       : MemberGradeRestController
- * author         : Semi Kim
- * date           : 2022/07/09
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/09        Semi Kim       최초 생성
+ * 회원등급 Rest 컨트롤러.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @RequiredArgsConstructor
 @RestController
@@ -33,13 +27,12 @@ public class MemberGradeRestController {
     private final MemberGradeService memberGradeService;
 
     /**
-     * .
-     * methodName : memberGradeAdd
-     * author : Semi Kim
-     * description : 회원등급 등록을 위한 RestController 메서드
+     * 회원등급 POST Mapping
+     * 회원등급 등록을 위한 RestController 메서드.
      *
-     * @param request MemberGradeRequest
-     * @return responseEntity
+     * @param request 등록할 회원등급 정보
+     * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
+     * @author 김세미
      */
     @PostMapping
     public ResponseEntity<Void>
@@ -51,13 +44,12 @@ public class MemberGradeRestController {
     }
 
     /**
-     * .
-     * methodName : memberGradeModify
-     * author : Semi Kim
-     * description : 회원등급 수정을 위한 RestController 메서드
+     * 회원등급 PUT Mapping
+     * 회원등급 수정을 위한 RestController 메서드.
      *
-     * @param request       MemberGradeModifyRequestDto
-     * @return responseEntity
+     * @param request MemberGradeModifyRequestDto
+     * @return response entity
+     * @author 김세미
      */
     @PutMapping
     public ResponseEntity<Void>
@@ -69,13 +61,12 @@ public class MemberGradeRestController {
     }
 
     /**
-     * .
-     * methodName : memberGradeRemove
-     * author : Semi Kim
-     * description : 회원등급 삭제을 위한 RestController 메서드
+     * 회원등급 DELETE Mapping
+     * 회원등급 삭제을 위한 RestController 메서드.
      *
      * @param memberGradeNo 삭제하려는 회원등급 식별 번호 (Integer)
      * @return responseEntity
+     * @author 김세미
      */
     @DeleteMapping("/{memberGradeNo}")
     public ResponseEntity<Void> memberGradeRemove(@PathVariable Integer memberGradeNo) {
@@ -86,13 +77,12 @@ public class MemberGradeRestController {
     }
 
     /**
-     * .
-     * methodName : memberGradeDetails
-     * author : Semi Kim
-     * description : 회원등급 단건조회를 위한 RestController 메서드
+     * 회원등급 GET Mapping
+     * 회원등급 단건조회를 위한 RestController 메서드.
      *
      * @param memberGradeNo 단건조회하려는 회원등급 식별 번호 (Integer)
      * @return responseEntity
+     * @author 김세미
      */
     @GetMapping("/{memberGradeNo}")
     public ResponseEntity<MemberGradeResponseDto>
@@ -104,13 +94,12 @@ public class MemberGradeRestController {
     }
 
     /**
-     * .
-     * methodName : memberGradeList
-     * author : Semi Kim
-     * description : pagination 이 적용된 회원등급 다건 조회를 위한 RestController 메서드
+     * 회원등급 GET Mapping
+     * pagination 이 적용된 회원등급 다건 조회를 위한 RestController 메서드.
      *
-     * @param pageable Pageable
+     * @param pageable page 와 size
      * @return responseEntity
+     * @author 김세미
      */
     @GetMapping
     public ResponseEntity<PageResponseDto<MemberGradeResponseDto>>

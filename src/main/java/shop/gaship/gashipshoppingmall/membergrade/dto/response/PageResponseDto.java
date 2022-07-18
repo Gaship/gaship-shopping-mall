@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 /**
  * 목록 조회 반환 타입으로 사용되는 page 정보와 data 를 담은 Data Transfer Object.
  *
+ * @param <T> the type parameter
  * @author : 김세미
  * @since 1.0
  */
@@ -33,6 +34,11 @@ public class PageResponseDto<T> {
     //페이지 번호  목록
     private List<Integer> pageList;
 
+    /**
+     * Instantiates a new Page response dto.
+     *
+     * @param result the result
+     */
     public PageResponseDto(Page<T> result) {
 
         dtoList = result.toList();

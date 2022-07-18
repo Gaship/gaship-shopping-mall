@@ -2,23 +2,16 @@ package shop.gaship.gashipshoppingmall.membergrade.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
 import lombok.*;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
-
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.entity
- * fileName       : MemberGrade
- * author         : semi
- * date           : 2022/07/09
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/09        semi       최초 생성
+ * 회원등급 Entity class.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @NoArgsConstructor
 @Getter
@@ -43,13 +36,6 @@ public class MemberGrade {
     @Column(name = "is_default", nullable = false)
     private boolean isDefault;
 
-    /**
-     * Instantiates a new Member grade.
-     *
-     * @param renewalPeriod         the renewalPeriod
-     * @param memberGradeAddRequestDto the memberGradeRequestDto
-     * @param isDefault             the isDefault
-     */
     @Builder
     private MemberGrade(StatusCode renewalPeriod,
                         MemberGradeAddRequestDto memberGradeAddRequestDto,
@@ -60,40 +46,37 @@ public class MemberGrade {
         this.isDefault = isDefault;
     }
 
-    /**.
-     * methodName : createDefault
-     * author : Semi Kim
-     * description : 회원가입 및 기본 등급에 사용되는 회원 등급 생성시 사용되는 메서드
+    /**
+     * 회원가입 및 기본 등급에 사용되는 회원 등급 생성시 사용되는 메서드.
      *
-     * @param renewalPeriod 회원등급 갱신기간 관련 StatusCode
-     * @param memberGradeAddRequestDto MemberGradeRequestDto
-     * @return memberGrade MemberGrade
+     * @param renewalPeriod 갱신기간 StatusCode
+     * @param memberGradeAddRequestDto 회원등급 등록 요청 dto
+     * @return memberGrade
+     * @author 김세미
      */
     public static MemberGrade createDefault(StatusCode renewalPeriod,
                                             MemberGradeAddRequestDto memberGradeAddRequestDto) {
         return new MemberGrade(renewalPeriod, memberGradeAddRequestDto, true);
     }
 
-    /**.
-     * methodName : create
-     * author : Semi Kim
-     * description : 기본 등급 이외의 등급 생성시 사용되는 메서드
+    /**
+     * 기본 등급 이외의 등급 생성시 사용되는 메서드.
      *
-     * @param renewalPeriod 회원등급 갱신기간 관련 StatusCode
-     * @param memberGradeAddRequestDto MemberGradeRequestDto
-     * @return member grade
+     * @param renewalPeriod 갱신기간 StatusCode
+     * @param memberGradeAddRequestDto 회원등급 등록 요청 dto
+     * @return memberGrade
+     * @author 김세미
      */
     public static MemberGrade create(StatusCode renewalPeriod,
                                      MemberGradeAddRequestDto memberGradeAddRequestDto) {
         return new MemberGrade(renewalPeriod, memberGradeAddRequestDto, false);
     }
 
-    /**.
-     * methodName : modifyDetails
-     * author : Semi Kim
-     * description : 회원등급의 세부 내용(회원등급명, 기준누적금액) 수정시 사용되는 메서드
+    /**
+     * 회원등급의 세부 내용(회원등급명, 기준누적금액) 수정시 사용되는 메서드.
      *
-     * @param modifyRequestDto MemberGradeModifyRequestDto
+     * @param modifyRequestDto 회원등급 수정 요청 dto
+     * @author 김세미
      */
     public void modifyDetails(MemberGradeModifyRequestDto modifyRequestDto) {
         this.name = modifyRequestDto.getName();

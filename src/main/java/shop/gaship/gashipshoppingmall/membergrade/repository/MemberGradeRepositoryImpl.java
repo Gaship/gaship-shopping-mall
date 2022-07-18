@@ -13,27 +13,18 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.entity.QMemberGrade;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.repository
- * fileName       : MemberGradeRepositoryImpl
- * author         : Semi Kim
- * date           : 2022/07/11
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/11        Semi Kim       최초 생성
+ * 회원등급 Custom Repository 구현체.
+ *
+ * @author : 김세미
+ * @since 1.0
+ * @see shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepositoryCustom
+ * @see org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
  */
 public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
         implements MemberGradeRepositoryCustom {
     public MemberGradeRepositoryImpl() {
         super(MemberGrade.class);
     }
-    /**
-     * Gets member grade by.
-     *
-     * @param memberGradeNo 단건 조회하려는 회원등급 식별 번호 (Integer)
-     * @return the member grade by
-     */
 
     @Override
     public Optional<MemberGradeResponseDto> getMemberGradeBy(Integer memberGradeNo) {
@@ -49,12 +40,6 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
                 .fetchOne());
     }
 
-    /**
-     * Gets member grades.
-     *
-     * @param pageable the pageable
-     * @return the member grades
-     */
     @Override
     public Page<MemberGradeResponseDto> getMemberGrades(Pageable pageable) {
         QMemberGrade memberGrade = QMemberGrade.memberGrade;

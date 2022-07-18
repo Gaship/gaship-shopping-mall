@@ -9,19 +9,21 @@ import shop.gaship.gashipshoppingmall.membergrade.advisor.message.ErrorResponse;
 import shop.gaship.gashipshoppingmall.membergrade.controller.MemberGradeRestController;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.advisor
- * fileName       : MemberGradeAdvisor
- * author         : Semi Kim
- * date           : 2022/07/15
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/15        Semi Kim       최초 생성
+ * memberGrade 관련 예외처리.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 @RestControllerAdvice(basePackageClasses = MemberGradeRestController.class)
 public class MemberGradeAdvisor {
 
+    /**
+     * 예외처리 담당 ExceptionHandler.
+     *
+     * @param e Exception
+     * @return response entity
+     * @author 김세미
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {
         return ResponseEntity
