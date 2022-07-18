@@ -46,7 +46,7 @@ class MemberRepositoryTest {
     void saveAndCheck() {
         entityManager.persist(memberDummy.getStatus());
         entityManager.persist(memberDummy.getGrade());
-
+        entityManager.persist(memberDummy.getUserAuthorityNo());
         Member savedDummy = memberRepository.save(memberDummy);
         Member member = memberRepository.findById(savedDummy.getMemberNo()).orElse(null);
 
@@ -59,6 +59,7 @@ class MemberRepositoryTest {
         // 임의의 멤버 한명 저장
         entityManager.persist(memberDummy.getStatus());
         entityManager.persist(memberDummy.getGrade());
+        entityManager.persist(memberDummy.getUserAuthorityNo());
         Member cachedMember = memberRepository.save(memberDummy);
 
         Member member = memberRepository.findByEmail(memberDummy.getEmail())
@@ -82,6 +83,7 @@ class MemberRepositoryTest {
         // 임의의 멤버 한명 저장
         entityManager.persist(memberDummy.getStatus());
         entityManager.persist(memberDummy.getGrade());
+        entityManager.persist(memberDummy.getUserAuthorityNo());
         Member cachedMember = memberRepository.save(memberDummy);
 
         Member member = memberRepository.findByNickname(memberDummy.getNickname())
@@ -96,6 +98,7 @@ class MemberRepositoryTest {
     void findSignInUserDetailTest() {
         entityManager.persist(memberDummy.getStatus());
         entityManager.persist(memberDummy.getGrade());
+        entityManager.persist(memberDummy.getUserAuthorityNo());
         Member cachedMember = memberRepository.save(memberDummy);
 
         SignInUserDetailsDto userDetailsDto = memberRepository.findSignInUserDetail("example@nhn.com")
@@ -105,6 +108,6 @@ class MemberRepositoryTest {
         assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(cachedMember.getMemberNo());
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(cachedMember.getPassword());
         assertThat(userDetailsDto.getAuthorities())
-            .isEqualTo(List.of(cachedMember.getGrade().getName()));
+            .isEqualTo(List.of(cachedMember.getUserAuthorityNo().getStatusCodeName()));
     }
 }

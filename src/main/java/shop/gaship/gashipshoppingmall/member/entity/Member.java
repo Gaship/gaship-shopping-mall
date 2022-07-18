@@ -47,6 +47,10 @@ public class Member {
     @JoinColumn(name = "member_grade_no", nullable = false)
     private MemberGrade grade;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_authority_no", nullable = false)
+    private StatusCode userAuthorityNo;
+
     @Column(unique = true)
     private String email;
 
