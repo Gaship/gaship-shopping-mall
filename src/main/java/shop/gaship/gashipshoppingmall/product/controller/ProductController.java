@@ -89,4 +89,21 @@ public class ProductController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(service.findProductByPrice(minAmount, maxAmount));
     }
+
+    /**
+     * 카테고리 번호를 통해 전체상품들을 조회하는 메서드입니다.
+     *
+     * @param categoryNo 조회할 카테고리 번호가들어간다.
+     * @return response entity 조회된 상품들이 반환됩니다.
+     * @author 유호철
+     */
+    @GetMapping("/category/{categoryNo}")
+    public ResponseEntity<List<ProductResponseDto>> productCategoryList(
+            @PathVariable("categoryNo") Integer categoryNo) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findProductByCategory(categoryNo));
+
+    }
 }

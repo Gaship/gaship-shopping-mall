@@ -51,4 +51,13 @@ public interface ProductService {
      * @author 유호철
      */
     List<ProductResponseDto> findProductByPrice(Long min, Long max);
+
+    /**
+     * 카테고리를 통해 알맞은 상품을 조회하는 메서드입니다.
+     *
+     * @param no 카테고리 no 가 입력이된다.
+     * @return list 같은 카테고리의 no 를 가진 제품들이 반환된다.
+     * @author 유호철
+     */
+    List<ProductResponseDto> findProductByCategory(Integer no);
 }

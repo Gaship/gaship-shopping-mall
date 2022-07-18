@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.product.repository.impl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.QBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -32,26 +33,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
 
         return from(product)
                 .where(product.productCode.eq(productCode))
-                .select(Projections.bean(ProductResponseDto.class,
-                        product.no,
-                        product.name,
-                        product.amount,
-                        product.manufacturer,
-                        product.manufacturerCountry,
-                        product.seller,
-                        product.importer,
-                        product.shippingInstallationCost,
-                        product.qualityAssuranceStandard,
-                        product.color,
-                        product.stockQuantity,
-                        product.imageLink1,
-                        product.imageLink2,
-                        product.imageLink3,
-                        product.imageLink4,
-                        product.imageLink5,
-                        product.explanation,
-                        product.productCode,
-                        product.registerDatetime))
+                .select(getProduct(product))
                 .fetch();
     }
 
@@ -60,25 +42,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         QProduct product = QProduct.product;
 
         QueryResults<ProductResponseDto> result = from(product)
-                .select(Projections.bean(ProductResponseDto.class,
-                        product.no,
-                        product.name,
-                        product.amount,
-                        product.manufacturer,
-                        product.manufacturerCountry,
-                        product.seller,
-                        product.importer,
-                        product.shippingInstallationCost,
-                        product.qualityAssuranceStandard,
-                        product.color,
-                        product.stockQuantity,
-                        product.imageLink1,
-                        product.imageLink2,
-                        product.imageLink3,
-                        product.imageLink4,
-                        product.imageLink5,
-                        product.explanation,
-                        product.productCode))
+                .select(getProduct(product))
                 .orderBy(product.registerDatetime.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -93,26 +57,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
 
         return Optional.of(from(product)
                 .where(product.no.eq(productNo))
-                .select(Projections.bean(ProductResponseDto.class,
-                        product.no,
-                        product.name,
-                        product.amount,
-                        product.manufacturer,
-                        product.manufacturerCountry,
-                        product.seller,
-                        product.importer,
-                        product.shippingInstallationCost,
-                        product.qualityAssuranceStandard,
-                        product.color,
-                        product.stockQuantity,
-                        product.imageLink1,
-                        product.imageLink2,
-                        product.imageLink3,
-                        product.imageLink4,
-                        product.imageLink5,
-                        product.explanation,
-                        product.productCode,
-                        product.registerDatetime))
+                .select(getProduct(product))
                 .fetchOne());
     }
 
@@ -123,27 +68,43 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
 
         return from(product)
                 .where(product.amount.between(minAmount, maxAmount))
-                .select(Projections.bean(ProductResponseDto.class,
-                        product.no,
-                        product.name,
-                        product.amount,
-                        product.manufacturer,
-                        product.manufacturerCountry,
-                        product.seller,
-                        product.importer,
-                        product.shippingInstallationCost,
-                        product.qualityAssuranceStandard,
-                        product.color,
-                        product.stockQuantity,
-                        product.imageLink1,
-                        product.imageLink2,
-                        product.imageLink3,
-                        product.imageLink4,
-                        product.imageLink5,
-                        product.explanation,
-                        product.productCode,
-                        product.registerDatetime))
+                .select(getProduct(product))
                 .orderBy(product.amount.asc())
                 .fetch();
+    }
+
+
+
+    @Override
+    public List<ProductResponseDto> findProductByCategory(Integer categoryNo) {
+        QProduct product = QProduct.product;
+
+        return from(product)
+                .where(product.category.no.eq(categoryNo))
+                .select(getProduct(product))
+                .fetch();
+    }
+
+    private QBean<ProductResponseDto> getProduct(QProduct product) {
+        return Projections.bean(ProductResponseDto.class,
+                product.no,
+                product.name,
+                product.amount,
+                product.manufacturer,
+                product.manufacturerCountry,
+                product.seller,
+                product.importer,
+                product.shippingInstallationCost,
+                product.qualityAssuranceStandard,
+                product.color,
+                product.stockQuantity,
+                product.imageLink1,
+                product.imageLink2,
+                product.imageLink3,
+                product.imageLink4,
+                product.imageLink5,
+                product.explanation,
+                product.productCode,
+                product.registerDatetime);
     }
 }

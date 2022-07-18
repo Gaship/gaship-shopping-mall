@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
+import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public List<ProductResponseDto> findProductByCode(String productCode) {
@@ -41,5 +44,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponseDto> findProductByPrice(Long min, Long max) {
         return repository.findByPrice(min, max);
+    }
+
+    @Override
+    public List<ProductResponseDto> findProductByCategory(Integer no) {
+        if (categoryRepository.findById(no).isEmpty()) {
+            throw new CategoryNotFoundException();
+        }
+
+        return repository.findProductByCategory(no);
     }
 }

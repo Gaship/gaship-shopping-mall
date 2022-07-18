@@ -51,4 +51,13 @@ public interface ProductRepositoryCustom {
      * @author 유호철
      */
     List<ProductResponseDto> findByPrice(Long minAmount, Long maxAmount);
+
+    /**
+     * 카테고리 번호를 기준으로 조회하는 메서드입니다.
+     *
+     * @param categoryNo 조회하기위한 카테고리 번호
+     * @return list 조회된 상품들의 정보가 반환됩니다.
+     * @author 유호철
+     */
+    List<ProductResponseDto> findProductByCategory(Integer categoryNo);
 }
