@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.product.service;
 
 import org.springframework.data.domain.Page;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
+import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 
 import java.util.List;
 
@@ -31,4 +32,23 @@ public interface ProductService {
      */
     Page<ProductResponseDto> findProducts(int page, int size);
 
+    /**
+     * 제품하나를 조회하기위한 메서드입니다.
+     *
+     * @param no 조회할 제품번호입니다.
+     * @return product response dto 제품의정보가담긴 객체로 반환됩니다.
+     * @throws ProductNotFoundException 제품이존재하지않을경우 예외가 발생합니다.
+     * @author 유호철
+     */
+    ProductResponseDto findProduct(Integer no);
+
+    /**
+     * 최대, 최소 금액을 통해 알맞는 상품을 조회하는 메서드입니다.
+     *
+     * @param min 최소금액입니다.
+     * @param max 최대금액입니다.
+     * @return list
+     * @author 유호철
+     */
+    List<ProductResponseDto> findProductByPrice(Long min, Long max);
 }

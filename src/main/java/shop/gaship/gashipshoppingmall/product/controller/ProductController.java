@@ -5,10 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
 
@@ -57,5 +54,39 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(service.findProducts(page, size));
+    }
+
+    /**
+     * get 요청을 받아서 제품의 정보를 얻기위한 메서드입니다.
+     *
+     * @param productNo 제품의 번호가 기입됩니다.
+     * @return response entity 검색된 제품의 정보가 반환됩니다.
+     * @author 유호철
+     */
+    @GetMapping("/{productNo}")
+    public ResponseEntity<ProductResponseDto> productDetails(
+            @PathVariable("productNo") Integer productNo) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findProduct(productNo));
+    }
+
+    /**
+     * 금액으로 제품들을 정렬하기위한 메서드입니다.
+     *
+     * @param minAmount 최소금액입니다.
+     * @param maxAmount 최대금액입니다.
+     * @return response entity 정렬된 제품들이반환됩니다.
+     * @author 유호철
+     */
+    @GetMapping("/price")
+    public ResponseEntity<List<ProductResponseDto>> productAmountList(
+            @RequestParam("min") Long minAmount,
+            @RequestParam("max") Long maxAmount) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findProductByPrice(minAmount, maxAmount));
     }
 }

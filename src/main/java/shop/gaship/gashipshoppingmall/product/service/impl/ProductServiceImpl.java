@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
+import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
 
@@ -30,5 +31,15 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductResponseDto> findProducts(int page, int size) {
         PageRequest request = PageRequest.of(page, size);
         return repository.findAllPage(request);
+    }
+
+    @Override
+    public ProductResponseDto findProduct(Integer no) {
+        return repository.findByProductNo(no).orElseThrow(ProductNotFoundException::new);
+    }
+
+    @Override
+    public List<ProductResponseDto> findProductByPrice(Long min, Long max) {
+        return repository.findByPrice(min, max);
     }
 }

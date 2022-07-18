@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * QueryDsl 을 하기위한 인터페이스 클래스입니다.
@@ -25,9 +26,29 @@ public interface ProductRepositoryCustom {
     /**
      * 페이징된 제품들을 조회하기위해 만든 메서드입니다.
      *
-     * pageable 페이징 하기위한 객체
+     * @param pageable 페이징 하기위한 객체입니다.
+     *
      * @return page 페이징된 제품들이 반환됩니다.
      * @author 유호철
      */
     Page<ProductResponseDto> findAllPage(Pageable pageable);
+
+    /**
+     * 제품번호를 통해 제품을 조회하기 위한 메서드입니다.
+     *
+     * @param productNo 조회하기위한 제품번호입니다.
+     * @return optional 제품값을 optional 로 반환합니다.
+     * @author 유호철
+     */
+    Optional<ProductResponseDto> findByProductNo(Integer productNo);
+
+    /**
+     * 금액을 기준으로 상품을 조회하는 메서드입니다.
+     *
+     * @param minAmount 최소금액입니다.
+     * @param maxAmount 최대금액입니다.
+     * @return list 조회된 상품들이 반환됩니다.
+     * @author 유호철
+     */
+    List<ProductResponseDto> findByPrice(Long minAmount, Long maxAmount);
 }
