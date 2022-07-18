@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponseDto;
 import shop.gaship.gashipshoppingmall.statuscode.service.StatusCodeService;
 
-
 /**.
  * 상테코드 Rest 컨트롤러
  *
@@ -29,7 +28,7 @@ public class StatusCodeRestController {
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 OK.
      * @author 김세미
      */
-    @PutMapping("/renewal")
+    @PutMapping("/renewal/period")
     public ResponseEntity<Void> renewalPeriodModify(@RequestParam String period) {
         statusCodeService.modifyRenewalPeriod(period);
 

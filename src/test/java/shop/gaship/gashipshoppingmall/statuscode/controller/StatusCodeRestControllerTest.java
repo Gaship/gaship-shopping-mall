@@ -1,14 +1,17 @@
 package shop.gaship.gashipshoppingmall.statuscode.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import shop.gaship.gashipshoppingmall.statuscode.advisor.StatusCodeAdvisor;
 import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponseDto;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeResponseDtoDummy;
+import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.service.StatusCodeService;
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 
@@ -16,10 +19,11 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -31,21 +35,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(StatusCodeRestController.class)
 class StatusCodeRestControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private StatusCodeService statusCodeService;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(new StatusCodeRestController(statusCodeService))
+                .setControllerAdvice(StatusCodeAdvisor.class)
+                .build();
+    }
 
     @DisplayName("회원등급 갱신기간 상태코드값 수정하는 경우")
     @Test
     void renewalPeriodModify() throws Exception {
         String period = "12";
 
-        mockMvc.perform(put("/statuscodes/renewal")
+        mockMvc.perform(put("/statuscodes/renewal/period")
                         .param("period", period)
                         .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
+                    .andExpect(status().isOk())
+                .andDo(print());
 
         verify(statusCodeService).modifyRenewalPeriod(any());
     }
@@ -66,5 +77,26 @@ class StatusCodeRestControllerTest {
                 .andExpect(jsonPath("$.size()",equalTo(4)))
                 .andExpect(jsonPath("$[0].statusCodeName", equalTo(SalesStatus.SALE.getValue())))
                 .andExpect(jsonPath("$[0].priority", equalTo(1)));
+    }
+
+    @DisplayName("Exception Handler 테스트")
+    @Test
+    void exceptionHandler_whenThrowStatusCodeNotFoundException() throws Exception{
+        String period = "12";
+        StatusCodeNotFoundException statusCodeNotFoundException = new StatusCodeNotFoundException();
+        String errorMessage = statusCodeNotFoundException.getMessage();
+
+        willThrow(new StatusCodeNotFoundException()).given(statusCodeService).modifyRenewalPeriod(period);
+
+        mockMvc.perform(put("/statuscodes/renewal/period")
+                        .param("period", period)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", equalTo(errorMessage)))
+                .andDo(print());
+
+        verify(statusCodeService).modifyRenewalPeriod(any());
     }
 }
