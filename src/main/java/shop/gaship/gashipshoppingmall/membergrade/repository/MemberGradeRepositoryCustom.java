@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.membergrade.repository;
 
-import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 
@@ -19,5 +19,5 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeRespon
 public interface MemberGradeRepositoryCustom {
     Optional<MemberGradeResponseDto> getMemberGradeBy(Integer memberGradeNo);
 
-    List<MemberGradeResponseDto> getMemberGrades(Pageable pageable);
+    Page<MemberGradeResponseDto> getMemberGrades(Pageable pageable);
 }

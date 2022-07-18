@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.member.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
@@ -20,11 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * -----------------------------------------------------------
  * 2022/07/11        choijungwoo       최초 생성
  */
-@SpringBootTest
+@WebMvcTest(MemberController.class)
 class MemberControllerTest {
-
-    @Autowired
-    MemberController memberController;
 
     @MockBean
     MemberService memberService;

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
@@ -155,10 +156,13 @@ class MemberGradeRepositoryTest {
         Pageable pageable = PageRequest.of(1, 3);
 
         // when
-        List<MemberGradeResponseDto> result = memberGradeRepository.getMemberGrades(pageable);
+        Page<MemberGradeResponseDto> result = memberGradeRepository.getMemberGrades(pageable);
 
         // then
-        assertThat(result).hasSize(2);
+        assertThat(result).isNotEmpty();
+        assertThat(result.getTotalElements()).isEqualTo(5);
+        assertThat(result.getTotalPages()).isEqualTo(2);
+        assertThat(result.getContent().get(0).getName()).isEqualTo("일반");
     }
 
     @Order(6)

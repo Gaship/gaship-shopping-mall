@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.membergrade.controller;
 
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 
 
@@ -116,7 +116,9 @@ public class MemberGradeRestController {
      * @return responseEntity
      */
     @GetMapping
-    public ResponseEntity<List<MemberGradeResponseDto>> memberGradeList(Pageable pageable) {
+    public ResponseEntity<PageResponseDto<MemberGradeResponseDto>>
+        memberGradeList(Pageable pageable) {
+
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(memberGradeService.findMemberGrades(pageable));

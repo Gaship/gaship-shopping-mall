@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
@@ -149,24 +151,29 @@ class MemberGradeRestControllerTest {
     @Test
     void memberGradeList() throws Exception {
         // given
-        Pageable pageable = PageRequest.of(0, 10);
+        int page = 1;
+        int size = 10;
+        Pageable pageable = PageRequest.of(page, size);
+        MemberGradeResponseDto dummyMemberGradeResponseDto =
+                MemberGradeDtoDummy.responseDummy("일반",
+                        0L,
+                        "12개월");
 
-        // mocking
+        // stubbing
         when(memberGradeService.findMemberGrades(pageable))
-                .thenReturn(List.of(MemberGradeDtoDummy.responseDummy("일반", 0L, "12개월")));
+                .thenReturn(new PageResponseDto<>(
+                        new PageImpl<>(List.of(dummyMemberGradeResponseDto), pageable, 1)));
 
         // when&then
         mockMvc.perform(get("/grades")
                         .queryParam("size", "10")
-                        .queryParam("page", "0")
+                        .queryParam("page", "1")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.size()", equalTo(1)))
-                .andExpect(jsonPath("$[0].name", equalTo("일반")))
-                .andExpect(jsonPath("$[0].accumulateAmount", equalTo(0)))
-                .andExpect(jsonPath("$[0].renewalPeriodStatusCode", equalTo("12개월")));
+                .andExpect(jsonPath("$.page", equalTo(page + 1)))
+                .andExpect(jsonPath("$.size", equalTo(size)));
     }
 
     @DisplayName("Exception Handler 테스트")

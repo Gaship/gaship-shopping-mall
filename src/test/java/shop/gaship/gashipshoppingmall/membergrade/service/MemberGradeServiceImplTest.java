@@ -7,6 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -15,6 +17,7 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
@@ -391,7 +394,7 @@ class MemberGradeServiceImplTest {
 
     @Test
     void findMemberGrade_whenMemberGradeIsEmpty() {
-        // mocking
+        // stubbing
         when(memberGradeRepository.getMemberGradeBy(any()))
                 .thenReturn(Optional.empty());
 
@@ -405,22 +408,25 @@ class MemberGradeServiceImplTest {
     @Test
     void findMemberGrades() {
         // given
-        Pageable pageable = PageRequest.of(0, 10);
+        int page = 1;
+        int size = 10;
+        Pageable pageable = PageRequest.of(page, size);
         MemberGradeResponseDto dummyMemberGradeResponseDto =
                 MemberGradeDtoDummy.responseDummy("일반",
                 0L,
                 "12개월");
 
-        // mocking
+        // stubbing
         when(memberGradeRepository.getMemberGrades(pageable))
-                .thenReturn(List.of(dummyMemberGradeResponseDto));
+                .thenReturn(new PageImpl<>(List.of(dummyMemberGradeResponseDto), pageable, 1));
 
         // when
-        List<MemberGradeResponseDto> result = memberGradeService.findMemberGrades(pageable);
+        PageResponseDto<MemberGradeResponseDto> result = memberGradeService.findMemberGrades(pageable);
 
         // then
-        assertThat(result).isNotEmpty();
-        assertThat(result.get(0)).isEqualTo(dummyMemberGradeResponseDto);
+        assertThat(result.getPage()).isEqualTo(page + 1);
+        assertThat(result.getSize()).isEqualTo(size);
+        assertThat(result.getDtoList()).hasSize(1);
 
         verify(memberGradeRepository).getMemberGrades(any());
     }

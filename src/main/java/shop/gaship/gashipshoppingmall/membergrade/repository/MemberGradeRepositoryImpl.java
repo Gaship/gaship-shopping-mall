@@ -1,8 +1,11 @@
 package shop.gaship.gashipshoppingmall.membergrade.repository;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
@@ -53,18 +56,24 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
      * @return the member grades
      */
     @Override
-    public List<MemberGradeResponseDto> getMemberGrades(Pageable pageable) {
+    public Page<MemberGradeResponseDto> getMemberGrades(Pageable pageable) {
         QMemberGrade memberGrade = QMemberGrade.memberGrade;
 
-        return from(memberGrade)
-                .innerJoin(memberGrade.renewalPeriodStatusCode)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+        QueryResults<MemberGradeResponseDto> results =
+                from(memberGrade)
+                        .innerJoin(memberGrade.renewalPeriodStatusCode)
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
                 .select(Projections.bean(MemberGradeResponseDto.class,
-                        memberGrade.no,
-                        memberGrade.name,
-                        memberGrade.accumulateAmount,
-                        memberGrade.renewalPeriodStatusCode.statusCodeName))
-                .fetch();
+                memberGrade.no,
+                memberGrade.name,
+                memberGrade.accumulateAmount,
+                memberGrade.renewalPeriodStatusCode.statusCodeName))
+                .fetchResults();
+
+        List<MemberGradeResponseDto> content = results.getResults();
+        long total = results.getTotal();
+
+        return new PageImpl<>(content, pageable, total);
     }
 }
