@@ -93,7 +93,6 @@ class StatusCodeRestControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message", equalTo(errorMessage)))
                 .andDo(print());
 

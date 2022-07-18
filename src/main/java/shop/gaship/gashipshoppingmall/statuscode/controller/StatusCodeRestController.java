@@ -32,9 +32,7 @@ public class StatusCodeRestController {
     public ResponseEntity<Void> renewalPeriodModify(@RequestParam String period) {
         statusCodeService.modifyRenewalPeriod(period);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /** 상태코드 GET Mapping
