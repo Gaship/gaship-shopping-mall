@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
@@ -68,6 +69,23 @@ class MemberServiceImplTest {
                 .save(any(Member.class));
     }
 
+    @DisplayName("memberRepository register Fail Test(중복된 닉네임)")
+    @Test
+    void registerFailWithDuplicatedNicknameTest() {
+        when(memberRepository.save(any(Member.class))).thenReturn(MemberTestDummy.member1());
+        when(memberRepository.existsByNickName(any())).thenReturn(true);
+        when(memberRepository.findByNickname(any())).thenReturn(Optional.of(MemberTestDummy.member1()));
+        when(memberGradeRepository.findById(0)).thenReturn(Optional.of(MemberTestDummy.memberGrade()));
+        when(statusCodeRepository.findByStatusCodeName("활성")).thenReturn(Optional.of(MemberTestDummy.statusCode()));
+
+        assertThatThrownBy(() -> memberService.addMember(MemberTestDummy.memberRegisterRequestDto()))
+                .isInstanceOf(DuplicatedNicknameException.class)
+                .hasMessage("중복된 닉네임입니다");
+
+        verify(memberRepository, never())
+                .save(any(Member.class));
+    }
+
     @DisplayName("memberRepository modify Test")
     @Test
     void modifyTest() {
@@ -81,18 +99,32 @@ class MemberServiceImplTest {
                 .save(any(Member.class));
     }
 
-    @DisplayName("memberRepository modify fail Test(중복 pk)")
+    @DisplayName("memberRepository modify fail Test(해당 아이디가 없음)")
     @Test
     void modifyFailTest() {
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(()-> memberService.modifyMember(MemberTestDummy.memberModifyRequestDto()))
+        assertThatThrownBy(() -> memberService.modifyMember(MemberTestDummy.memberModifyRequestDto()))
                 .isInstanceOf(MemberNotFoundException.class)
-                        .hasMessage("해당 멤버를 찾을 수 없습니다");
+                .hasMessage("해당 멤버를 찾을 수 없습니다");
 
         verify(memberRepository, times(1))
                 .findById(any());
+    }
 
+    @DisplayName("memberRepository modify fail Test(바꾸려는 닉네임이 이미 존재)")
+    @Test
+    void modifyFailWithDuplicatedNicknameTest() {
+
+        when(memberRepository.findById(any())).thenReturn(Optional.empty());
+        when(memberRepository.existsByNickName(any())).thenReturn(true);
+        assertThatThrownBy(() -> memberService.modifyMember(MemberTestDummy.memberModifyRequestDto()))
+                .isInstanceOf(DuplicatedNicknameException.class)
+                .hasMessage("중복된 닉네임입니다");
+
+        verify(memberRepository,times(1)).existsByNickName(any());
+        verify(memberRepository, never())
+                .findById(any());
     }
 
     @DisplayName("memberRepository delete Test")
@@ -118,7 +150,7 @@ class MemberServiceImplTest {
     void getListTest() {
         Pageable pageable = PageRequest.of(0, 10);
         List<Member> memberList = MemberTestDummy.CreateTestMemberEntityList();
-        Page<Member> page = new PageImpl<>(memberList,pageable,100);
+        Page<Member> page = new PageImpl<>(memberList, pageable, 100);
         when(memberRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         MemberPageResponseDto<MemberResponseDto, Member> list = memberService.findMembers(pageable);

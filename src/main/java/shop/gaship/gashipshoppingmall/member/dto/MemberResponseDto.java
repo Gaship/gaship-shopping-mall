@@ -31,7 +31,6 @@ public class MemberResponseDto {
     private LocalDate nextRenewalGradeDate;
     private LocalDateTime registerDatetime;
     private LocalDateTime modifyDatetime;
-    private Boolean isBlackMember;
 
     /**
      * Instantiates a new Member response dto.
@@ -48,7 +47,6 @@ public class MemberResponseDto {
      * @param nextRenewalGradeDate     the next renewal grade date
      * @param registerDatetime         the register datetime
      * @param modifyDatetime           the modify datetime
-     * @param isBlackMember            the is black member
      */
     @Builder
     public MemberResponseDto(String recommendMemberNickname, String email, String password, String phoneNumber, String name, LocalDate birthDate, String nickname, String gender, Long accumulatePurchaseAmount, LocalDate nextRenewalGradeDate, LocalDateTime registerDatetime, LocalDateTime modifyDatetime, Boolean isBlackMember) {
@@ -64,6 +62,5 @@ public class MemberResponseDto {
         this.nextRenewalGradeDate = nextRenewalGradeDate;
         this.registerDatetime = registerDatetime;
         this.modifyDatetime = modifyDatetime;
-        this.isBlackMember = isBlackMember;
     }
 }

@@ -8,7 +8,9 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberAddRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.service.MemberStatus;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -62,6 +64,8 @@ public class MemberTestDummy {
     public static MemberModifyRequestDto memberModifyRequestDto() {
         return MemberModifyRequestDto.builder()
                 .memberNo(memberNo)
+                .statusCode(StatusCodeDummy.dummy())
+//                .memberGrade()todo
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -180,8 +184,8 @@ public class MemberTestDummy {
         return Member.builder()
                 .memberNo(1)
                 .recommendMember(null)
-                .memberStatusCodes(null)
-                .memberGrades(null)
+                .memberStatusCodes(StatusCodeDummy.dummy())
+                .memberGrades(null)//todo
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -215,4 +219,6 @@ public class MemberTestDummy {
                 .build();
 
     }
+
+
 }

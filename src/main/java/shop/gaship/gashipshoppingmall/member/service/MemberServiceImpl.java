@@ -10,7 +10,9 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.member.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
@@ -38,9 +40,12 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void addMember(MemberAddRequestDto request) {
+        if (memberRepository.existsByNickName(request.getNickname())){
+            throw new DuplicatedNicknameException();
+        }
         Member recommendMember = memberRepository.findByNickname(request.getRecommendMemberNickname()).orElseThrow(MemberNotFoundException::new);
         MemberGrade memberGrade = memberGradeRepository.findById(0).orElseThrow(MemberGradeNotFoundException::new);
-        StatusCode statusCode = statusCodeRepository.findByStatusCodeName("활성").orElseThrow(RuntimeException::new);
+        StatusCode statusCode = statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.getValue()).orElseThrow(StatusCodeNotFoundException::new);
         Member member = dtoToEntity(request, recommendMember, statusCode, memberGrade, false);
         memberRepository.save(member);
     }
@@ -48,6 +53,9 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void modifyMember(MemberModifyRequestDto request) {
+        if (memberRepository.existsByNickName(request.getNickname())){
+            throw new DuplicatedNicknameException();
+        }
         Member member = memberRepository.findById(request.getMemberNo()).orElseThrow(MemberNotFoundException::new);
         member.modifyMember(request);
         memberRepository.save(member);
