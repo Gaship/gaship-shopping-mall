@@ -83,7 +83,7 @@ class EmployeeControllerTest {
                         .content(objectMapper.writeValueAsString(dto))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 이메일을 입력해주세요"))
+                .andExpect(jsonPath("$.message").value("이메일을 입력해주세요"))
                 .andDo(print());
     }
 
@@ -122,7 +122,7 @@ class EmployeeControllerTest {
                         .content(objectMapper.writeValueAsString(dto))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 직원번호를 입력해주세요"))
+                .andExpect(jsonPath("$.message").value("직원번호를 입력해주세요"))
                 .andDo(print());
     }
 

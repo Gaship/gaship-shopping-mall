@@ -88,7 +88,7 @@ class RepairScheduleControllerTest {
                         .content(objectMapper.writeValueAsString(dto))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 일자를 기입해주세요"))
+                .andExpect(jsonPath("$.message").value("일자를 기입해주세요"))
                 .andDo(print());
     }
 
@@ -128,7 +128,7 @@ class RepairScheduleControllerTest {
                         .content(objectMapper.writeValueAsString(dto))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 일자를 기입해주세요"))
+                .andExpect(jsonPath("$.message").value("일자를 기입해주세요"))
                 .andDo(print());
 
     }

@@ -85,7 +85,7 @@ class AddressLocalControllerTest {
                         .content(objectMapper.writeValueAsString(dto))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 지역을 입력하세요"))
+                .andExpect(jsonPath("$.message").value("지역을 입력하세요"))
                 .andDo(print());
     }
     @DisplayName("주소지 검색 테스트")

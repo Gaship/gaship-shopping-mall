@@ -81,7 +81,7 @@ class DayLaborControllerTest {
                         .content(objectMapper.writeValueAsString(dto))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 지역번호를 입력하세요"))
+                .andExpect(jsonPath("$.message").value("지역번호를 입력하세요"))
                 .andDo(print());
 
     }
@@ -124,7 +124,7 @@ class DayLaborControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("유효성 검사를 실패했습니다 : 최대물량을 입력하세요"))
+                .andExpect(jsonPath("$.message").value("최대물량을 입력하세요"))
                 .andDo(print());
 
     }
