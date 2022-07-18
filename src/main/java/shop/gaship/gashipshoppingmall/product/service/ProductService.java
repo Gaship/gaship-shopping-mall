@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.product.service;
 
+import org.springframework.data.domain.Page;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 
 import java.util.List;
@@ -20,4 +21,14 @@ public interface ProductService {
      * @author 유호철
      */
     List<ProductResponseDto> findProductByCode(String productCode);
+
+    /**
+     * 제품들을 페이징처리해서 조회하기위한 메서드입니다.
+     *
+     * @param page 페이지 정보입니다.
+     * @param size 페이지 사이즈정보입니다.
+     * @author 유호철
+     */
+    Page<ProductResponseDto> findProducts(int page, int size);
+
 }

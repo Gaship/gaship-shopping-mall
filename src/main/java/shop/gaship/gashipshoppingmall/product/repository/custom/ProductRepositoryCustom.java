@@ -1,5 +1,7 @@
 package shop.gaship.gashipshoppingmall.product.repository.custom;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 
 import java.util.List;
@@ -19,4 +21,13 @@ public interface ProductRepositoryCustom {
      * @author 유호철
      */
     List<ProductResponseDto> findByCode(String productCode);
+
+    /**
+     * 페이징된 제품들을 조회하기위해 만든 메서드입니다.
+     *
+     * pageable 페이징 하기위한 객체
+     * @return page 페이징된 제품들이 반환됩니다.
+     * @author 유호철
+     */
+    Page<ProductResponseDto> findAllPage(Pageable pageable);
 }

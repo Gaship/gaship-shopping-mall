@@ -1,6 +1,10 @@
 package shop.gaship.gashipshoppingmall.product.repository.impl;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
@@ -45,7 +49,40 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                         product.imageLink4,
                         product.imageLink5,
                         product.explanation,
-                        product.productCode))
+                        product.productCode,
+                        product.registerDatetime))
                 .fetch();
+    }
+
+    @Override
+    public Page<ProductResponseDto> findAllPage(Pageable pageable) {
+        QProduct product = QProduct.product;
+
+        QueryResults<ProductResponseDto> result = from(product)
+                .select(Projections.bean(ProductResponseDto.class,
+                        product.no,
+                        product.name,
+                        product.amount,
+                        product.manufacturer,
+                        product.manufacturerCountry,
+                        product.seller,
+                        product.importer,
+                        product.shippingInstallationCost,
+                        product.qualityAssuranceStandard,
+                        product.color,
+                        product.stockQuantity,
+                        product.imageLink1,
+                        product.imageLink2,
+                        product.imageLink3,
+                        product.imageLink4,
+                        product.imageLink5,
+                        product.explanation,
+                        product.productCode))
+                .orderBy(product.registerDatetime.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        return new PageImpl<>(result.getResults(),pageable,result.getTotal());
     }
 }

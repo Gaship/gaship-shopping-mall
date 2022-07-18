@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 /**
  * 상품정보 조회시 반환될 상품정보입니다.
@@ -67,6 +68,8 @@ public class ProductResponseDto {
     @NotNull
     private String productCode;
 
+    @NotNull
+    LocalDateTime registerDatetime;
     @Builder
     public ProductResponseDto(Integer no, String name, Long amount,
                               String manufacturer, String manufacturerCountry,
@@ -75,7 +78,8 @@ public class ProductResponseDto {
                               String qualityAssuranceStandard,
                               String color, Integer stockQuantity,
                               String imageLink1, String explanation,
-                              String productCode) {
+                              String productCode,
+                              LocalDateTime registerDatetime) {
         this.no = no;
         this.name = name;
         this.amount = amount;
@@ -90,5 +94,6 @@ public class ProductResponseDto {
         this.imageLink1 = imageLink1;
         this.explanation = explanation;
         this.productCode = productCode;
+        this.registerDatetime = registerDatetime;
     }
 }
