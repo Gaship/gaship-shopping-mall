@@ -16,6 +16,7 @@ public class StatusCodeDummy {
                 .statusCodeName("1개월")
                 .groupCodeName("갱신기간")
                 .explanation("회원 등급 갱신기간 입니다.")
+                .priority(1)
                 .build();
     }
 }

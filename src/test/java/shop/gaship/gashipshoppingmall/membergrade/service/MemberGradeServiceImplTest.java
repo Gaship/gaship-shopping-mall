@@ -283,7 +283,7 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(testMemberGrade));
         when(memberRepository.findByMemberGrades(any()))
-                .thenReturn(List.of(MemberDummy.dummy(renewalPeriod, testMemberGrade)));
+                .thenReturn(List.of(MemberDummy.dummy()));
 
         assertThatThrownBy(() -> memberGradeService.removeMemberGrade(1))
                 .isInstanceOf(MemberGradeInUseException.class);

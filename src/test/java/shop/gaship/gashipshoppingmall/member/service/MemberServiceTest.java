@@ -27,11 +27,14 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -71,9 +74,9 @@ class MemberServiceTest {
         given(memberRepository.findById(anyInt())).willReturn(
             Optional.of(MemberDummy.dummy()));
         given(memberGradeRepository.findById(1)).willReturn(
-            Optional.of(CreateTestUtils.createDummyMemberGrade()));
+            Optional.of(MemberGradeDummy.dummy(MemberGradeDtoDummy.requestDummy("dummy", 0L),StatusCodeDummy.dummy())));
         given(statusCodeRepository.findById(2)).willReturn(
-            Optional.of(CreateTestUtils.createTestStatusCode()));
+            Optional.of(StatusCodeDummy.dummy()));
 
         memberService.addMember(dummy);
 

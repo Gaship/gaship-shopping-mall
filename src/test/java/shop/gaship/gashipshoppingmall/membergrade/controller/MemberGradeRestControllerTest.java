@@ -73,7 +73,7 @@ class MemberGradeRestControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addRequestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().is4xxClientError());
 
         verify(memberGradeService, never()).addMemberGrade(any());
     }
@@ -102,7 +102,7 @@ class MemberGradeRestControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().is4xxClientError());
 
         verify(memberGradeService, never()).modifyMemberGrade(any());
     }
