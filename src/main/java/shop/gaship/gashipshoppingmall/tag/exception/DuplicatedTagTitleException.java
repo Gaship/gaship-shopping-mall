@@ -1,0 +1,21 @@
+package shop.gaship.gashipshoppingmall.tag.exception;
+
+/**
+ * 태그명이 중복되었을때 발생하는 에러입니다.
+ *
+ * @author 최정우
+ * @since 1.0
+ */
+public class DuplicatedTagTitleException extends RuntimeException {
+    /**
+     * The constant MESSAGE.
+     */
+    public static final String MESSAGE = "중복된 태그명입니다";
+
+    /**
+     * Instantiates a new Duplicated tag title exception.
+     */
+    public DuplicatedTagTitleException() {
+        super(MESSAGE);
+    }
+}
