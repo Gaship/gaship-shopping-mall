@@ -29,7 +29,7 @@ public class ProductController {
                                            @RequestPart ProductCreateRequestDto createRequest) throws IOException {
         productService.addProduct(files, createRequest);
 
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }

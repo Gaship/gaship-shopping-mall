@@ -1,9 +1,11 @@
 package shop.gaship.gashipshoppingmall.product.dummy;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 
 public class ProductDummy {
@@ -22,8 +24,30 @@ public class ProductDummy {
                 .qualityAssuranceStandard("품질보증기준")
                 .color("#FFFFFF")
                 .stockQuantity(10)
+                .explanation("설명")
+                .code("A001")
                 .build();
         dummy.updateImageLinks(List.of("이미지 링크"));
-        return  dummy;
+        return dummy;
+    }
+
+    public static ProductCreateRequestDto createRequestDummy() {
+        return new ProductCreateRequestDto(
+                1,
+                1,
+                "상품이름",
+                1000L,
+                "생산자",
+                "생산국",
+                "판매자",
+                "수입자",
+                0L,
+                "품질보증기준",
+                "#000000",
+                10,
+                "설명",
+                List.of(1),
+                "A001"
+        );
     }
 }

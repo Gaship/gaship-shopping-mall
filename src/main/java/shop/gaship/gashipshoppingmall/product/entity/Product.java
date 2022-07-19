@@ -26,17 +26,17 @@ public class Product {
     Integer no;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
     @JoinColumn(name = "category_no")
     Category category;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
     @JoinColumn(name = "delivery_type_no")
     StatusCode deliveryType;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
     @JoinColumn(name = "sales_status_no")
     StatusCode salesStatus;
 
