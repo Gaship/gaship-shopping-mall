@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.product.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,4 +15,6 @@ import java.util.List;
  */
 public interface ProductService {
     void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest) throws IOException;
+
+    void modifyProduct(List<MultipartFile> multipartFile, ProductModifyRequestDto modifyRequest) throws IOException;
 }

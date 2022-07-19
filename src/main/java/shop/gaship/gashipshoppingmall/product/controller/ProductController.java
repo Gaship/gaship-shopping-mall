@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
 
 import java.io.IOException;
@@ -30,6 +31,16 @@ public class ProductController {
         productService.addProduct(files, createRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> productModify(@RequestPart("image") List<MultipartFile> files,
+                                              @RequestPart ProductModifyRequestDto modifyRequest) throws IOException {
+        productService.modifyProduct(files, modifyRequest);
+
+        return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }

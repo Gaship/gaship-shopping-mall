@@ -42,6 +42,13 @@ public class FileUploadUtil {
         return fileNames;
     }
 
+    public static void deleteFiles(String uploadDir, List<String> fileNames) {
+        String uploadPath = UPLOAD_BASE_URL + uploadDir;
+        fileNames.stream().map(fileName -> new File(uploadPath + File.separator + fileName))
+                .filter(File::exists)
+                .forEach(File::delete);
+    }
+
     private static String getFileName(MultipartFile multipartFile) {
         String originalFilename = multipartFile.getOriginalFilename();
         String fileExtension =  Objects.requireNonNull(originalFilename)

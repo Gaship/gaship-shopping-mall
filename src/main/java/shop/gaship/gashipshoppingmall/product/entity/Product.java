@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.product.entity;
 import java.awt.image.Kernel;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 import javax.persistence.*;
@@ -11,13 +12,15 @@ import javax.validation.constraints.NotNull;
 import lombok.*;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode
+@AllArgsConstructor
 @Table(name = "products")
 public class Product {
     @Id
@@ -26,19 +29,23 @@ public class Product {
     Integer no;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_no")
     Category category;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "delivery_type_no")
     StatusCode deliveryType;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sales_status_no")
     StatusCode salesStatus;
+
+    @NotNull
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
+    List<ProductTag> productTags = new ArrayList<>();
 
     @NotNull
     String name;
@@ -117,6 +124,7 @@ public class Product {
         return Product.builder()
                 .category(category)
                 .deliveryType(deliveryType)
+                .name(createRequest.getName())
                 .amount(createRequest.getAmount())
                 .registerDatetime(LocalDateTime.now())
                 .manufacturer(createRequest.getManufacturer())
@@ -128,7 +136,25 @@ public class Product {
                 .color(createRequest.getColor())
                 .stockQuantity(createRequest.getStockQuantity())
                 .explanation(createRequest.getExplanation())
+                .code(createRequest.getCode())
                 .build();
+    }
+
+    public void updateProduct(Category category, StatusCode deliveryType, ProductModifyRequestDto modifyRequest) {
+        this.category = category;
+        this.deliveryType = deliveryType;
+        this.name = modifyRequest.getName();
+        this.amount = modifyRequest.getAmount();
+        this.manufacturer = modifyRequest.getManufacturer();
+        this.manufacturerCountry = modifyRequest.getManufacturerCountry();
+        this.seller = modifyRequest.getSeller();
+        this.importer = modifyRequest.getImporter();
+        this.shippingInstallationCost = modifyRequest.getShippingInstallationCost();
+        this.qualityAssuranceStandard = modifyRequest.getQualityAssuranceStandard();
+        this.color = modifyRequest.getColor();
+        this.stockQuantity = modifyRequest.getStockQuantity();
+        this.explanation = modifyRequest.getExplanation();
+        this.code = modifyRequest.getCode();
     }
 
     public void updateSalesStatus(StatusCode salesStatus) {
@@ -144,5 +170,23 @@ public class Product {
         this.imageLink3 = updatingImageLinks[2];
         this.imageLink4 = updatingImageLinks[3];
         this.imageLink5 = updatingImageLinks[4];
+    }
+
+    public List<String> getImageLinkList() {
+        List<String> imageLinks = new ArrayList<>();
+
+        imageLinks.add(this.imageLink1);
+        imageLinks.add(this.imageLink2);
+        imageLinks.add(this.imageLink3);
+        imageLinks.add(this.imageLink4);
+        imageLinks.add(this.imageLink5);
+        imageLinks.removeAll(Collections.singletonList(null));
+
+        return imageLinks;
+    }
+
+    public void addProductTag(ProductTag productTag) {
+        productTag.updateProduct(this);
+        productTags.add(productTag);
     }
 }

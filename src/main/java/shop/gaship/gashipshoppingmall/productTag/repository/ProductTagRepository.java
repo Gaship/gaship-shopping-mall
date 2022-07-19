@@ -10,4 +10,5 @@ import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
  * @since 1.0
  */
 public interface ProductTagRepository extends JpaRepository<ProductTag, ProductTag.Pk> {
+    void deleteAllByPkProductNo(Integer productNo);
 }

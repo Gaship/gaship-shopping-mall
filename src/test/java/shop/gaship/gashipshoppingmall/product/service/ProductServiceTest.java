@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.product.service;
 
-import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,10 +9,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
+import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
 import shop.gaship.gashipshoppingmall.productTag.repository.ProductTagRepository;
@@ -28,6 +32,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,7 +45,6 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ProductServiceImpl.class)
-@Slf4j
 class ProductServiceTest {
     @Autowired
     ProductService productService;
@@ -60,14 +64,19 @@ class ProductServiceTest {
     @MockBean
     ProductTagRepository productTagRepository;
 
+    private MockMultipartFile multipartFile;
+
+    @BeforeEach
+    void setUp() throws IOException {
+        File file = new File("src/test/resources/sample.jpg");
+        multipartFile = new MockMultipartFile(
+                "image", "sample.jpg", "multipart/mixed", new FileInputStream(file));
+    }
 
     @DisplayName("상품 등록 성공")
     @Test
     void addProduct() throws IOException {
         ProductCreateRequestDto createRequest = ProductDummy.createRequestDummy();
-        File file = new File("src/test/resources/sample.jpg");
-        MockMultipartFile multipartFile = new MockMultipartFile(
-                "image", "sample.jpg", "multipart/mixed", new FileInputStream(file));
 
         when(categoryRepository.findById(createRequest.getCategoryNo()))
                 .thenReturn(Optional.of(CategoryDummy.dummy()));
@@ -83,5 +92,41 @@ class ProductServiceTest {
         verify(categoryRepository).findById(createRequest.getCategoryNo());
         verify(statusCodeRepository).findById(createRequest.getDeliveryTypeNo());
         verify(statusCodeRepository).findByStatusCodeName(SalesStatus.SALE.getValue());
+    }
+
+    @DisplayName("상품 수정 성공")
+    @Test
+    void modifyProduct() throws IOException {
+        ProductModifyRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
+        Product product = ProductDummy.dummy();
+        ReflectionTestUtils.setField(product, "no", modifyRequest.getNo());
+
+        when(productRepository.findById(modifyRequest.getNo()))
+                .thenReturn(Optional.of(product));
+        when(categoryRepository.findById(modifyRequest.getCategoryNo()))
+                .thenReturn(Optional.of(CategoryDummy.dummy()));
+        when(statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo()))
+                .thenReturn(Optional.of(new StatusCode("설치", modifyRequest.getDeliveryTypeNo(), "배송형태", "")));
+
+        productService.modifyProduct(List.of(multipartFile), modifyRequest);
+
+        verify(productRepository).findById(modifyRequest.getNo());
+        verify(categoryRepository).findById(modifyRequest.getCategoryNo());
+        verify(statusCodeRepository).findById(modifyRequest.getDeliveryTypeNo());
+    }
+
+    @DisplayName("상품 수정 실패 - 해당 상품 찾기 불가")
+    @Test
+    void modifyProductFail_NotFoundProduct() {
+        ProductModifyRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
+        Integer productNo = modifyRequest.getNo();
+
+        when(productRepository.findById(productNo))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> productService.modifyProduct(List.of(multipartFile), modifyRequest))
+                .isInstanceOf(ProductNotFoundException.class);
+
+        verify(productRepository).findById(productNo);
     }
 }
