@@ -52,15 +52,10 @@ class MemberGradeRepositoryTest {
         testEntityManager.persist(renewalPeriod);
         MemberGrade result = memberGradeRepository.save(memberGrade);
 
-        Long count = memberGradeRepository.count();
-
         assertThat(result).isNotNull();
-        assertThat(result.getNo()).isEqualTo(1);
         assertThat(result.getName()).isEqualTo(memberGrade.getName());
         assertThat(result.getAccumulateAmount()).isEqualTo(memberGrade.getAccumulateAmount());
         assertThat(result.getRenewalPeriodStatusCode()).isEqualTo(memberGrade.getRenewalPeriodStatusCode());
-
-        assertThat(count).isEqualTo(1L);
     }
     @Order(1)
     @Test

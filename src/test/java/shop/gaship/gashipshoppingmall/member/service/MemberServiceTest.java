@@ -36,7 +36,6 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
-import shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 /**
