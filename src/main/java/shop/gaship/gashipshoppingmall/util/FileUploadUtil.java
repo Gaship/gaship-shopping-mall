@@ -19,7 +19,7 @@ import java.util.UUID;
  * @since 1.0
  */
 public class FileUploadUtil {
-    private static final String UPLOAD_BASE_URL = "C:\\Users\\qnt01\\Downloads";
+    private static final String UPLOAD_BASE_URL = "src/main/resources";
 
     private FileUploadUtil() {}
 
