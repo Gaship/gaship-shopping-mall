@@ -32,7 +32,7 @@ public interface MemberService {
     /**
      * 소셜회원을 등록하는 메서드입니다.
      *
-     * @param memberCreationRequest 회원가입을 위한 정보 객체입니다.
+     * @param memberCreationRequestOauth 회원가입을 위한 정보 객체입니다.
      */
     void addMember(MemberCreationRequestOauth memberCreationRequestOauth);
 

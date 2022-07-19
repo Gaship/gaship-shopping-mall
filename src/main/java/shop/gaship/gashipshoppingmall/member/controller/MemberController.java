@@ -60,11 +60,14 @@ public class MemberController {
      *
      * @param memberCreationRequestOauth 소셜 회원가입의 양식 데이터 객체입니다.
      */
-    // TODO : member가 맞지않을까요?
-    @PostMapping("/members")
-    public ResponseEntity<Void> memberAdd(@RequestBody MemberCreationRequestOauth memberCreationRequestOauth) {
-        memberService.addMember(memberCreationRequestOauth);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PostMapping(value = "/members", params = "isOauth")
+    public ResponseEntity<Void> memberAdd(@RequestBody MemberCreationRequestOauth memberCreationRequestOauth,
+                                          @RequestParam String isOauth) {
+        if (Boolean.parseBoolean(isOauth)){
+            memberService.addMember(memberCreationRequestOauth);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        throw new RuntimeException("12");
     }
 
     /**
@@ -150,7 +153,7 @@ public class MemberController {
      * @return ResponseEntity<MemberResponseDto> 변경된 dto를 entity화시켜서 반환합니다.
      */
     // TODO : 회원entity에 소셜회원가입여부 추가 true false
-    @GetMapping("/members/{email}")
+    @GetMapping(value = "/members/email/{email}")
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable String email) {
         MemberResponseDto memberResponseDto = memberService.findMemberFromEmail(email);
         return ResponseEntity.status(HttpStatus.OK)
