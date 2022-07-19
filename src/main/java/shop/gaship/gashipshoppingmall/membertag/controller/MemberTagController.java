@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagRequestDto;
+import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagResponseDto;
 import shop.gaship.gashipshoppingmall.membertag.entity.MemberTag;
 import shop.gaship.gashipshoppingmall.membertag.service.MemberTagService;
 
@@ -13,6 +14,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
+ * 멤버태그 등록삭제, 조회를 하기 위한 컨트롤러입니다.
+ *
  * @author 최정우
  * @since 1.0
  */
@@ -21,6 +24,12 @@ import java.util.List;
 public class MemberTagController {
     private final MemberTagService memberTagService;
 
+    /**
+     * 멤버가 설정한 태그를 삭제하고 다시 설정하길 원하는 태그들을 설정하는 컨트롤러입니다.
+     *
+     * @param memberTagRequestDto the member tag request dto
+     * @return the response entity
+     */
     @PostMapping("/members/{memberNo}/tags")
     public ResponseEntity<Void> MemberTagDeleteAllAndAddAll(@Valid @RequestBody MemberTagRequestDto memberTagRequestDto){
         memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto);
@@ -29,8 +38,14 @@ public class MemberTagController {
                 .build();
     }
 
+    /**
+     * 회원이 설정한 멤버태그들을 설정하기위한 메서드입니다.
+     *
+     * @param memberNo the member no
+     * @return the response entity
+     */
     @GetMapping("/members/{memberNo}/tags")
-    public ResponseEntity<List<MemberTag>> MemberTagList(@PathVariable Integer memberNo){
+    public ResponseEntity<List<MemberTagResponseDto>> MemberTagList(@PathVariable Integer memberNo){
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(memberTagService.findMemberTags(memberNo));

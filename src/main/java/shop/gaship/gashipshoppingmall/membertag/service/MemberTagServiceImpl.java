@@ -7,6 +7,7 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagRequestDto;
+import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagResponseDto;
 import shop.gaship.gashipshoppingmall.membertag.entity.MemberTag;
 import shop.gaship.gashipshoppingmall.membertag.exception.IllegalTagSelectionException;
 import shop.gaship.gashipshoppingmall.membertag.repository.MemberTagRepository;
@@ -15,6 +16,7 @@ import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -43,11 +45,11 @@ public class MemberTagServiceImpl implements MemberTagService {
     }
 
     @Override
-    public List<MemberTag> findMemberTags(Integer memberNo) {
+    public List<MemberTagResponseDto> findMemberTags(Integer memberNo) {
         List<MemberTag> memberTags = memberTagRepository.findAllByMember_MemberNo(memberNo);
         if (memberTags.size() !=5){
             throw new IllegalTagSelectionException();
         }
-        return memberTagRepository.findAllByMember_MemberNo(memberNo);
+        return memberTagRepository.findAllByMember_MemberNo(memberNo).stream().map(this::entityToDto).collect(Collectors.toList());
     }
 }

@@ -12,6 +12,8 @@ import javax.persistence.*;
 /**
  * @author 최정우
  * @since 1.0
+ *
+ * @description 멤버태그 테이블에 객체를 담을 엔티티입니다.
  */
 @Entity
 @Getter
