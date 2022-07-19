@@ -24,11 +24,11 @@ public class MemberTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer memberTagNo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_no")
     private Tag tag;
 }

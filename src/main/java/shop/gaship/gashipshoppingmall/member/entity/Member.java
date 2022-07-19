@@ -45,7 +45,7 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "member_grade_no", nullable = false)
     private MemberGrade memberGrades;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberTag> memberTags = new ArrayList<>();
 
     @Column(unique = true)
