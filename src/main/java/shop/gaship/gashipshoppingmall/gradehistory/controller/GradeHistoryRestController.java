@@ -4,12 +4,12 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.request.GradeHistoryAddRequestDto;
+import shop.gaship.gashipshoppingmall.gradehistory.dto.request.GradeHistoryFindRequestDto;
+import shop.gaship.gashipshoppingmall.gradehistory.dto.response.GradeHistoryResponseDto;
 import shop.gaship.gashipshoppingmall.gradehistory.service.GradeHistoryService;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 등급이력 Rest Controller.
@@ -39,5 +39,13 @@ public class GradeHistoryRestController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<GradeHistoryResponseDto>>
+        gradeHistoryList(@Valid @RequestBody GradeHistoryFindRequestDto request) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(gradeHistoryService.findGradeHistories(request));
     }
 }
