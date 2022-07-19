@@ -129,16 +129,31 @@ public class MemberTestDummy {
     }
 
     public static Member member1() {
-        MemberGradeAddRequestDto memberGradeAddRequestDto = new MemberGradeAddRequestDto();
-        memberGradeAddRequestDto.setIsDefault(true);
-        memberGradeAddRequestDto.setName("vip");
-        memberGradeAddRequestDto.setAccumulateAmount(0L);
 
         return Member.builder()
                 .memberNo(0)
                 .recommendMember(null)
-                .memberStatusCodes(StatusCodeDummy.dummy())
-                .memberGrades(MemberGradeDummy.dummy(memberGradeAddRequestDto,StatusCodeDummy.dummy()))
+                .memberStatusCodes(null)
+                .memberGrades(null)
+                .email(email)
+                .password(password)
+                .phoneNumber(phoneNumber)
+                .name(name)
+                .birthDate(birthDate)
+                .nickname(nickname)
+                .gender(gender)
+                .accumulatePurchaseAmount(accumulatePurchaseAmount)
+                .nextRenewalGradeDate(nextRenewalGradeDate)
+                .build();
+    }
+
+    public static Member memberEntityNotFlushed() {
+
+        return Member.builder()
+                .memberNo(0)
+                .recommendMember(null)
+                .memberStatusCodes(null)
+                .memberGrades(null)
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)

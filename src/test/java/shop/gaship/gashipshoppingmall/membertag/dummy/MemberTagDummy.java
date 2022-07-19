@@ -35,10 +35,10 @@ public class MemberTagDummy {
 
     public static List<MemberTag> memberTagList() {
         List<MemberTag> memberTagList = new ArrayList<>();
-        IntStream.rangeClosed(1, 5).forEach(i -> {
+        IntStream.rangeClosed(0, 4).forEach(i -> {
             MemberTag memberTag = MemberTag.builder()
-                    .member(MemberTestDummy.member1())
-                    .tag(Tag.builder().tagNo(i).title("title" + i).build())
+                    .member(MemberTestDummy.memberEntityNotFlushed())
+                    .tag(Tag.builder().tagNo(i).title("title....." + i).build())
                     .build();
             memberTagList.add(memberTag);
         });
