@@ -32,7 +32,7 @@ public class TestDummy {
     }
 
     public static TagResponseDto CreateTestTagResponseDto(String title) {
-        return new TagResponseDto(title, LocalDateTime.now(), LocalDateTime.now());
+        return new TagResponseDto(null, title, LocalDateTime.now(), LocalDateTime.now());
     }
 
     public static Tag CreateTestTagEntity() {
