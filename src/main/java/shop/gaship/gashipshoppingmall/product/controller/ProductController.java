@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
 
@@ -121,5 +122,19 @@ public class ProductController {
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(service.findProductByName(name));
+    }
+
+    /**
+     * get 요청을 받아서 전체상품들을 조회하는 메서드입니다.
+     *
+     * @return response entity 전체 상품들 조회하는 메서드입니다.
+     * @author 유호철
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductAllInfoResponseDto>> productListAll() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findProductsInfo());
     }
 }

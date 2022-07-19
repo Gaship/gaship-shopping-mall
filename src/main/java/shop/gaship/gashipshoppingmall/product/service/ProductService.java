@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.product.service;
 
 import org.springframework.data.domain.Page;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 
@@ -68,4 +69,12 @@ public interface ProductService {
      * @author 유호철
      */
     List<ProductResponseDto> findProductByName(String name);
+
+    /**
+     * 알맞은 상품들의 정보들을 반환합니다.
+     *
+     * @return list 조회된 상품들의 정보들을 반환합니다.
+     * @author 유호철
+     */
+    List<ProductAllInfoResponseDto> findProductsInfo();
 }
