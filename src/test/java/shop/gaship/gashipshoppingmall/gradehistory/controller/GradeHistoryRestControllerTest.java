@@ -42,7 +42,7 @@ class GradeHistoryRestControllerTest {
     @DisplayName("등급이력 등록")
     @Test
     void gradeHistoryAdd() throws Exception {
-        GradeHistoryAddRequestDto requestDummy = GradeHistoryDtoDummy.requestDto();
+        GradeHistoryAddRequestDto requestDummy = GradeHistoryDtoDummy.addRequestDummy();
 
         mockMvc.perform(post("/gradehistory")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -56,7 +56,7 @@ class GradeHistoryRestControllerTest {
             "요청 data 의 gradeName 이 NULL 인 경우")
     @Test
     void gradeHistoryAdd_whenGradeNameIsNull_throwExp() throws Exception {
-        GradeHistoryAddRequestDto requestDummy = GradeHistoryDtoDummy.requestDto();
+        GradeHistoryAddRequestDto requestDummy = GradeHistoryDtoDummy.addRequestDummy();
         ReflectionTestUtils.setField(requestDummy, "gradeName", null);
 
         mockMvc.perform(post("/gradehistory")
@@ -71,7 +71,7 @@ class GradeHistoryRestControllerTest {
             "요청 data 의 member 를 찾을 수 없는 경우")
     @Test
     void exceptionHandler() throws Exception{
-        GradeHistoryAddRequestDto requestDummy = GradeHistoryDtoDummy.requestDto();
+        GradeHistoryAddRequestDto requestDummy = GradeHistoryDtoDummy.addRequestDummy();
         MemberNotFoundException exception = new MemberNotFoundException();
         String errorMessage = exception.getMessage();
 

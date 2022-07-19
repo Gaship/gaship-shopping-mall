@@ -1,14 +1,18 @@
 package shop.gaship.gashipshoppingmall.gradehistory.repository;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import shop.gaship.gashipshoppingmall.gradehistory.dto.response.GradeHistoryResponseDto;
 import shop.gaship.gashipshoppingmall.gradehistory.dummy.GradeHistoryDummy;
+import shop.gaship.gashipshoppingmall.gradehistory.dummy.GradeHistoryMemberDummy;
 import shop.gaship.gashipshoppingmall.gradehistory.entity.GradeHistory;
+import shop.gaship.gashipshoppingmall.member.entity.Member;
 
 import java.util.Optional;
 
@@ -28,21 +32,17 @@ class GradeHistoryRepositoryTest {
     @Autowired
     private GradeHistoryRepository gradeHistoryRepository;
 
-    private GradeHistory gradeHistoryDummy;
+    private Member memberDummy;
 
     @BeforeEach
     void setUp() {
-        gradeHistoryDummy = GradeHistoryDummy.dummy();
+        memberDummy = testMember();
     }
 
     @DisplayName("등급이력 등록/조회 테스트")
     @Test
     void saveAndFindGradeHistory(){
-        testEntityManager.persist(gradeHistoryDummy.getMember().getMemberGrades().getRenewalPeriodStatusCode());
-        testEntityManager.persist(gradeHistoryDummy.getMember().getMemberStatusCodes());
-        testEntityManager.persist(gradeHistoryDummy.getMember().getMemberGrades());
-        testEntityManager.persist(gradeHistoryDummy.getMember());
-        GradeHistory newGradeHistory = testEntityManager.persist(gradeHistoryDummy);
+        GradeHistory newGradeHistory = testGradeHistory(memberDummy);
         testEntityManager.clear();
 
         Optional<GradeHistory> result = gradeHistoryRepository
@@ -52,5 +52,37 @@ class GradeHistoryRepositoryTest {
         assertThat(result.get().getNo()).isEqualTo(newGradeHistory.getNo());
         assertThat(result.get().getGradeName()).isEqualTo("일반");
         assertThat(result.get().getTotalAmount()).isEqualTo(1_000_000L);
+    }
+
+    @DisplayName("멤버를 통한 등급이력 다건 조회 테스트")
+    @Test
+    void getGradeHistoriesByMember(){
+        GradeHistory gradeHistoryDummy = testGradeHistory(memberDummy);
+        testGradeHistory(memberDummy);
+        testGradeHistory(memberDummy);
+        testEntityManager.clear();
+
+        Page<GradeHistoryResponseDto> result = gradeHistoryRepository
+                .getGradeHistoriesByMember(gradeHistoryDummy.getMember(), PageRequest.of(0, 1));
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getGradeName())
+                .isEqualTo(gradeHistoryDummy.getGradeName());
+    }
+
+    private Member testMember(){
+        Member memberDummy = GradeHistoryMemberDummy.dummy();
+        testEntityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
+        testEntityManager.persist(memberDummy.getMemberStatusCodes());
+        testEntityManager.persist(memberDummy.getMemberGrades());
+
+        return testEntityManager.persist(memberDummy);
+    }
+
+    private GradeHistory testGradeHistory(Member memberDummy){
+        GradeHistory gradeHistoryDummy = GradeHistoryDummy.dummy(memberDummy);
+
+        return testEntityManager.persist(gradeHistoryDummy);
     }
 }

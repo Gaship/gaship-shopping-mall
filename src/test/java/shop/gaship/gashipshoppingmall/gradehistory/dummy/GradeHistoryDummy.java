@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.gradehistory.dummy;
 
 import shop.gaship.gashipshoppingmall.gradehistory.entity.GradeHistory;
+import shop.gaship.gashipshoppingmall.member.entity.Member;
 
 /**
  * 등급이력 dummy data.
@@ -11,10 +12,10 @@ import shop.gaship.gashipshoppingmall.gradehistory.entity.GradeHistory;
 public class GradeHistoryDummy {
     private GradeHistoryDummy(){}
 
-    public static GradeHistory dummy(){
+    public static GradeHistory dummy(Member member){
         return GradeHistory.builder()
-                .member(GradeHistoryMemberDummy.dummy())
-                .request(GradeHistoryDtoDummy.requestDto())
+                .member(member)
+                .request(GradeHistoryDtoDummy.addRequestDummy())
                 .build();
     }
 }
