@@ -87,6 +87,7 @@ public interface TagService {
      */
     default TagResponseDto entityToDto(Tag tag){
         return TagResponseDto.builder()
+                .tagNo(tag.getTagNo())
                 .title(tag.getTitle())
                 .registerDatetime(tag.getRegisterDatetime())
                 .modifiedDatetime(tag.getModifiedDatetime())
