@@ -2,11 +2,8 @@ package shop.gaship.gashipshoppingmall.membertag.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * 회원이 설정하기 원하는 태그들의 id값을 담기 위한 requestDto 입니다.

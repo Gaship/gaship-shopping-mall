@@ -9,6 +9,9 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -46,10 +49,15 @@ public class MemberTestDummy {
     private static final LocalDateTime modifyDatetime = LocalDateTime.now();
 
     public static MemberModifyRequestDto memberModifyRequestDto() {
+        MemberGradeAddRequestDto memberGradeAddRequestDto = new MemberGradeAddRequestDto();
+        memberGradeAddRequestDto.setIsDefault(true);
+        memberGradeAddRequestDto.setName("vip");
+        memberGradeAddRequestDto.setAccumulateAmount(0L);
+
         return MemberModifyRequestDto.builder()
                 .memberNo(memberNo)
                 .statusCode(StatusCodeDummy.dummy())
-//                .memberGrade()todo
+                .memberGrade(MemberGradeDummy.dummy(memberGradeAddRequestDto,StatusCodeDummy.dummy()))
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -121,12 +129,16 @@ public class MemberTestDummy {
     }
 
     public static Member member1() {
+        MemberGradeAddRequestDto memberGradeAddRequestDto = new MemberGradeAddRequestDto();
+        memberGradeAddRequestDto.setIsDefault(true);
+        memberGradeAddRequestDto.setName("vip");
+        memberGradeAddRequestDto.setAccumulateAmount(0L);
 
         return Member.builder()
                 .memberNo(0)
                 .recommendMember(null)
-                .memberStatusCodes(null)
-                .memberGrades(null)
+                .memberStatusCodes(StatusCodeDummy.dummy())
+                .memberGrades(MemberGradeDummy.dummy(memberGradeAddRequestDto,StatusCodeDummy.dummy()))
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)

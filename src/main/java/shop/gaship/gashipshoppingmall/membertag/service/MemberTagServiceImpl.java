@@ -35,21 +35,21 @@ public class MemberTagServiceImpl implements MemberTagService {
     public void deleteAllAndAddAllMemberTags(MemberTagRequestDto memberTagRequestDto) {
         memberTagRepository.deleteAllByMember_MemberNo(memberTagRequestDto.getMemberNo());
         Member member = memberRepository.findById(memberTagRequestDto.getMemberNo()).orElseThrow(MemberNotFoundException::new);
-        List<Tag> tagList = tagRepository.findByIdIn(memberTagRequestDto.getTagIds());
-        if (tagList.size() != 5){
+        List<Tag> tagList = tagRepository.findByTagNoIn(memberTagRequestDto.getTagIds());
+        if (tagList.size() != 5) {
             throw new IllegalTagSelectionException();
         }
         List<MemberTag> memberTags = new ArrayList<>();
-        IntStream.rangeClosed(0,4).forEach(i -> memberTags.add(MemberTag.builder().member(member).tag(tagList.get(i)).build()));
+        IntStream.rangeClosed(0, 4).forEach(i -> memberTags.add(MemberTag.builder().member(member).tag(tagList.get(i)).build()));
         memberTagRepository.saveAll(memberTags);
     }
 
     @Override
     public List<MemberTagResponseDto> findMemberTags(Integer memberNo) {
         List<MemberTag> memberTags = memberTagRepository.findAllByMember_MemberNo(memberNo);
-        if (memberTags.size() !=5){
+        if (memberTags.size() != 5) {
             throw new IllegalTagSelectionException();
         }
-        return memberTagRepository.findAllByMember_MemberNo(memberNo).stream().map(this::entityToDto).collect(Collectors.toList());
+        return memberTags.stream().map(this::entityToDto).collect(Collectors.toList());
     }
 }

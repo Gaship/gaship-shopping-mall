@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagResponseDto;
-import shop.gaship.gashipshoppingmall.membertag.entity.MemberTag;
 import shop.gaship.gashipshoppingmall.membertag.service.MemberTagService;
 
 import javax.validation.Valid;
@@ -31,7 +30,7 @@ public class MemberTagController {
      * @return the response entity
      */
     @PostMapping("/members/{memberNo}/tags")
-    public ResponseEntity<Void> MemberTagDeleteAllAndAddAll(@Valid @RequestBody MemberTagRequestDto memberTagRequestDto){
+    public ResponseEntity<Void> MemberTagDeleteAllAndAddAll(@Valid @RequestBody MemberTagRequestDto memberTagRequestDto) {
         memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -45,7 +44,7 @@ public class MemberTagController {
      * @return the response entity
      */
     @GetMapping("/members/{memberNo}/tags")
-    public ResponseEntity<List<MemberTagResponseDto>> MemberTagList(@PathVariable Integer memberNo){
+    public ResponseEntity<List<MemberTagResponseDto>> MemberTagList(@PathVariable Integer memberNo) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(memberTagService.findMemberTags(memberNo));

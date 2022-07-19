@@ -28,7 +28,7 @@ public interface MemberTagService {
      */
     List<MemberTagResponseDto> findMemberTags(Integer memberNo);
 
-    default MemberTagResponseDto entityToDto(MemberTag memberTag){
+    default MemberTagResponseDto entityToDto(MemberTag memberTag) {
         return MemberTagResponseDto
                 .builder()
                 .tag(memberTag.getTag())

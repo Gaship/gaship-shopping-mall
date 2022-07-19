@@ -11,7 +11,7 @@ import java.util.List;
  * @author 최정우
  * @since 1.0
  */
-public interface MemberTagRepository extends JpaRepository<MemberTag,Integer> {
+public interface MemberTagRepository extends JpaRepository<MemberTag, Integer> {
     /**
      * 회원이 기존에 설정한 모든 태그를 지우고 등록하길 원하는 모든 태그를 등록하는 메서드입니다.
      *

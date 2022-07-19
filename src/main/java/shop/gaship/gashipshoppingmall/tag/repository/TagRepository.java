@@ -27,5 +27,5 @@ public interface TagRepository extends JpaRepository<Tag,Integer> {
      * @param tagIds the title
      * @return the List<Tag>
      */
-    List<Tag> findByIdIn(List<Integer> tagIds);
+    List<Tag> findByTagNoIn(List<Integer> tagIds);
 }
