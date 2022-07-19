@@ -44,6 +44,10 @@ public class MemberTagServiceImpl implements MemberTagService {
 
     @Override
     public List<MemberTag> findMemberTags(Integer memberNo) {
-        return null;
+        List<MemberTag> memberTags = memberTagRepository.findAllByMember_MemberNo(memberNo);
+        if (memberTags.size() !=5){
+            throw new IllegalTagSelectionException();
+        }
+        return memberTagRepository.findAllByMember_MemberNo(memberNo);
     }
 }
