@@ -1,6 +1,8 @@
 package shop.gaship.gashipshoppingmall.product.dummy;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
@@ -26,10 +28,10 @@ public class ProductDummy {
                 .build();
     }
 
-    public static Product dummy2(){
+    public static Product dummy2() {
         return Product.builder()
                 .no(null)
-                .category(CategoryDummy.upperDummy())
+                .category(CategoryDummy.bottomDummy())
                 .salesStatus(StatusCodeDummy.dummy())
                 .deliveryType(StatusCodeDummy.dummy())
                 .name("이름")
@@ -46,6 +48,7 @@ public class ProductDummy {
                 .imageLink1("라")
                 .explanation("설명")
                 .productCode("code")
+                .productTags(new ArrayList<>())
                 .build();
     }
 }
