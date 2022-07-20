@@ -7,9 +7,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
@@ -53,53 +55,68 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
     List<ProductTag> productTags = new ArrayList<>();
 
+    @Length(max = 100, message = "상품 이름은 100자 이하여야 합니다.")
     @NotNull
     String name;
 
+    @Min(value = 0, message = "금액은 0보다 커야 합니다.")
     @NotNull
     Long amount;
 
     @NotNull
     LocalDateTime registerDatetime;
 
+    @Length(max = 20, message = "제조사는 20자 이하여야 합니다.")
     @NotNull
     String manufacturer;
 
+    @Length(max = 20, message = "제조국은 20자 이하여야 합니다.")
     @NotNull
     String manufacturerCountry;
 
+    @Length(max = 20, message = "판매자는 20자 이하여야 합니다.")
     @NotNull
     String seller;
 
+    @Length(max = 20, message = "수입자는 20자 이하여야 합니다.")
     @NotNull
     String importer;
 
+    @Min(value = 0, message = "금액은 0 이상이어야 합니다.")
     @NotNull
     Long shippingInstallationCost;
 
+    @Length(max = 255, message = "품질보증기준은 255자 이하여야 합니다.")
     @NotNull
     String qualityAssuranceStandard;
 
     @NotNull
     String color;
 
+    @Min(value = 0, message = "재고량은 0 이상이여야 합니다.")
     @NotNull
     Integer stockQuantity;
 
+    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
     @NotNull
     String imageLink1;
 
+    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
     String imageLink2;
 
+    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
     String imageLink3;
 
+    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
     String imageLink4;
 
+    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
     String imageLink5;
 
     @NotNull
     String explanation;
 
+    @Length(max = 100, message = "제품코드는 100자 이하여야 합니다.")
     @NotNull
     String code;
 

@@ -45,8 +45,4 @@ public class ProductTag {
         private Integer productNo;
         private Integer tagNo;
     }
-
-    public void updateProduct(Product product) {
-        this.product = product;
-    }
 }

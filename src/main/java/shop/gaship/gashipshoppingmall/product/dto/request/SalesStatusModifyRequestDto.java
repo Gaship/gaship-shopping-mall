@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * 상품 판매상태 수정 요청 dto 클래스 입니다.
@@ -16,6 +19,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class SalesStatusModifyRequestDto {
+    @NotNull
     private Integer productNo;
+
+    @Length(max = 20, message = "상태코드명은 20자 이하여야 합니다.")
+    @NotNull
     private String statusCodeName;
 }
