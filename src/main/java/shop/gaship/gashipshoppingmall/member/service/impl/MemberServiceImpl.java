@@ -14,6 +14,7 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -32,6 +33,7 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
  * @see MemberService
  * @author 김민수
  * @author 최겸준
+ * @author 최정우
  * @since 1.0
  */
 @Service
@@ -98,18 +100,14 @@ public class MemberServiceImpl implements MemberService {
      */
     private MemberCreationRequest encodePrivacyUserInformation(
         MemberCreationRequest memberCreationRequest) {
-        memberCreationRequest.setEmail(aes.aesECBEncode(memberCreationRequest.getEmail()));
-        memberCreationRequest.setName(aes.aesECBEncode(memberCreationRequest.getName()));
-
-        if (!Objects.isNull(memberCreationRequest.getPhoneNumber())) {
+            memberCreationRequest.setEmail(aes.aesECBEncode(memberCreationRequest.getEmail()));
+            memberCreationRequest.setName(aes.aesECBEncode(memberCreationRequest.getName()));
             memberCreationRequest.setPhoneNumber(
-            aes.aesECBEncode(memberCreationRequest.getPhoneNumber()));
-        }
+                aes.aesECBEncode(memberCreationRequest.getPhoneNumber()));
+            memberCreationRequest.setPassword(
+                passwordEncoder.encode(memberCreationRequest.getPassword()));
 
-        memberCreationRequest.setPassword(
-            passwordEncoder.encode(memberCreationRequest.getPassword()));
-
-        return memberCreationRequest;
+            return memberCreationRequest;
     }
 
     /**
@@ -122,8 +120,12 @@ public class MemberServiceImpl implements MemberService {
         MemberCreationRequestOauth memberCreationRequestOauth) {
         memberCreationRequestOauth.setEmail(aes.aesECBEncode(memberCreationRequestOauth.getEmail()));
         memberCreationRequestOauth.setName(aes.aesECBEncode(memberCreationRequestOauth.getName()));
-        memberCreationRequestOauth.setPhoneNumber(
-            aes.aesECBEncode(memberCreationRequestOauth.getPhoneNumber()));
+
+        if (!Objects.isNull(memberCreationRequestOauth.getPhoneNumber())) {
+            memberCreationRequestOauth.setPhoneNumber(
+                aes.aesECBEncode(memberCreationRequestOauth.getPhoneNumber()));
+        }
+
         memberCreationRequestOauth.setPassword(
             passwordEncoder.encode(memberCreationRequestOauth.getPassword()));
 
@@ -132,25 +134,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean isAvailableEmail(String email) {
-        try{
+        try {
             findMemberFromEmail(email);
-        } catch (MemberNotFoundException e){
+        } catch (MemberNotFoundException e) {
             return false;
         }
         return true;
     }
 
-    /**
-     * email로 member를 조회하고 memberResponseDto를 반환받기위한 기능입니다.
-     *
-     * @param email 회원을 찾을 매개체
-     * @return MemberResponseDto 조회한 member를 dto로 변경하여 반환합니다.
-     */
     @Override
     public MemberResponseDto findMemberFromEmail(String email) {
         Member member = memberRepository.findByEmail(email)
             .orElseThrow(MemberNotFoundException::new);
-        return entityToDto(member);
+        return entityToMemberResponseDto(member);
     }
 
     @Override
@@ -178,18 +174,24 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto findMember(Integer memberNo) {
-        return entityToDto(memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new));
+        return entityToMemberResponseDto(memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new));
     }
 
     @Override
     public MemberPageResponseDto findMembers(Pageable pageable) {
         Page<Member> page = memberRepository.findAll(pageable);
-        Function<Member,MemberResponseDto> fn = (this::entityToDto);
+        Function<Member,MemberResponseDto> fn = (this::entityToMemberResponseDto);
         return new MemberPageResponseDto<>(page,fn);
     }
 
     @Override
     public Integer findLastNo() {
         return memberRepository.findLastNo();
+    }
+
+    @Override
+    public SignInUserDetailsDto findSignInUserDetailFromEmail(String email) {
+        return memberRepository.findSignInUserDetail(email)
+            .orElseThrow(MemberNotFoundException::new);
     }
 }

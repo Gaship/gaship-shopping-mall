@@ -1,26 +1,26 @@
 package shop.gaship.gashipshoppingmall.member.service;
 
-import org.springframework.lang.Nullable;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
- * member crud를 담당하는 service 입니다.
+ * 회원가입, member crud를 위해서 구현체에 필요한 메서드들을 정의한 인터페이스입니다.
  *
  * @author 최정우
  * @author 최겸준
  * @since 1.0
  */
 public interface MemberService {
-
 
     /**
      * 회원을 등록하는 메서드입니다.
@@ -98,7 +98,7 @@ public interface MemberService {
      * @param member the member
      * @return the member response dto
      */
-    default MemberResponseDto entityToDto(Member member) {
+    default MemberResponseDto entityToMemberResponseDto(Member member) {
         return MemberResponseDto.builder()
                 .email(member.getEmail())
                 .password(member.getPassword())
@@ -167,6 +167,14 @@ public interface MemberService {
             .accumulatePurchaseAmount(0L)
             .build();
     }
+
+    /**
+     * 회원 상세 정보를 이메일을 통해서 조회하는 메서드입니다.
+     *
+     * @param email 이메일입니다.
+     * @return 로그인을 시도하는 회원의 상세 정보 결과입니다.
+     */
+    SignInUserDetailsDto findSignInUserDetailFromEmail(String email);
 
     Integer findLastNo();
 }

@@ -16,16 +16,20 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
+import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.TestPropertySource;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
@@ -38,7 +42,6 @@ import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
-import shop.gaship.gashipshoppingmall.member.service.impl.MemberServiceImpl;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
@@ -54,6 +57,7 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
  * 2022/07/10           김민수               최초 생성                         <br/>
  */
 @SpringBootTest
+@EnableConfigurationProperties(value = DataProtectionConfig.class)
 @Import({DataSourceConfig.class})
 @TestPropertySource(
     value = {"classpath:application.properties", "classpath:application-dev.properties"})
@@ -242,5 +246,34 @@ class MemberServiceTest {
             .findById(any());
         verify(memberRepository, times(1))
             .save(any(Member.class));
+    }
+
+    @Test
+    @DisplayName("이메일을 통해서 로그인을 시도하는 회원의 정보를 조회합니다. : 존재하는 경우")
+    void findSignInUserDetailCaseFounded() {
+        Member dummy = MemberDummy.dummy();
+        given(memberRepository.findSignInUserDetail(anyString()))
+            .willReturn(Optional.of(SignInUserDetailDummy.dummy()));
+
+        SignInUserDetailsDto userDetailsDto =
+            memberService.findSignInUserDetailFromEmail("example@nhn.com");
+
+
+        assertThat(userDetailsDto.getEmail()).isEqualTo(dummy.getEmail());
+        assertThat(userDetailsDto.getHashedPassword()).isEqualTo(dummy.getPassword());
+        assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(dummy.getMemberNo());
+        assertThat(userDetailsDto.getAuthorities()).isEqualTo(List.of(dummy.getMemberGrades().getName()));
+        assertThat(userDetailsDto).isInstanceOf(SignInUserDetailsDto.class);
+    }
+
+    @Test
+    @DisplayName("이메일을 통해서 로그인을 시도하는 회원의 정보를 조회합니다. : 존재하지 않는 경우")
+    void findSignInUserDetailCaseNotFounded() {
+        String expectErrorMessage = "찿고있는 회원의 정보가 존재하지않습니다.";
+        given(memberRepository.findSignInUserDetail(anyString()))
+            .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> memberService.findSignInUserDetailFromEmail("exmaple@nhn.com"))
+            .hasMessage(expectErrorMessage);
     }
 }

@@ -1,8 +1,9 @@
 package shop.gaship.gashipshoppingmall.member.controller;
 
 import java.net.URI;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,14 +17,13 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberNumberPresence;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 /**
  * member 등록, 수정, 삭제, 회원등록과 관련된 요청을 수행하는 restController 입니다.
@@ -45,9 +45,9 @@ public class MemberController {
      */
     @PostMapping("/members")
     public ResponseEntity<Void> memberAdd(
-        @Valid @RequestBody MemberCreationRequest memberCreationRequest) {
+            @Valid @RequestBody MemberCreationRequest memberCreationRequest) {
         if (memberCreationRequest.getIsUniqueEmail() &&
-            memberCreationRequest.getIsVerifiedEmail()) {
+                memberCreationRequest.getIsVerifiedEmail()) {
             memberService.addMember(memberCreationRequest);
             return ResponseEntity.created(URI.create("/members")).body(null);
         }
@@ -62,8 +62,8 @@ public class MemberController {
      */
     @PostMapping(value = "/members", params = "isOauth")
     public ResponseEntity<Void> memberAdd(@RequestBody MemberCreationRequestOauth memberCreationRequestOauth,
-                                          @RequestParam String isOauth) {
-        if (Boolean.parseBoolean(isOauth)){
+            @RequestParam String isOauth) {
+        if (Boolean.parseBoolean(isOauth)) {
             memberService.addMember(memberCreationRequestOauth);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
@@ -89,9 +89,15 @@ public class MemberController {
      */
     @GetMapping(value = "/members/retrieve", params = "nickname")
     public ResponseEntity<MemberNumberPresence> retrieveFromNickname(
-        @RequestParam String nickname) {
+            @RequestParam String nickname) {
         return ResponseEntity.ok(new MemberNumberPresence(
-            memberService.findMemberFromNickname(nickname).getMemberNo()));
+                memberService.findMemberFromNickname(nickname).getMemberNo()));
+    }
+
+    // TODO : 자바독 작성필요
+    @GetMapping(value = "/members/retrieve/user-detail", params = "email")
+    public ResponseEntity<SignInUserDetailsDto> retrieveUserDetail(@RequestParam String email) {
+        return ResponseEntity.ok(memberService.findSignInUserDetailFromEmail(email));
     }
 
     /**
@@ -152,13 +158,12 @@ public class MemberController {
      * @param email 요청받은 email 정보입니다.
      * @return ResponseEntity<MemberResponseDto> 변경된 dto를 entity화시켜서 반환합니다.
      */
-    // TODO : 회원entity에 소셜회원가입여부 추가 true false
     @GetMapping(value = "/members/email/{email}")
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable String email) {
         MemberResponseDto memberResponseDto = memberService.findMemberFromEmail(email);
         return ResponseEntity.status(HttpStatus.OK)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(memberResponseDto);
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(memberResponseDto);
     }
 
     /**

@@ -15,15 +15,15 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.tag.utils
- * fileName       : TestDummy
- * author         : choijungwoo
- * date           : 2022/07/12
- * description    :
+ * packageName : shop.gaship.gashipshoppingmall.tag.utils
+ * fileName : TestDummy
+ * author : choijungwoo
+ * date : 2022/07/12
+ * description :
  * ===========================================================
- * DATE              AUTHOR             NOTE
+ * DATE AUTHOR NOTE
  * -----------------------------------------------------------
- * 2022/07/12        choijungwoo       최초 생성
+ * 2022/07/12 choijungwoo 최초 생성
  */
 
 public class TestDummy {
@@ -32,7 +32,7 @@ public class TestDummy {
     }
 
     public static TagResponseDto CreateTestTagResponseDto(String title) {
-        return new TagResponseDto(title, LocalDateTime.now(), LocalDateTime.now());
+        return new TagResponseDto(null, title, LocalDateTime.now(), LocalDateTime.now());
     }
 
     public static Tag CreateTestTagEntity() {
@@ -58,14 +58,14 @@ public class TestDummy {
     }
 
     public static TagPageResponseDto<TagResponseDto, Tag> CreateTestTagPageResponseDto() {
-        Pageable pageable = PageRequest.of(0,10);
-        Function<Tag, TagResponseDto> fn = (Tag tag)-> (TagResponseDto.builder()
+        Pageable pageable = PageRequest.of(0, 10);
+        Function<Tag, TagResponseDto> fn = (Tag tag) -> (TagResponseDto.builder()
                 .title(tag.getTitle())
                 .registerDatetime(tag.getRegisterDatetime())
                 .modifiedDatetime(tag.getModifiedDatetime())
                 .build());
-        Page<Tag> page = new PageImpl<>(TestDummy.CreateTestTagEntityList(),pageable,100);
+        Page<Tag> page = new PageImpl<>(TestDummy.CreateTestTagEntityList(), pageable, 100);
 
-        return new TagPageResponseDto<>(page,fn);
+        return new TagPageResponseDto<>(page, fn);
     }
 }

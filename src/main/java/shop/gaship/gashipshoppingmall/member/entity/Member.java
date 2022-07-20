@@ -49,6 +49,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberTag> memberTags = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_authority_no", nullable = false)
+    private StatusCode userAuthorityNo;
+
     @Column(unique = true)
     private String email;
 
