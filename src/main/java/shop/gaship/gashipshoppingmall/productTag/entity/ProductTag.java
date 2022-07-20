@@ -1,9 +1,6 @@
 package shop.gaship.gashipshoppingmall.productTag.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
@@ -29,6 +26,7 @@ public class ProductTag {
     @MapsId(value = "productNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no")
+    @Setter
     private Product product;
 
     @MapsId(value = "tagNo")

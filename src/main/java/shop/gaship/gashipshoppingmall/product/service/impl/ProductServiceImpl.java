@@ -28,6 +28,12 @@ import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
+
 import java.util.List;
 
 /**
@@ -40,7 +46,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    private final ProductRepository productRepository;
+    private final ProductRepository repository;
     private final CategoryRepository categoryRepository;
     private final StatusCodeRepository statusCodeRepository;
     private final TagRepository tagRepository;
@@ -66,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
         List<String> imageLinks = FileUploadUtil.uploadFile(PRODUCT_DIR, files);
         product.updateImageLinks(imageLinks);
 
-        productRepository.save(product);
+        repository.save(product);
         addProductTags(product, createRequest.getTagNos());
     }
 
@@ -74,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest)
             throws IOException {
-        Product product = productRepository.findById(modifyRequest.getNo())
+        Product product = repository.findById(modifyRequest.getNo())
                 .orElseThrow(ProductNotFoundException::new);
 
         Category category = categoryRepository.findById(modifyRequest.getCategoryNo())
@@ -88,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
         List<String> imageLinks = FileUploadUtil.uploadFile(PRODUCT_DIR, files);
         product.updateImageLinks(imageLinks);
 
-        productRepository.save(product);
+        repository.save(product);
 
         productTagRepository.deleteAllByPkProductNo(product.getNo());
         addProductTags(product, modifyRequest.getTagNos());
@@ -97,14 +103,14 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public void modifyProductSalesStatus(SalesStatusModifyRequestDto salesStatusModifyRequest) {
-        Product product = productRepository.findById(salesStatusModifyRequest.getProductNo())
+        Product product = repository.findById(salesStatusModifyRequest.getProductNo())
                 .orElseThrow(ProductNotFoundException::new);
         StatusCode salesStatus = statusCodeRepository
                 .findByStatusCodeName(salesStatusModifyRequest.getStatusCodeName())
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         product.updateSalesStatus(salesStatus);
-        productRepository.save(product);
+        repository.save(product);
     }
 
     /**
@@ -125,5 +131,80 @@ public class ProductServiceImpl implements ProductService {
         });
 
         productTagRepository.saveAll(productTags);
+    }
+
+    @Override
+    public PageResponse<ProductAllInfoResponseDto> findProductByCode(String productCode, PageRequest pageRequest) {
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .productCode(productCode)
+                .pageable(pageRequest)
+                .build();
+        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        inputTags(products);
+        return new PageResponse<>(products);
+    }
+
+    @Override
+    public ProductAllInfoResponseDto findProduct(Integer no) {
+        if (repository.findById(no).isEmpty()) {
+            throw new ProductNotFoundException();
+        }
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .productNo(no)
+                .build();
+        Page<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
+        inputTags(product);
+
+        return product.getContent().get(0);
+    }
+
+    @Override
+    public PageResponse<ProductAllInfoResponseDto> findProductByPrice(Long min, Long max, Integer page, Integer size) {
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .minAmount(min)
+                .maxAmount(max)
+                .pageable(PageRequest.of(page, size))
+                .build();
+        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        inputTags(products);
+        return new PageResponse<>(products);
+    }
+
+    @Override
+    public PageResponse<ProductAllInfoResponseDto> findProductByCategory(Integer no, Integer page, Integer size) {
+        categoryRepository.findById(no).orElseThrow(CategoryNotFoundException::new);
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .categoryNo(no)
+                .pageable(PageRequest.of(page, size))
+                .build();
+        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        inputTags(products);
+        return new PageResponse<>(products);
+    }
+
+    @Override
+    public PageResponse<ProductAllInfoResponseDto> findProductByName(String name, Integer page, Integer size) {
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .productName(name)
+                .pageable(PageRequest.of(page, size))
+                .build();
+        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        inputTags(products);
+        return new PageResponse<>(products);
+    }
+
+    @Override
+    public PageResponse<ProductAllInfoResponseDto> findProductsInfo(Integer page, Integer size) {
+        ProductRequestDto requestDto = new ProductRequestDto();
+        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        inputTags(products);
+        return new PageResponse<>(products);
+    }
+
+    private void inputTags(Page<ProductAllInfoResponseDto> products) {
+        products.forEach(p -> {
+            List<Tag> tag = productTagRepository.findTagByProductNo(p.getProductNo());
+            tag.forEach(t -> p.getTags().add(t.getTitle()));
+        });
     }
 }

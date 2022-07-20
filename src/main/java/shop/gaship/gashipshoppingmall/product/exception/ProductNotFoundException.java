@@ -1,13 +1,13 @@
 package shop.gaship.gashipshoppingmall.product.exception;
 
 /**
- * 상품을 찾을 수 없을 때 던질 예외 입니다.
+ * 제품이 존재하지않을경우 예외 발생
  *
- * @author : 김보민
+ * @author : 유호철
  * @since 1.0
  */
-public class ProductNotFoundException extends RuntimeException{
-    private static final String MESSAGE = "상품을 찾을 수 없습니다.";
+public class ProductNotFoundException extends RuntimeException {
+    private static final String MESSAGE = "제품이 존재하지않습니다.";
 
     public ProductNotFoundException() {
         super(MESSAGE);

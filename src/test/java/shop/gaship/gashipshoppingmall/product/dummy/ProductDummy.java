@@ -8,6 +8,7 @@ import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 
 public class ProductDummy {
 
@@ -71,5 +72,29 @@ public class ProductDummy {
                 List.of(),
                 "A001"
         );
+    }
+
+    public static Product dummy2() {
+        return Product.builder()
+                .no(null)
+                .category(CategoryDummy.bottomDummy())
+                .salesStatus(StatusCodeDummy.dummy())
+                .deliveryType(StatusCodeDummy.dummy())
+                .name("이름")
+                .amount(1000L)
+                .registerDatetime(LocalDateTime.now())
+                .manufacturer("ㅇㅇ")
+                .manufacturerCountry("ㅇㅇ")
+                .seller("가")
+                .importer("나")
+                .shippingInstallationCost(1L)
+                .qualityAssuranceStandard("다")
+                .color("빨강")
+                .stockQuantity(1)
+                .imageLink1("라")
+                .explanation("설명")
+                .code("code")
+                .productTags(new ArrayList<>())
+                .build();
     }
 }

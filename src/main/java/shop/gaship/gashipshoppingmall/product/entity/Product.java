@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.product.entity;
 
-import java.awt.image.Kernel;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,8 +14,8 @@ import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
-import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
  * 상품 엔티티 클래스 입니다.
@@ -29,97 +28,98 @@ import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
 @NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
+@Builder
 @Table(name = "products")
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_no")
-    Integer no;
+    private Integer no;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_no")
-    Category category;
+    private Category category;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "delivery_type_no")
-    StatusCode deliveryType;
+    private StatusCode deliveryType;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sales_status_no")
-    StatusCode salesStatus;
+    private StatusCode salesStatus;
 
-    @NotNull
-    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
-    List<ProductTag> productTags = new ArrayList<>();
+    @OneToMany(mappedBy = "product")
+    private List<ProductTag> productTags = new ArrayList<>();
 
     @Length(max = 100, message = "상품 이름은 100자 이하여야 합니다.")
     @NotNull
-    String name;
+    private String name;
 
     @Min(value = 0, message = "금액은 0보다 커야 합니다.")
     @NotNull
     Long amount;
 
     @NotNull
-    LocalDateTime registerDatetime;
+    private LocalDateTime registerDatetime;
 
     @Length(max = 20, message = "제조사는 20자 이하여야 합니다.")
     @NotNull
-    String manufacturer;
+    private String manufacturer;
 
     @Length(max = 20, message = "제조국은 20자 이하여야 합니다.")
     @NotNull
-    String manufacturerCountry;
+    private String manufacturerCountry;
 
     @Length(max = 20, message = "판매자는 20자 이하여야 합니다.")
     @NotNull
-    String seller;
+    private String seller;
 
     @Length(max = 20, message = "수입자는 20자 이하여야 합니다.")
     @NotNull
-    String importer;
+    private String importer;
 
     @Min(value = 0, message = "금액은 0 이상이어야 합니다.")
     @NotNull
-    Long shippingInstallationCost;
+    private Long shippingInstallationCost;
 
     @Length(max = 255, message = "품질보증기준은 255자 이하여야 합니다.")
     @NotNull
-    String qualityAssuranceStandard;
+    private String qualityAssuranceStandard;
 
     @NotNull
-    String color;
+    private String color;
 
     @Min(value = 0, message = "재고량은 0 이상이여야 합니다.")
     @NotNull
-    Integer stockQuantity;
+    private Integer stockQuantity;
 
     @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
     @NotNull
-    String imageLink1;
+    private String imageLink1;
 
     @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    String imageLink2;
+    private String imageLink2;
 
     @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    String imageLink3;
+    private String imageLink3;
 
     @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    String imageLink4;
+    private String imageLink4;
 
     @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    String imageLink5;
+    private String imageLink5;
 
     @NotNull
-    String explanation;
+    private String explanation;
 
     @Length(max = 100, message = "제품코드는 100자 이하여야 합니다.")
     @NotNull
     @Column(name = "product_code", unique = true)
-    String code;
+    private String code;
 
     @Builder
     public Product(Category category, StatusCode deliveryType, String name,
@@ -242,4 +242,10 @@ public class Product {
 
         return imageLinks;
     }
+    
+    public void add(ProductTag productTag) {
+        productTag.setProduct(this);
+        productTags.add(productTag);
+    }
+
 }

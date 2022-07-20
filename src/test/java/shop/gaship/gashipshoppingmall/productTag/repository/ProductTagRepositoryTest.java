@@ -6,11 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
+import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
+import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 
@@ -36,7 +40,14 @@ class ProductTagRepositoryTest {
     @Autowired
     TagRepository tagRepository;
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
+    StatusCodeRepository statusCodeRepository;
+
     private ProductTag productTag;
+
 
     @BeforeEach
     void setUp() {
@@ -79,4 +90,28 @@ class ProductTagRepositoryTest {
         assertThat(productNo).isNotNull();
         assertThat(productTagRepository.findById(pk)).isEmpty();
     }
+
+    @DisplayName("제품번호로 테그조회테스트")
+    @Test
+    void productNoTest() {
+        statusCodeRepository.save(StatusCodeDummy.dummy());
+        categoryRepository.save(CategoryDummy.dummy());
+        categoryRepository.save(CategoryDummy.upperDummy());
+        categoryRepository.save(CategoryDummy.bottomDummy());
+        Tag tag = new Tag(null, "title");
+        tagRepository.save(tag);
+
+        Product product = ProductDummy.dummy2();
+        ProductTag productTag = new ProductTag(new ProductTag.Pk(product.getNo(), tag.getTagNo()), product, tag);
+        product.add(productTag);
+
+        productRepository.save(product);
+        productTagRepository.save(productTag);
+
+        List<Tag> result = productTagRepository.findTagByProductNo(product.getNo());
+
+        assertThat(result.get(0).getTagNo()).isEqualTo(tag.getTagNo());
+        assertThat(result.get(0).getTitle()).isEqualTo(tag.getTitle());
+    }
+
 }
