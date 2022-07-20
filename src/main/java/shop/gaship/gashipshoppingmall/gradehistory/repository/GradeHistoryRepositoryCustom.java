@@ -12,5 +12,12 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
  * @since 1.0
  */
 public interface GradeHistoryRepositoryCustom {
-    Page<GradeHistoryResponseDto> getGradeHistoriesByMember(Member member, PageRequest of);
+    /**
+     * Gets grade histories by member.
+     *
+     * @param member 조회하려는 등급이력 대상 회원 (Member)
+     * @param pageRequest 페이지 요청 (PageRequest)
+     * @return the grade histories by member
+     */
+    Page<GradeHistoryResponseDto> getGradeHistoriesByMember(Member member, PageRequest pageRequest);
 }

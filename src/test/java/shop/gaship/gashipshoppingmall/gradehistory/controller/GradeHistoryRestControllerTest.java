@@ -16,8 +16,6 @@ import shop.gaship.gashipshoppingmall.gradehistory.dto.request.GradeHistoryFindR
 import shop.gaship.gashipshoppingmall.gradehistory.dto.response.GradeHistoryResponseDto;
 import shop.gaship.gashipshoppingmall.gradehistory.dummy.GradeHistoryDtoDummy;
 import shop.gaship.gashipshoppingmall.gradehistory.service.GradeHistoryService;
-import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 
