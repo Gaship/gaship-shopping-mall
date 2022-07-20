@@ -10,7 +10,11 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyR
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.exception.*;
+import shop.gaship.gashipshoppingmall.membergrade.exception.AccumulateAmountIsOverlap;
+import shop.gaship.gashipshoppingmall.membergrade.exception.CannotDeleteDefaultMemberGrade;
+import shop.gaship.gashipshoppingmall.membergrade.exception.DefaultMemberGradeIsExist;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
@@ -21,8 +25,8 @@ import shop.gaship.gashipshoppingmall.statuscode.status.RenewalPeriod;
  * 회원등급 Service 구현체.
  *
  * @author : 김세미
- * @since 1.0
  * @see shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService
+ * @since 1.0
  */
 @RequiredArgsConstructor
 @Service
@@ -35,8 +39,8 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     @Override
     public void addMemberGrade(MemberGradeAddRequestDto request) {
         StatusCode renewalPeriod = statusCodeRepository
-                .findByGroupCodeName(RenewalPeriod.GROUP)
-                .orElseThrow(StatusCodeNotFoundException::new);
+            .findByGroupCodeName(RenewalPeriod.GROUP)
+            .orElseThrow(StatusCodeNotFoundException::new);
 
         checkOverlapAccumulateAmount(request.getAccumulateAmount());
 
@@ -52,8 +56,8 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     @Override
     public void modifyMemberGrade(MemberGradeModifyRequestDto request) {
         MemberGrade memberGrade = memberGradeRepository
-                .findById(request.getNo())
-                .orElseThrow(MemberGradeNotFoundException::new);
+            .findById(request.getNo())
+            .orElseThrow(MemberGradeNotFoundException::new);
 
         if (!memberGrade.getAccumulateAmount().equals(request.getAccumulateAmount())) {
             checkOverlapAccumulateAmount(request.getAccumulateAmount());
@@ -68,8 +72,8 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     @Override
     public void removeMemberGrade(Integer memberGradeNo) {
         MemberGrade memberGrade = memberGradeRepository
-                .findById(memberGradeNo)
-                .orElseThrow(MemberGradeNotFoundException::new);
+            .findById(memberGradeNo)
+            .orElseThrow(MemberGradeNotFoundException::new);
 
         if (memberGrade.isDefault()) {
             throw new CannotDeleteDefaultMemberGrade();
@@ -85,13 +89,13 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     @Override
     public MemberGradeResponseDto findMemberGrade(Integer memberGradeNo) {
         return memberGradeRepository.getMemberGradeBy(memberGradeNo)
-                .orElseThrow(MemberGradeNotFoundException::new);
+            .orElseThrow(MemberGradeNotFoundException::new);
     }
 
     @Override
     public PageResponseDto<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
         return new PageResponseDto<>(memberGradeRepository
-                .getMemberGrades(pageable));
+            .getMemberGrades(pageable));
     }
 
     /**

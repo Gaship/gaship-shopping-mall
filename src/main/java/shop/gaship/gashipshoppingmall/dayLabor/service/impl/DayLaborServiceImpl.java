@@ -1,7 +1,9 @@
 package shop.gaship.gashipshoppingmall.dayLabor.service.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
@@ -12,14 +14,11 @@ import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.dayLabor.service.DayLaborService;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
 
-import javax.transaction.Transactional;
-import java.util.List;
-
 /**
  * 서비스레이어에서 지역별물량을 사용하기위한 구현체입니다.
  *
- * @see DayLaborService
  * @author : 유호철
+ * @see DayLaborService
  * @since 1.0
  */
 @Service
@@ -51,14 +50,14 @@ public class DayLaborServiceImpl implements DayLaborService {
     /**
      * 지역별물량을 수정하기위한 메서드입니다.
      *
-     *
      * @param fixDto 수정할 지역정보와 물량이 들어있습니다
      * @author 유호철
      */
     @Transactional
     @Override
     public void modifyDayLabor(FixDayLaborRequestDto fixDto) {
-        DayLabor dayLabor = repository.findById(fixDto.getLocalNo()).orElseThrow(NotExistDayLabor::new);
+        DayLabor dayLabor =
+            repository.findById(fixDto.getLocalNo()).orElseThrow(NotExistDayLabor::new);
         dayLabor.fixMaxLabor(fixDto);
     }
 

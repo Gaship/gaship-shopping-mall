@@ -1,6 +1,11 @@
 package shop.gaship.gashipshoppingmall.statuscode.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -58,7 +63,8 @@ public class StatusCode {
     }
 
     @Builder(builderMethodName = "allBuilder")
-    public StatusCode(Integer statusCodeNo, String statusCodeName, Boolean isUsed, Integer priority, String groupCodeName, String explanation) {
+    public StatusCode(Integer statusCodeNo, String statusCodeName, Boolean isUsed, Integer priority,
+                      String groupCodeName, String explanation) {
         this.statusCodeNo = statusCodeNo;
         this.statusCodeName = statusCodeName;
         this.isUsed = isUsed;

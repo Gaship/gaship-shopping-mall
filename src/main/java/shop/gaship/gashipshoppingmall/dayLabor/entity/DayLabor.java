@@ -1,12 +1,17 @@
 package shop.gaship.gashipshoppingmall.dayLabor.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-
-import javax.persistence.*;
 
 /**
  * 실제 데이터베이스에있는 지역별물량을 사용하기위한 클래스입니다.
@@ -20,7 +25,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "day_labor")
 public class DayLabor {
-
     @Id
     @Column(name = "address_local_no")
     private Integer addressNo;

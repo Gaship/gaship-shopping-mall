@@ -1,5 +1,8 @@
 package shop.gaship.gashipshoppingmall.employee.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
@@ -15,10 +18,6 @@ import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
-
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 서비스레이어에서 직원에대한 요청을 사용하기위한 구현체 클래스입니다.
@@ -51,9 +50,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void addEmployee(CreateEmployeeRequestDto dto) {
 
         StatusCode statusCode = statusCodeRepository.findById(dto.getAuthorityNo())
-                .orElseThrow(WrongStatusCodeException::new);
+            .orElseThrow(WrongStatusCodeException::new);
         AddressLocal addressLocal = localRepository.findById(dto.getAddressNo())
-                .orElseThrow(WrongAddressException::new);
+            .orElseThrow(WrongAddressException::new);
 
         Employee employee = new Employee();
         employee.registerEmployee(dto);
@@ -74,7 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public void modifyEmployee(ModifyEmployeeRequestDto dto) {
         Employee employee = repository.findById(dto.getEmployeeNo())
-                .orElseThrow(EmployeeNotFoundException::new);
+            .orElseThrow(EmployeeNotFoundException::new);
         employee.modifyEmployee(dto);
     }
 
@@ -89,9 +88,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeInfoResponseDto findEmployee(Integer employeeNo) {
         Employee employee = repository.findById(employeeNo)
-                .orElseThrow(EmployeeNotFoundException::new);
+            .orElseThrow(EmployeeNotFoundException::new);
 
-        return new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(), employee.getPhoneNo());
+        return new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(),
+            employee.getPhoneNo());
     }
 
     /**
@@ -103,8 +103,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<EmployeeInfoResponseDto> findEmployees() {
         return repository.findAll()
-                .stream()
-                .map(employee -> new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(), employee.getPhoneNo()))
-                .collect(Collectors.toList());
+            .stream()
+            .map(employee -> new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(),
+                employee.getPhoneNo()))
+            .collect(Collectors.toList());
     }
 }

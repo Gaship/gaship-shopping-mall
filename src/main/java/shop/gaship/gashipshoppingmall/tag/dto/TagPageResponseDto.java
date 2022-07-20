@@ -1,13 +1,12 @@
 package shop.gaship.gashipshoppingmall.tag.dto;
 
-import lombok.Getter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import lombok.Getter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * 태그 리스트 요청을 한 후 반환값에 담기는 정보를 담는 dto 입니다.
@@ -41,7 +40,7 @@ public class TagPageResponseDto<D, E> {
     //페이지 번호  목록
     private List<Integer> pageList;
 
-    public TagPageResponseDto(Page<E> result, Function<E,D> fn ){
+    public TagPageResponseDto(Page<E> result, Function<E, D> fn) {
 
         dtoList = result.stream().map(fn).collect(Collectors.toList());
 
@@ -51,13 +50,12 @@ public class TagPageResponseDto<D, E> {
     }
 
 
-    private void makePageList(Pageable pageable){
-
+    private void makePageList(Pageable pageable) {
         this.page = pageable.getPageNumber() + 1; // 0부터 시작하므로 1을 추가
         this.size = pageable.getPageSize();
 
         //temp end page
-        int tempEnd = (int)(Math.ceil(page/10.0)) * 10;
+        int tempEnd = (int) (Math.ceil(page / 10.0)) * 10;
 
         start = tempEnd - 9;
 

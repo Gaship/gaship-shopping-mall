@@ -1,10 +1,10 @@
 package shop.gaship.gashipshoppingmall.dayLabor.service;
 
+import java.util.List;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
 
-import java.util.List;
 
 /**
  * 지역별 물량을 서비스레이어에 사용하기위한 인터페이스입니다.

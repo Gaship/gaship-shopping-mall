@@ -1,5 +1,8 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.service.impl;
 
+import java.time.LocalDate;
+import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,10 +19,6 @@ import shop.gaship.gashipshoppingmall.repairSchedule.exception.AlreadyExistSched
 import shop.gaship.gashipshoppingmall.repairSchedule.exception.NotExistSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.repository.RepairScheduleRepository;
 import shop.gaship.gashipshoppingmall.repairSchedule.service.RepairScheduleService;
-
-import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.repairSechedule.service.impl fileName       :
@@ -44,14 +43,14 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
         }
 
         DayLabor dayLabor = dayLaborRepository.findById(dto.getLabor())
-                .orElseThrow(NotExistDayLabor::new);
+            .orElseThrow(NotExistDayLabor::new);
 
         repository.save(
-                RepairSchedule.builder()
-                        .pk(new RepairSchedulePk(dto.getDate(), dto.getLocalNo()))
-                        .labor(dto.getLabor())
-                        .dayLabor(dayLabor)
-                        .build()
+            RepairSchedule.builder()
+                .pk(new RepairSchedulePk(dto.getDate(), dto.getLocalNo()))
+                .labor(dto.getLabor())
+                .dayLabor(dayLabor)
+                .build()
         );
     }
 
@@ -59,8 +58,8 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
     @Override
     public void modifyRepairSchedule(ModifyScheduleRequestDto modify) {
         RepairSchedule repairSchedule = repository.findByPk(modify.getLocalNo(),
-                        modify.getDate())
-                .orElseThrow(NotExistSchedule::new);
+                modify.getDate())
+            .orElseThrow(NotExistSchedule::new);
 
         repairSchedule.fixLabor(modify.getLabor());
     }
