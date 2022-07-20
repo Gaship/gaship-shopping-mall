@@ -9,6 +9,7 @@ import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundExcepti
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
@@ -26,6 +27,7 @@ import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -92,12 +94,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Transactional
+    @Override
+    public void modifyProductSalesStatus(SalesStatusModifyRequestDto salesStatusModifyRequest) {
+        Product product = productRepository.findById(salesStatusModifyRequest.getProductNo())
+                .orElseThrow(ProductNotFoundException::new);
+        StatusCode salesStatus = statusCodeRepository
+                .findByStatusCodeName(salesStatusModifyRequest.getStatusCodeName())
+                .orElseThrow(StatusCodeNotFoundException::new);
+
+        product.updateSalesStatus(salesStatus);
+        productRepository.save(product);
+    }
+
+    @Transactional
     public void addProductTags(Product product, List<Integer> tagNos) {
+        List<ProductTag> productTags = new ArrayList<>();
+
         tagNos.forEach(tagNo -> {
             Tag tag = tagRepository.findById(tagNo).orElseThrow(TagNotFoundException::new);
 
             ProductTag.Pk pk = new ProductTag.Pk(product.getNo(), tagNo);
-            product.addProductTag(new ProductTag(pk, product, tag));
+            productTags.add(new ProductTag(pk, product, tag));
         });
+
+        productTagRepository.saveAll(productTags);
     }
 }

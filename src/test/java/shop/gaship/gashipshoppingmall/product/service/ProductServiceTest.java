@@ -14,6 +14,7 @@ import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
@@ -128,5 +129,29 @@ class ProductServiceTest {
                 .isInstanceOf(ProductNotFoundException.class);
 
         verify(productRepository).findById(productNo);
+    }
+
+    @DisplayName("상품 상태 수정 성공")
+    @Test
+    void modifyProductSalesStatus() {
+        SalesStatusModifyRequestDto salesStatusModifyRequest = new SalesStatusModifyRequestDto(
+                1, SalesStatus.SOLD_OUT.getValue()
+        );
+        StatusCode statusCode = new StatusCode(
+                SalesStatus.SOLD_OUT.getValue(), 1, SalesStatus.GROUP, "");
+        Product product = ProductDummy.dummy();
+        ReflectionTestUtils.setField(product, "no", salesStatusModifyRequest.getProductNo());
+
+        when(productRepository.findById(salesStatusModifyRequest.getProductNo()))
+                .thenReturn(Optional.of(product));
+        when(statusCodeRepository.findByStatusCodeName(salesStatusModifyRequest.getStatusCodeName()))
+                .thenReturn(Optional.of(statusCode));
+
+        productService.modifyProductSalesStatus(salesStatusModifyRequest);
+
+        verify(productRepository)
+                .findById(salesStatusModifyRequest.getProductNo());
+        verify(statusCodeRepository)
+                .findByStatusCodeName(salesStatusModifyRequest.getStatusCodeName());
     }
 }

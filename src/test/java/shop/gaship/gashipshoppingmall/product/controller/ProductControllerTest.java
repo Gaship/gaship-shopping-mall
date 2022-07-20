@@ -16,8 +16,10 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
+import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -93,6 +95,24 @@ class ProductControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(result -> assertThat(result.getResponse().getContentAsString()).isEmpty())
                 .andDo(print());
+    }
+
+    @DisplayName("상품 판매상태 수정 put 요청")
+    @Test
+    void salesStatusModify() throws Exception {
+        SalesStatusModifyRequestDto salesStatusModifyRequest = new SalesStatusModifyRequestDto(
+                1, SalesStatus.SOLD_OUT.getValue());
+
+        doNothing().when(productService).modifyProductSalesStatus(salesStatusModifyRequest);
+
+        mockMvc.perform(put("/products/salesStatus")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(salesStatusModifyRequest)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
+
+        verify(productService).modifyProductSalesStatus(salesStatusModifyRequest);
     }
 
     private MockMultipartHttpServletRequestBuilder multipartPutBuilder(String url) {
