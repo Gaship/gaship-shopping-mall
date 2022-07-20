@@ -11,8 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
+import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
@@ -22,10 +25,10 @@ import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
 import shop.gaship.gashipshoppingmall.productTag.repository.ProductTagRepository;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,69 +65,100 @@ class ProductServiceTest {
     ProductResponseDto responseDto;
 
     Product product;
+    ProductAllInfoResponseDto response;
+    Tag tag;
+    Page<ProductAllInfoResponseDto> page;
+    PageRequest pageRequest;
+
+    Category category;
 
     @BeforeEach
     void setUp() {
+        category = CategoryDummy.bottomDummy();
         product = ProductDummy.dummy2();
         responseDto = ProductResponseDtoDummy.dummy();
+        response = new ProductAllInfoResponseDto(1, "a", "d", "카테", 100L, LocalDateTime.now(), "아", "한국", "판매원", "가나다라", 100L, "w", "#RRRR", 1, "img", null, null, null, null, "설명", 3, "카테");
+        tag = new Tag(1, "title");
+        response.getTags().add(tag.getTitle());
+        pageRequest = PageRequest.of(0, 10);
+        page = new PageImpl(List.of(response), pageRequest, 1);
     }
 
     @DisplayName("상품코드로 다건 조회하기")
     @Test
     void productFindByCodeTest() {
         //given
-        given(repository.findByCode(responseDto.getProductCode()))
-                .willReturn(List.of(responseDto));
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .productCode(product.getProductCode())
+                .pageable(pageRequest)
+                .build();
+
+        given(repository.findProduct(requestDto))
+                .willReturn(page);
+        given(productTagRepository.findTagByProductNo(any()))
+                .willReturn(List.of(tag));
         //when
-        List<ProductResponseDto> result
-                = service.findProductByCode(responseDto.getProductCode());
+
+        PageResponse<ProductAllInfoResponseDto> result = service.findProductByCode(requestDto.getProductCode(), pageRequest);
 
         //then
         verify(repository, times(1))
-                .findByCode(any());
-        checkDtoList(result.get(0));
-    }
+                .findProduct(requestDto);
 
-    @DisplayName("상품전체조회 페이징")
-    @Test
-    void productFindAllPage() {
-        //given
-        List<ProductResponseDto> list = new ArrayList<>();
-        list.add(responseDto);
-        PageRequest req = PageRequest.of(1, 10);
-        Page<ProductResponseDto> pages = new PageImpl<>(list, req, list.size());
+        checkContent(result);
 
-        given(repository.findAllPage(any()))
-                .willReturn(pages);
-
-        //when
-        Page<ProductResponseDto> result = service.findProducts(req.getPageNumber(), req.getPageSize());
-
-        assertThat(result.getTotalPages()).isEqualTo(pages.getTotalPages());
-        assertThat(result.getSize()).isEqualTo(req.getPageSize());
     }
 
     @DisplayName("상품단건 조회 테스트")
     @Test
     void productFindOneTest() {
         //given
-        given(repository.findByProductNo(any()))
-                .willReturn(Optional.of(responseDto));
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .productNo(response.getProductNo())
+                .build();
 
+        given(repository.findById(response.getProductNo()))
+                .willReturn(Optional.of(product));
+        given(repository.findProduct(requestDto))
+                .willReturn(page);
+        given(productTagRepository.findTagByProductNo(response.getProductNo()))
+                .willReturn(List.of(tag));
         //when
-        ProductResponseDto result = service.findProduct(responseDto.getNo());
-
+        ProductAllInfoResponseDto result = service.findProduct(requestDto.getProductNo());
         //then
         verify(repository, times(1))
-                .findByProductNo(any());
-        checkDtoList(result);
+                .findById(any());
+
+        verify(repository, times(1))
+                .findProduct(any());
+
+        verify(productTagRepository, times(1))
+                .findTagByProductNo(tag.getTagNo());
+
+        assertThat(result.getUpperName()).isEqualTo(response.getUpperName());
+        assertThat(result.getProductNo()).isEqualTo(response.getProductNo());
+        assertThat(result.getProductName()).isEqualTo(response.getProductName());
+        assertThat(result.getProductCode()).isEqualTo(response.getProductCode());
+        assertThat(result.getCategoryName()).isEqualTo(response.getCategoryName());
+        assertThat(result.getAmount()).isEqualTo(response.getAmount());
+        assertThat(result.getCountry()).isEqualTo(response.getCountry());
+        assertThat(result.getManufacturer()).isEqualTo(response.getManufacturer());
+        assertThat(result.getColor()).isEqualTo(response.getColor());
+        assertThat(result.getQuality()).isEqualTo(response.getQuality());
+        assertThat(result.getQuantity()).isEqualTo(response.getQuantity());
+        assertThat(result.getImg1()).isEqualTo(response.getImg1());
+        assertThat(result.getImg2()).isEqualTo(response.getImg2());
+        assertThat(result.getImg3()).isEqualTo(response.getImg3());
+        assertThat(result.getImg4()).isEqualTo(response.getImg4());
+        assertThat(result.getImg5()).isEqualTo(response.getImg5());
+        assertThat(result.getLevel()).isEqualTo(response.getLevel());
     }
 
     @DisplayName("상품 단건 조회테스트 실패")
     @Test
     void productFineOneTestFail() {
         //given
-        given(repository.findByProductNo(any()))
+        given(repository.findById(any()))
                 .willReturn(Optional.empty());
 
         //when & then
@@ -136,17 +170,29 @@ class ProductServiceTest {
     @Test
     void productFindByPrice() {
         //given
-        given(repository.findByPrice(0L, responseDto.getAmount()))
-                .willReturn(List.of(responseDto));
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .minAmount(0L)
+                .maxAmount(product.getAmount())
+                .pageable(PageRequest.of(0, 10))
+                .build();
+
+        given(repository.findProduct(requestDto))
+                .willReturn(page);
+
+        given(productTagRepository.findTagByProductNo(any()))
+                .willReturn(List.of(tag));
 
         //when
-        List<ProductResponseDto> result = service.findProductByPrice(0L, responseDto.getAmount());
+        service.findProductByPrice(0L, product.getAmount(),
+                pageRequest.getPageNumber(), pageRequest.getPageSize());
 
         //then
         verify(repository, times(1))
-                .findByPrice(any(Long.class), any(Long.class));
+                .findProduct(any());
 
-        checkDtoList(result.get(0));
+        verify(productTagRepository, times(1))
+                .findTagByProductNo(any());
+
     }
 
     @DisplayName("카테고리 번호로 조회하기 실패")
@@ -155,10 +201,9 @@ class ProductServiceTest {
         //given
         given(categoryRepository.findById(responseDto.getNo()))
                 .willReturn(Optional.empty());
-        given(repository.findProductByCategory(responseDto.getNo()))
-                .willReturn(List.of(responseDto));
         //when
-        assertThatThrownBy(() -> service.findProductByCategory(responseDto.getNo()))
+        assertThatThrownBy(() -> service.findProductByCategory(responseDto.getNo(),
+                pageRequest.getPageNumber(), pageRequest.getPageSize()))
                 .isInstanceOf(CategoryNotFoundException.class);
     }
 
@@ -166,70 +211,88 @@ class ProductServiceTest {
     @Test
     void productFindByCategorySuccess() {
         //given
-        given(categoryRepository.findById(product.getCategory().getNo()))
-                .willReturn(Optional.of(product.getCategory()));
-        given(repository.findProductByCategory(product.getCategory().getNo()))
-                .willReturn(List.of(responseDto));
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .categoryNo(1)
+                .pageable(pageRequest)
+                .build();
+
+        given(repository.findProduct(requestDto))
+                .willReturn(page);
+        given(productTagRepository.findTagByProductNo(any()))
+                .willReturn(List.of(tag));
+        given(categoryRepository.findById(any()))
+                .willReturn(Optional.of(category));
 
         //when
-        List<ProductResponseDto> result = service.findProductByCategory(product.getCategory().getNo());
+        PageResponse<ProductAllInfoResponseDto> result = service.findProductByCategory(1, pageRequest.getPageNumber(), pageRequest.getPageSize());
 
         //then
-        verify(repository, times(1)).findProductByCategory(any());
+        verify(repository, times(1)).findProduct(any());
+        verify(productTagRepository, times(1)).findTagByProductNo(tag.getTagNo());
+        verify(categoryRepository, times(1)).findById(any());
 
-        checkDtoList(result.get(0));
+        checkContent(result);
     }
 
     @DisplayName("제품이름으로 조회하기")
     @Test
     void productFindByProductName() {
         //given
-        given(repository.findByProductName(product.getName()))
-                .willReturn(List.of(responseDto));
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .productName(response.getProductName())
+                .pageable(pageRequest)
+                .build();
+
+        given(repository.findProduct(requestDto))
+                .willReturn(page);
+        given(productTagRepository.findTagByProductNo(any()))
+                .willReturn(List.of(tag));
 
         //when
-        List<ProductResponseDto> result = service.findProductByName(product.getName());
-
+        PageResponse<ProductAllInfoResponseDto> result = service.findProductByName(response.getProductName(), pageRequest.getPageNumber(), pageRequest.getPageSize());
         //then
-        verify(repository, times(1)).findByProductName(any());
+        verify(repository, times(1)).findProduct(any());
+        verify(productTagRepository, times(1)).findTagByProductNo(tag.getTagNo());
 
-        checkDtoList(result.get(0));
+        checkContent(result);
     }
 
     @DisplayName("조건들을 통해 제품들 조회하기")
     @Test
     void findProductInfo() {
         //given
-        ProductAllInfoResponseDto response = new ProductAllInfoResponseDto(1, "a", "d", "카테", 100L, LocalDateTime.now(), "아", "한국", "판매원", "가나다라", 100L, "w", "#RRRR", 1, "img", null, null, null, null, "설명", 3, "카테");
-        Tag tag = new Tag(1, "title");
-        response.getTags().add(tag.getTitle());
-        given(repository.findProduct(null, null, 0, 0L, 0L, 0, null))
-                .willReturn(List.of(response));
+        ProductRequestDto requestDto = new ProductRequestDto();
+        given(repository.findProduct(requestDto))
+                .willReturn(page);
         given(productTagRepository.findTagByProductNo(any()))
                 .willReturn(List.of(tag));
         //when
-        List<ProductAllInfoResponseDto> result = service.findProductsInfo();
+        PageResponse<ProductAllInfoResponseDto> result = service.findProductsInfo(pageRequest.getPageNumber(), pageRequest.getPageSize());
 
         //then
-        verify(repository, times(1)).findProduct(null, null, 0, 0L, 0L, 0, null);
+        verify(repository, times(1)).findProduct(requestDto);
 
-        assertThat(result.get(0).getUpperName()).isEqualTo(response.getUpperName());
-        assertThat(result.get(0).getProductNo()).isEqualTo(response.getProductNo());
-        assertThat(result.get(0).getProductName()).isEqualTo(response.getProductName());
-        assertThat(result.get(0).getProductCode()).isEqualTo(response.getProductCode());
-        assertThat(result.get(0).getCategoryName()).isEqualTo(response.getCategoryName());
-        assertThat(result.get(0).getAmount()).isEqualTo(response.getAmount());
-        assertThat(result.get(0).getCountry()).isEqualTo(response.getCountry());
-        assertThat(result.get(0).getManufacturer()).isEqualTo(response.getManufacturer());
-        assertThat(result.get(0).getColor()).isEqualTo(response.getColor());
-        assertThat(result.get(0).getQuality()).isEqualTo(response.getQuality());
-        assertThat(result.get(0).getQuantity()).isEqualTo(response.getQuantity());
-        assertThat(result.get(0).getImg1()).isEqualTo(response.getImg1());
-        assertThat(result.get(0).getImg2()).isEqualTo(response.getImg2());
-        assertThat(result.get(0).getImg3()).isEqualTo(response.getImg3());
-        assertThat(result.get(0).getImg4()).isEqualTo(response.getImg4());
-        assertThat(result.get(0).getImg5()).isEqualTo(response.getImg5());
-        assertThat(result.get(0).getLevel()).isEqualTo(response.getLevel());
+        checkContent(result);
+    }
+
+    private void checkContent(PageResponse<ProductAllInfoResponseDto> result) {
+        assertThat(result.getContent().get(0).getUpperName()).isEqualTo(response.getUpperName());
+        assertThat(result.getContent().get(0).getProductNo()).isEqualTo(response.getProductNo());
+        assertThat(result.getContent().get(0).getProductName()).isEqualTo(response.getProductName());
+        assertThat(result.getContent().get(0).getProductCode()).isEqualTo(response.getProductCode());
+        assertThat(result.getContent().get(0).getCategoryName()).isEqualTo(response.getCategoryName());
+        assertThat(result.getContent().get(0).getAmount()).isEqualTo(response.getAmount());
+        assertThat(result.getContent().get(0).getCountry()).isEqualTo(response.getCountry());
+        assertThat(result.getContent().get(0).getManufacturer()).isEqualTo(response.getManufacturer());
+        assertThat(result.getContent().get(0).getColor()).isEqualTo(response.getColor());
+        assertThat(result.getContent().get(0).getQuality()).isEqualTo(response.getQuality());
+        assertThat(result.getContent().get(0).getQuantity()).isEqualTo(response.getQuantity());
+        assertThat(result.getContent().get(0).getImg1()).isEqualTo(response.getImg1());
+        assertThat(result.getContent().get(0).getImg2()).isEqualTo(response.getImg2());
+        assertThat(result.getContent().get(0).getImg3()).isEqualTo(response.getImg3());
+        assertThat(result.getContent().get(0).getImg4()).isEqualTo(response.getImg4());
+        assertThat(result.getContent().get(0).getImg5()).isEqualTo(response.getImg5());
+        assertThat(result.getContent().get(0).getLevel()).isEqualTo(response.getLevel());
     }
 
     private void checkDtoList(ProductResponseDto result) {

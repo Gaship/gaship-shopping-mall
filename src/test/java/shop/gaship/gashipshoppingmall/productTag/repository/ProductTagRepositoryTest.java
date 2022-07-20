@@ -17,15 +17,12 @@ import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 설명작성란
  *
  * @author : 유호철
- * @see
  * @since 1.0
  */
 
@@ -48,12 +45,13 @@ class ProductTagRepositoryTest {
 
     @DisplayName("제품번호로 테그조회테스트")
     @Test
-    void productNoTest(){
+    void productNoTest() {
+        //TODO : 전체 테스트시 깨진다... 이유가뭘까?
         statusCodeRepository.save(StatusCodeDummy.dummy());
         categoryRepository.save(CategoryDummy.dummy());
         categoryRepository.save(CategoryDummy.upperDummy());
         categoryRepository.save(CategoryDummy.bottomDummy());
-        Tag tag = new Tag(1,"title");
+        Tag tag = new Tag(null, "title");
         tagRepository.save(tag);
 
         Product product = ProductDummy.dummy2();

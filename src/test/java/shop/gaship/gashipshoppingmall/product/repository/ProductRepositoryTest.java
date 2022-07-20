@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
@@ -74,26 +75,6 @@ class ProductRepositoryTest {
         repository.save(product);
 
     }
-
-    @DisplayName("전체 조회 paging 테스트 입니다.")
-    @Test
-    void productFindAllPageTest(){
-        //then
-        PageRequest pageRequest = PageRequest.of(1, 10);
-        Page<ProductResponseDto> result = repository.findAllPage(pageRequest);
-
-        assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getSize()).isEqualTo(pageRequest.getPageSize());
-    }
-    @DisplayName("다건 조회  테스트 입니다.")
-    @Test
-    void productsFindCodeTest(){
-        //then
-        List<ProductResponseDto> result
-                = repository.findByCode(product.getProductCode());
-        checkListResponse(result.get(0));
-    }
-
     @DisplayName("단건 조회 테스트입니다.")
     @Test
     void productFindOne(){
@@ -102,50 +83,28 @@ class ProductRepositoryTest {
         checkListResponse(result);
     }
 
-    @DisplayName("가격별로 정렬하기")
-    @Test
-    void productListPriceTest(){
-        //then
-        List<ProductResponseDto> result = repository.findByPrice(0L, product.getAmount());
-        checkListResponse(result.get(0));
-    }
-
-    @DisplayName("카테고리 번호로 조회하기")
-    @Test
-    void productListCategory(){
-        //then
-        List<ProductResponseDto> result = repository.findProductByCategory(product.getCategory().getNo());
-        checkListResponse(result.get(0));
-    }
-
-    @DisplayName("상품 이름으로 조회하기")
-    @Test
-    void productListProductName(){
-        //given
-        List<ProductResponseDto> result = repository.findByProductName(product.getName());
-        checkListResponse(result.get(0));
-    }
-
-    @DisplayName("상품 태그로 조회하기")
+    @DisplayName("상품 전체 조회하기")
     @Test
     void productListTag(){
         //given
         Product product2 = ProductDummy.dummy2();
-        PageRequest pageRequest = PageRequest.of(1, 10);
+        PageRequest pageRequest = PageRequest.of(0, 10);
         Tag tag = new Tag(1,"title");
         tagRepository.save(tag);
 
         ProductTag productTag = new ProductTag(new ProductTag.Pk(product2.getNo(), tag.getTagNo()), product2, tag);
-        product.add(productTag);
+        product2.add(productTag);
 
         repository.save(product2);
         // 아래부분이 없으면 get 에서 null 이 뜸 이유가 뭘까?.
         productTagRepository.save(productTag);
+        ProductRequestDto requestDto = new ProductRequestDto();
+        Page<ProductAllInfoResponseDto> page = repository.findProduct(requestDto);
+        List<ProductAllInfoResponseDto> result = page.getContent();
 
-        List<ProductAllInfoResponseDto> result = repository.findProduct(null, null, 0, 0L, 0L, 0, null);
+        assertThat(page.getTotalPages()).isEqualTo(1);
+        assertThat(page.getSize()).isEqualTo(pageRequest.getPageSize());
 
-        assertThat(result.get(0).getUpperName()).isEqualTo(category.getName().concat("-").concat(upper.getName()));
-        assertThat(result.get(0).getProductNo()).isEqualTo(1);
         assertThat(result.get(0).getProductName()).isEqualTo(product2.getName());
         assertThat(result.get(0).getProductCode()).isEqualTo(product2.getProductCode());
         assertThat(result.get(0).getCategoryName()).isEqualTo(product2.getCategory().getName());
@@ -164,7 +123,7 @@ class ProductRepositoryTest {
     }
 
     private void checkListResponse(ProductResponseDto result) {
-        assertThat(result.getNo()).isEqualTo(2);
+        assertThat(result.getNo()).isEqualTo(product.getNo());
         assertThat(result.getAmount()).isEqualTo(product.getAmount());
         assertThat(result.getName()).isEqualTo(product.getName());
         assertThat(result.getColor()).isEqualTo(product.getColor());
