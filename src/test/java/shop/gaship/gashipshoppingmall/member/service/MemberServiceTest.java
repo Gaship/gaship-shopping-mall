@@ -120,7 +120,7 @@ class MemberServiceTest {
         given(memberRepository.findByEmail(anyString()))
             .willReturn(Optional.of(MemberDummy.dummy()));
 
-        Member member = memberService.findMemberFromEmail("example@nhn.com");
+        MemberResponseDto member = memberService.findMemberFromEmail("example@nhn.com");
 
         assertThat(member).isNotNull();
     }
