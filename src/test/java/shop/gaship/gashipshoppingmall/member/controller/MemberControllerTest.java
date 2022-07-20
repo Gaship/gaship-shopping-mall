@@ -63,7 +63,7 @@ class MemberControllerTest {
             .writeValueAsString(MemberCreationRequestDummy.dummy());
 
         doNothing().when(memberService)
-            .registerMember(MemberCreationRequestDummy.dummy());
+            .addMember(MemberCreationRequestDummy.dummy());
 
         mockMvc.perform(post("/members")
             .contentType(MediaType.APPLICATION_JSON)
@@ -147,9 +147,8 @@ class MemberControllerTest {
             .andDo(print())
             .andExpect(status().is4xxClientError())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.requestStatus").value("failure"))
             .andExpect(jsonPath("$.message")
-                .value("찿고있는 회원의 정보가 존재하지않습니다."));
+                .value("해당 멤버를 찾을 수 없습니다"));
     }
 
     @Test

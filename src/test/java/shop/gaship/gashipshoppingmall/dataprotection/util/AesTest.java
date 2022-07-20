@@ -2,22 +2,18 @@ package shop.gaship.gashipshoppingmall.dataprotection.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.springframework.util.ReflectionUtils.findMethod;
 
-import java.lang.reflect.Method;
 import javax.crypto.spec.SecretKeySpec;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.ReflectionUtils;
 import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import shop.gaship.gashipshoppingmall.dataprotection.exception.DecodeFailureException;
 import shop.gaship.gashipshoppingmall.dataprotection.exception.EncodeFailureException;
-import org.springframework.test.context.TestPropertySource;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.dataprotection.protection <br/>

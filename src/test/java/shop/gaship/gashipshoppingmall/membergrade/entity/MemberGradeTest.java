@@ -1,47 +1,96 @@
 package shop.gaship.gashipshoppingmall.membergrade.entity;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import shop.gaship.gashipshoppingmall.membergrade.request.MemberGradeRequest;
+import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils.*;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.membergrade.entity
- * fileName       : MemberGradeTest
- * author         : Semi Kim
- * date           : 2022/07/09
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/09        Semi Kim       최초 생성
+ * 회원등급 entity test.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
-@DataJpaTest
 class MemberGradeTest {
-    @Autowired
-    private TestEntityManager testEntityManager;
 
+    private StatusCode renewalPeriod;
+    private MemberGradeAddRequestDto memberGradeAddRequestDto;
+
+    @BeforeEach
+    void setUp() {
+        renewalPeriod = StatusCodeDummy.dummy();
+        memberGradeAddRequestDto = MemberGradeDtoDummy.requestDummy("일반", 0L);
+    }
+
+    @DisplayName("회원등급 getNo 메서드 테스트")
     @Test
-    void createMemberGrade() {
-        // given
-        MemberGradeRequest memberGradeRequest = createTestMemberGradeRequest("일반", 0L);
-        StatusCode renewalPeriod = createTestStatusCode();
-        MemberGrade memberGrade = createTestMemberGrade(memberGradeRequest, renewalPeriod);
+    void getNo(){
+        MemberGrade memberGrade = MemberGradeDummy
+                .dummy(memberGradeAddRequestDto, renewalPeriod);
+        ReflectionTestUtils.setField(memberGrade, "no", 1);
 
-        // when
-        testEntityManager.persist(renewalPeriod);
-        MemberGrade result = testEntityManager.persist(memberGrade);
+        Integer result = memberGrade.getNo();
 
-        // then
+        assertThat(result).isOne();
+    }
+
+    @DisplayName("회원등급 getRenewalPeriodStatusCode 메서드 테스트")
+    @Test
+    void getRenewalPeriodStatusCode(){
+        MemberGrade memberGrade = MemberGradeDummy
+                .dummy(memberGradeAddRequestDto, renewalPeriod);
+
+        StatusCode result = memberGrade.getRenewalPeriodStatusCode();
+
+        assertThat(result).isEqualTo(renewalPeriod);
+    }
+
+    @DisplayName("기본 회원등급 생성 메서드 테스트")
+    @Test
+    void createDefault(){
+        MemberGrade result = MemberGrade.createDefault(renewalPeriod, memberGradeAddRequestDto);
+
         assertThat(result).isNotNull();
-        assertThat(result.getNo()).isEqualTo(1);
-        assertThat(result.getName()).isEqualTo(memberGrade.getName());
-        assertThat(result.getAccumulateAmount()).isEqualTo(memberGrade.getAccumulateAmount());
-        assertThat(result.getRenewalPeriodStatusCode()).isEqualTo(memberGrade.getRenewalPeriodStatusCode());
+        assertThat(result.getName()).isEqualTo("일반");
+        assertThat(result.getAccumulateAmount()).isZero();
+        assertThat(result.isDefault()).isTrue();
+    }
+
+    @DisplayName("기본 이외의 회원등급 생성 메서드 테스트")
+    @Test
+    void create(){
+        String dummyName = "VIP";
+        Long dummyAccumulateAmount = 100_000_000L;
+        MemberGrade result = MemberGrade.create(renewalPeriod,
+                MemberGradeDtoDummy.requestDummy(dummyName, dummyAccumulateAmount));
+
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo(dummyName);
+        assertThat(result.getAccumulateAmount()).isEqualTo(dummyAccumulateAmount);
+    }
+
+    @DisplayName("회원등급 이름/기준누적금액 수정 메서드 테스트")
+    @Test
+    void modifyDetails(){
+        String modifyNameData = "새싹";
+        Long modifyAccumulateAmountData = 1L;
+
+        MemberGrade memberGrade = MemberGradeDummy
+                .dummy(memberGradeAddRequestDto, renewalPeriod);
+        MemberGradeModifyRequestDto modifyRequestDto = MemberGradeDtoDummy
+                .modifyRequestDummy(1, modifyNameData, modifyAccumulateAmountData);
+
+        memberGrade.modifyDetails(modifyRequestDto);
+
+        assertThat(memberGrade.getName()).isEqualTo(modifyNameData);
+        assertThat(memberGrade.getAccumulateAmount()).isEqualTo(modifyAccumulateAmountData);
     }
 }

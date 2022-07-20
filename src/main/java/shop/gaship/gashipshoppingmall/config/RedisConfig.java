@@ -1,10 +1,9 @@
 package shop.gaship.gashipshoppingmall.config;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -13,28 +12,25 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@PropertySource("classpath:redis.properties")
+@ConfigurationProperties(prefix = "redis")
 public class RedisConfig implements BeanClassLoaderAware {
-    @Value("${redis.host}")
     private String host;
-
-    @Value("${redis.port}")
     private int port;
-
-    @Value("${redis.password}")
     private String password;
-
-    @Value("${redis.database}")
     private int database;
-
     private ClassLoader classLoader;
 
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
+    public RedisConnectionFactory redisConnectionFactory(
+        DataProtectionConfig dataProtectionConfig) {
+        String secretPassword =
+            dataProtectionConfig.findSecretDataFromSecureKeyManager(this.password);
+        String secretHost = dataProtectionConfig.findSecretDataFromSecureKeyManager(this.host);
+
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName(host);
+        configuration.setHostName(secretHost);
         configuration.setPort(port);
-        configuration.setPassword(password);
+        configuration.setPassword(secretPassword);
         configuration.setDatabase(database);
 
         return new LettuceConnectionFactory(configuration);
@@ -43,18 +39,53 @@ public class RedisConfig implements BeanClassLoaderAware {
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setConnectionFactory(redisConnectionFactory(null));
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-        
+
         return redisTemplate;
     }
-
 
     @Override
     public void setBeanClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public int getDatabase() {
+        return database;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setDatabase(int database) {
+        this.database = database;
     }
 }

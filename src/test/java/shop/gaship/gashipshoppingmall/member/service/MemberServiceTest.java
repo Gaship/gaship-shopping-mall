@@ -6,8 +6,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,15 +21,28 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
+import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
-import shop.gaship.gashipshoppingmall.membergrade.utils.CreateTestUtils;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 /**
@@ -43,7 +58,9 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
  */
 @SpringBootTest
 @EnableConfigurationProperties(value = DataProtectionConfig.class)
-@TestPropertySource(value = "classpath:application-dev.properties")
+@Import({DataSourceConfig.class})
+@TestPropertySource(
+    value = {"classpath:application.properties", "classpath:application-dev.properties"})
 class MemberServiceTest {
     @Autowired
     MemberService memberService;
@@ -67,11 +84,11 @@ class MemberServiceTest {
         given(memberRepository.findById(anyInt())).willReturn(
             Optional.of(MemberDummy.dummy()));
         given(memberGradeRepository.findById(1)).willReturn(
-            Optional.of(CreateTestUtils.createDummyMemberGrade()));
+            Optional.of(MemberGradeDummy.dummy(MemberGradeDtoDummy.requestDummy("dummy", 0L),StatusCodeDummy.dummy())));
         given(statusCodeRepository.findById(2)).willReturn(
-            Optional.of(CreateTestUtils.createTestStatusCode()));
+            Optional.of(StatusCodeDummy.dummy()));
 
-        memberService.registerMember(dummy);
+        memberService.addMember(dummy);
 
         assertThat(dummy.getEmail()).isNotEqualTo(plainEmailDummy);
 
@@ -107,7 +124,7 @@ class MemberServiceTest {
         given(memberRepository.findByEmail(anyString()))
             .willReturn(Optional.of(MemberDummy.dummy()));
 
-        Member member = memberService.findMemberFromEmail("example@nhn.com");
+        MemberResponseDto member = memberService.findMemberFromEmail("example@nhn.com");
 
         assertThat(member).isNotNull();
     }
@@ -119,7 +136,7 @@ class MemberServiceTest {
             .willReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.findMemberFromEmail("example@nhn.com"))
-            .hasMessage("찿고있는 회원의 정보가 존재하지않습니다.");
+            .hasMessage("해당 멤버를 찾을 수 없습니다");
     }
 
     @Test
@@ -136,12 +153,99 @@ class MemberServiceTest {
     @Test
     @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하지 않는 경우")
     void findMemberFromNicknameCaseNotFounded() {
-        String expectErrorMessage = "찿고있는 회원의 정보가 존재하지않습니다.";
+        String expectErrorMessage = "해당 멤버를 찾을 수 없습니다";
         given(memberRepository.findByNickname(anyString()))
             .willReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.findMemberFromNickname("example nickName"))
             .hasMessage(expectErrorMessage);
+    }
+
+    @DisplayName("memberRepository modify Test")
+    @Test
+    void modifyTest() {
+        when(memberRepository.findById(1)).thenReturn(Optional.of(MemberTestDummy.member1()));
+
+        memberService.modifyMember(MemberTestDummy.memberModifyRequestDto());
+
+        verify(memberRepository, times(1))
+            .findById(any());
+        verify(memberRepository, times(1))
+            .save(any(Member.class));
+    }
+
+    @DisplayName("memberRepository modify fail Test(해당 아이디가 없음)")
+    @Test
+    void modifyFailTest() {
+        when(memberRepository.findById(any())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> memberService.modifyMember(MemberTestDummy.memberModifyRequestDto()))
+            .isInstanceOf(MemberNotFoundException.class)
+            .hasMessage("해당 멤버를 찾을 수 없습니다");
+
+        verify(memberRepository, times(1))
+            .findById(any());
+    }
+
+    @DisplayName("memberRepository modify fail Test(바꾸려는 닉네임이 이미 존재)")
+    @Test
+    void modifyFailWithDuplicatedNicknameTest() {
+
+        when(memberRepository.findById(any())).thenReturn(Optional.empty());
+        when(memberRepository.existsByNickname(any())).thenReturn(true);
+        assertThatThrownBy(() -> memberService.modifyMember(MemberTestDummy.memberModifyRequestDto()))
+            .isInstanceOf(DuplicatedNicknameException.class)
+            .hasMessage("중복된 닉네임입니다");
+
+        verify(memberRepository,times(1)).existsByNickname(any());
+        verify(memberRepository, never())
+            .findById(any());
+    }
+
+    @DisplayName("memberRepository delete Test")
+    @Test
+    void deleteTest() {
+        memberService.removeMember(1);
+
+        verify(memberRepository).deleteById(1);
+    }
+
+    @DisplayName("memberRepository get Test")
+    @Test
+    void getTest() {
+        when(memberRepository.findById(1)).thenReturn(Optional.of(MemberTestDummy.member1()));
+
+        memberService.findMember(1);
+
+        verify(memberRepository).findById(1);
+    }
+
+    @DisplayName("memberRepository getList Test")
+    @Test
+    void getListTest() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Member> memberList = MemberTestDummy.CreateTestMemberEntityList();
+        Page<Member> page = new PageImpl<>(memberList, pageable, 100);
+        when(memberRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        MemberPageResponseDto<MemberResponseDto, Member> list = memberService.findMembers(pageable);
+        assertThat(list.getSize()).isEqualTo(10);
+        assertThat(list.getTotalPage()).isEqualTo(10);
+        assertThat(list.getPage()).isEqualTo(1);
+        verify(memberRepository).findAll(pageable);
+    }
+
+    @DisplayName("memberRepository modify Test")
+    @Test
+    void modifyByAdminTest() {
+        when(memberRepository.findById(1)).thenReturn(Optional.of(MemberTestDummy.member1()));
+
+        memberService.modifyMember(MemberTestDummy.memberModifyRequestDto());
+
+        verify(memberRepository, times(1))
+            .findById(any());
+        verify(memberRepository, times(1))
+            .save(any(Member.class));
     }
 
     @Test
@@ -158,7 +262,7 @@ class MemberServiceTest {
         assertThat(userDetailsDto.getEmail()).isEqualTo(dummy.getEmail());
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(dummy.getPassword());
         assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(dummy.getMemberNo());
-        assertThat(userDetailsDto.getAuthorities()).isEqualTo(List.of(dummy.getGrade().getName()));
+        assertThat(userDetailsDto.getAuthorities()).isEqualTo(List.of(dummy.getMemberGrades().getName()));
         assertThat(userDetailsDto).isInstanceOf(SignInUserDetailsDto.class);
     }
 

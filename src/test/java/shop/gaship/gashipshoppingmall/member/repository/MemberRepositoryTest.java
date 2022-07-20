@@ -3,8 +3,6 @@ package shop.gaship.gashipshoppingmall.member.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,9 +42,11 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("멤버 엔티티 jpa 테스트")
     void saveAndCheck() {
-        entityManager.persist(memberDummy.getStatus());
-        entityManager.persist(memberDummy.getGrade());
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
+        entityManager.persist(memberDummy.getMemberStatusCodes());
+        entityManager.persist(memberDummy.getMemberGrades());
         entityManager.persist(memberDummy.getUserAuthorityNo());
+
         Member savedDummy = memberRepository.save(memberDummy);
         Member member = memberRepository.findById(savedDummy.getMemberNo()).orElse(null);
 
@@ -57,15 +57,17 @@ class MemberRepositoryTest {
     @DisplayName("custom query findByEmail 테스트")
     void findByEmailTest() {
         // 임의의 멤버 한명 저장
-        entityManager.persist(memberDummy.getStatus());
-        entityManager.persist(memberDummy.getGrade());
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
+        entityManager.persist(memberDummy.getMemberStatusCodes());
+        entityManager.persist(memberDummy.getMemberGrades());
         entityManager.persist(memberDummy.getUserAuthorityNo());
+
         Member cachedMember = memberRepository.save(memberDummy);
 
         Member member = memberRepository.findByEmail(memberDummy.getEmail())
             .orElse(null);
 
-        assertThat(member.equals(cachedMember)).isTrue();
+        assertThat(member).isEqualTo(cachedMember);
     }
 
     @Test
@@ -81,9 +83,11 @@ class MemberRepositoryTest {
     @DisplayName("custom query findByNickname Optional 테스트")
     void findByNicknameTest() {
         // 임의의 멤버 한명 저장
-        entityManager.persist(memberDummy.getStatus());
-        entityManager.persist(memberDummy.getGrade());
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
+        entityManager.persist(memberDummy.getMemberStatusCodes());
+        entityManager.persist(memberDummy.getMemberGrades());
         entityManager.persist(memberDummy.getUserAuthorityNo());
+
         Member cachedMember = memberRepository.save(memberDummy);
 
         Member member = memberRepository.findByNickname(memberDummy.getNickname())
@@ -96,9 +100,11 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("custom query findSignInUserDetail Optional 테스트")
     void findSignInUserDetailTest() {
-        entityManager.persist(memberDummy.getStatus());
-        entityManager.persist(memberDummy.getGrade());
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
+        entityManager.persist(memberDummy.getMemberStatusCodes());
+        entityManager.persist(memberDummy.getMemberGrades());
         entityManager.persist(memberDummy.getUserAuthorityNo());
+
         Member cachedMember = memberRepository.save(memberDummy);
 
         SignInUserDetailsDto userDetailsDto = memberRepository.findSignInUserDetail("example@nhn.com")

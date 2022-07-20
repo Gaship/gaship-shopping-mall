@@ -11,16 +11,17 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
  * @since 1.0
  */
 public class SignInUserDetailDummy {
-    private SignInUserDetailDummy() {}
+    private SignInUserDetailDummy() {
+    }
 
-    public static SignInUserDetailsDto dummy(){
+    public static SignInUserDetailsDto dummy() {
         Member dummyMember = MemberDummy.dummy();
 
         return SignInUserDetailsDto.builder()
-            .authorities(List.of(dummyMember.getGrade().getName()))
-            .email(dummyMember.getEmail())
-            .identifyNo(dummyMember.getMemberNo())
-            .hashedPassword(dummyMember.getPassword())
-            .build();
+                .authorities(List.of(dummyMember.getMemberGrades().getName()))
+                .email(dummyMember.getEmail())
+                .identifyNo(dummyMember.getMemberNo())
+                .hashedPassword(dummyMember.getPassword())
+                .build();
     }
 }
