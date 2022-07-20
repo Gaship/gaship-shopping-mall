@@ -1,16 +1,14 @@
 package shop.gaship.gashipshoppingmall.product.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
-import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
-
-import java.util.List;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 상품 컨트롤러 입니다.
@@ -32,29 +30,14 @@ public class ProductController {
      * @return 검색된 제품들이 반환됩니다.
      * @author 유호철
      */
-    @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> productListSearchCode(
-            @RequestParam("code") String productCode) {
+    @GetMapping("/code")
+    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListSearchCode(
+            @RequestParam("code") String productCode,
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductByCode(productCode));
-    }
-
-    /**
-     * get 요청을 받아서 제품들을 페이징 처리하기위한 메서드입니다.
-     *
-     * @param page 페이지정보입니다.
-     * @param size 사이즈정보입니다.
-     * @return 검색된 제품들을 페이징해서 반환합니다.
-     * @author 유호철
-     */
-    @GetMapping("/page")
-    public ResponseEntity<Page<ProductResponseDto>> productList(
-            @RequestParam("page") int page,
-            @RequestParam("size") int size) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProducts(page, size));
+                .body(service.findProductByCode(productCode, PageRequest.of(page, size)));
     }
 
     /**
@@ -65,7 +48,7 @@ public class ProductController {
      * @author 유호철
      */
     @GetMapping("/{productNo}")
-    public ResponseEntity<ProductResponseDto> productDetails(
+    public ResponseEntity<ProductAllInfoResponseDto> productDetails(
             @PathVariable("productNo") Integer productNo) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -82,13 +65,15 @@ public class ProductController {
      * @author 유호철
      */
     @GetMapping("/price")
-    public ResponseEntity<List<ProductResponseDto>> productAmountList(
+    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productAmountList(
             @RequestParam("min") Long minAmount,
-            @RequestParam("max") Long maxAmount) {
+            @RequestParam("max") Long maxAmount,
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductByPrice(minAmount, maxAmount));
+                .body(service.findProductByPrice(minAmount, maxAmount, page, size));
     }
 
     /**
@@ -99,12 +84,14 @@ public class ProductController {
      * @author 유호철
      */
     @GetMapping("/category/{categoryNo}")
-    public ResponseEntity<List<ProductResponseDto>> productCategoryList(
-            @PathVariable("categoryNo") Integer categoryNo) {
+    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productCategoryList(
+            @PathVariable("categoryNo") Integer categoryNo,
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductByCategory(categoryNo));
+                .body(service.findProductByCategory(categoryNo, page, size));
 
     }
 
@@ -116,12 +103,14 @@ public class ProductController {
      * @author 유호철
      */
     @GetMapping("/name")
-    public ResponseEntity<List<ProductResponseDto>> productNameList(
-            @RequestParam("name") String name) {
+    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productNameList(
+            @RequestParam("name") String name,
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductByName(name));
+                .body(service.findProductByName(name, page, size));
     }
 
     /**
@@ -130,11 +119,13 @@ public class ProductController {
      * @return response entity 전체 상품들 조회하는 메서드입니다.
      * @author 유호철
      */
-    @GetMapping("/all")
-    public ResponseEntity<List<ProductAllInfoResponseDto>> productListAll() {
+    @GetMapping()
+    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListAll(
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductsInfo());
+                .body(service.findProductsInfo(page, size));
     }
 }

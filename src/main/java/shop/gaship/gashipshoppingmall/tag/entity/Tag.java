@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tags")
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-public class Tag extends BaseEntity{
+public class Tag extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_no")

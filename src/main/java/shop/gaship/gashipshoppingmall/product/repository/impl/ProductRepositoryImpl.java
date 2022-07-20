@@ -8,9 +8,9 @@ import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.JPAExpressions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
@@ -19,7 +19,6 @@ import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositor
 import shop.gaship.gashipshoppingmall.productTag.entity.QProductTag;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -40,30 +39,6 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public List<ProductResponseDto> findByCode(String productCode) {
-        QProduct product = QProduct.product;
-
-        return from(product)
-                .where(product.productCode.eq(productCode))
-                .select(getProduct(product))
-                .fetch();
-    }
-
-    @Override
-    public Page<ProductResponseDto> findAllPage(Pageable pageable) {
-        QProduct product = QProduct.product;
-
-        QueryResults<ProductResponseDto> result = from(product)
-                .select(getProduct(product))
-                .orderBy(product.registerDatetime.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults();
-
-        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
-    }
-
-    @Override
     public Optional<ProductResponseDto> findByProductNo(Integer productNo) {
         QProduct product = QProduct.product;
 
@@ -74,74 +49,24 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public List<ProductResponseDto> findByPrice(Long minAmount, Long maxAmount) {
-        QProduct product = QProduct.product;
-
-
-        return from(product)
-                .where(product.amount.between(minAmount, maxAmount))
-                .select(getProduct(product))
-                .orderBy(product.amount.asc())
-                .fetch();
-    }
-
-
-    @Override
-    public List<ProductResponseDto> findProductByCategory(Integer categoryNo) {
-        QProduct product = QProduct.product;
-
-        return from(product)
-                .where(product.category.no.eq(categoryNo))
-                .select(getProduct(product))
-                .fetch();
-    }
-
-    @Override
-    public List<ProductResponseDto> findByProductName(String name) {
-        QProduct product = QProduct.product;
-
-        return from(product)
-                .where(product.name.contains(name))
-                .select(getProduct(product))
-                .fetch();
-    }
-
-    @Override
-    public List<ProductResponseDto> findByTag(Integer tagNo) {
-        QProduct product = QProduct.product;
-        QProductTag productTag = QProductTag.productTag;
-        QTag tag = QTag.tag;
-
-        return from(productTag)
-                .innerJoin(productTag.product)
-//                .on(productTag.product.no.eq(product.no))
-                .innerJoin(productTag.tag)
-                .where(productTag.tag.tagNo.eq(tagNo))
-//                .on(tag.tagNo.eq(productTag.tag.tagNo))
-                .select(getProduct(productTag.product))
-                .fetch();
-    }
-
-    @Override
-    public List<ProductAllInfoResponseDto> findProduct(String productName, String productCode, Integer categoryNo,
-                                                       Long minAmount, Long maxAmount, Integer tagNo,
-                                                       Pageable pageable) {
+    public Page<ProductAllInfoResponseDto> findProduct(ProductRequestDto requestDto) {
 
         QCategory upper = new QCategory("upper");
         QCategory top = new QCategory("top");
 
 
-        return from(product)
+        QueryResults<ProductAllInfoResponseDto> result = from(product)
                 .innerJoin(category)
                 .on(product.category.no.eq(category.no))
                 .innerJoin(productTag)
                 .on(product.productTags.any().eq(productTag))
                 .where(productTag.tag.tagNo.in(1),
-                        eqProductName(productName),
-                        eqProductCode(productCode),
-                        eqCategory(categoryNo),
-                        eqPrice(minAmount, maxAmount),
-                        eqTagNo(tagNo))
+                        eqProductName(requestDto.getProductName()),
+                        eqProductCode(requestDto.getProductCode()),
+                        eqCategory(requestDto.getCategoryNo()),
+                        eqPrice(requestDto.getMinAmount(), requestDto.getMaxAmount()),
+                        eqTagNo(requestDto.getTagNo()),
+                        eqProductNo(requestDto.getProductNo()))
                 .select(Projections.constructor(ProductAllInfoResponseDto.class,
                         product.no.as("productNo"),
                         product.name.as("productName"),
@@ -172,22 +97,33 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                                 .where(upper.no.eq(category.upperCategory.no))
                                 .from(upper)))
                 .distinct()
-                .fetch();
+                .offset(requestDto.getPageable().getOffset())
+                .limit(requestDto.getPageable().getPageSize())
+                .fetchResults();
 
+        return new PageImpl<>(result.getResults(), requestDto.getPageable(), result.getTotal());
+    }
+
+    private BooleanExpression eqProductNo(Integer productNo) {
+        if (productNo <= 0) {
+            return null;
+        }
+        return product.no.eq(productNo);
     }
 
     private BooleanExpression eqProductName(String name) {
         if (StringUtils.isNullOrEmpty(name)) {
             return null;
         }
-        return product.name.eq(name);
+        return product.name.contains(name);
     }
+
 
     private BooleanExpression eqProductCode(String code) {
         if (StringUtils.isNullOrEmpty(code)) {
             return null;
         }
-        return product.productCode.eq(code);
+        return product.productCode.contains(code);
     }
 
     private BooleanExpression eqCategory(Integer categoryNo) {
