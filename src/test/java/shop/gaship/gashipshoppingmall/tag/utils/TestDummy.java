@@ -48,6 +48,15 @@ public class TestDummy {
         return list;
     }
 
+    public static List<Tag> Create5SizeTestTagEntityList() {
+        List<Tag> list = new ArrayList<>();
+        IntStream.rangeClosed(0, 4).forEach(i -> {
+            Tag tag = Tag.builder().title("title....." + i).build();
+            list.add(tag);
+        });
+        return list;
+    }
+
     public static TagPageResponseDto<TagResponseDto, Tag> CreateTestTagPageResponseDto() {
         Pageable pageable = PageRequest.of(0,10);
         Function<Tag, TagResponseDto> fn = (Tag tag)-> (TagResponseDto.builder()
