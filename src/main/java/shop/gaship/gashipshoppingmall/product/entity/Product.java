@@ -118,6 +118,7 @@ public class Product {
 
     @Length(max = 100, message = "제품코드는 100자 이하여야 합니다.")
     @NotNull
+    @Column(name = "product_code", unique = true)
     String code;
 
     @Builder
