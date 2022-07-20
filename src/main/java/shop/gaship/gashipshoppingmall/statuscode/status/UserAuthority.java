@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 public enum UserAuthority {
-    MEMBER("회원"), ADMIN("관리자"), MANAGER("수리설치기사");
+    MEMBER("ROLE_MEMBER"), ADMIN("ROLE_ADMIN"), MANAGER("ROLE_MANAGER");
 
     public static final String GROUP = "사용자권한";
 

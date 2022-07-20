@@ -66,7 +66,7 @@ public interface MemberService {
      * @param pageable the pageable
      * @return the list
      */
-    MemberPageResponseDto<MemberResponseDto,Member> findMembers(Pageable pageable);
+    MemberPageResponseDto<MemberResponseDto, Member> findMembers(Pageable pageable);
 
     /**
      * 이메일이 존재하는가에 대한 확인을 하는 메서드입니다.
@@ -99,19 +99,14 @@ public interface MemberService {
      * @return the member response dto
      */
     default MemberResponseDto entityToMemberResponseDto(Member member) {
-        return MemberResponseDto.builder()
-                .email(member.getEmail())
-                .password(member.getPassword())
-                .phoneNumber(member.getPhoneNumber())
-                .name(member.getName())
-                .birthDate(member.getBirthDate())
-                .nickname(member.getNickname())
-                .gender(member.getGender())
-                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
-                .birthDate(member.getNextRenewalGradeDate())
-                .registerDatetime(member.getRegisterDatetime())
-                .modifyDatetime(member.getModifiedDatetime())
-                .build();
+        return MemberResponseDto.builder().email(member.getEmail()).password(member.getPassword())
+            .phoneNumber(member.getPhoneNumber()).name(member.getName())
+            .birthDate(member.getBirthDate()).nickname(member.getNickname())
+            .gender(member.getGender())
+            .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+            .birthDate(member.getNextRenewalGradeDate())
+            .registerDatetime(member.getRegisterDatetime())
+            .modifyDatetime(member.getModifiedDatetime()).build();
     }
 
 
@@ -127,45 +122,38 @@ public interface MemberService {
     default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest,
                                                  @Nullable Member recommendMember,
                                                  StatusCode defaultStatus,
+                                                 StatusCode defaultAuthority,
                                                  MemberGrade defaultGrade) {
-        return Member.builder()
-            .recommendMember(recommendMember)
-            .memberStatusCodes(defaultStatus)
-            .memberGrades(defaultGrade)
-            .email(memberCreationRequest.getEmail())
-            .nickname(memberCreationRequest.getNickName())
-            .name(memberCreationRequest.getName())
+        return Member.builder().recommendMember(recommendMember).memberStatusCodes(defaultStatus)
+            .memberGrades(defaultGrade).email(memberCreationRequest.getEmail())
+            .nickname(memberCreationRequest.getNickName()).name(memberCreationRequest.getName())
             .password(memberCreationRequest.getPassword())
             .phoneNumber(memberCreationRequest.getPhoneNumber())
             .birthDate(memberCreationRequest.getBirthDate())
-            .gender(memberCreationRequest.getGender())
-            .accumulatePurchaseAmount(0L)
-            .build();
+            .gender(memberCreationRequest.getGender()).accumulatePurchaseAmount(0L)
+            .userAuthorityNo(defaultAuthority).isSocial(false).build();
     }
 
     /**
      * 필수정보를 받아 새로운 소셜 회원을 반환하는 메서드입니다.
      *
      * @param memberCreationRequestOauth 회원가입에 필요한 최소한의 요구 데이터.
-     * @param defaultStatus         신규회원의 초기 상태값
-     * @param defaultGrade          초기 등급
+     * @param defaultStatus              신규회원의 초기 상태값
+     * @param defaultGrade               초기 등급
      * @return 신규 회원가입된 회원 객체를 반환합니다.
      */
-    default Member creationRequestToMemberEntity(MemberCreationRequestOauth memberCreationRequestOauth,
-                                                 StatusCode defaultStatus,
-                                                 MemberGrade defaultGrade) {
-        return Member.builder()
-            .memberStatusCodes(defaultStatus)
-            .memberGrades(defaultGrade)
+    default Member creationRequestToMemberEntity(
+        MemberCreationRequestOauth memberCreationRequestOauth, StatusCode defaultStatus,
+        StatusCode defaultAuthority, MemberGrade defaultGrade) {
+        return Member.builder().memberStatusCodes(defaultStatus).memberGrades(defaultGrade)
             .email(memberCreationRequestOauth.getEmail())
             .nickname(memberCreationRequestOauth.getNickName())
             .name(memberCreationRequestOauth.getName())
             .password(memberCreationRequestOauth.getPassword())
             .phoneNumber(memberCreationRequestOauth.getPhoneNumber())
             .birthDate(memberCreationRequestOauth.getBirthDate())
-            .gender(memberCreationRequestOauth.getGender())
-            .accumulatePurchaseAmount(0L)
-            .build();
+            .gender(memberCreationRequestOauth.getGender()).accumulatePurchaseAmount(0L)
+            .userAuthorityNo(defaultAuthority).isSocial(true).build();
     }
 
     /**

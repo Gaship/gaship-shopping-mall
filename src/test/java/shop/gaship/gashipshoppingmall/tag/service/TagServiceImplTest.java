@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
@@ -47,8 +48,8 @@ class TagServiceImplTest {
     @DisplayName("tagService addTag 테스트")
     @Test
     void addTagTest() {
-        when(tagRepository.save(any(Tag.class))).thenReturn(TestDummy.CreateTestTagEntity());
-        tagService.addTag(TestDummy.CreateTestTagRequestDto());
+        when(tagRepository.save(any(Tag.class))).thenReturn(TestDummy.createTestTagEntity());
+        tagService.addTag(TestDummy.createTestTagRequestDto());
 
         verify(tagRepository).save(any(Tag.class));
     }
@@ -56,9 +57,11 @@ class TagServiceImplTest {
     @DisplayName("tagService addTag fail 테스트(title 중복)")
     @Test
     void addSameTitleTagTest() {
+        TagRequestDto tagRequestDto = TestDummy.createTestTagRequestDto();
         when(tagRepository.existsByTitle(any())).thenReturn(true);
-        when(tagRepository.save(any(Tag.class))).thenReturn(TestDummy.CreateTestTagEntity());
-        assertThatThrownBy(() -> tagService.addTag(TestDummy.CreateTestTagRequestDto()))
+        when(tagRepository.save(any(Tag.class))).thenReturn(TestDummy.createTestTagEntity());
+
+        assertThatThrownBy(() -> tagService.addTag(tagRequestDto))
                 .isInstanceOf(DuplicatedTagTitleException.class)
                         .hasMessage("중복된 태그명입니다");
 
@@ -69,12 +72,12 @@ class TagServiceImplTest {
     @DisplayName("tagService modifyTag 테스트")
     @Test
     void modifyTagTest() {
-        Tag tag = TestDummy.CreateTestTagEntity();
+        Tag tag = TestDummy.createTestTagEntity();
         when(tagRepository.findById(any())).thenReturn(Optional.of(tag));
         when(tagRepository.save(any(Tag.class))).thenReturn(tag);
         when(tagRepository.existsByTitle(any())).thenReturn(false);
 
-        tagService.modifyTag(TestDummy.CreateTestTagRequestDto());
+        tagService.modifyTag(TestDummy.createTestTagRequestDto());
 
         verify(tagRepository).findById(any());
         verify(tagRepository).existsByTitle(any());
@@ -84,12 +87,13 @@ class TagServiceImplTest {
     @DisplayName("tagService modifyTag 테스트(이미 등록 된 태그명으로 변경하려는 경우)")
     @Test
     void modifyTagTitleToExistTitleTest() {
-        Tag tag = TestDummy.CreateTestTagEntity();
+        TagRequestDto tagRequestDto = TestDummy.createTestTagRequestDto();
+        Tag tag = TestDummy.createTestTagEntity();
         when(tagRepository.findById(any())).thenReturn(Optional.of(tag));
         when(tagRepository.save(any(Tag.class))).thenReturn(tag);
         when(tagRepository.existsByTitle(any())).thenReturn(true);
 
-        assertThatThrownBy(()->tagService.modifyTag(TestDummy.CreateTestTagRequestDto()))
+        assertThatThrownBy(()->tagService.modifyTag(tagRequestDto))
                 .isInstanceOf(DuplicatedTagTitleException.class)
                         .hasMessage("중복된 태그명입니다");
 
@@ -109,7 +113,7 @@ class TagServiceImplTest {
     @DisplayName("tagService findTag 테스트")
     @Test
     void findTagTest() {
-        Tag tag = TestDummy.CreateTestTagEntity();
+        Tag tag = TestDummy.createTestTagEntity();
         when(tagRepository.findById(any())).thenReturn(Optional.of(tag));
 
         tagService.findTag(0);
@@ -120,7 +124,7 @@ class TagServiceImplTest {
     @DisplayName("tagService findTag 테스트(못 찾는 경우)")
     @Test
     void findTagFailTest() {
-        Tag tag = TestDummy.CreateTestTagEntity();
+        Tag tag = TestDummy.createTestTagEntity();
         when(tagRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(()->tagService.findTag(0))
@@ -134,7 +138,7 @@ class TagServiceImplTest {
     @Test
     void findTagsTest() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("title"));
-        Page<Tag> page = new PageImpl<>(TestDummy.CreateTestTagEntityList(),pageable,100);
+        Page<Tag> page = new PageImpl<>(TestDummy.createTestTagEntityList(),pageable,100);
         when(tagRepository.findAll(pageable)).thenReturn(page);
 
         TagPageResponseDto<TagResponseDto, Tag> tags = tagService.findTags(pageable);
