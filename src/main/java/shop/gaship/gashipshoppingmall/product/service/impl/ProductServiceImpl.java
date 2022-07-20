@@ -33,6 +33,7 @@ import java.util.List;
 /**
  * 상품 서비스 구현체 입니다.
  *
+ * @see shop.gaship.gashipshoppingmall.product.service.ProductService
  * @author : 김보민
  * @since 1.0
  */
@@ -106,8 +107,14 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
 
-    @Transactional
-    public void addProductTags(Product product, List<Integer> tagNos) {
+    /**
+     * 상품 태그 등록 메서드입니다.
+     *
+     * @param product 태그를 등록할 상품
+     * @param tagNos 등록할 태그 번호 목록
+     * @author 김보민
+     */
+    private void addProductTags(Product product, List<Integer> tagNos) {
         List<ProductTag> productTags = new ArrayList<>();
 
         tagNos.forEach(tagNo -> {

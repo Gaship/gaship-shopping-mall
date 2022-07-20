@@ -16,6 +16,12 @@ import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDt
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
 
+/**
+ * 상품 엔티티 클래스 입니다.
+ *
+ * @author : 김보민
+ * @since 1.0
+ */
 @Entity
 @Getter
 @NoArgsConstructor
@@ -120,6 +126,15 @@ public class Product {
         this.code = code;
     }
 
+    /**
+     * 상품 생성 메서드입니다.
+     *
+     * @param category 상품의 카테고리
+     * @param deliveryType 상품의 배송형태
+     * @param createRequest 상품 생성 요청 dto
+     * @return product 생성 상품
+     * @author 김보민
+     */
     public static Product create(Category category, StatusCode deliveryType, ProductCreateRequestDto createRequest) {
         return Product.builder()
                 .category(category)
@@ -140,6 +155,14 @@ public class Product {
                 .build();
     }
 
+    /**
+     * 상품 수정 메서드입니다.
+     *
+     * @param category 상품의 카테고리
+     * @param deliveryType 상품의 배송형태
+     * @param modifyRequest 상품 수정 요청 dto
+     * @author 김보민
+     */
     public void updateProduct(Category category, StatusCode deliveryType, ProductModifyRequestDto modifyRequest) {
         this.category = category;
         this.deliveryType = deliveryType;
@@ -157,10 +180,22 @@ public class Product {
         this.code = modifyRequest.getCode();
     }
 
+    /**
+     * 상품 판매상태 수정 메서드입니다.
+     *
+     * @param salesStatus 수정할 판매상태
+     * @author 김보민
+     */
     public void updateSalesStatus(StatusCode salesStatus) {
         this.salesStatus = salesStatus;
     }
 
+    /**
+     * 서버에 업로드한 상품의 이미지들을 엔티티에 업데이트하는 메서드입니다.
+     *
+     * @param imageLinks 서버에 업로드한 이미지 이름 리스트
+     * @author 김보민
+     */
     public void updateImageLinks(List<String> imageLinks) {
         String[] updatingImageLinks = new String[5];
         IntStream.range(0, imageLinks.size()).forEach(i -> updatingImageLinks[i] = imageLinks.get(i));
@@ -172,6 +207,11 @@ public class Product {
         this.imageLink5 = updatingImageLinks[4];
     }
 
+    /**
+     * 상품의 이미지 링크들을 리스트형태로 반환하는 메서드입니다.
+     *
+     * @return imageLinks 이미지 링크 리스트
+     */
     public List<String> getImageLinkList() {
         List<String> imageLinks = new ArrayList<>();
 
@@ -183,10 +223,5 @@ public class Product {
         imageLinks.removeAll(Collections.singletonList(null));
 
         return imageLinks;
-    }
-
-    public void addProductTag(ProductTag productTag) {
-        productTag.updateProduct(this);
-        productTags.add(productTag);
     }
 }
