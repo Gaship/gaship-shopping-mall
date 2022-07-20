@@ -6,20 +6,29 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.request.GradeHistoryAddRequestDto;
+import shop.gaship.gashipshoppingmall.gradehistory.dto.request.GradeHistoryFindRequestDto;
+import shop.gaship.gashipshoppingmall.gradehistory.dto.response.GradeHistoryResponseDto;
 import shop.gaship.gashipshoppingmall.gradehistory.dummy.GradeHistoryDtoDummy;
 import shop.gaship.gashipshoppingmall.gradehistory.service.GradeHistoryService;
+import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * 등급이력 Rest Controller 테스트.
@@ -44,7 +53,7 @@ class GradeHistoryRestControllerTest {
     void gradeHistoryAdd() throws Exception {
         GradeHistoryAddRequestDto requestDummy = GradeHistoryDtoDummy.addRequestDummy();
 
-        mockMvc.perform(post("/gradehistory")
+        mockMvc.perform(post("/gradehistories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy)))
                 .andExpect(status().isCreated());
@@ -59,7 +68,7 @@ class GradeHistoryRestControllerTest {
         GradeHistoryAddRequestDto requestDummy = GradeHistoryDtoDummy.addRequestDummy();
         ReflectionTestUtils.setField(requestDummy, "gradeName", null);
 
-        mockMvc.perform(post("/gradehistory")
+        mockMvc.perform(post("/gradehistories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy)))
                 .andExpect(status().is4xxClientError());
@@ -78,7 +87,7 @@ class GradeHistoryRestControllerTest {
         doThrow(exception)
                 .when(gradeHistoryService).addGradeHistory(any());
 
-        mockMvc.perform(post("/gradehistory")
+        mockMvc.perform(post("/gradehistories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy)))
                 .andExpect(status().isInternalServerError())
@@ -87,4 +96,24 @@ class GradeHistoryRestControllerTest {
         verify(gradeHistoryService).addGradeHistory(any());
     }
 
+    @DisplayName("멤버를 통한 등급이력 다건 조회 테스트")
+    @Test
+    void gradeHistoryList() throws Exception{
+        GradeHistoryResponseDto responseDtoDummy = GradeHistoryDtoDummy.responseDummy();
+        GradeHistoryFindRequestDto requestDtoDummy = GradeHistoryDtoDummy.findRequestDummy();
+
+        when(gradeHistoryService.findGradeHistories(any()))
+                .thenReturn(new PageResponse<>(
+                        new PageImpl<>(List.of(responseDtoDummy),
+                                PageRequest.of(requestDtoDummy.getPage(),
+                                        requestDtoDummy.getSize()), 2)));
+
+        mockMvc.perform(get("/gradehistories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDtoDummy)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.page",equalTo(requestDtoDummy.getPage() + 1)))
+                .andExpect(jsonPath("$.size", equalTo(requestDtoDummy.getSize())));
+    }
 }

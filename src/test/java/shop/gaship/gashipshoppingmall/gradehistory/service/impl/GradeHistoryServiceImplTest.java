@@ -107,4 +107,20 @@ class GradeHistoryServiceImplTest {
         assertThat(result.getSize()).isEqualTo(size);
         assertThat(result.getDtoList()).hasSize(1);
     }
+
+    @DisplayName("멤버 통한 등급이력 다건 조회시" +
+            "해당 멤버가 존재하지 않을 경우")
+    @Test
+    void findGradeHistories_whenMemberIsNotFound_throwExp(){
+        GradeHistoryFindRequestDto requestDtoDummy = GradeHistoryDtoDummy.findRequestDummy();
+
+        when(memberRepository.findById(any()))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> gradeHistoryService.findGradeHistories(requestDtoDummy))
+                .isInstanceOf(MemberNotFoundException.class);
+
+        verify(memberRepository).findById(any());
+        verify(gradeHistoryRepository, never()).getGradeHistoriesByMember(any(),any());
+    }
 }

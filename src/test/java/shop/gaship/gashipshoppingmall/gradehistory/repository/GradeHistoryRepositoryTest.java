@@ -14,6 +14,7 @@ import shop.gaship.gashipshoppingmall.gradehistory.dummy.GradeHistoryMemberDummy
 import shop.gaship.gashipshoppingmall.gradehistory.entity.GradeHistory;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,6 +53,7 @@ class GradeHistoryRepositoryTest {
         assertThat(result.get().getNo()).isEqualTo(newGradeHistory.getNo());
         assertThat(result.get().getGradeName()).isEqualTo("일반");
         assertThat(result.get().getTotalAmount()).isEqualTo(1_000_000L);
+        assertThat(result.get().getAt()).isEqualTo(LocalDate.now());
     }
 
     @DisplayName("멤버를 통한 등급이력 다건 조회 테스트")

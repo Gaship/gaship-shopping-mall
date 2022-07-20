@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.gradehistory.dummy;
 
-import shop.gaship.gashipshoppingmall.gradehistory.repository.GradeHistoryRepository;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;

@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.gradehistory.controller;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.request.GradeHistoryAddRequestDto;
@@ -19,7 +20,7 @@ import shop.gaship.gashipshoppingmall.response.PageResponse;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/gradehistory")
+@RequestMapping("/gradehistories")
 public class GradeHistoryRestController {
     private final GradeHistoryService gradeHistoryService;
 
@@ -27,7 +28,7 @@ public class GradeHistoryRestController {
      * 등급이력 Post Mapping
      * 등급이력 등록을 위한 Rest Controller 메서드.
      *
-     * @param request 등급이력 등록 요청 data transfer object
+     * @param request 등급이력 등록 요청 data transfer object (GradeHistoryAddRequestDto)
      * @return responseEntity body 는 없으며 응답 status 는 Created.
      * @author 김세미
      */
@@ -41,11 +42,20 @@ public class GradeHistoryRestController {
                 .build();
     }
 
+    /**
+     * 등급이력 Get Mapping
+     * 등급이력 다건 조회를 위한 Rest Controller 메서드.
+     *
+     * @param request 등급이력 다건 조회 요청 data transfer object (GradeHistoryFindRequestDto)
+     * @return responseEntity page 정보와 다건 조회 결과가 body 에 담기며 status 는 OK.
+     * @author 김세미
+     */
     @GetMapping
     public ResponseEntity<PageResponse<GradeHistoryResponseDto>>
         gradeHistoryList(@Valid @RequestBody GradeHistoryFindRequestDto request) {
 
         return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(gradeHistoryService.findGradeHistories(request));
     }
 }
