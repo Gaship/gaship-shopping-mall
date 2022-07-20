@@ -24,7 +24,7 @@ public class MemberTagController {
     private final MemberTagService memberTagService;
 
     /**
-     * 멤버가 설정한 태그를 삭제하고 다시 설정하길 원하는 태그들을 설정하는 컨트롤러입니다.
+     * 멤버가 설정한 태그를 삭제하고 다시 설정하길 원하는 태그들을 설정하는 메서드입니다.
      *
      * @param memberTagRequestDto the member tag request dto
      * @return the response entity

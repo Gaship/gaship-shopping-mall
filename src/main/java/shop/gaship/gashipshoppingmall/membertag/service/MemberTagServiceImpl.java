@@ -40,7 +40,12 @@ public class MemberTagServiceImpl implements MemberTagService {
             throw new IllegalTagSelectionException();
         }
         List<MemberTag> memberTags = new ArrayList<>();
-        IntStream.rangeClosed(0, 4).forEach(i -> memberTags.add(MemberTag.builder().member(member).tag(tagList.get(i)).build()));
+        IntStream.rangeClosed(0, 4)
+                .forEach(i -> memberTags.add(
+                        MemberTag.builder()
+                                .member(member)
+                                .tag(tagList.get(i))
+                                .build()));
         memberTagRepository.saveAll(memberTags);
     }
 
