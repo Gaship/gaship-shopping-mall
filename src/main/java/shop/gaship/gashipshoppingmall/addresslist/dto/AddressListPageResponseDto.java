@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.addresslist.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,5 +68,18 @@ public class AddressListPageResponseDto<D,E> {
 
         pageList = IntStream.rangeClosed(start, end).boxed().collect(Collectors.toList());
 
+    }
+
+    @Builder
+    public AddressListPageResponseDto(List<D> dtoList, int totalPage, int page, int size, int start, int end, boolean prev, boolean next, List<Integer> pageList) {
+        this.dtoList = dtoList;
+        this.totalPage = totalPage;
+        this.page = page;
+        this.size = size;
+        this.start = start;
+        this.end = end;
+        this.prev = prev;
+        this.next = next;
+        this.pageList = pageList;
     }
 }

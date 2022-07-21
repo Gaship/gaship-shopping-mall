@@ -18,7 +18,7 @@ public interface AddressListService {
 
     void modifyAddressList(AddressListModifyRequestDto request);
 
-    void deleteAddressList(Integer addressListId);
+    void removeAddressList(Integer addressListId);
 
     AddressListResponseDto findAddressList(Integer addressListId);
 

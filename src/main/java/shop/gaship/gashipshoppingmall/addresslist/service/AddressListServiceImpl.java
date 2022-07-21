@@ -64,7 +64,7 @@ public class AddressListServiceImpl implements AddressListService {
 
     @Transactional
     @Override
-    public void deleteAddressList(Integer addressListId) {
+    public void removeAddressList(Integer addressListId) {
         AddressList addressList = addressListRepository.findById(addressListId).orElseThrow(NotFoundAddressListException::new);
         StatusCode deleteStatus = statusCodeRepository.findByStatusCodeName(AddressStatus.DELETE.getValue()).orElseThrow(StatusCodeNotFoundException::new);
         addressList.modifyStatusToDelete(deleteStatus);

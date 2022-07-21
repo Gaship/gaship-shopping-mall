@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.addresslist.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class AddressListController {
 
     @DeleteMapping("/members/{memberId}/addressLists/{addressListId}")
     public ResponseEntity<Void> AddressListRemove(@PathVariable Integer addressListId) {
-        addressListService.deleteAddressList(addressListId);
+        addressListService.removeAddressList(addressListId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -62,8 +63,8 @@ public class AddressListController {
     }
 
     @GetMapping("/members/{memberId}/addressLists")
-    public ResponseEntity<AddressListPageResponseDto> AddressListList() {
-        AddressListPageResponseDto addressListPageResponseDto = addressListService.findAddressLists();
+    public ResponseEntity<AddressListPageResponseDto> AddressListList(Pageable pageable) {
+        AddressListPageResponseDto addressListPageResponseDto = addressListService.findAddressLists(pageable);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
