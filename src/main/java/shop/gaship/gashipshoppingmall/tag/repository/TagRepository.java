@@ -1,10 +1,8 @@
 package shop.gaship.gashipshoppingmall.tag.repository;
 
-
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
-
-import java.util.List;
 
 /**
  * tag에 관련된 db 정보를 관리하는 repository입니다.
@@ -12,7 +10,7 @@ import java.util.List;
  * @author 최정우
  * @since 1.0
  */
-public interface TagRepository extends JpaRepository<Tag,Integer> {
+public interface TagRepository extends JpaRepository<Tag, Integer> {
     /**
      * Exists by title boolean.
      *

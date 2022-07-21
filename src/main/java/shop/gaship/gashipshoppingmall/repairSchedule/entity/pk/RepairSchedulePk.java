@@ -1,21 +1,19 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.entity.pk;
 
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.Objects;
-
 /**
  * 직원스케줄에대한 Pk 들이 있는 클래스입니다.
  *
- *
- * @see Serializable
  * @author : 유호철
+ * @see Serializable
  * @since 1.0
  */
 
@@ -41,7 +39,7 @@ public class RepairSchedulePk implements Serializable {
         }
         RepairSchedulePk that = (RepairSchedulePk) o;
         return Objects.equals(date, that.date) && Objects.equals(addressNo,
-                that.addressNo);
+            that.addressNo);
     }
 
     @Override

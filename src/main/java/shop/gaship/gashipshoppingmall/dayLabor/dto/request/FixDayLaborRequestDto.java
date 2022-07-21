@@ -1,11 +1,10 @@
 package shop.gaship.gashipshoppingmall.dayLabor.dto.request;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 /**
  * 지역별 물량을 수정하기위한 클래스입니다.

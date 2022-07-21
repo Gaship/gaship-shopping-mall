@@ -1,17 +1,22 @@
 package shop.gaship.gashipshoppingmall.employee.controller;
 
+import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
-
-import javax.validation.Valid;
-import java.util.List;
 
 /**
  * 직원에대한 요청을 처리하기위한 컨트롤러 클래스입니다.
@@ -35,9 +40,8 @@ public class EmployeeController {
     @PostMapping
     public ResponseEntity<Void> addEmployee(@Valid @RequestBody CreateEmployeeRequestDto dto) {
         employeeService.addEmployee(dto);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     /**
@@ -50,9 +54,7 @@ public class EmployeeController {
     public ResponseEntity<Void> modifyEmployee(@Valid @RequestBody ModifyEmployeeRequestDto dto) {
 
         employeeService.modifyEmployee(dto);
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -63,10 +65,10 @@ public class EmployeeController {
      * @author 유호철
      */
     @GetMapping("/{employeeNo}")
-    public ResponseEntity<EmployeeInfoResponseDto> employeeDetails(@PathVariable("employeeNo") Integer employeeNo) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(employeeService.findEmployee(employeeNo));
+    public ResponseEntity<EmployeeInfoResponseDto> employeeDetails(
+        @PathVariable("employeeNo") Integer employeeNo) {
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+            .body(employeeService.findEmployee(employeeNo));
     }
 
     /**
@@ -77,9 +79,8 @@ public class EmployeeController {
      */
     @GetMapping
     public ResponseEntity<List<EmployeeInfoResponseDto>> employeeList() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(employeeService.findEmployees());
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+            .body(employeeService.findEmployees());
     }
 
 }

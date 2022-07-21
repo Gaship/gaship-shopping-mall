@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
+import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 
 /**
  * 회원등급 Custom Repository.
@@ -27,4 +28,11 @@ public interface MemberGradeRepositoryCustom {
      * @return Page - MemberGradeResponseDto
      */
     Page<MemberGradeResponseDto> getMemberGrades(Pageable pageable);
+
+    /**
+     * 회원의 기본 등급을 조회합니다.
+     *
+     * @return 회원의 기본등급이 조회됩니다.
+     */
+    MemberGrade findByDefaultGrade();
 }

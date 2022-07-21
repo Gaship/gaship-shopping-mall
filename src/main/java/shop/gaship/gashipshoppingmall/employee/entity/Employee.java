@@ -1,5 +1,14 @@
 package shop.gaship.gashipshoppingmall.employee.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
@@ -7,7 +16,6 @@ import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequest
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
-import javax.persistence.*;
 
 /**
  * 데이터베이스에 있는 직원에대한 정보를 사용하기위한 클래스입니다.

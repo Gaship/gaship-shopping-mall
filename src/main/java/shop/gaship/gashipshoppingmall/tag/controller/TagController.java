@@ -6,7 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
@@ -39,8 +45,8 @@ public class TagController {
         tagService.addTag(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+            .contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     /**
@@ -56,8 +62,8 @@ public class TagController {
         tagService.modifyTag(request);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+            .contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     /**
@@ -72,8 +78,8 @@ public class TagController {
         tagService.removeTag(tagNo);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+            .contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     /**
@@ -87,8 +93,8 @@ public class TagController {
     @GetMapping("/admins/{adminNo}/tags/{tagNo}")
     public ResponseEntity<TagResponseDto> tagDetails(@PathVariable Integer tagNo) {
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(tagService.findTag(tagNo));
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(tagService.findTag(tagNo));
     }
 
     /**
@@ -101,8 +107,8 @@ public class TagController {
     @GetMapping("/admins/{adminNo}/tags")
     public ResponseEntity<TagPageResponseDto> tagList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(tagService.findTags(pageable));
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(tagService.findTags(pageable));
     }
 
 }

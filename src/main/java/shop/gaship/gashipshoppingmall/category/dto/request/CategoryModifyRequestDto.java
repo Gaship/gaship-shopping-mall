@@ -3,12 +3,14 @@ package shop.gaship.gashipshoppingmall.category.dto.request;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
- * 카테고리 수정 요청에 담기는 데이터 객체
+ * 카테고리 수정 요청에 담기는 데이터 객체.
  *
  * @author : 김보민
  * @since 1.0

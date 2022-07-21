@@ -1,5 +1,9 @@
 package shop.gaship.gashipshoppingmall.membertag.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,11 +17,6 @@ import shop.gaship.gashipshoppingmall.membertag.exception.IllegalTagSelectionExc
 import shop.gaship.gashipshoppingmall.membertag.repository.MemberTagRepository;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * @author 최정우
@@ -34,13 +33,15 @@ public class MemberTagServiceImpl implements MemberTagService {
     @Override
     public void deleteAllAndAddAllMemberTags(MemberTagRequestDto memberTagRequestDto) {
         memberTagRepository.deleteAllByMember_MemberNo(memberTagRequestDto.getMemberNo());
-        Member member = memberRepository.findById(memberTagRequestDto.getMemberNo()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(memberTagRequestDto.getMemberNo())
+            .orElseThrow(MemberNotFoundException::new);
         List<Tag> tagList = tagRepository.findByTagNoIn(memberTagRequestDto.getTagIds());
         if (tagList.size() != 5) {
             throw new IllegalTagSelectionException();
         }
         List<MemberTag> memberTags = new ArrayList<>();
-        IntStream.rangeClosed(0, 4).forEach(i -> memberTags.add(MemberTag.builder().member(member).tag(tagList.get(i)).build()));
+        IntStream.rangeClosed(0, 4).forEach(
+            i -> memberTags.add(MemberTag.builder().member(member).tag(tagList.get(i)).build()));
         memberTagRepository.saveAll(memberTags);
     }
 

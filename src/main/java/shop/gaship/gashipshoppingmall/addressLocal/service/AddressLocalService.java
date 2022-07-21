@@ -1,9 +1,9 @@
 package shop.gaship.gashipshoppingmall.addressLocal.service;
 
+import java.util.List;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 
-import java.util.List;
 
 /**
  * 주소지를 Service 레이어에서 다루기위한 인터페이스 입니다.

@@ -51,6 +51,7 @@ public class MemberDummy extends Member {
             .gender("남")
             .accumulatePurchaseAmount(100000L)
             .nextRenewalGradeDate(LocalDate.of(2022, 9, 16))
+            .isSocial(false)
             .build();
     }
 }

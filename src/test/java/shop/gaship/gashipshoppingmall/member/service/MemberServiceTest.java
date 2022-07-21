@@ -28,6 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
@@ -44,6 +45,8 @@ import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
+import shop.gaship.gashipshoppingmall.statuscode.status.UserAuthority;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.service <br/>
@@ -81,12 +84,15 @@ class MemberServiceTest {
 
         String plainEmailDummy = dummy.getEmail();
 
-        given(memberRepository.findById(anyInt())).willReturn(
-            Optional.of(MemberDummy.dummy()));
-        given(memberGradeRepository.findById(1)).willReturn(
-            Optional.of(MemberGradeDummy.dummy(MemberGradeDtoDummy.requestDummy("dummy", 0L),StatusCodeDummy.dummy())));
-        given(statusCodeRepository.findById(2)).willReturn(
-            Optional.of(StatusCodeDummy.dummy()));
+        given(statusCodeRepository.findByStatusCodeName(MemberStatus.DORMANCY.name()))
+            .willReturn(Optional.of(StatusCodeDummy.dummy()));
+        given(memberGradeRepository.findByDefaultGrade()).willReturn(
+            MemberGradeDummy.defaultDummy(
+                MemberGradeDtoDummy.requestDummy("일반", 0L),
+                StatusCodeDummy.dummy()
+            ));
+        given(statusCodeRepository.findByStatusCodeName(UserAuthority.MEMBER.name()))
+            .willReturn(Optional.of(StatusCodeDummy.dummy()));
 
         memberService.addMember(dummy);
 
@@ -177,9 +183,10 @@ class MemberServiceTest {
     @DisplayName("memberRepository modify fail Test(해당 아이디가 없음)")
     @Test
     void modifyFailTest() {
+        MemberModifyRequestDto memberModifyRequestDto = MemberTestDummy.memberModifyRequestDto();
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> memberService.modifyMember(MemberTestDummy.memberModifyRequestDto()))
+        assertThatThrownBy(() -> memberService.modifyMember(memberModifyRequestDto))
             .isInstanceOf(MemberNotFoundException.class)
             .hasMessage("해당 멤버를 찾을 수 없습니다");
 
@@ -190,10 +197,11 @@ class MemberServiceTest {
     @DisplayName("memberRepository modify fail Test(바꾸려는 닉네임이 이미 존재)")
     @Test
     void modifyFailWithDuplicatedNicknameTest() {
+        MemberModifyRequestDto memberModifyRequestDto = MemberTestDummy.memberModifyRequestDto();
 
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
         when(memberRepository.existsByNickname(any())).thenReturn(true);
-        assertThatThrownBy(() -> memberService.modifyMember(MemberTestDummy.memberModifyRequestDto()))
+        assertThatThrownBy(() -> memberService.modifyMember(memberModifyRequestDto))
             .isInstanceOf(DuplicatedNicknameException.class)
             .hasMessage("중복된 닉네임입니다");
 
@@ -270,7 +278,7 @@ class MemberServiceTest {
     @Test
     @DisplayName("이메일을 통해서 로그인을 시도하는 회원의 정보를 조회합니다. : 존재하지 않는 경우")
     void findSignInUserDetailCaseNotFounded() {
-        String expectErrorMessage = "찿고있는 회원의 정보가 존재하지않습니다.";
+        String expectErrorMessage = "해당 멤버를 찾을 수 없습니다";
         given(memberRepository.findSignInUserDetail(anyString()))
             .willReturn(Optional.empty());
 

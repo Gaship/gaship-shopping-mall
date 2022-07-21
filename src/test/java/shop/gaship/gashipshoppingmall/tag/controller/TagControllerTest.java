@@ -54,7 +54,7 @@ class TagControllerTest {
     @DisplayName("태그 등록 테스트")
     @Test
     void addTagTest() throws Exception {
-        String body = objectMapper.writeValueAsString(TestDummy.CreateTestTagRequestDto());
+        String body = objectMapper.writeValueAsString(TestDummy.createTestTagRequestDto());
 
         mockMvc.perform(post("/admins/1/tags")
                         .accept(MediaType.APPLICATION_JSON)
@@ -68,7 +68,7 @@ class TagControllerTest {
     @DisplayName("태그 수정 테스트")
     @Test
     void modifyTagTest() throws Exception {
-        String body = objectMapper.writeValueAsString(TestDummy.CreateTestTagRequestDto());
+        String body = objectMapper.writeValueAsString(TestDummy.createTestTagRequestDto());
 
         mockMvc.perform(put("/admins/1/tags")
                         .accept(MediaType.APPLICATION_JSON)
@@ -89,7 +89,7 @@ class TagControllerTest {
     @DisplayName("태그 단건 조회 테스트")
     @Test
     void findTagTest() throws Exception {
-        TagResponseDto tagResponseDto = TestDummy.CreateTestTagResponseDto(title);
+        TagResponseDto tagResponseDto = TestDummy.createTestTagResponseDto(title);
 
         when(tagService.findTag(any()))
                 .thenReturn(tagResponseDto);
@@ -105,7 +105,7 @@ class TagControllerTest {
     @DisplayName("태그 다건 조회 테스트")
     @Test
     void findTagsTest() throws Exception {
-        TagPageResponseDto<TagResponseDto, Tag> tagPageResponseDto = TestDummy.CreateTestTagPageResponseDto();
+        TagPageResponseDto<TagResponseDto, Tag> tagPageResponseDto = TestDummy.createTestTagPageResponseDto();
         when(tagService.findTags(any())).thenReturn(tagPageResponseDto);
 
         mockMvc.perform(get("/admins/1/tags")

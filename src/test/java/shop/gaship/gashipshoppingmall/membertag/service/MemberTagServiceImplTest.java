@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dummy.MemberTagDummy;
 import shop.gaship.gashipshoppingmall.membertag.exception.IllegalTagSelectionException;
 import shop.gaship.gashipshoppingmall.membertag.repository.MemberTagRepository;
@@ -57,7 +59,7 @@ class MemberTagServiceImplTest {
     @Test
     void deleteAllAndAddAllMemberTags() {
         Member member = MemberTestDummy.member1();
-        List<Tag> tagList = TestDummy.Create5SizeTestTagEntityList();
+        List<Tag> tagList = TestDummy.create5SizeTestTagEntityList();
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
@@ -74,13 +76,14 @@ class MemberTagServiceImplTest {
     @DisplayName("태그 등록을 하려 memberRepository 를 조회하는데 해당 아이디를 가진 멤버를 조회할 수 없어서 MemberNotFoundException 오류가 발생")
     @Test
     void deleteAllAndAddAllMemberTagsMemberNotFoundExceptionFail() {
-        List<Tag> tagList = TestDummy.Create5SizeTestTagEntityList();
+        MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy();
+        List<Tag> tagList = TestDummy.create5SizeTestTagEntityList();
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
         when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
         when(memberTagRepository.saveAll(any())).thenReturn(MemberTagDummy.memberTagList());
 
-        assertThatThrownBy(() -> memberTagService.deleteAllAndAddAllMemberTags(MemberTagDummy.memberTagRequestDtoDummy()))
+        assertThatThrownBy(() -> memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto))
                 .isInstanceOf(MemberNotFoundException.class)
                 .hasMessage("해당 멤버를 찾을 수 없습니다");
 
@@ -93,14 +96,15 @@ class MemberTagServiceImplTest {
     @DisplayName("태그 등록을 하려 회원이 요청한 tagId로 Tag DB 를 뒤졌는데 가져온 총 태그 갯수가 5개가 아닌 경우 IllegalTagSelectionException 오류가 발생")
     @Test
     void deleteAllAndAddAllMemberTagsIllegalTagSelectionExceptionFail() {
+        MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy();
         Member member = MemberTestDummy.member1();
-        List<Tag> tagList = TestDummy.CreateTestTagEntityList();
+        List<Tag> tagList = TestDummy.createTestTagEntityList();
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
         when(memberTagRepository.saveAll(any())).thenReturn(MemberTagDummy.memberTagList());
 
-        assertThatThrownBy(() -> memberTagService.deleteAllAndAddAllMemberTags(MemberTagDummy.memberTagRequestDtoDummy()))
+        assertThatThrownBy(() -> memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto))
                 .isInstanceOf(IllegalTagSelectionException.class)
                 .hasMessage("태그는 다섯개까지 선택할 수 있습니다");
 
