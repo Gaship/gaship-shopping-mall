@@ -50,6 +50,7 @@ public class ProductServiceImpl implements ProductService {
     private final StatusCodeRepository statusCodeRepository;
     private final TagRepository tagRepository;
     private final ProductTagRepository productTagRepository;
+    private final FileUploadUtil fileUploadUtil;
 
     private static final String PRODUCT_DIR = File.separator + "products";
 
@@ -68,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = Product.create(category, deliveryType, createRequest);
         product.updateSalesStatus(salesStatus);
 
-        List<String> imageLinks = FileUploadUtil.uploadFile(PRODUCT_DIR, files);
+        List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
         product.updateImageLinks(imageLinks);
 
         repository.save(product);
@@ -88,9 +89,9 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         product.updateProduct(category, deliveryType, modifyRequest);
-        FileUploadUtil.deleteFiles(PRODUCT_DIR, product.getImageLinkList());
+        fileUploadUtil.deleteFiles(PRODUCT_DIR, product.getImageLinkList());
 
-        List<String> imageLinks = FileUploadUtil.uploadFile(PRODUCT_DIR, files);
+        List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
         product.updateImageLinks(imageLinks);
 
         repository.save(product);

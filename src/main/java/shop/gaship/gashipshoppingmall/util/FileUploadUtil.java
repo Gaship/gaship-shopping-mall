@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.util;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 파일을 업로드하기 위한 유틸클래스 입니다.
@@ -18,12 +18,11 @@ import java.util.UUID;
  * @author : 김보민
  * @since 1.0
  */
+@Component
 public class FileUploadUtil {
     private static final String UPLOAD_BASE_URL = "src/main/resources";
 
-    private FileUploadUtil() {}
-
-    public static List<String> uploadFile(String uploadDir, List<MultipartFile> multipartFiles)
+    public List<String> uploadFile(String uploadDir, List<MultipartFile> multipartFiles)
             throws IOException {
         List<String> fileNames = new ArrayList<>();
 
@@ -42,14 +41,14 @@ public class FileUploadUtil {
         return fileNames;
     }
 
-    public static void deleteFiles(String uploadDir, List<String> fileNames) {
+    public void deleteFiles(String uploadDir, List<String> fileNames) {
         String uploadPath = UPLOAD_BASE_URL + uploadDir;
         fileNames.stream().map(fileName -> new File(uploadPath + File.separator + fileName))
                 .filter(File::exists)
                 .forEach(File::delete);
     }
 
-    private static String getFileName(MultipartFile multipartFile) {
+    private String getFileName(MultipartFile multipartFile) {
         String originalFilename = multipartFile.getOriginalFilename();
         String fileExtension =  Objects.requireNonNull(originalFilename)
                 .substring(originalFilename.lastIndexOf("."));

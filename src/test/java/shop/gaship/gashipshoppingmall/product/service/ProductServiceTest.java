@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
@@ -49,6 +51,7 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
+import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 /**
  * 상품 서비스 테스트 입니다.
@@ -76,6 +79,9 @@ class ProductServiceTest {
 
     @MockBean
     ProductTagRepository productTagRepository;
+
+    @MockBean
+    FileUploadUtil fileUploadUtil;
 
     Product product;
     ProductAllInfoResponseDto response;
@@ -111,6 +117,8 @@ class ProductServiceTest {
     @Test
     void addProduct() throws IOException {
         ProductCreateRequestDto createRequest = ProductDummy.createRequestDummy();
+        List<MultipartFile> files = List.of(multipartFile);
+        String uploadDir = File.separator + "products";
 
         when(categoryRepository.findById(createRequest.getCategoryNo()))
                 .thenReturn(Optional.of(CategoryDummy.dummy()));
@@ -121,12 +129,15 @@ class ProductServiceTest {
                 .thenReturn(Optional.of(new StatusCode("판매중", 2, "판매상태", "")));
         when(tagRepository.findById(createRequest.getTagNos().get(0)))
                 .thenReturn(Optional.of(new Tag(1, "태그")));
+        when(fileUploadUtil.uploadFile(uploadDir, files))
+                .thenReturn(List.of());
 
-        service.addProduct(List.of(multipartFile), createRequest);
+        service.addProduct(files, createRequest);
 
         verify(categoryRepository).findById(createRequest.getCategoryNo());
         verify(statusCodeRepository).findById(createRequest.getDeliveryTypeNo());
         verify(statusCodeRepository).findByStatusCodeName(SalesStatus.SALE.getValue());
+        verify(fileUploadUtil).uploadFile(uploadDir, files);
     }
 
     @DisplayName("상품 수정 성공")
@@ -135,6 +146,8 @@ class ProductServiceTest {
         ProductModifyRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
         Product product = ProductDummy.dummy();
         ReflectionTestUtils.setField(product, "no", modifyRequest.getNo());
+        List<MultipartFile> files = List.of(multipartFile);
+        String uploadDir = File.separator + "products";
 
         when(repository.findById(modifyRequest.getNo()))
                 .thenReturn(Optional.of(product));
@@ -143,12 +156,15 @@ class ProductServiceTest {
         when(statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo()))
                 .thenReturn(Optional.of(
                         new StatusCode("설치", modifyRequest.getDeliveryTypeNo(), "배송형태", "")));
+        when(fileUploadUtil.uploadFile(uploadDir, files))
+                .thenReturn(List.of());
 
         service.modifyProduct(List.of(multipartFile), modifyRequest);
 
         verify(repository).findById(modifyRequest.getNo());
         verify(categoryRepository).findById(modifyRequest.getCategoryNo());
         verify(statusCodeRepository).findById(modifyRequest.getDeliveryTypeNo());
+        verify(fileUploadUtil).uploadFile(uploadDir, files);
     }
 
     @DisplayName("상품 수정 실패 - 해당 상품 찾기 불가")
