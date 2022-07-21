@@ -1,56 +1,55 @@
 package shop.gaship.gashipshoppingmall.product.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
-import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
-import shop.gaship.gashipshoppingmall.product.service.ProductService;
-import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.test.web.servlet.MvcResult;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
-import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
-import shop.gaship.gashipshoppingmall.product.dummy.ProductResponseDtoDummy;
+import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.product.service.ProductService;
 import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
-import java.time.LocalDateTime;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 
 /**
  * 상품 컨트롤러 테스트 입니다.
@@ -73,8 +72,6 @@ class ProductControllerTest {
 
     private MockMultipartFile multipartFile;
 
-    ProductResponseDto responseDto;
-
     Product product;
 
     ProductAllInfoResponseDto response;
@@ -86,10 +83,9 @@ class ProductControllerTest {
         File file = new File("src/test/resources/sample.jpg");
         multipartFile = new MockMultipartFile(
                 "image", "sample.jpg", "multipart/mixed", new FileInputStream(file));
-                       
+
                         pageRequest = PageRequest.of(0, 10);
-        product = ProductDummy.dummy2();
-        responseDto = ProductResponseDtoDummy.dummy();
+        product = ProductDummy.dummy();
         response = new ProductAllInfoResponseDto(1, "a", "d", "카테", 100L, LocalDateTime.now(),
                 "아", "한국", "판매원", "가나다라", 100L, "w", "#RRRR",
                 1, "img", null, null, null, null, "설명", 3, "카테");
@@ -164,14 +160,14 @@ class ProductControllerTest {
         List<ProductAllInfoResponseDto> list = List.of(response);
         PageRequest req = PageRequest.of(1, 10);
         Page<ProductAllInfoResponseDto> pages = new PageImpl<>(list, req, list.size());
-        when(service.findProductByCode(responseDto.getCode(),pageRequest))
+        when(service.findProductByCode(response.getProductCode(),pageRequest))
                 .thenReturn(new PageResponse<>(pages));
 
         mvc.perform(get("/products/code")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .accept(MediaType.APPLICATION_JSON)
-                        .queryParam("code", responseDto.getCode())
+                        .queryParam("code", response.getProductCode())
                         .queryParam("page", objectMapper.writeValueAsString(pageRequest.getPageNumber()))
                         .queryParam("size", objectMapper.writeValueAsString(pageRequest.getPageSize())))
                 .andExpect(status().isOk())
@@ -236,16 +232,16 @@ class ProductControllerTest {
                 .andDo(print());
 
         //then
-        verify(service, times(1)).findProduct(responseDto.getNo());
+        verify(service, times(1)).findProduct(response.getProductNo());
     }
 
     @DisplayName("상품 다건조회 - 상품금액으로 조회 테스트")
     @Test
     void getProductsByPrice() throws Exception {
         //given & when
-        PageRequest pageRequest = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
         Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response),pageRequest,pageRequest.getPageSize());
-        when(service.findProductByPrice(0L,10000000L,pageRequest.getPageNumber(),pageRequest.getPageSize()))
+        when(service.findProductByPrice(0L,10000000L,pageRequest))
                 .thenReturn(new PageResponse<>(list));
 
         MvcResult mvcResult = mvc.perform(get("/products/price")
@@ -289,7 +285,7 @@ class ProductControllerTest {
         //given & when
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response),pageRequest,pageRequest.getPageSize());
-        when(service.findProductByCategory(1,pageRequest.getPageNumber(),pageRequest.getPageSize()))
+        when(service.findProductByCategory(1,pageRequest))
                 .thenReturn(new PageResponse<>(list));
 
         //then
@@ -322,7 +318,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.content[0].upperName").value(response.getUpperName()))
                 .andDo(print());
 
-        verify(service, times(1)).findProductByCategory(any(),any(),any());
+        verify(service, times(1)).findProductByCategory(response.getProductNo(),pageRequest);
     }
 
     @DisplayName("제품다건조회 - 이름으로 조회")
@@ -331,7 +327,7 @@ class ProductControllerTest {
         //given & when
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response),pageRequest,pageRequest.getPageSize());
-        when(service.findProductByName(response.getProductName(),pageRequest.getPageNumber(),pageRequest.getPageSize()))
+        when(service.findProductByName(response.getProductName(),pageRequest))
                 .thenReturn(new PageResponse<>(list));
 
 
@@ -373,7 +369,7 @@ class ProductControllerTest {
         //given & when
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response),pageRequest,pageRequest.getPageSize());
-        when(service.findProductsInfo(pageRequest.getPageNumber(),pageRequest.getPageSize()))
+        when(service.findProductsInfo(pageRequest))
                 .thenReturn(new PageResponse<>(list));
 
         //then
@@ -407,6 +403,6 @@ class ProductControllerTest {
                 .andDo(print());
 
         verify(service,times(1))
-                .findProductsInfo(pageRequest.getPageNumber(),pageRequest.getPageSize());
+                .findProductsInfo(pageRequest);
     }
 }

@@ -1,20 +1,17 @@
 package shop.gaship.gashipshoppingmall.product.dummy;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
-import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 
 public class ProductDummy {
 
     public static Product dummy() {
         Product dummy =  Product.builder()
-                .category(CategoryDummy.dummy())
+                .category(CategoryDummy.bottomDummy())
                 .name("상품")
                 .amount(10000L)
                 .registerDatetime(LocalDateTime.now())
@@ -72,29 +69,5 @@ public class ProductDummy {
                 List.of(),
                 "A001"
         );
-    }
-
-    public static Product dummy2() {
-        return Product.builder()
-                .no(null)
-                .category(CategoryDummy.bottomDummy())
-                .salesStatus(StatusCodeDummy.dummy())
-                .deliveryType(StatusCodeDummy.dummy())
-                .name("이름")
-                .amount(1000L)
-                .registerDatetime(LocalDateTime.now())
-                .manufacturer("ㅇㅇ")
-                .manufacturerCountry("ㅇㅇ")
-                .seller("가")
-                .importer("나")
-                .shippingInstallationCost(1L)
-                .qualityAssuranceStandard("다")
-                .color("빨강")
-                .stockQuantity(1)
-                .imageLink1("라")
-                .explanation("설명")
-                .code("code")
-                .productTags(new ArrayList<>())
-                .build();
     }
 }

@@ -5,11 +5,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
@@ -28,7 +41,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 @NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
-@Builder
 @Table(name = "products")
 public class Product {
 
@@ -153,7 +165,8 @@ public class Product {
      * @return product 생성 상품
      * @author 김보민
      */
-    public static Product create(Category category, StatusCode deliveryType, ProductCreateRequestDto createRequest) {
+    public static Product create(Category category, StatusCode deliveryType,
+                                 ProductCreateRequestDto createRequest) {
         return Product.builder()
                 .category(category)
                 .deliveryType(deliveryType)
@@ -181,7 +194,8 @@ public class Product {
      * @param modifyRequest 상품 수정 요청 dto
      * @author 김보민
      */
-    public void updateProduct(Category category, StatusCode deliveryType, ProductModifyRequestDto modifyRequest) {
+    public void updateProduct(Category category, StatusCode deliveryType,
+                              ProductModifyRequestDto modifyRequest) {
         this.category = category;
         this.deliveryType = deliveryType;
         this.name = modifyRequest.getName();
@@ -216,7 +230,8 @@ public class Product {
      */
     public void updateImageLinks(List<String> imageLinks) {
         String[] updatingImageLinks = new String[5];
-        IntStream.range(0, imageLinks.size()).forEach(i -> updatingImageLinks[i] = imageLinks.get(i));
+        IntStream.range(0, imageLinks.size())
+                .forEach(i -> updatingImageLinks[i] = imageLinks.get(i));
 
         this.imageLink1 = updatingImageLinks[0];
         this.imageLink2 = updatingImageLinks[1];
@@ -242,10 +257,4 @@ public class Product {
 
         return imageLinks;
     }
-    
-    public void add(ProductTag productTag) {
-        productTag.setProduct(this);
-        productTags.add(productTag);
-    }
-
 }

@@ -1,12 +1,10 @@
 package shop.gaship.gashipshoppingmall.product.dto.response;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
 /**
  * 상품을 가져올 정보들이 담겨있습니다.
@@ -42,7 +40,14 @@ public class ProductAllInfoResponseDto {
 
     private List<String> tags = new ArrayList<>();
 
-    public ProductAllInfoResponseDto(Integer productNo, String productName, String productCode, String categoryName, Long amount, LocalDateTime dateTime, String manufacturer, String country, String seller, String importer, Long installationCost, String quality, String color, Integer quantity, String img1, String img2, String img3, String img4, String img5, String explanation, Integer level, String upperName) {
+    public ProductAllInfoResponseDto(Integer productNo, String productName, String productCode,
+                                     String categoryName, Long amount, LocalDateTime dateTime,
+                                     String manufacturer, String country, String seller,
+                                     String importer, Long installationCost, String quality,
+                                     String color, Integer quantity, String img1,
+                                     String img2, String img3, String img4,
+                                     String img5, String explanation, Integer level,
+                                     String upperName) {
         this.productNo = productNo;
         this.productName = productName;
         this.productCode = productCode;

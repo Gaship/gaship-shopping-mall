@@ -28,7 +28,7 @@ public class TagController {
     private final TagService tagService;
 
     /**
-     * Tag add response entity.
+     * Tag addProductTag response entity.
      * description : 태그를 등록하는 컨트롤러
      *
      * @param request the request

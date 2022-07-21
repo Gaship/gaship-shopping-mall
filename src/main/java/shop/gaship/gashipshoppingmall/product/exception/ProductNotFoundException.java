@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.product.exception;
 
 /**
- * 제품이 존재하지않을경우 예외 발생
+ * 제품이 존재하지않을경우 발생하는 예외 입니다.
  *
  * @author : 유호철
  * @since 1.0

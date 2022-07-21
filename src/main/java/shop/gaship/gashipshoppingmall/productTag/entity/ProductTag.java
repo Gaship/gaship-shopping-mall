@@ -1,11 +1,20 @@
 package shop.gaship.gashipshoppingmall.productTag.entity;
 
-import lombok.*;
+import java.io.Serializable;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
-
-import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * 상품 태그 엔티티 입니다.
@@ -26,7 +35,6 @@ public class ProductTag {
     @MapsId(value = "productNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no")
-    @Setter
     private Product product;
 
     @MapsId(value = "tagNo")
@@ -34,6 +42,12 @@ public class ProductTag {
     @JoinColumn(name = "tag_no")
     private Tag tag;
 
+    /**
+     * 상품 태그 엔티티 식별자 클래스 입니다.
+     *
+     * @author : 김보민
+     * @since 1.0
+     */
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter

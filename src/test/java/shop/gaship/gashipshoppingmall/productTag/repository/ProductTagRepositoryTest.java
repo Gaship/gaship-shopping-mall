@@ -1,5 +1,8 @@
 package shop.gaship.gashipshoppingmall.productTag.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,16 +15,11 @@ import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
-import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 상품태그 레퍼지토리 테스트
@@ -48,10 +46,12 @@ class ProductTagRepositoryTest {
 
     private ProductTag productTag;
 
+    Product product;
+
 
     @BeforeEach
     void setUp() {
-        Product product = ProductDummy.dummy();
+        product = ProductDummy.dummy();
         StatusCode deliveryType = new StatusCode("설치", 1, "배송 형태", "");
         StatusCode salesStatus = new StatusCode("판매중", 2, "판매 상태", "");
         ReflectionTestUtils.setField(product, "deliveryType", deliveryType);
@@ -74,6 +74,8 @@ class ProductTagRepositoryTest {
 
         assertThat(savedProductTags).hasSize(1);
         assertThat(savedProductTags.get(0)).isEqualTo(productTag);
+        assertThat(savedProductTags.get(0).getPk().getProductNo()).isEqualTo(productTag.getProduct().getNo());
+        assertThat(savedProductTags.get(0).getPk().getTagNo()).isEqualTo(productTag.getTag().getTagNo());
     }
 
     @DisplayName("상품번호로 상품 태그 전체 삭제 테스트")
@@ -101,9 +103,7 @@ class ProductTagRepositoryTest {
         Tag tag = new Tag(null, "title");
         tagRepository.save(tag);
 
-        Product product = ProductDummy.dummy2();
         ProductTag productTag = new ProductTag(new ProductTag.Pk(product.getNo(), tag.getTagNo()), product, tag);
-        product.add(productTag);
 
         productRepository.save(product);
         productTagRepository.save(productTag);

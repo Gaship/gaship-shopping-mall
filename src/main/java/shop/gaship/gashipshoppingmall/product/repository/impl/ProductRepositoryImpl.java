@@ -12,14 +12,11 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
-import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
 import shop.gaship.gashipshoppingmall.productTag.entity.QProductTag;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
-
-import java.util.Optional;
 
 /**
  * QueryDsl 을 쓰기위한 Repo 구현체입니다.
@@ -39,16 +36,6 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Optional<ProductResponseDto> findByProductNo(Integer productNo) {
-        QProduct product = QProduct.product;
-
-        return Optional.of(from(product)
-                .where(product.no.eq(productNo))
-                .select(getProduct(product))
-                .fetchOne());
-    }
-
-    @Override
     public Page<ProductAllInfoResponseDto> findProduct(ProductRequestDto requestDto) {
 
         QCategory upper = new QCategory("upper");
@@ -59,9 +46,9 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .innerJoin(category)
                 .on(product.category.no.eq(category.no))
                 .innerJoin(productTag)
-                .on(product.productTags.any().eq(productTag))
-                .where(productTag.tag.tagNo.in(1),
-                        eqProductName(requestDto.getProductName()),
+                .on(product.productTags.contains(productTag))
+                .innerJoin(productTag.tag,tag)
+                .where(eqProductName(requestDto.getProductName()),
                         eqProductCode(requestDto.getCode()),
                         eqCategory(requestDto.getCategoryNo()),
                         eqPrice(requestDto.getMinAmount(), requestDto.getMaxAmount()),
@@ -70,7 +57,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .select(Projections.constructor(ProductAllInfoResponseDto.class,
                         product.no.as("productNo"),
                         product.name.as("productName"),
-                        product.code,
+                        product.code.as("productCode"),
                         category.name.as("categoryName"),
                         product.amount,
                         product.registerDatetime.as("dateTime"),
@@ -137,7 +124,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         if (minAmount < 0 || maxAmount <= 0) {
             return null;
         }
-        return product.amount.between(maxAmount, maxAmount);
+        return product.amount.between(minAmount, maxAmount);
     }
 
     private BooleanExpression eqTagNo(Integer tagNo) {
@@ -145,28 +132,5 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
             return null;
         }
         return tag.tagNo.eq(tagNo);
-    }
-
-    private QBean<ProductResponseDto> getProduct(QProduct product) {
-        return Projections.bean(ProductResponseDto.class,
-                product.no,
-                product.name,
-                product.amount,
-                product.manufacturer,
-                product.manufacturerCountry,
-                product.seller,
-                product.importer,
-                product.shippingInstallationCost,
-                product.qualityAssuranceStandard,
-                product.color,
-                product.stockQuantity,
-                product.imageLink1,
-                product.imageLink2,
-                product.imageLink3,
-                product.imageLink4,
-                product.imageLink5,
-                product.explanation,
-                product.code,
-                product.registerDatetime);
     }
 }

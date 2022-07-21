@@ -1,13 +1,12 @@
 package shop.gaship.gashipshoppingmall.product.dto.request;
 
+import java.util.List;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * 상품 수정 요청 dto 클래스입니다.

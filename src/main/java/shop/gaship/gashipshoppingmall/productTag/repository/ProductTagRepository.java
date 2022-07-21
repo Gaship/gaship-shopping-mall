@@ -10,7 +10,8 @@ import shop.gaship.gashipshoppingmall.productTag.repository.custom.ProductTagRep
  * @author : 김보민
  * @since 1.0
  */
-public interface ProductTagRepository extends JpaRepository<ProductTag, ProductTag.Pk>, ProductTagRepositoryCustom {
+public interface ProductTagRepository extends JpaRepository<ProductTag, ProductTag.Pk>,
+        ProductTagRepositoryCustom {
     /**
      * 해당 상품이 가진 상품태그들을 삭제하는 메서드입니다.
      *

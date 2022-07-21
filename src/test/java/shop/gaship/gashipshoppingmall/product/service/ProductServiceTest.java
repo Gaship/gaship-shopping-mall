@@ -1,5 +1,20 @@
 package shop.gaship.gashipshoppingmall.product.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,52 +22,33 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
+import shop.gaship.gashipshoppingmall.category.entity.Category;
+import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
-import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import shop.gaship.gashipshoppingmall.category.entity.Category;
-import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
-import shop.gaship.gashipshoppingmall.product.dto.response.ProductResponseDto;
-import shop.gaship.gashipshoppingmall.product.dummy.ProductResponseDtoDummy;
+import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
 import shop.gaship.gashipshoppingmall.productTag.repository.ProductTagRepository;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
-import java.time.LocalDateTime;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 
 /**
  * 상품 서비스 테스트 입니다.
@@ -81,9 +77,6 @@ class ProductServiceTest {
     @MockBean
     ProductTagRepository productTagRepository;
 
-
-    ProductResponseDto responseDto;
-
     Product product;
     ProductAllInfoResponseDto response;
     Tag tag;
@@ -92,7 +85,8 @@ class ProductServiceTest {
 
     Category category;
 
-    private MockMultipartFile multipartFile;
+    MockMultipartFile multipartFile;
+    PageResponse<ProductAllInfoResponseDto> pageResponse;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -101,13 +95,16 @@ class ProductServiceTest {
                 "image", "sample.jpg", "multipart/mixed", new FileInputStream(file));
 
         category = CategoryDummy.bottomDummy();
-        product = ProductDummy.dummy2();
-        responseDto = ProductResponseDtoDummy.dummy();
-        response = new ProductAllInfoResponseDto(1, "a", "d", "카테", 100L, LocalDateTime.now(), "아", "한국", "판매원", "가나다라", 100L, "w", "#RRRR", 1, "img", null, null, null, null, "설명", 3, "카테");
+        product = ProductDummy.dummy();
+        response = new ProductAllInfoResponseDto(1, "a", "d", "카테", 100L, LocalDateTime.now(), "아",
+                "한국", "판매원", "가나다라", 100L, "w", "#RRRR", 1, "img", null, null, null, null, "설명", 3,
+                "카테");
         tag = new Tag(1, "title");
         response.getTags().add(tag.getTitle());
+
         pageRequest = PageRequest.of(0, 10);
         page = new PageImpl(List.of(response), pageRequest, 1);
+        pageResponse = new PageResponse<>(page);
     }
 
     @DisplayName("상품 등록 성공")
@@ -118,7 +115,8 @@ class ProductServiceTest {
         when(categoryRepository.findById(createRequest.getCategoryNo()))
                 .thenReturn(Optional.of(CategoryDummy.dummy()));
         when(statusCodeRepository.findById(createRequest.getDeliveryTypeNo()))
-                .thenReturn(Optional.of(new StatusCode("설치", createRequest.getDeliveryTypeNo(), "배송형태", "")));
+                .thenReturn(Optional.of(
+                        new StatusCode("설치", createRequest.getDeliveryTypeNo(), "배송형태", "")));
         when(statusCodeRepository.findByStatusCodeName(SalesStatus.SALE.getValue()))
                 .thenReturn(Optional.of(new StatusCode("판매중", 2, "판매상태", "")));
         when(tagRepository.findById(createRequest.getTagNos().get(0)))
@@ -143,7 +141,8 @@ class ProductServiceTest {
         when(categoryRepository.findById(modifyRequest.getCategoryNo()))
                 .thenReturn(Optional.of(CategoryDummy.dummy()));
         when(statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo()))
-                .thenReturn(Optional.of(new StatusCode("설치", modifyRequest.getDeliveryTypeNo(), "배송형태", "")));
+                .thenReturn(Optional.of(
+                        new StatusCode("설치", modifyRequest.getDeliveryTypeNo(), "배송형태", "")));
 
         service.modifyProduct(List.of(multipartFile), modifyRequest);
 
@@ -180,7 +179,8 @@ class ProductServiceTest {
 
         when(repository.findById(salesStatusModifyRequest.getProductNo()))
                 .thenReturn(Optional.of(product));
-        when(statusCodeRepository.findByStatusCodeName(salesStatusModifyRequest.getStatusCodeName()))
+        when(statusCodeRepository.findByStatusCodeName(
+                salesStatusModifyRequest.getStatusCodeName()))
                 .thenReturn(Optional.of(statusCode));
 
         service.modifyProductSalesStatus(salesStatusModifyRequest);
@@ -196,7 +196,7 @@ class ProductServiceTest {
     void productFindByCodeTest() {
         //given
         ProductRequestDto requestDto = ProductRequestDto.builder()
-                .productCode(product.getCode())
+                .code(product.getCode())
                 .pageable(pageRequest)
                 .build();
 
@@ -206,7 +206,8 @@ class ProductServiceTest {
                 .willReturn(List.of(tag));
         //when
 
-        PageResponse<ProductAllInfoResponseDto> result = service.findProductByCode(requestDto.getCode(), pageRequest);
+        PageResponse<ProductAllInfoResponseDto> result =
+                service.findProductByCode(requestDto.getCode(), pageRequest);
 
         //then
         verify(repository, times(1))
@@ -291,7 +292,7 @@ class ProductServiceTest {
 
         //when
         service.findProductByPrice(0L, product.getAmount(),
-                pageRequest.getPageNumber(), pageRequest.getPageSize());
+                pageRequest);
 
         //then
         verify(repository, times(1))
@@ -306,11 +307,11 @@ class ProductServiceTest {
     @Test
     void productFindByCategoryFail() {
         //given
-        given(categoryRepository.findById(responseDto.getNo()))
+        given(categoryRepository.findById(any(Integer.class)))
                 .willReturn(Optional.empty());
         //when
-        assertThatThrownBy(() -> service.findProductByCategory(responseDto.getNo(),
-                pageRequest.getPageNumber(), pageRequest.getPageSize()))
+        assertThatThrownBy(() -> service.findProductByCategory(product.getNo(),
+                pageRequest))
                 .isInstanceOf(CategoryNotFoundException.class);
     }
 
@@ -331,7 +332,8 @@ class ProductServiceTest {
                 .willReturn(Optional.of(category));
 
         //when
-        PageResponse<ProductAllInfoResponseDto> result = service.findProductByCategory(1, pageRequest.getPageNumber(), pageRequest.getPageSize());
+        PageResponse<ProductAllInfoResponseDto> result =
+                service.findProductByCategory(1, pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(any());
@@ -356,7 +358,8 @@ class ProductServiceTest {
                 .willReturn(List.of(tag));
 
         //when
-        PageResponse<ProductAllInfoResponseDto> result = service.findProductByName(response.getProductName(), pageRequest.getPageNumber(), pageRequest.getPageSize());
+        PageResponse<ProductAllInfoResponseDto> result =
+                service.findProductByName(response.getProductName(), pageRequest);
         //then
         verify(repository, times(1)).findProduct(any());
         verify(productTagRepository, times(1)).findTagByProductNo(tag.getTagNo());
@@ -374,7 +377,7 @@ class ProductServiceTest {
         given(productTagRepository.findTagByProductNo(any()))
                 .willReturn(List.of(tag));
         //when
-        PageResponse<ProductAllInfoResponseDto> result = service.findProductsInfo(pageRequest.getPageNumber(), pageRequest.getPageSize());
+        PageResponse<ProductAllInfoResponseDto> result = service.findProductsInfo(pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(requestDto);
@@ -385,12 +388,16 @@ class ProductServiceTest {
     private void checkContent(PageResponse<ProductAllInfoResponseDto> result) {
         assertThat(result.getContent().get(0).getUpperName()).isEqualTo(response.getUpperName());
         assertThat(result.getContent().get(0).getProductNo()).isEqualTo(response.getProductNo());
-        assertThat(result.getContent().get(0).getProductName()).isEqualTo(response.getProductName());
-        assertThat(result.getContent().get(0).getProductCode()).isEqualTo(response.getProductCode());
-        assertThat(result.getContent().get(0).getCategoryName()).isEqualTo(response.getCategoryName());
+        assertThat(result.getContent().get(0).getProductName()).isEqualTo(
+                response.getProductName());
+        assertThat(result.getContent().get(0).getProductCode()).isEqualTo(
+                response.getProductCode());
+        assertThat(result.getContent().get(0).getCategoryName()).isEqualTo(
+                response.getCategoryName());
         assertThat(result.getContent().get(0).getAmount()).isEqualTo(response.getAmount());
         assertThat(result.getContent().get(0).getCountry()).isEqualTo(response.getCountry());
-        assertThat(result.getContent().get(0).getManufacturer()).isEqualTo(response.getManufacturer());
+        assertThat(result.getContent().get(0).getManufacturer()).isEqualTo(
+                response.getManufacturer());
         assertThat(result.getContent().get(0).getColor()).isEqualTo(response.getColor());
         assertThat(result.getContent().get(0).getQuality()).isEqualTo(response.getQuality());
         assertThat(result.getContent().get(0).getQuantity()).isEqualTo(response.getQuantity());
@@ -400,26 +407,5 @@ class ProductServiceTest {
         assertThat(result.getContent().get(0).getImg4()).isEqualTo(response.getImg4());
         assertThat(result.getContent().get(0).getImg5()).isEqualTo(response.getImg5());
         assertThat(result.getContent().get(0).getLevel()).isEqualTo(response.getLevel());
-    }
-
-    private void checkDtoList(ProductResponseDto result) {
-        assertThat(result.getRegisterDatetime()).isEqualTo(responseDto.getRegisterDatetime());
-        assertThat(result.getAmount()).isEqualTo(responseDto.getAmount());
-        assertThat(result.getName()).isEqualTo(responseDto.getName());
-        assertThat(result.getColor()).isEqualTo(responseDto.getColor());
-        assertThat(result.getManufacturer()).isEqualTo(responseDto.getManufacturer());
-        assertThat(result.getManufacturerCountry()).isEqualTo(responseDto.getManufacturerCountry());
-        assertThat(result.getSeller()).isEqualTo(responseDto.getSeller());
-        assertThat(result.getImporter()).isEqualTo(responseDto.getImporter());
-        assertThat(result.getShippingInstallationCost()).isEqualTo(responseDto.getShippingInstallationCost());
-        assertThat(result.getQualityAssuranceStandard()).isEqualTo(responseDto.getQualityAssuranceStandard());
-        assertThat(result.getStockQuantity()).isEqualTo(responseDto.getStockQuantity());
-        assertThat(result.getImageLink1()).isEqualTo(responseDto.getImageLink1());
-        assertThat(result.getImageLink2()).isEqualTo(responseDto.getImageLink2());
-        assertThat(result.getImageLink3()).isEqualTo(responseDto.getImageLink3());
-        assertThat(result.getImageLink4()).isEqualTo(responseDto.getImageLink4());
-        assertThat(result.getImageLink5()).isEqualTo(responseDto.getImageLink5());
-        assertThat(result.getExplanation()).isEqualTo(responseDto.getExplanation());
-        assertThat(result.getCode()).isEqualTo(responseDto.getCode());
     }
 }
