@@ -1,14 +1,15 @@
-package shop.gaship.gashipshoppingmall.adresslist.controller;
+package shop.gaship.gashipshoppingmall.addresslist.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.adresslist.dto.AddressListPageResponseDto;
-import shop.gaship.gashipshoppingmall.adresslist.dto.AddressListRequestDto;
-import shop.gaship.gashipshoppingmall.adresslist.dto.AddressListResponseDto;
-import shop.gaship.gashipshoppingmall.adresslist.service.AddressListService;
+import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListModifyRequestDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListPageResponseDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListAddRequestDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListResponseDto;
+import shop.gaship.gashipshoppingmall.addresslist.service.AddressListService;
 
 /**
  * @author 최정우
@@ -20,7 +21,7 @@ public class AddressListController {
     private final AddressListService addressListService;
 
     @PostMapping("/members/{memberId}/addressLists")
-    public ResponseEntity<Void> AddressListAdd(@RequestBody AddressListRequestDto request) {
+    public ResponseEntity<Void> AddressListAdd(@RequestBody AddressListAddRequestDto request) {
         addressListService.addAddressList(request);
 
         return ResponseEntity
@@ -30,11 +31,12 @@ public class AddressListController {
     }
 
     @PutMapping("/members/{memberId}/addressLists")
-    public ResponseEntity<Void> AddressListModify(@RequestBody AddressListRequestDto request) {
+    public ResponseEntity<Void> AddressListModify(@RequestBody AddressListModifyRequestDto request) {
         addressListService.modifyAddressList(request);
+        addressListService.addAddressList(request);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
