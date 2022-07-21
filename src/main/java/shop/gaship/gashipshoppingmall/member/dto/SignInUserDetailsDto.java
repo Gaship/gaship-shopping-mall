@@ -18,5 +18,6 @@ public class SignInUserDetailsDto {
     private Integer identifyNo;
     private String email;
     private String hashedPassword;
+    private Boolean isSocial;
     private List<String> authorities;
 }

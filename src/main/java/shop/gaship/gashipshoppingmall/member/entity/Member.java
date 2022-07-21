@@ -73,6 +73,8 @@ public class Member extends BaseEntity {
 
     private LocalDate nextRenewalGradeDate;
 
+    private Boolean isSocial;
+
     public void modifyMember(MemberModifyRequestDto memberModifyRequestDto) {
         this.memberGrades = memberModifyRequestDto.getMemberGrade();
         this.memberStatusCodes = memberModifyRequestDto.getStatusCode();
