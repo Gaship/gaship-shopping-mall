@@ -15,7 +15,6 @@ import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponse
 import shop.gaship.gashipshoppingmall.statuscode.service.StatusCodeService;
 
 /**
- * .
  * 상테코드 Rest 컨트롤러
  *
  * @author : 김세미
