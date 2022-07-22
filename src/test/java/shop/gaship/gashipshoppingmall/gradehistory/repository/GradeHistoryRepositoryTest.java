@@ -65,7 +65,7 @@ class GradeHistoryRepositoryTest {
         testEntityManager.clear();
 
         Page<GradeHistoryResponseDto> result = gradeHistoryRepository
-                .getGradeHistoriesByMember(gradeHistoryDummy.getMember(), PageRequest.of(0, 1));
+                .getGradeHistoriesByMember(gradeHistoryDummy.getMember().getMemberNo(), PageRequest.of(0, 1));
 
         assertThat(result).isNotEmpty();
         assertThat(result.getContent()).hasSize(1);

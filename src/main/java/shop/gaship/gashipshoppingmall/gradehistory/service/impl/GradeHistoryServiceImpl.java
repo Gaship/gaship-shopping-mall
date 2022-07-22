@@ -28,13 +28,13 @@ public class GradeHistoryServiceImpl implements GradeHistoryService {
     private final MemberRepository memberRepository;
 
     @Override
-    public void addGradeHistory(GradeHistoryAddRequestDto request) {
-        Member member = memberRepository.findById(request.getMemberNo())
+    public void addGradeHistory(GradeHistoryAddRequestDto requestDto) {
+        Member member = memberRepository.findById(requestDto.getMemberNo())
                 .orElseThrow(MemberNotFoundException::new);
 
         GradeHistory gradeHistory = GradeHistory.builder()
                 .member(member)
-                .request(request)
+                .request(requestDto)
                 .build();
 
         gradeHistoryRepository.save(gradeHistory);
@@ -42,12 +42,12 @@ public class GradeHistoryServiceImpl implements GradeHistoryService {
 
     @Override
     public PageResponse<GradeHistoryResponseDto>
-        findGradeHistories(GradeHistoryFindRequestDto request) {
-        Member member = memberRepository.findById(request.getMemberNo())
+        findGradeHistories(GradeHistoryFindRequestDto requestDto) {
+        Member member = memberRepository.findById(requestDto.getMemberNo())
                 .orElseThrow(MemberNotFoundException::new);
 
         return new PageResponse<>(gradeHistoryRepository
-                .getGradeHistoriesByMember(member,
-                        PageRequest.of(request.getPage(), request.getSize())));
+                .getGradeHistoriesByMember(member.getMemberNo(),
+                        PageRequest.of(requestDto.getPage(), requestDto.getSize())));
     }
 }

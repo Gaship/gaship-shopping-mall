@@ -10,7 +10,6 @@ import shop.gaship.gashipshoppingmall.gradehistory.dto.response.GradeHistoryResp
 import shop.gaship.gashipshoppingmall.gradehistory.entity.GradeHistory;
 import shop.gaship.gashipshoppingmall.gradehistory.entity.QGradeHistory;
 import shop.gaship.gashipshoppingmall.gradehistory.repository.GradeHistoryRepositoryCustom;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
 
 /**
  * 등급이력 custom repository 구현체.
@@ -20,28 +19,28 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
  * @see org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
  * @since 1.0
  */
-public class GradeHistoryRepositoryCustomImpl
+public class GradeHistoryRepositoryImpl
         extends QuerydslRepositorySupport implements GradeHistoryRepositoryCustom {
 
-    public GradeHistoryRepositoryCustomImpl() {
+    public GradeHistoryRepositoryImpl() {
         super(GradeHistory.class);
     }
 
     @Override
     public Page<GradeHistoryResponseDto>
-        getGradeHistoriesByMember(Member member, PageRequest pageRequest) {
+        getGradeHistoriesByMember(Integer memberNo, PageRequest pageRequest) {
 
         QGradeHistory gradeHistory = QGradeHistory.gradeHistory;
 
         QueryResults<GradeHistoryResponseDto> queryResults = from(gradeHistory)
-                .where(gradeHistory.member.eq(member))
-                .offset(pageRequest.getOffset())
+                .where(gradeHistory.member.memberNo.eq(memberNo))
+                .orderBy(gradeHistory.at.desc())
                 .limit(pageRequest.getPageSize())
+                .offset(pageRequest.getOffset())
                 .select(Projections.bean(GradeHistoryResponseDto.class,
                         gradeHistory.at,
                         gradeHistory.totalAmount,
                         gradeHistory.gradeName))
-                .orderBy(gradeHistory.at.desc())
                 .fetchResults();
 
         return new PageImpl<>(queryResults.getResults(), pageRequest, queryResults.getTotal());
