@@ -30,14 +30,14 @@ public class MemberGradeRestController {
      * 회원등급 POST Mapping
      * 회원등급 등록을 위한 RestController 메서드.
      *
-     * @param request 등록할 회원등급 정보
+     * @param requestDto 등록할 회원등급 정보 (MemberGradeAddRequestDto)
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
      * @author 김세미
      */
     @PostMapping
     public ResponseEntity<Void>
-        memberGradeAdd(@Valid @RequestBody MemberGradeAddRequestDto request) {
-        memberGradeService.addMemberGrade(request);
+        memberGradeAdd(@Valid @RequestBody MemberGradeAddRequestDto requestDto) {
+        memberGradeService.addMemberGrade(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();
@@ -47,14 +47,14 @@ public class MemberGradeRestController {
      * 회원등급 PUT Mapping
      * 회원등급 수정을 위한 RestController 메서드.
      *
-     * @param request MemberGradeModifyRequestDto
+     * @param requestDto 수정할 회원등급 정보 (MemberGradeModifyRequestDto)
      * @return response entity
      * @author 김세미
      */
     @PutMapping
     public ResponseEntity<Void>
-        memberGradeModify(@Valid @RequestBody MemberGradeModifyRequestDto request) {
-        memberGradeService.modifyMemberGrade(request);
+        memberGradeModify(@Valid @RequestBody MemberGradeModifyRequestDto requestDto) {
+        memberGradeService.modifyMemberGrade(requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .build();

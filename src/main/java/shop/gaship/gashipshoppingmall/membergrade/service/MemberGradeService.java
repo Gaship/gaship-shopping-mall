@@ -25,10 +25,10 @@ public interface MemberGradeService {
      * 기존에 기본회원등급이 존재한다면 등록 불가.
      * request 의 isDefault 값에 따라 기본회원등급 등록 / 이외의 회원등급 등록 으로 나뉜다.
      *
-     * @param request MemberGradeAddRequestDto.
+     * @param requestDto MemberGradeAddRequestDto.
      * @author 김세미
      */
-    void addMemberGrade(MemberGradeAddRequestDto request);
+    void addMemberGrade(MemberGradeAddRequestDto requestDto);
 
     /**
      * 회원등급 수정을 위한 메서드
@@ -36,10 +36,10 @@ public interface MemberGradeService {
      * 기준누적금액이 회원등급끼리 중복되는 부분을 방지하기 위해
      * 해당 기준누적금액과 동일한 기준누적금액을 가지고 있는 다른 회원등급이 존재하면 수정 불가.
      *
-     * @param request MemberGradeModifyRequestDto
+     * @param requestDto MemberGradeModifyRequestDto
      * @author 김세미
      */
-    void modifyMemberGrade(MemberGradeModifyRequestDto request);
+    void modifyMemberGrade(MemberGradeModifyRequestDto requestDto);
 
     /**
      * 회원등급 삭제를 위한 메서드
