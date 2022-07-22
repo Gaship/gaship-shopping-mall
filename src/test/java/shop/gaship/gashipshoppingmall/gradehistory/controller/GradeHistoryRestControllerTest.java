@@ -88,7 +88,7 @@ class GradeHistoryRestControllerTest {
         mockMvc.perform(post("/api/grade-histories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy)))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.message", equalTo(errorMessage)));
 
         verify(gradeHistoryService).addGradeHistory(any());
