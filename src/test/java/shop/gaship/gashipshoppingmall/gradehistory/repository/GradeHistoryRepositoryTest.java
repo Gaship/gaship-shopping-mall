@@ -8,10 +8,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.response.GradeHistoryResponseDto;
 import shop.gaship.gashipshoppingmall.gradehistory.dummy.GradeHistoryDummy;
-import shop.gaship.gashipshoppingmall.gradehistory.dummy.GradeHistoryMemberDummy;
 import shop.gaship.gashipshoppingmall.gradehistory.entity.GradeHistory;
+import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
 import java.time.LocalDate;
@@ -74,10 +75,12 @@ class GradeHistoryRepositoryTest {
     }
 
     private Member testMember(){
-        Member memberDummy = GradeHistoryMemberDummy.dummy();
+        Member memberDummy = MemberDummy.dummy();
+        ReflectionTestUtils.setField(memberDummy, "memberNo", null);
         testEntityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
         testEntityManager.persist(memberDummy.getMemberStatusCodes());
         testEntityManager.persist(memberDummy.getMemberGrades());
+        testEntityManager.persist(memberDummy.getUserAuthorityNo());
 
         return testEntityManager.persist(memberDummy);
     }

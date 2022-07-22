@@ -24,8 +24,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -51,7 +51,7 @@ class GradeHistoryRestControllerTest {
     void gradeHistoryAdd() throws Exception {
         GradeHistoryAddRequestDto requestDummy = GradeHistoryDtoDummy.addRequestDummy();
 
-        mockMvc.perform(post("/gradehistories")
+        mockMvc.perform(post("/api/grade-histories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy)))
                 .andExpect(status().isCreated());
@@ -66,7 +66,7 @@ class GradeHistoryRestControllerTest {
         GradeHistoryAddRequestDto requestDummy = GradeHistoryDtoDummy.addRequestDummy();
         ReflectionTestUtils.setField(requestDummy, "gradeName", null);
 
-        mockMvc.perform(post("/gradehistories")
+        mockMvc.perform(post("/api/grade-histories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy)))
                 .andExpect(status().is4xxClientError());
@@ -85,7 +85,7 @@ class GradeHistoryRestControllerTest {
         doThrow(exception)
                 .when(gradeHistoryService).addGradeHistory(any());
 
-        mockMvc.perform(post("/gradehistories")
+        mockMvc.perform(post("/api/grade-histories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy)))
                 .andExpect(status().isInternalServerError())
@@ -106,7 +106,7 @@ class GradeHistoryRestControllerTest {
                                 PageRequest.of(requestDtoDummy.getPage(),
                                         requestDtoDummy.getSize()), 2)));
 
-        mockMvc.perform(get("/gradehistories")
+        mockMvc.perform(get("/api/grade-histories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDtoDummy)))
                 .andExpect(status().isOk())
