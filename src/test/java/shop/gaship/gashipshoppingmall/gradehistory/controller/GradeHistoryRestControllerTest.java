@@ -111,7 +111,7 @@ class GradeHistoryRestControllerTest {
                         .content(objectMapper.writeValueAsString(requestDtoDummy)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.page",equalTo(requestDtoDummy.getPage() + 1)))
+                .andExpect(jsonPath("$.page",equalTo(requestDtoDummy.getPage())))
                 .andExpect(jsonPath("$.size", equalTo(requestDtoDummy.getSize())));
     }
 }

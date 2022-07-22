@@ -103,7 +103,7 @@ class GradeHistoryServiceImplTest {
                 .findGradeHistories(requestDtoDummy);
 
         assertThat(result).isNotNull();
-        assertThat(result.getPage()).isEqualTo(page + 1);
+        assertThat(result.getPage()).isEqualTo(page);
         assertThat(result.getSize()).isEqualTo(size);
         assertThat(result.getDtoList()).hasSize(1);
     }

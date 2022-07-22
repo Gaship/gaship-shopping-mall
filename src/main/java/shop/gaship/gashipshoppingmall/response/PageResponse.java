@@ -52,7 +52,7 @@ public class PageResponse<T> {
     private void makePageList(Pageable pageable) {
 
         // 0부터 시작하므로 1을 추가
-        this.page = pageable.getPageNumber() + 1;
+        this.page = pageable.getPageNumber();
 
         this.size = pageable.getPageSize();
 
