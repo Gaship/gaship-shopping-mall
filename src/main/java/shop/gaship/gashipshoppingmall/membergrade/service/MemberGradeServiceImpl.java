@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
+import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -37,33 +38,33 @@ public class MemberGradeServiceImpl implements MemberGradeService {
 
     @Transactional
     @Override
-    public void addMemberGrade(MemberGradeAddRequestDto request) {
+    public void addMemberGrade(MemberGradeAddRequestDto requestDto) {
         StatusCode renewalPeriod = statusCodeRepository
             .findByGroupCodeName(RenewalPeriod.GROUP)
             .orElseThrow(StatusCodeNotFoundException::new);
 
-        checkOverlapAccumulateAmount(request.getAccumulateAmount());
+        checkOverlapAccumulateAmount(requestDto.getAccumulateAmount());
 
-        if (request.getIsDefault()) {
+        if (requestDto.getIsDefault()) {
             checkExistDefaultMemberGrade();
-            memberGradeRepository.save(MemberGrade.createDefault(renewalPeriod, request));
+            memberGradeRepository.save(MemberGrade.createDefault(renewalPeriod, requestDto));
         } else {
-            memberGradeRepository.save(MemberGrade.create(renewalPeriod, request));
+            memberGradeRepository.save(MemberGrade.create(renewalPeriod, requestDto));
         }
     }
 
     @Transactional
     @Override
-    public void modifyMemberGrade(MemberGradeModifyRequestDto request) {
+    public void modifyMemberGrade(MemberGradeModifyRequestDto requestDto) {
         MemberGrade memberGrade = memberGradeRepository
-            .findById(request.getNo())
+            .findById(requestDto.getNo())
             .orElseThrow(MemberGradeNotFoundException::new);
 
-        if (!memberGrade.getAccumulateAmount().equals(request.getAccumulateAmount())) {
-            checkOverlapAccumulateAmount(request.getAccumulateAmount());
+        if (!memberGrade.getAccumulateAmount().equals(requestDto.getAccumulateAmount())) {
+            checkOverlapAccumulateAmount(requestDto.getAccumulateAmount());
         }
 
-        memberGrade.modifyDetails(request);
+        memberGrade.modifyDetails(requestDto);
 
         memberGradeRepository.save(memberGrade);
     }
@@ -96,6 +97,14 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     public PageResponseDto<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
         return new PageResponseDto<>(memberGradeRepository
             .getMemberGrades(pageable));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MemberGradeResponseDto> findMemberGrades() {
+        return memberGradeRepository.getAll();
     }
 
     /**
