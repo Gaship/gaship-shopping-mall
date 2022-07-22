@@ -17,7 +17,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @Table(name = "Address_lists")
 public class AddressList {
@@ -49,5 +48,17 @@ public class AddressList {
 
     public void modifyStatusToDelete(StatusCode deleteStatus) {
         this.statusCode = deleteStatus;
+    }
+
+
+    @Builder
+    public AddressList(Integer addressListNo, AddressLocal addressLocal, Member member, StatusCode statusCode, String address, String addressDetail, String zipCode) {
+        this.addressListNo = addressListNo;
+        this.addressLocal = addressLocal;
+        this.member = member;
+        this.statusCode = statusCode;
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.zipCode = zipCode;
     }
 }

@@ -1,12 +1,18 @@
 package shop.gaship.gashipshoppingmall.addresslist.dummy;
 
+import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListAddRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListModifyRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListPageResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
+import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 /**
  * @author 최정우
@@ -64,5 +70,32 @@ public class AddressListDummy {
                 .next(false)
                 .pageList(List.of(1,2,3,4,5))
                 .build();
+    }
+
+    public static AddressList addressListEntity() {
+        return AddressList.builder()
+                .addressListNo(1)
+                .addressLocal(AddressLocalDummy.dummy1())
+                .member(MemberDummy.dummy())
+                .statusCode(StatusCodeDummy.dummy())
+                .address("경기도 안양시 비산동")
+                .addressDetail("현대아파트 65층 화장실")
+                .zipCode("12344")
+                .build();
+    }
+
+    public static List<AddressList> addressListEntityList() {
+        List<AddressList>  list  = new ArrayList<>();
+
+        IntStream.rangeClosed(1,103).forEach(i -> list.add(AddressList.builder()
+                .addressListNo(i)
+                .addressLocal(AddressLocalDummy.dummy1())
+                .member(MemberDummy.dummy())
+                .statusCode(StatusCodeDummy.dummy())
+                .address("경기도 안양시 비산동")
+                .addressDetail("현대아파트 65층 화장실")
+                .zipCode("12344")
+                .build()));
+        return list;
     }
 }
