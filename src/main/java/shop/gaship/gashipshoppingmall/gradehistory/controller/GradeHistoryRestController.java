@@ -5,7 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.request.GradeHistoryAddRequestDto;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.request.GradeHistoryFindRequestDto;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.response.GradeHistoryResponseDto;
@@ -20,7 +24,7 @@ import shop.gaship.gashipshoppingmall.response.PageResponse;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/gradehistories")
+@RequestMapping("/api/grade-histories")
 public class GradeHistoryRestController {
     private final GradeHistoryService gradeHistoryService;
 
