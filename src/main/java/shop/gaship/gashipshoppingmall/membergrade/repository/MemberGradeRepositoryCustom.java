@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,4 +36,11 @@ public interface MemberGradeRepositoryCustom {
      * @return 회원의 기본등급이 조회됩니다.
      */
     MemberGrade findByDefaultGrade();
+
+    /**
+     * 전체 회원등급 다건 조회.
+     *
+     * @return List - MemberGradeResponseDto
+     */
+    List<MemberGradeResponseDto> getAll();
 }

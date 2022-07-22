@@ -15,6 +15,7 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -204,5 +205,19 @@ class MemberGradeRepositoryTest {
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
 
         assertThat(defaultGrade).isEqualTo(memberGrade);
+    }
+
+    @DisplayName("전체 회원등급 다건 조회")
+    @Test
+    void getAll(){
+        testEntityManager.persist(renewalPeriod);
+        testEntityManager.persist(memberGrade);
+        testEntityManager.clear();
+
+        List<MemberGradeResponseDto> result = memberGradeRepository.getAll();
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.get(result.size()-1).getName())
+                .isEqualTo(memberGrade.getName());
     }
 }
