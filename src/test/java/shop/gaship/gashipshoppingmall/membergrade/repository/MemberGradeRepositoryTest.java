@@ -194,4 +194,18 @@ class MemberGradeRepositoryTest {
 
         assertThat(result).isFalse();
     }
+
+    @DisplayName("전체 회원등급 다건 조회")
+    @Test
+    void getAll(){
+        testEntityManager.persist(renewalPeriod);
+        testEntityManager.persist(memberGrade);
+        testEntityManager.clear();
+
+        List<MemberGradeResponseDto> result = memberGradeRepository.getAll();
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.get(result.size()-1).getName())
+                .isEqualTo(memberGrade.getName());
+    }
 }
