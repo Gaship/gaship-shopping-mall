@@ -3,12 +3,10 @@ package shop.gaship.gashipshoppingmall.addresslist.dto;
 import lombok.Builder;
 import lombok.Getter;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
-
-import javax.persistence.*;
 
 /**
+ * 단건 조회 시(수정, 조회)에 필요한 배송지목록 정보를 담은 dto 입니다.
+ *
  * @author 최정우
  * @since 1.0
  */

@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
+ * 등록하고자하는 배송지 목록의 정보를 담은 dto 입니다.
+ *
  * @author 최정우
  * @since 1.0
  */

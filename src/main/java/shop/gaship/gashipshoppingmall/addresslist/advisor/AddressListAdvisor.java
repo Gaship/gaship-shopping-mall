@@ -9,7 +9,7 @@ import shop.gaship.gashipshoppingmall.addresslist.controller.AddressListControll
 import shop.gaship.gashipshoppingmall.membergrade.advisor.message.ErrorResponse;
 
 /**
- * The type Address list advisor.
+ * addressList 도메인의 restControllerAdvice 입니다.
  */
 @RestControllerAdvice(basePackageClasses = AddressListController.class)
 public class AddressListAdvisor {
@@ -17,8 +17,8 @@ public class AddressListAdvisor {
      * 예외처리 담당 ExceptionHandler.
      *
      * @param e the e
-     * @author 최정우
      * @return 에러 핸들링 된 ErrorResponse 객체를 반환합니다.
+     * @author 최정우
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {

@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
+ * 배송지목록 중 상태값을 변경하고자하는 배송지 목록의 id 값과 새로 등록하고자하는 배송지 목록의 정보를 담은 dto 입니다.
+ *
  * @author 최정우
  * @since 1.0
  */

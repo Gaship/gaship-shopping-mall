@@ -1,9 +1,9 @@
 package shop.gaship.gashipshoppingmall.addresslist.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -11,6 +11,8 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import javax.persistence.*;
 
 /**
+ * The type Address list.
+ *
  * @author 최정우
  * @since 1.0
  */
@@ -19,6 +21,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Table(name = "Address_lists")
+@ToString
 public class AddressList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,14 +29,14 @@ public class AddressList {
     private Integer addressListNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_local_no", nullable = false)
+    @JoinColumn(name = "address_local_no", nullable = true)
     private AddressLocal addressLocal;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no", nullable = false)
+    @JoinColumn(name = "member_no", nullable = true)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "status_code_no", nullable = false)
     private StatusCode statusCode;
 
@@ -46,11 +49,6 @@ public class AddressList {
     @Column(nullable = false)
     private String zipCode;
 
-    public void modifyStatusToDelete(StatusCode deleteStatus) {
-        this.statusCode = deleteStatus;
-    }
-
-
     @Builder
     public AddressList(Integer addressListNo, AddressLocal addressLocal, Member member, StatusCode statusCode, String address, String addressDetail, String zipCode) {
         this.addressListNo = addressListNo;
@@ -60,5 +58,14 @@ public class AddressList {
         this.address = address;
         this.addressDetail = addressDetail;
         this.zipCode = zipCode;
+    }
+
+    /**
+     * 해당 배송지목록의 상태값을 변경하는 메서드입니다.
+     *
+     * @param deleteStatus 배송지목록의 상태를 변경하고자 할때 변경하고자하는 상태값을 담고있는 매개변수 입니다.
+     */
+    public void modifyStatusToDelete(StatusCode deleteStatus) {
+        this.statusCode = deleteStatus;
     }
 }
