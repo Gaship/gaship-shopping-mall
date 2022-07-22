@@ -29,11 +29,11 @@ public class AddressList {
     private Integer addressListNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_local_no", nullable = true)
+    @JoinColumn(name = "address_local_no", nullable = false)
     private AddressLocal addressLocal;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no", nullable = true)
+    @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
