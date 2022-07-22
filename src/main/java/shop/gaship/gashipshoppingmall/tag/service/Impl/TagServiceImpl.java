@@ -27,8 +27,6 @@ import shop.gaship.gashipshoppingmall.tag.service.TagService;
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
 
-    private final TagRepositoryCustom tagRepositoryCustom;
-
     /**
      * {@inheritDoc}
      *
@@ -84,7 +82,7 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public PageResponseDto<TagResponseDto, Tag> findTags(Pageable pageable) {
-        Page<Tag> page = tagRepositoryCustom.getAllTags(pageable);
+        Page<Tag> page = tagRepository.getAllTags(pageable);
         return new PageResponseDto<>(page, this::entityToDto);
     }
 }
