@@ -61,4 +61,17 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
 
         return new PageImpl<>(content, pageable, total);
     }
+
+    @Override
+    public List<MemberGradeResponseDto> getAll() {
+        QMemberGrade memberGrade = QMemberGrade.memberGrade;
+
+        return from(memberGrade)
+                .select(Projections.bean(MemberGradeResponseDto.class,
+                        memberGrade.no,
+                        memberGrade.name,
+                        memberGrade.accumulateAmount,
+                        memberGrade.renewalPeriodStatusCode.statusCodeName))
+                .fetch();
+    }
 }

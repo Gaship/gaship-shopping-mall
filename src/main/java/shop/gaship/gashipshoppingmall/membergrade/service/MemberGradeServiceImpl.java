@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
+import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -92,6 +93,14 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     public PageResponseDto<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
         return new PageResponseDto<>(memberGradeRepository
                 .getMemberGrades(pageable));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MemberGradeResponseDto> findMemberGrades() {
+        return memberGradeRepository.getAll();
     }
 
     /**

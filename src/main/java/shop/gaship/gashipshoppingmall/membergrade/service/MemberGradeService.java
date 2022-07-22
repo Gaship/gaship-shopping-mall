@@ -1,10 +1,12 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
+
 
 
 /**
@@ -42,7 +44,7 @@ public interface MemberGradeService {
     /**
      * 회원등급 삭제를 위한 메서드
      * 기본 회원 등급은 삭제할 수 없으며 해당 회원등급을 사용중인 member 가 존재하면 삭제할 수 없다.
-     * 
+     *
      * @param memberGradeNo Integer
      * @author 김세미
      */
@@ -65,4 +67,12 @@ public interface MemberGradeService {
      * @author 김세미
      */
     PageResponseDto<MemberGradeResponseDto> findMemberGrades(Pageable pageable);
+
+    /**
+     * pagination 이 적용되지 않은 다건 조회를 위한 메서드.
+     *
+     * @return list 회원등급 응답 dto 목록 (List)
+     * @author 김세미
+     */
+    List<MemberGradeResponseDto> findMemberGrades();
 }
