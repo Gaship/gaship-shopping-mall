@@ -1,17 +1,20 @@
-package shop.gaship.gashipshoppingmall.tag.service;
+package shop.gaship.gashipshoppingmall.tag.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.gaship.gashipshoppingmall.tag.dto.PageResponse;
-import shop.gaship.gashipshoppingmall.tag.dto.TagAddRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagModifyRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.PageResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
 import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
+import shop.gaship.gashipshoppingmall.tag.repository.TagRepositoryCustom;
+import shop.gaship.gashipshoppingmall.tag.service.TagService;
 
 /**
  * 태그의 service interface 의 구현체입니다.
@@ -23,6 +26,8 @@ import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
+
+    private final TagRepositoryCustom tagRepositoryCustom;
 
     /**
      * 태그 등록을 하기 위한 메서드
@@ -78,7 +83,8 @@ public class TagServiceImpl implements TagService {
      * @return TagResponseDto
      */
     @Override
-    public PageResponse<TagResponseDto> findTags(Pageable pageable) {
-        return new PageResponse(tagRepository.getAllTags(pageable));
+    public PageResponseDto<TagResponseDto, Tag> findTags(Pageable pageable) {
+        Page<Tag> page = tagRepositoryCustom.getAllTags(pageable);
+        return new PageResponseDto<>(page, this::entityToDto);
     }
 }

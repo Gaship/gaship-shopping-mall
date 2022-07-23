@@ -1,7 +1,6 @@
-package shop.gaship.gashipshoppingmall.tag.dto;
+package shop.gaship.gashipshoppingmall.tag.dto.response;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

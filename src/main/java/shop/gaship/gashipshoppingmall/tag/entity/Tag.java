@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.gaship.gashipshoppingmall.tag.dto.TagModifyRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
 
 import javax.persistence.*;
 

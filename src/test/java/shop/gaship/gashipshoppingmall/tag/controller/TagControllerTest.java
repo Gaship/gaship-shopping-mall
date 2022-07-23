@@ -8,11 +8,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.gaship.gashipshoppingmall.tag.dto.PageResponse;
-import shop.gaship.gashipshoppingmall.tag.dto.TagAddRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagModifyRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.PageResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dummy.TagDummy;
+import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.service.TagService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -83,7 +84,7 @@ class TagControllerTest {
         String page = "1";
         String size = "10";
         String sort = "title";
-        PageResponse<TagResponseDto> tagPageResponseDto = TagDummy.TagPageResponseDtoDummy();
+        PageResponseDto<TagResponseDto, Tag> tagPageResponseDto = TagDummy.TagPageResponseDtoDummy();
         when(tagService.findTags(any())).thenReturn(tagPageResponseDto);
 
         mockMvc.perform(get("/api/tags")

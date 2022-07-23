@@ -1,14 +1,15 @@
-package shop.gaship.gashipshoppingmall.tag.repository;
+package shop.gaship.gashipshoppingmall.tag.repository.Impl;
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.Projections;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
+import shop.gaship.gashipshoppingmall.tag.repository.TagRepositoryCustom;
+
+import java.util.List;
 
 /**
  * 태그 custom repository interface 구현체
@@ -16,8 +17,9 @@ import shop.gaship.gashipshoppingmall.tag.entity.Tag;
  * @author 최정우
  * @since 1.0
  */
-public class TagRepositoryCustomImpl extends QuerydslRepositorySupport implements TagRepositoryCustom {
-    public TagRepositoryCustomImpl() {
+
+public class TagRepositoryImpl extends QuerydslRepositorySupport implements TagRepositoryCustom {
+    public TagRepositoryImpl() {
         super(Tag.class);
     }
 
@@ -25,22 +27,22 @@ public class TagRepositoryCustomImpl extends QuerydslRepositorySupport implement
      * 태그를 페이징하는 메서드
      *
      * @param pageable 조회하려는 태그 페이지 정보
-     * @return  Page<TagResponseDto>
+     * @return Page<TagResponseDto>
      */
     @Override
-    public Page<TagResponseDto> getAllTags(Pageable pageable) {
+    public Page<Tag> getAllTags(Pageable pageable) {
         QTag tag = QTag.tag;
-        QueryResults<TagResponseDto> queryResults = from(tag)
+
+        QueryResults<Tag> results = from(tag)
                 .orderBy(tag.title.asc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
-                .select(Projections.bean(TagResponseDto.class,
-                        tag.tagNo,
-                        tag.title,
-                        tag.registerDatetime,
-                        tag.modifiedDatetime))
+                .orderBy(tag.title.asc())
                 .fetchResults();
 
-        return new PageImpl<>(queryResults.getResults(),pageable, queryResults.getTotal());
+        List<Tag> content = results.getResults();
+        long total = results.getTotal();
+
+        return new PageImpl<>(content, pageable, total);
     }
 }

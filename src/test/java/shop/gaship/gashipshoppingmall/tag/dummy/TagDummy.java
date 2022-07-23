@@ -4,15 +4,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import shop.gaship.gashipshoppingmall.tag.dto.PageResponse;
-import shop.gaship.gashipshoppingmall.tag.dto.TagAddRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagModifyRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.PageResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 /**
@@ -78,12 +79,16 @@ public class TagDummy {
         return list;
     }
 
-    public static PageResponse<TagResponseDto> TagPageResponseDtoDummy() {
+    public static PageResponseDto<TagResponseDto,Tag> TagPageResponseDtoDummy() {
         Pageable pageable = PageRequest.of(0, 10);
-        List<TagResponseDto> list = new ArrayList<>();
-        IntStream.rangeClosed(1, 100).forEach(i -> list.add(TagResponseDto.builder().tagNo(i).title("title....." + i).registerDatetime(LocalDateTime.now()).modifiedDatetime(LocalDateTime.now()).build()));
-        Page<TagResponseDto> page = new PageImpl<>(list, pageable, 100);
-
-        return new PageResponse<>(page);
+        List<Tag> list = new ArrayList<>();
+        IntStream.rangeClosed(1, 100).forEach(i -> list.add(Tag.builder().title("title....." + i).build()));
+        Page<Tag> page = new PageImpl<>(list, pageable, 100);
+        Function<Tag, TagResponseDto> tagConvertor = (Tag tag)-> (TagResponseDto.builder()
+                .title(tag.getTitle())
+                .registerDatetime(tag.getRegisterDatetime())
+                .modifiedDatetime(tag.getModifiedDatetime())
+                .build());
+        return new PageResponseDto<>(page,tagConvertor);
     }
 }

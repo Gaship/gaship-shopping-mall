@@ -6,10 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.tag.dto.PageResponse;
-import shop.gaship.gashipshoppingmall.tag.dto.TagAddRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagModifyRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.PageResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
+import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.service.TagService;
 
 import javax.validation.Valid;
@@ -86,7 +87,7 @@ public class TagController {
      * @author 최정우
      */
     @GetMapping
-    public ResponseEntity<PageResponse<TagResponseDto>> TagList(Pageable pageable) {
+    public ResponseEntity<PageResponseDto<TagResponseDto, Tag>> TagList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(tagService.findTags(pageable));

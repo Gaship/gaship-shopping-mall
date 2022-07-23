@@ -1,10 +1,10 @@
 package shop.gaship.gashipshoppingmall.tag.service;
 
 import org.springframework.data.domain.Pageable;
-import shop.gaship.gashipshoppingmall.tag.dto.PageResponse;
-import shop.gaship.gashipshoppingmall.tag.dto.TagAddRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagModifyRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.PageResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
 /**
@@ -40,7 +40,7 @@ public interface TagService {
      *
      * @param pageable 태그 조회시에 사용되며 조회하고자하는 tag 의 page 와 size 정보를 담고 있다.
      */
-    PageResponse<TagResponseDto> findTags(Pageable pageable);
+    PageResponseDto<TagResponseDto, Tag> findTags(Pageable pageable);
 
     /**
      * db에 저장하기 위해 dto 를 변환시켜주는 메서드

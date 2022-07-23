@@ -8,13 +8,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import shop.gaship.gashipshoppingmall.tag.dto.PageResponse;
-import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.PageResponseDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dummy.TagDummy;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
 import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
+import shop.gaship.gashipshoppingmall.tag.service.Impl.TagServiceImpl;
 
 import java.util.Optional;
 
@@ -57,9 +58,7 @@ class TagServiceImplTest {
     void addSameTitleTagTest() {
         when(tagRepository.existsByTitle(any())).thenReturn(true);
         when(tagRepository.save(any(Tag.class))).thenReturn(TagDummy.TagDummyPersist());
-        assertThatThrownBy(() -> tagService.addTag(TagDummy.TagAddRequestDtoDummy()))
-                .isInstanceOf(DuplicatedTagTitleException.class)
-                .hasMessage("중복된 태그명입니다");
+        assertThatThrownBy(() -> tagService.addTag(TagDummy.TagAddRequestDtoDummy())).isInstanceOf(DuplicatedTagTitleException.class).hasMessage("중복된 태그명입니다");
 
         verify(tagRepository).existsByTitle(any());
         verify(tagRepository, never()).save(any(Tag.class));
@@ -88,9 +87,7 @@ class TagServiceImplTest {
         when(tagRepository.save(any(Tag.class))).thenReturn(tag);
         when(tagRepository.existsByTitle(any())).thenReturn(true);
 
-        assertThatThrownBy(() -> tagService.modifyTag(TagDummy.TagModifyRequestDtoDummy()))
-                .isInstanceOf(DuplicatedTagTitleException.class)
-                .hasMessage("중복된 태그명입니다");
+        assertThatThrownBy(() -> tagService.modifyTag(TagDummy.TagModifyRequestDtoDummy())).isInstanceOf(DuplicatedTagTitleException.class).hasMessage("중복된 태그명입니다");
 
         verify(tagRepository).existsByTitle(any());
         verify(tagRepository, never()).findById(any());
@@ -122,9 +119,7 @@ class TagServiceImplTest {
         Tag tag = TagDummy.TagDummyPersist();
         when(tagRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> tagService.findTag(0))
-                .isInstanceOf(TagNotFoundException.class)
-                .hasMessage("해당 태그를 찾을 수 없습니다");
+        assertThatThrownBy(() -> tagService.findTag(0)).isInstanceOf(TagNotFoundException.class).hasMessage("해당 태그를 찾을 수 없습니다");
 
         verify(tagRepository).findById(any());
     }
@@ -133,10 +128,10 @@ class TagServiceImplTest {
     @Test
     void findTagsTest() {
         Pageable pageable = PageRequest.of(1, 10, Sort.by("title"));
-        Page<TagResponseDto> page = new PageImpl<>(TagDummy.TagResponseDtoListDummyPersist(), pageable, 100);
+        Page<Tag> page = new PageImpl<>(TagDummy.TagListDummyPersist(), pageable, 100);
         when(tagRepository.getAllTags(pageable)).thenReturn(page);
 
-        PageResponse<TagResponseDto> tags = tagService.findTags(pageable);
+        PageResponseDto<TagResponseDto,Tag> tags = tagService.findTags(pageable);
 
         verify(tagRepository).getAllTags(pageable);
         assertThat(tags.getDtoList()).hasSize(100);

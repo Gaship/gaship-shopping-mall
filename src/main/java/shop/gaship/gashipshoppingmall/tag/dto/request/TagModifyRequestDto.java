@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.tag.dto;
+package shop.gaship.gashipshoppingmall.tag.dto.request;
 
 
 import lombok.Builder;

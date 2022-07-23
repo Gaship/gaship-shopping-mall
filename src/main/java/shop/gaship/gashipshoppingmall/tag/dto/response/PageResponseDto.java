@@ -1,25 +1,29 @@
-package shop.gaship.gashipshoppingmall.tag.dto;
+package shop.gaship.gashipshoppingmall.tag.dto.response;
 
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
  * 목록 조회 반환 타입으로 사용되는 page 정보와 data 를 담은 Data Transfer Object.
  *
- * @param <T> the type parameter
- * @author : 최정우, 김세미
+ * @param <D,E> D = Dto,  E = Entity
+ * @author : 최정우
  * @since 1.0
  */
 @Getter
-public class PageResponse<T> {
-    private final List<T> dtoList;
+public class PageResponseDto<D, E> {
+    //DTO리스트
+    private final List<D> dtoList;
+
     //총 페이지 번호
     private final int totalPage;
+
     //현재 페이지 번호
     private int page;
     //목록 사이즈
@@ -27,34 +31,29 @@ public class PageResponse<T> {
 
     //시작 페이지 번호, 끝 페이지 번호
     private int start;
+
     private int end;
+
     //이전, 다음
     private boolean prev;
+
     private boolean next;
 
     //페이지 번호  목록
     private List<Integer> pageList;
 
-    /**
-     * Instantiates a new Page response dto.
-     *
-     * @param result the result
-     */
-    public PageResponse(Page<T> result) {
+    public PageResponseDto(Page<E> result, Function<E, D> fn) {
 
-        dtoList = result.toList();
+        dtoList = result.stream().map(fn).collect(Collectors.toList());
 
         totalPage = result.getTotalPages();
 
         makePageList(result.getPageable());
     }
 
-
     private void makePageList(Pageable pageable) {
 
-        // 0부터 시작하므로 1을 추가
-        this.page = pageable.getPageNumber();
-
+        this.page = pageable.getPageNumber() + 1; // 0부터 시작하므로 1을 추가
         this.size = pageable.getPageSize();
 
         //temp end page
