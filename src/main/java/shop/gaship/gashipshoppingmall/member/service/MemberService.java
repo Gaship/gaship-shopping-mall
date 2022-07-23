@@ -4,12 +4,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
+import shop.gaship.gashipshoppingmall.member.dto.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -34,37 +34,45 @@ public interface MemberService {
      *
      * @param memberCreationRequestOauth 회원가입을 위한 정보 객체입니다.
      */
-    void addMember(MemberCreationRequestOauth memberCreationRequestOauth);
+    void addMemberByOauth(MemberCreationRequestOauth memberCreationRequestOauth);
 
 
     /**
      * 멤버의 정보를 변경하는 메서드 입니다.
      *
-     * @param memberModifyRequestDto the member modify request dto
+     * @param memberModifyRequestDto 회원이 수정하려는 회원정보가 담긴 객체입니다.
      */
     void modifyMember(MemberModifyRequestDto memberModifyRequestDto);
+
+
+    /**
+     * 멤버의 상태정보를 변경하는 매서드입니다.
+     *
+     * @param memberModifyByAdminDto 관리자가 수정하려는 멤버의 정보가 담긴 객체입니다.
+     */
+    void modifyMemberByAdmin(MemberModifyByAdminDto memberModifyByAdminDto);
 
     /**
      * 멤버를 삭제하는 메서드 입니다.
      *
-     * @param memberNo the member no
+     * @param memberNo 멤버 고유정보
      */
     void removeMember(Integer memberNo);
 
     /**
      * 멤버를 단건조회하는 메서드입니다.
      *
-     * @param memberNo the member no
-     * @return the member response dto
-     * @throws MemberNotFoundException the member not found exception
+     * @param memberNo 멤버고유정보
+     * @return 멤버의 상세정보가 담긴 객체를 반환합니다.
+     *
      */
     MemberResponseDto findMember(Integer memberNo);
 
     /**
      * 멤버를 다건조회하는 메서드입니다.
      *
-     * @param pageable the pageable
-     * @return the list
+     * @param pageable 조회하고자 하는 멤버정보들의 페이지와 사이즈를 가지고있는 객체입니다.
+     * @return 멤버들을 정보를 페이징 단위로 가지고있는 객체입니다.
      */
     MemberPageResponseDto<MemberResponseDto, Member> findMembers(Pageable pageable);
 
@@ -101,10 +109,10 @@ public interface MemberService {
     Member findMemberFromNickname(String nickName);
 
     /**
-     * Entity to dto member response dto.
+     * 멤버 엔티티 객체를 MemberResponseDto로 변환해주는 메서드입니다.
      *
-     * @param member the member
-     * @return the member response dto
+     * @param member 멤버 엔티티 객체입니다.
+     * @return 변환된 MemberResponseDto객체입니다.
      */
     default MemberResponseDto entityToMemberResponseDto(Member member) {
         return MemberResponseDto.builder().email(member.getEmail()).password(member.getPassword())
@@ -172,5 +180,10 @@ public interface MemberService {
      */
     SignInUserDetailsDto findSignInUserDetailFromEmail(String email);
 
+    /**
+     * 마지막 회원의 마지막 번호를 조회하는 메서드입니다.
+     *
+     * @return 마지막 회원번호입니다.
+     */
     Integer findLastNo();
 }

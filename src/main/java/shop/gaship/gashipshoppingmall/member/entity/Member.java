@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.member.entity;
 
-import com.google.common.base.Objects;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +90,11 @@ public class Member extends BaseEntity {
     @NotNull
     private Boolean isSocial;
 
+    /**
+     * 멤버의 정보를 변경하는 메서드입니다.
+     *
+     * @param memberModifyRequestDto 변경할 멤버의 정보가 담긴 객체입니다.
+     */
     public void modifyMember(MemberModifyRequestDto memberModifyRequestDto) {
         this.memberGrades = memberModifyRequestDto.getMemberGrade();
         this.memberStatusCodes = memberModifyRequestDto.getStatusCode();
@@ -102,34 +106,15 @@ public class Member extends BaseEntity {
         this.gender = memberModifyRequestDto.getGender();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Member member = (Member) o;
-        return Objects.equal(memberNo, member.memberNo) &&
-            Objects.equal(recommendMember, member.recommendMember) &&
-            Objects.equal(memberStatusCodes, member.memberStatusCodes) &&
-            Objects.equal(memberGrades, member.memberGrades) &&
-            Objects.equal(memberTags, member.memberTags) &&
-            Objects.equal(userAuthorityNo, member.userAuthorityNo) &&
-            Objects.equal(email, member.email) && Objects.equal(password, member.password) &&
-            Objects.equal(phoneNumber, member.phoneNumber) && Objects.equal(name, member.name) &&
-            Objects.equal(birthDate, member.birthDate) &&
-            Objects.equal(nickname, member.nickname) && Objects.equal(gender, member.gender) &&
-            Objects.equal(accumulatePurchaseAmount, member.accumulatePurchaseAmount) &&
-            Objects.equal(nextRenewalGradeDate, member.nextRenewalGradeDate) &&
-            Objects.equal(isSocial, member.isSocial);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(memberNo, recommendMember, memberStatusCodes, memberGrades,
-            memberTags, userAuthorityNo, email, password, phoneNumber, name, birthDate, nickname,
-            gender, accumulatePurchaseAmount, nextRenewalGradeDate, isSocial);
+    /**
+     * 관리자가 회원정보를 변경하기 위한 메서드입니다.
+     *
+     * @param nickname   변경할 닉네임입니다.
+     * @param statusCode 변경할 상태정보입니다.
+     */
+    public void modifyMemberByAdmin(String nickname, StatusCode statusCode) {
+        this.nickname = nickname;
+        this.memberStatusCodes = statusCode;
     }
 }

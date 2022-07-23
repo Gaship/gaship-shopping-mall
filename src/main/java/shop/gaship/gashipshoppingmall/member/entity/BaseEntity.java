@@ -21,7 +21,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @EntityListeners(value = {AuditingEntityListener.class})
 public class BaseEntity {
     @CreatedDate
-    @Column(name = "register_datetime",updatable = false)
+    @Column(name = "register_datetime", updatable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     public LocalDateTime registerDatetime;
 

@@ -65,7 +65,7 @@ class MemberControllerTest {
         doNothing().when(memberService)
             .addMember(MemberCreationRequestDummy.dummy());
 
-        mockMvc.perform(post("/members")
+        mockMvc.perform(post("/api/members/sign-up")
             .contentType(MediaType.APPLICATION_JSON)
             .content(contentBody))
             .andDo(print())
@@ -84,7 +84,7 @@ class MemberControllerTest {
             .writeValueAsString(dummy);
 
 
-        mockMvc.perform(post("/members")
+        mockMvc.perform(post("/api/members/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(contentBody))
             .andDo(print())
@@ -100,7 +100,7 @@ class MemberControllerTest {
         given(memberService.isAvailableEmail(anyString()))
             .willReturn(true);
 
-        mockMvc.perform(get("/members/retrieve")
+        mockMvc.perform(get("/api/members/check-email")
                 .param("email", "abc@nhn.com"))
             .andDo(print())
             .andExpect(status().isOk())
@@ -114,7 +114,7 @@ class MemberControllerTest {
         given(memberService.isAvailableEmail(anyString()))
             .willReturn(false);
 
-        mockMvc.perform(get("/members/retrieve")
+        mockMvc.perform(get("/api/members/check-email")
                 .param("email", "abc@nhn.com"))
             .andDo(print())
             .andExpect(status().isOk())
@@ -128,7 +128,7 @@ class MemberControllerTest {
         given(memberService.isAvailableNickname(anyString()))
             .willReturn(true);
 
-        mockMvc.perform(get("/check")
+        mockMvc.perform(get("/api/members/check-nickname")
                 .param("nickname", "abc"))
             .andDo(print())
             .andExpect(status().isOk())
@@ -142,7 +142,7 @@ class MemberControllerTest {
         given(memberService.isAvailableNickname(anyString()))
             .willReturn(false);
 
-        mockMvc.perform(get("/check")
+        mockMvc.perform(get("/api/members/check-nickname")
                 .param("nickname", "abc"))
             .andDo(print())
             .andExpect(status().isOk())
@@ -151,12 +151,12 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("닉네임을 통한 회원조회 : 성공 ")
+    @DisplayName("닉네임을 통한 추천할 회원의 고유번호 조회 : 성공 ")
     void retrieveMemberFromNicknameCaseSuccess() throws Exception {
         given(memberService.findMemberFromNickname(anyString()))
             .willReturn(MemberDummy.dummy());
 
-        mockMvc.perform(get("/members/retrieve")
+        mockMvc.perform(get("/api/members/recommend-member")
                 .param("nickname", "example nickname"))
             .andDo(print())
             .andExpect(status().isOk())
@@ -165,12 +165,12 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("닉네임을 통한 회원조회 : 실패")
+    @DisplayName("닉네임을 통한 추천할 회원의 고유번호 조회 : 실패")
     void retrieveMemberFromNicknameCaseFailure() throws Exception {
         given(memberService.findMemberFromNickname(anyString()))
             .willThrow(new MemberNotFoundException());
 
-        mockMvc.perform(get("/members/retrieve")
+        mockMvc.perform(get("/api/members/recommend-member")
                 .param("nickname", "example nickname"))
             .andDo(print())
             .andExpect(status().is4xxClientError())
@@ -186,7 +186,7 @@ class MemberControllerTest {
         given(memberService.findSignInUserDetailFromEmail(anyString()))
             .willReturn(SignInUserDetailDummy.dummy());
 
-        mockMvc.perform(get("/members/retrieve/user-detail")
+        mockMvc.perform(get("/api/members/user-detail")
                 .param("email", "example@nhn.com"))
             .andDo(print())
             .andExpect(status().isOk())
@@ -204,7 +204,7 @@ class MemberControllerTest {
         given(memberService.findSignInUserDetailFromEmail(anyString()))
             .willThrow(new MemberNotFoundException());
 
-        mockMvc.perform(get("/members/retrieve/user-detail")
+        mockMvc.perform(get("/api/members/user-detail")
                 .param("email", "example@nhn.com"))
             .andDo(print())
             .andExpect(status().is4xxClientError())

@@ -84,7 +84,7 @@ class MemberServiceTest {
 
         String plainEmailDummy = dummy.getEmail();
 
-        given(statusCodeRepository.findByStatusCodeName(MemberStatus.DORMANCY.name()))
+        given(statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name()))
             .willReturn(Optional.of(StatusCodeDummy.dummy()));
         given(memberGradeRepository.findByDefaultGrade()).willReturn(
             MemberGradeDummy.defaultDummy(
@@ -270,7 +270,7 @@ class MemberServiceTest {
         assertThat(userDetailsDto.getEmail()).isEqualTo(dummy.getEmail());
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(dummy.getPassword());
         assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(dummy.getMemberNo());
-        assertThat(userDetailsDto.getIsSocial()).isEqualTo(false);
+        assertThat(userDetailsDto.getIsSocial()).isFalse();
         assertThat(userDetailsDto.getAuthorities()).isEqualTo(List.of(dummy.getMemberGrades().getName()));
         assertThat(userDetailsDto).isInstanceOf(SignInUserDetailsDto.class);
     }

@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.service.impl;
 
 import java.util.Objects;
-import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
+import shop.gaship.gashipshoppingmall.member.dto.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
@@ -46,13 +46,19 @@ public class MemberServiceImpl implements MemberService {
     private final Aes aes;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param memberCreationRequest 회원가입을 위한 정보 객체입니다.
+     * @throws StatusCodeNotFoundException 상태정보를 찾지 못하였을 때 예외를 던집니다.
+     */
     @Override
     @Transactional
     public void addMember(MemberCreationRequest memberCreationRequest) {
         Member recommendMember =
             memberRepository.findById(memberCreationRequest.getRecommendMemberNo()).orElse(null);
         StatusCode defaultStatus =
-            statusCodeRepository.findByStatusCodeName(MemberStatus.DORMANCY.name())
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
                 .orElseThrow(StatusCodeNotFoundException::new);
         StatusCode defaultAuthority =
             statusCodeRepository.findByStatusCodeName(UserAuthority.MEMBER.name())
@@ -66,11 +72,17 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.saveAndFlush(savedMember);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param memberCreationRequestOauth 회원가입을 위한 정보 객체입니다.
+     * @throws StatusCodeNotFoundException 상태정보를 찾지 못하였을 때 예외를 던집니다.
+     */
     @Override
     @Transactional
-    public void addMember(MemberCreationRequestOauth memberCreationRequestOauth) {
+    public void addMemberByOauth(MemberCreationRequestOauth memberCreationRequestOauth) {
         StatusCode defaultStatus =
-            statusCodeRepository.findByStatusCodeName(MemberStatus.DORMANCY.name())
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
                 .orElseThrow(StatusCodeNotFoundException::new);
         StatusCode defaultAuthority =
             statusCodeRepository.findByStatusCodeName(UserAuthority.MEMBER.name())
@@ -125,6 +137,12 @@ public class MemberServiceImpl implements MemberService {
         return memberCreationRequestOauth;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param email 이메일 문자열
+     * @return 회원의 존재여부입니다.
+     */
     @Override
     public boolean isAvailableEmail(String email) {
         try {
@@ -135,6 +153,12 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param nickname 닉네임 문자열
+     * @return 회원의 존재여부입니다.
+     */
     @Override
     public boolean isAvailableNickname(String nickname) {
         try {
@@ -145,6 +169,13 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param email 이메일 문자열
+     * @return 멤버
+     * @throws MemberNotFoundException 멤버 정보를 못찾았을 때 던집니다.
+     */
     @Override
     public MemberResponseDto findMemberFromEmail(String email) {
         Member member =
@@ -152,11 +183,24 @@ public class MemberServiceImpl implements MemberService {
         return entityToMemberResponseDto(member);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param nickName 닉네임
+     * @return 멤버엔티티 정보
+     * @throws MemberNotFoundException 멤버 정보를 못찾았을 때 던집니다.
+     */
     @Override
     public Member findMemberFromNickname(String nickName) {
         return memberRepository.findByNickname(nickName).orElseThrow(MemberNotFoundException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param request 회원이 수정하려는 회원정보가 담긴 객체입니다.
+     * @throws MemberNotFoundException 멤버 정보를 못찾았을 때 던집니다.
+     */
     @Transactional
     @Override
     public void modifyMember(MemberModifyRequestDto request) {
@@ -166,33 +210,83 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(request.getMemberNo())
             .orElseThrow(MemberNotFoundException::new);
         member.modifyMember(request);
+
         memberRepository.save(member);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param memberModifyByAdminDto 관리자가 수정하려는 멤버의 정보가 담긴 객체입니다.
+     * @throws MemberNotFoundException     멤버 정보를 못찾았을 때 던집니다.
+     * @throws StatusCodeNotFoundException 상태정보를 찾지 못하였을 때 예외를 던집니다.
+     */
+    @Transactional
+    @Override
+    public void modifyMemberByAdmin(MemberModifyByAdminDto memberModifyByAdminDto) {
+        Member member = memberRepository.findById(memberModifyByAdminDto.getMemberNo())
+            .orElseThrow(MemberNotFoundException::new);
+        StatusCode statusCode =
+            statusCodeRepository.findByGroupCodeName(memberModifyByAdminDto.getStatus())
+                .orElseThrow(StatusCodeNotFoundException::new);
+
+        member.modifyMemberByAdmin(member.getNickname(), statusCode);
+        memberRepository.save(member);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param memberNo 멤버 고유정보
+     */
     @Transactional
     @Override
     public void removeMember(Integer memberNo) {
         memberRepository.deleteById(memberNo);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param memberNo 멤버고유정보
+     * @return 검색된 회원
+     * @throws MemberNotFoundException 멤버정보를 찾지 못하였을 때 던집니다.
+     */
     @Override
     public MemberResponseDto findMember(Integer memberNo) {
         return entityToMemberResponseDto(
             memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param pageable 조회하고자 하는 멤버정보들의 페이지와 사이즈를 가지고있는 객체입니다.
+     * @return 멤버들을 정보를 페이징 단위로 가지고있는 객체입니다.
+     */
     @Override
     public MemberPageResponseDto<MemberResponseDto, Member> findMembers(Pageable pageable) {
         Page<Member> page = memberRepository.findAll(pageable);
-        Function<Member, MemberResponseDto> fn = (this::entityToMemberResponseDto);
-        return new MemberPageResponseDto<>(page, fn);
+        return new MemberPageResponseDto<>(page, this::entityToMemberResponseDto);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return 멤버 고유번호
+     */
     @Override
     public Integer findLastNo() {
         return memberRepository.findLastNo();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param email 이메일입니다.
+     * @return 로그인을 시도하는 회원의 상세 정보 결과입니다.
+     * @throws MemberNotFoundException 멤버정보를 찾지 못하였을 때 던집니다.
+     */
     @Override
     public SignInUserDetailsDto findSignInUserDetailFromEmail(String email) {
         return memberRepository.findSignInUserDetail(email)

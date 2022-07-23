@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import shop.gaship.gashipshoppingmall.member.MemberMarker;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.message.ErrorResponse;
@@ -16,7 +17,7 @@ import shop.gaship.gashipshoppingmall.message.ErrorResponse;
  * @author 최겸준
  * @since 1.0
  */
-@RestControllerAdvice
+@RestControllerAdvice(basePackageClasses = MemberMarker.class)
 @Slf4j
 public class MemberAdvisor {
     /**
@@ -43,7 +44,7 @@ public class MemberAdvisor {
      * @param exception 예외 객체입니다.
      * @return 예외의 메세지가 들어있는 객체를 반환합니다.
      */
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({Exception.class, RuntimeException.class})
     public ResponseEntity<ErrorResponse> otherExceptionAdvice(Exception exception) {
         return ResponseEntity.internalServerError()
             .contentType(MediaType.APPLICATION_JSON)
