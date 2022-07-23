@@ -14,12 +14,14 @@ import java.time.LocalDateTime;
  */
 @Getter
 public class TagResponseDto {
-    private String title;
-    private LocalDateTime registerDatetime;
-    private LocalDateTime modifiedDatetime;
+    private final Integer tagNo;
+    private final String title;
+    private final LocalDateTime registerDatetime;
+    private final LocalDateTime modifiedDatetime;
 
     @Builder
-    public TagResponseDto(String title, LocalDateTime registerDatetime, LocalDateTime modifiedDatetime) {
+    public TagResponseDto(Integer tagNo, String title, LocalDateTime registerDatetime, LocalDateTime modifiedDatetime) {
+        this.tagNo = tagNo;
         this.title = title;
         this.registerDatetime = registerDatetime;
         this.modifiedDatetime = modifiedDatetime;

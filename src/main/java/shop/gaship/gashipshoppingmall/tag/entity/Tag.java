@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.TagModifyRequestDto;
 
 import javax.persistence.*;
 
@@ -30,7 +30,7 @@ public class Tag extends BaseEntity {
     @Column(unique = true)
     private String title;
 
-    public void modifyEntity(TagRequestDto tagRequestDto) {
+    public void modifyEntity(TagModifyRequestDto tagRequestDto) {
         this.title = tagRequestDto.getTitle();
     }
 }

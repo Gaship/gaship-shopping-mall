@@ -1,94 +1,68 @@
 package shop.gaship.gashipshoppingmall.tag.service;
 
 import org.springframework.data.domain.Pageable;
-import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
-import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.PageResponse;
+import shop.gaship.gashipshoppingmall.tag.dto.TagAddRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.TagModifyRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
-import java.util.List;
-
 /**
- * tag crud를 담당하는 service 입니다.
+ * 태그의 service interface 입니다.
  *
  * @author 최정우
  * @since 1.0
  */
 public interface TagService {
     /**
-     * .
-     * methodName : register
-     * author : choijungwoo
-     * description : 태그를 등록하는 메서드
+     * 태그 등록을 하기 위한 메서드
      *
-     * @param request the request
+     * @param request 등록에 필요한 정보를 담고있는 dto 입니다.
      */
-    void addTag(TagRequestDto request);
+    void addTag(TagAddRequestDto request);
 
     /**
-     * .
-     * methodName : modify
-     * author : choijungwoo
-     * description : 태그를 수정하는 메서드(title만 바뀐다)
+     * 태그 수정을 하기 위한 메서드
      *
-     * @param request the request
+     * @param request 수정에 필요한 정보를 담고있는 dto 입니다.
      */
-    void modifyTag(TagRequestDto request);
+    void modifyTag(TagModifyRequestDto request);
 
     /**
-     * .
-     * methodName : delete
-     * author : choijungwoo
-     * description : 태그를 삭제하는 메서드
-     * @param tagNo TagNo
-     */
-    void removeTag(Integer tagNo);
-
-    /**
-     * .
-     * methodName : get
-     * author : choijungwoo
-     * description : 태그를 조회하는 메서드
+     * 태그 단건 조회를 하기 위한 메서드
      *
-     * @param tagNo Integer
-     * @return the tag response dto
+     * @param tagNo 조회하길 원하는 tag 의 식별번호를 담고있다.
      */
     TagResponseDto findTag(Integer tagNo);
 
     /**
-     * .
-     * methodName : getList
-     * author : choijungwoo
-     * description : 태그를 페이징하는 메서드
-     * @param pageable Pageable
-     * @return the list
+     * 태그 다건 조회를 하기 위한 메서드
+     *
+     * @param pageable 태그 조회시에 사용되며 조회하고자하는 tag 의 page 와 size 정보를 담고 있다.
      */
-    TagPageResponseDto<TagResponseDto,Tag> findTags(Pageable pageable);
+    PageResponse<TagResponseDto> findTags(Pageable pageable);
 
     /**
-     * .
-     * methodName : dtoToEntity
-     * author : choijungwoo
+     * db에 저장하기 위해 dto 를 변환시켜주는 메서드
      *
-     * @param dto TagRequestDto
-     * @return the tag
+     * @param dto 태그의 등록, 수정시에 필요한 정보를 담고 있는 dto
+     * @return Tag
      */
-    default Tag dtoToEntity(TagRequestDto dto){
+    default Tag dtoToEntity(TagAddRequestDto dto) {
         return Tag.builder()
                 .title(dto.getTitle())
                 .build();
     }
 
     /**
-     * .
-     * methodName : entityToDto
-     * author : choijungwoo
+     * db에 저장된 테이블을 responseDto 로 변환시켜주는 메서드
      *
-     * @param tag Tag
-     * @return the tag response dto
+     * @param tag 변환시키려는 Tag 객체
+     * @return TagResponseDto
      */
-    default TagResponseDto entityToDto(Tag tag){
+    default TagResponseDto entityToDto(Tag tag) {
         return TagResponseDto.builder()
+                .tagNo(tag.getTagNo())
                 .title(tag.getTitle())
                 .registerDatetime(tag.getRegisterDatetime())
                 .modifiedDatetime(tag.getModifiedDatetime())
