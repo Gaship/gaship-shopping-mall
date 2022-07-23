@@ -20,6 +20,7 @@ import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 @Slf4j
 @RestControllerAdvice
 public class ExceptionAdviceController {
+    private static final String CAUSE_GUIDE  = " & cause : ";
 
     /**
      * 컨트롤러에서 발생한 유효성문제를 잡기위한 클래스입니다.
@@ -35,7 +36,7 @@ public class ExceptionAdviceController {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .reduce("", (accumulateMsg, nextMessage)  -> accumulateMsg + "\n" + nextMessage)
                 .trim();
-        log.error(message);
+        log.error(message + CAUSE_GUIDE + ex.getCause());
         return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
 
@@ -48,7 +49,7 @@ public class ExceptionAdviceController {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage() + CAUSE_GUIDE + e.getCause());
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -65,7 +66,7 @@ public class ExceptionAdviceController {
      */
     @ExceptionHandler({MemberNotFoundException.class, SignUpDenyException.class})
     public ResponseEntity<ErrorResponse> memberNotFoundExceptionHandler(Exception e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage() + CAUSE_GUIDE + e.getCause());
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
