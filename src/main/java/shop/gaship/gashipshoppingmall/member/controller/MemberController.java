@@ -68,7 +68,7 @@ public class MemberController {
      */
     @PostMapping(value = "/sign-up/oauth")
     public ResponseEntity<Void> memberAddByOauth(
-        @RequestBody MemberCreationRequestOauth memberCreationRequestOauth) {
+        @Valid @RequestBody MemberCreationRequestOauth memberCreationRequestOauth) {
         memberService.addMemberByOauth(memberCreationRequestOauth);
         return ResponseEntity.created(URI.create("/api/members/oauth")).build();
     }

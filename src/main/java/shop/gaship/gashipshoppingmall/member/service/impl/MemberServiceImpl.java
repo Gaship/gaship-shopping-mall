@@ -4,7 +4,6 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
@@ -44,7 +43,6 @@ public class MemberServiceImpl implements MemberService {
     private final StatusCodeRepository statusCodeRepository;
     private final MemberGradeRepository memberGradeRepository;
     private final Aes aes;
-    private final PasswordEncoder passwordEncoder;
 
     /**
      * {@inheritDoc}
@@ -52,8 +50,8 @@ public class MemberServiceImpl implements MemberService {
      * @param memberCreationRequest 회원가입을 위한 정보 객체입니다.
      * @throws StatusCodeNotFoundException 상태정보를 찾지 못하였을 때 예외를 던집니다.
      */
-    @Override
     @Transactional
+    @Override
     public void addMember(MemberCreationRequest memberCreationRequest) {
         Member recommendMember =
             memberRepository.findById(memberCreationRequest.getRecommendMemberNo()).orElse(null);
@@ -108,8 +106,6 @@ public class MemberServiceImpl implements MemberService {
         memberCreationRequest.setName(aes.aesECBEncode(memberCreationRequest.getName()));
         memberCreationRequest.setPhoneNumber(
             aes.aesECBEncode(memberCreationRequest.getPhoneNumber()));
-        memberCreationRequest.setPassword(
-            passwordEncoder.encode(memberCreationRequest.getPassword()));
 
         return memberCreationRequest;
     }
@@ -130,9 +126,6 @@ public class MemberServiceImpl implements MemberService {
             memberCreationRequestOauth.setPhoneNumber(
                 aes.aesECBEncode(memberCreationRequestOauth.getPhoneNumber()));
         }
-
-        memberCreationRequestOauth.setPassword(
-            passwordEncoder.encode(memberCreationRequestOauth.getPassword()));
 
         return memberCreationRequestOauth;
     }
