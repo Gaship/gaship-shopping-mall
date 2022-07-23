@@ -77,6 +77,14 @@ public interface MemberService {
     boolean isAvailableEmail(String email);
 
     /**
+     * 닉네임이 존재하는가에 대한 확인을 하는 메서드입니다.
+     *
+     * @param nickname 닉네임 문자열
+     * @return 닉네임 존재여부를 반환합니다.
+     */
+    boolean isAvailableNickname(String nickname);
+
+    /**
      * 이메일을 통해서 회원을 찾는 메서드입니다.
      *
      * @param email 이메일 문자열

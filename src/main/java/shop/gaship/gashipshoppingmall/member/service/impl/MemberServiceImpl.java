@@ -136,6 +136,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public boolean isAvailableNickname(String nickname) {
+        try {
+            findMemberFromNickname(nickname);
+        } catch (MemberNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public MemberResponseDto findMemberFromEmail(String email) {
         Member member =
             memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
@@ -172,7 +182,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberPageResponseDto findMembers(Pageable pageable) {
+    public MemberPageResponseDto<MemberResponseDto, Member> findMembers(Pageable pageable) {
         Page<Member> page = memberRepository.findAll(pageable);
         Function<Member, MemberResponseDto> fn = (this::entityToMemberResponseDto);
         return new MemberPageResponseDto<>(page, fn);

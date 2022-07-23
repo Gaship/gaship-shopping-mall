@@ -22,6 +22,7 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberNumberPresence;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.NicknamePresence;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
@@ -48,8 +49,8 @@ public class MemberController {
     @PostMapping("/members")
     public ResponseEntity<Void> memberAdd(
         @Valid @RequestBody MemberCreationRequest memberCreationRequest) {
-        if (memberCreationRequest.getIsUniqueEmail() &&
-            memberCreationRequest.getIsVerifiedEmail()) {
+        if (memberCreationRequest.getIsUniqueEmail()
+            && memberCreationRequest.getIsVerifiedEmail()) {
             memberService.addMember(memberCreationRequest);
             return ResponseEntity.created(URI.create("/members")).body(null);
         }
@@ -80,8 +81,20 @@ public class MemberController {
      * @return 결과를 담은 객체를 반환합니다.
      */
     @GetMapping(value = "/members/retrieve", params = "email")
-    public ResponseEntity<EmailPresence> retrieveFromEmail(@RequestParam String email) {
+    public ResponseEntity<EmailPresence> checkDuplicateEmail(@RequestParam String email) {
         return ResponseEntity.ok(new EmailPresence(memberService.isAvailableEmail(email)));
+    }
+
+    /**
+     * 닉네임이 이미 존재하는지 요청을 받는 메서드입니다.
+     *
+     * @param nickname 닉네임
+     * @return 같은 닉네임이 존재하는지에 대한 결과입니다.
+     */
+    @GetMapping(value = "/check", params = "nickname")
+    public ResponseEntity<NicknamePresence> checkDuplicateNickname(@RequestParam String nickname) {
+        return ResponseEntity.ok(
+            new NicknamePresence(memberService.isAvailableNickname(nickname)));
     }
 
     /**

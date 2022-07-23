@@ -95,7 +95,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("이메일을 통한 회원조회 : 성공 ")
+    @DisplayName("이메일을 통한 회원 중복 결과 존재 : 있음 ")
     void retrieveMemberFromEmailCaseSuccess() throws Exception {
         given(memberService.isAvailableEmail(anyString()))
             .willReturn(true);
@@ -109,7 +109,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("이메일을 통한 회원조회 : 실패")
+    @DisplayName("이메일을 통한 회원 중복 결과 존재 : 없음 ")
     void retrieveMemberFromEmailCaseFailure() throws Exception {
         given(memberService.isAvailableEmail(anyString()))
             .willReturn(false);
@@ -120,6 +120,34 @@ class MemberControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.hasEmail").value(false));
+    }
+
+    @Test
+    @DisplayName("닉네임을 통한 회원 중복 결과 존재 : 있음")
+    void checkDuplicateNicknameTestCaseFounded() throws Exception {
+        given(memberService.isAvailableNickname(anyString()))
+            .willReturn(true);
+
+        mockMvc.perform(get("/check")
+                .param("nickname", "abc"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.hasNickname").value(true));
+    }
+
+    @Test
+    @DisplayName("닉네임을 통한 회원 중복 결과 존재 : 없음 ")
+    void checkDuplicateNicknameTestCaseNotFounded() throws Exception {
+        given(memberService.isAvailableNickname(anyString()))
+            .willReturn(false);
+
+        mockMvc.perform(get("/check")
+                .param("nickname", "abc"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.hasNickname").value(false));
     }
 
     @Test
