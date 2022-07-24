@@ -5,9 +5,7 @@ import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
-
-
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 회원등급 Service Interface.
@@ -66,7 +64,7 @@ public interface MemberGradeService {
      * @return PageResponseDto
      * @author 김세미
      */
-    PageResponseDto<MemberGradeResponseDto> findMemberGrades(Pageable pageable);
+    PageResponse<MemberGradeResponseDto> findMemberGrades(Pageable pageable);
 
     /**
      * pagination 이 적용되지 않은 다건 조회를 위한 메서드.

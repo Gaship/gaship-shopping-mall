@@ -9,7 +9,6 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.AccumulateAmountIsOverlap;
 import shop.gaship.gashipshoppingmall.membergrade.exception.CannotDeleteDefaultMemberGrade;
@@ -17,6 +16,7 @@ import shop.gaship.gashipshoppingmall.membergrade.exception.DefaultMemberGradeIs
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -94,8 +94,8 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     }
 
     @Override
-    public PageResponseDto<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
-        return new PageResponseDto<>(memberGradeRepository
+    public PageResponse<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
+        return new PageResponse<>(memberGradeRepository
             .getMemberGrades(pageable));
     }
 

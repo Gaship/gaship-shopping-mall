@@ -17,13 +17,13 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.*;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -369,9 +369,9 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.getMemberGrades(pageable))
                 .thenReturn(new PageImpl<>(List.of(dummyMemberGradeResponseDto), pageable, 1));
 
-        PageResponseDto<MemberGradeResponseDto> result = memberGradeService.findMemberGrades(pageable);
+        PageResponse<MemberGradeResponseDto> result = memberGradeService.findMemberGrades(pageable);
 
-        assertThat(result.getPage()).isEqualTo(page + 1);
+        assertThat(result.getPage()).isEqualTo(page);
         assertThat(result.getSize()).isEqualTo(size);
         assertThat(result.getDtoList()).hasSize(1);
 

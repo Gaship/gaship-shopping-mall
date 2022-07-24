@@ -1,16 +1,16 @@
 package shop.gaship.gashipshoppingmall.membergrade.repository;
 
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.entity.QMemberGrade;
+
 
 /**
  * 회원등급 Custom Repository 구현체.
@@ -44,7 +44,7 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
     public Page<MemberGradeResponseDto> getMemberGrades(Pageable pageable) {
         QMemberGrade memberGrade = QMemberGrade.memberGrade;
 
-        QueryResults<MemberGradeResponseDto> results =
+        List<MemberGradeResponseDto> content =
                 from(memberGrade)
                         .innerJoin(memberGrade.renewalPeriodStatusCode)
                         .offset(pageable.getOffset())
@@ -54,12 +54,13 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
                 memberGrade.name,
                 memberGrade.accumulateAmount,
                 memberGrade.renewalPeriodStatusCode.statusCodeName))
-                .fetchResults();
+                        .fetch();
 
-        List<MemberGradeResponseDto> content = results.getResults();
-        long total = results.getTotal();
-
-        return new PageImpl<>(content, pageable, total);
+        return PageableExecutionUtils.getPage(content,
+                pageable,
+                () -> from(memberGrade)
+                        .innerJoin(memberGrade.renewalPeriodStatusCode)
+                        .fetch().size());
     }
 
     @Override

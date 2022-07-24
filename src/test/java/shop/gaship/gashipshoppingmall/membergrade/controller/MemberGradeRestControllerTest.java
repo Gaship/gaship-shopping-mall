@@ -15,10 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 import java.util.List;
 
@@ -151,7 +151,7 @@ class MemberGradeRestControllerTest {
                         "12개월");
 
         when(memberGradeService.findMemberGrades(pageable))
-                .thenReturn(new PageResponseDto<>(
+                .thenReturn(new PageResponse<>(
                         new PageImpl<>(List.of(dummyMemberGradeResponseDto), pageable, 1)));
 
         mockMvc.perform(get("/api/member-grades")
@@ -161,7 +161,7 @@ class MemberGradeRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.page", equalTo(page + 1)))
+                .andExpect(jsonPath("$.page", equalTo(page)))
                 .andExpect(jsonPath("$.size", equalTo(size)));
     }
 

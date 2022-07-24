@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 
 /**
@@ -110,7 +110,7 @@ public class MemberGradeRestController {
      * @author 김세미
      */
     @GetMapping(params = {"page", "size"})
-    public ResponseEntity<PageResponseDto<MemberGradeResponseDto>>
+    public ResponseEntity<PageResponse<MemberGradeResponseDto>>
         memberGradeList(Pageable pageable) {
 
         return ResponseEntity.status(HttpStatus.OK)
