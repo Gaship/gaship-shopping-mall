@@ -36,6 +36,13 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     private final StatusCodeRepository statusCodeRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws StatusCodeNotFoundException 상태코드를 찾을 수 없습니다.
+     * @throws AccumulateAmountIsOverlap 기준누적금액이 중복됩니다.
+     * @throws DefaultMemberGradeIsExist 기본회원등급이 이미 존재합니다.
+     */
     @Transactional
     @Override
     public void addMemberGrade(MemberGradeAddRequestDto requestDto) {
@@ -53,6 +60,12 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberGradeNotFoundException 회원등급을 찾을 수 없습니다.
+     * @throws AccumulateAmountIsOverlap 기준누적금액이 중복됩니다.
+     */
     @Transactional
     @Override
     public void modifyMemberGrade(MemberGradeModifyRequestDto requestDto) {
@@ -69,6 +82,13 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         memberGradeRepository.save(memberGrade);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberGradeNotFoundException 회원등급을 찾을 수 없습니다.
+     * @throws CannotDeleteDefaultMemberGrade 기본회원등급은 삭제할 수 없습니다.
+     * @throws MemberGradeInUseException 사용중인 회원등급입니다.
+     */
     @Transactional
     @Override
     public void removeMemberGrade(Integer memberGradeNo) {
@@ -87,12 +107,20 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         memberGradeRepository.delete(memberGrade);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberGradeNotFoundException 회원등급을 찾을 수 없습니다.
+     */
     @Override
     public MemberGradeResponseDto findMemberGrade(Integer memberGradeNo) {
         return memberGradeRepository.getMemberGradeBy(memberGradeNo)
             .orElseThrow(MemberGradeNotFoundException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PageResponse<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
         return new PageResponse<>(memberGradeRepository
