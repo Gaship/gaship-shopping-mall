@@ -131,7 +131,7 @@ public class MemberTestDummy {
     public static Member member1() {
 
         return Member.builder()
-                .memberNo(0)
+                .memberNo(1)
                 .recommendMember(null)
                 .memberStatusCodes(null)
                 .memberGrades(null)
@@ -150,7 +150,7 @@ public class MemberTestDummy {
     public static Member memberEntityNotFlushed() {
 
         return Member.builder()
-                .memberNo(0)
+                .memberNo(2)
                 .recommendMember(null)
                 .memberStatusCodes(null)
                 .memberGrades(null)

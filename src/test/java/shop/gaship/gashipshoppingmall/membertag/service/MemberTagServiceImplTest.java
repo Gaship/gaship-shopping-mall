@@ -16,6 +16,7 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membertag.dummy.MemberTagDummy;
 import shop.gaship.gashipshoppingmall.membertag.exception.IllegalTagSelectionException;
 import shop.gaship.gashipshoppingmall.membertag.repository.MemberTagRepository;
+import shop.gaship.gashipshoppingmall.membertag.service.Impl.MemberTagServiceImpl;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 import shop.gaship.gashipshoppingmall.tag.utils.TestDummy;

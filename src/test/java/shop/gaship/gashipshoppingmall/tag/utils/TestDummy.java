@@ -51,7 +51,7 @@ public class TestDummy {
     public static List<Tag> Create5SizeTestTagEntityList() {
         List<Tag> list = new ArrayList<>();
         IntStream.rangeClosed(0, 4).forEach(i -> {
-            Tag tag = Tag.builder().title("title....." + i).build();
+            Tag tag = Tag.builder().tagNo(i + 1).title("title....." + i).build();
             list.add(tag);
         });
         return list;

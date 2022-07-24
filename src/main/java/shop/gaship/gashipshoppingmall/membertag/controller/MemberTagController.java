@@ -5,47 +5,54 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagRequestDto;
-import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagResponseDto;
+import shop.gaship.gashipshoppingmall.membertag.dto.request.MemberTagRequestDto;
+import shop.gaship.gashipshoppingmall.membertag.dto.response.MemberTagResponseDto;
 import shop.gaship.gashipshoppingmall.membertag.service.MemberTagService;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
- * 멤버태그 등록삭제, 조회를 하기 위한 컨트롤러입니다.
+ * MemberTag 의 restController 입니다.
  *
  * @author 최정우
  * @since 1.0
  */
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/members/{memberNo}/tags")
 public class MemberTagController {
     private final MemberTagService memberTagService;
 
     /**
-     * 멤버가 설정한 태그를 삭제하고 다시 설정하길 원하는 태그들을 설정하는 메서드입니다.
+     * 멤버태그 Post Mapping
+     * 멤버태그 삭제, 등록을 위한 RestController 메서드.
      *
-     * @param memberTagRequestDto the member tag request dto
-     * @return the response entity
+     * @param memberTagRequestDto 회원의 식별번호와 등록하고자하는 태그들의 식별번호가 담겨있습니다.
+     * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
+     * @author 최정우
      */
-    @PostMapping("/members/{memberNo}/tags")
+    @PostMapping
     public ResponseEntity<Void> MemberTagDeleteAllAndAddAll(@Valid @RequestBody MemberTagRequestDto memberTagRequestDto) {
         memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED)
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
 
     /**
-     * 회원이 설정한 멤버태그들을 설정하기위한 메서드입니다.
+     * 멤버태그 Get Mapping
+     * 해당 멤버의 멤버태그를 조회하기 위한 RestController 메서드.
      *
-     * @param memberNo the member no
-     * @return the response entity
+     * @param memberNo 회원의 식별번호입니다.
+     * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
+     * @author 최정우
      */
-    @GetMapping("/members/{memberNo}/tags")
-    public ResponseEntity<List<MemberTagResponseDto>> MemberTagList(@PathVariable Integer memberNo) {
-        return ResponseEntity.status(HttpStatus.OK)
+    @GetMapping
+    public ResponseEntity<MemberTagResponseDto> MemberTagList(@PathVariable Integer memberNo) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(memberTagService.findMemberTags(memberNo));
     }
