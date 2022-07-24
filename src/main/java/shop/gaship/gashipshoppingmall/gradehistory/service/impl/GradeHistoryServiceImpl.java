@@ -27,6 +27,11 @@ public class GradeHistoryServiceImpl implements GradeHistoryService {
     private final GradeHistoryRepository gradeHistoryRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberNotFoundException 회원을 찾을 수 없습니다.
+     */
     @Override
     public void addGradeHistory(GradeHistoryAddRequestDto requestDto) {
         Member member = memberRepository.findById(requestDto.getMemberNo())
@@ -40,6 +45,11 @@ public class GradeHistoryServiceImpl implements GradeHistoryService {
         gradeHistoryRepository.save(gradeHistory);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberNotFoundException 회원을 찾을 수 없습니다.
+     */
     @Override
     public PageResponse<GradeHistoryResponseDto>
         findGradeHistories(GradeHistoryFindRequestDto requestDto) {
