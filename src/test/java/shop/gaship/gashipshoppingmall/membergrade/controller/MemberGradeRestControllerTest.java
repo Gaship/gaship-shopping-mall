@@ -81,9 +81,10 @@ class MemberGradeRestControllerTest {
     @DisplayName("회원등급을 수정하는 경우")
     @Test
     void memberGradeModify() throws Exception {
-        MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 0L);
+        Integer testMemberGradeNo = 1;
+        MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(testMemberGradeNo, "새싹", 0L);
 
-        mockMvc.perform(put("/api/member-grades")
+        mockMvc.perform(put("/api/member-grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -96,9 +97,10 @@ class MemberGradeRestControllerTest {
             "request 의 name 이 null 인 경우")
     @Test
     void memberGradeModify_whenNameIsNull() throws Exception {
-        MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, null, 0L);
+        Integer testMemberGradeNo = 1;
+        MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(testMemberGradeNo, null, 0L);
 
-        mockMvc.perform(put("/api/member-grades")
+        mockMvc.perform(put("/api/member-grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
