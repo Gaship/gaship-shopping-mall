@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.config;
 
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +20,12 @@ public class DataSourceConfig {
     private String username;
     private String password;
 
+    /**
+     * 데이터 베이스를 연결하는 메서드입니다.
+     *
+     * @param dataProtectionConfig 데이터베이스의 정보가 담긴 객체입니다.
+     * @return 데이터베이스와 연결 후 연결된 객체를 반환합니다.
+     */
     @Bean
     public DataSource getDataSource(DataProtectionConfig dataProtectionConfig) {
         String secretUrl = dataProtectionConfig.findSecretDataFromSecureKeyManager(url);

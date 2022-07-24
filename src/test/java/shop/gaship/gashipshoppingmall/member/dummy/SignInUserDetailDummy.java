@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.dummy;
 
 import java.util.List;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
 /**

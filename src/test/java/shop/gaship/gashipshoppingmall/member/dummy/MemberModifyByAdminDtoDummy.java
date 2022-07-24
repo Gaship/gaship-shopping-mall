@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.dummy;
 
-import shop.gaship.gashipshoppingmall.member.dto.MemberModifyByAdminDto;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
 
 /**
  * 설명작성란

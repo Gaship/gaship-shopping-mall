@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.member.dto;
+package shop.gaship.gashipshoppingmall.member.dto.response;
 
 import java.util.List;
 import java.util.function.Function;
@@ -28,10 +28,14 @@ public class MemberPageResponseDto<D, E> {
     private int size;
 
     //시작 페이지 번호, 끝 페이지 번호
-    private int start, end;
+    private int start;
+
+    private int end;
 
     //이전, 다음
-    private boolean prev, next;
+    private boolean prev;
+
+    private boolean next;
 
     //페이지 번호  목록
     private List<Integer> pageList;
