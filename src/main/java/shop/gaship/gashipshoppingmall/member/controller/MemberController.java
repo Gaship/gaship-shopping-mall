@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.member.dto.EmailPresence;
+import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailRequest;
+import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
@@ -182,5 +184,13 @@ public class MemberController {
     public ResponseEntity<Void> memberModifyByAdmin(MemberModifyRequestDto request) {
         memberService.modifyMember(request);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+    }
+
+    @PostMapping("/members/find-email")
+    public ResponseEntity<FindMemberEmailResponse> memberEmailFromNicknameFind(
+        @Valid @RequestBody FindMemberEmailRequest findMemberEmailRequest) {
+
+        return ResponseEntity.ok(
+            memberService.findMemberEmailFromNickname(findMemberEmailRequest.getNickname()));
     }
 }

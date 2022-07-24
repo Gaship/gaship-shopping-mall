@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.member.service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
+import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
@@ -165,4 +166,14 @@ public interface MemberService {
     SignInUserDetailsDto findSignInUserDetailFromEmail(String email);
 
     Integer findLastNo();
+
+
+    /**
+     * 닉네임을 통해서 데이터가 일부가 가려진 이메일을 얻어옵니다.
+     *
+     * @param nickname 멤버의 닉네임 입니다.
+     * @return 이메일 데이터 일부가 가려진 결과를 가진 객체를 반환합니다.
+     */
+    FindMemberEmailResponse findMemberEmailFromNickname(String nickname);
+
 }

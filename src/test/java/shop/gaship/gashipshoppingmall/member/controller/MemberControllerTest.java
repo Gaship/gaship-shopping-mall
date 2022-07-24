@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailRequest;
+import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
@@ -62,14 +66,11 @@ class MemberControllerTest {
         String contentBody = objectMapper.registerModule(new JavaTimeModule())
             .writeValueAsString(MemberCreationRequestDummy.dummy());
 
-        doNothing().when(memberService)
-            .addMember(MemberCreationRequestDummy.dummy());
+        doNothing().when(memberService).addMember(MemberCreationRequestDummy.dummy());
 
-        mockMvc.perform(post("/members")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(contentBody))
-            .andDo(print())
-            .andExpect(status().isCreated());
+        mockMvc.perform(
+                post("/members").contentType(MediaType.APPLICATION_JSON).content(contentBody))
+            .andDo(print()).andExpect(status().isCreated());
     }
 
     @Test
@@ -80,58 +81,44 @@ class MemberControllerTest {
 
         log.trace("dummy isUniqueEmail : {}", dummy.getIsUniqueEmail());
 
-        String contentBody = objectMapper.registerModule(new JavaTimeModule())
-            .writeValueAsString(dummy);
+        String contentBody =
+            objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(dummy);
 
 
-        mockMvc.perform(post("/members")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(contentBody))
-            .andDo(print())
-            .andExpect(status().is4xxClientError())
+        mockMvc.perform(
+                post("/members").contentType(MediaType.APPLICATION_JSON).content(contentBody))
+            .andDo(print()).andExpect(status().is4xxClientError())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.message")
-                .value("이메일 중복확인 또는 이메일 검증이 필요합니다."));
+            .andExpect(jsonPath("$.message").value("이메일 중복확인 또는 이메일 검증이 필요합니다."));
     }
 
     @Test
     @DisplayName("이메일을 통한 회원조회 : 성공 ")
     void retrieveMemberFromEmailCaseSuccess() throws Exception {
-        given(memberService.isAvailableEmail(anyString()))
-            .willReturn(true);
+        given(memberService.isAvailableEmail(anyString())).willReturn(true);
 
-        mockMvc.perform(get("/members/retrieve")
-                .param("email", "abc@nhn.com"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/members/retrieve").param("email", "abc@nhn.com")).andDo(print())
+            .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.hasEmail").value(true));
     }
 
     @Test
     @DisplayName("이메일을 통한 회원조회 : 실패")
     void retrieveMemberFromEmailCaseFailure() throws Exception {
-        given(memberService.isAvailableEmail(anyString()))
-            .willReturn(false);
+        given(memberService.isAvailableEmail(anyString())).willReturn(false);
 
-        mockMvc.perform(get("/members/retrieve")
-                .param("email", "abc@nhn.com"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/members/retrieve").param("email", "abc@nhn.com")).andDo(print())
+            .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.hasEmail").value(false));
     }
 
     @Test
     @DisplayName("닉네임을 통한 회원조회 : 성공 ")
     void retrieveMemberFromNicknameCaseSuccess() throws Exception {
-        given(memberService.findMemberFromNickname(anyString()))
-            .willReturn(MemberDummy.dummy());
+        given(memberService.findMemberFromNickname(anyString())).willReturn(MemberDummy.dummy());
 
-        mockMvc.perform(get("/members/retrieve")
-                .param("nickname", "example nickname"))
-            .andDo(print())
-            .andExpect(status().isOk())
+        mockMvc.perform(get("/members/retrieve").param("nickname", "example nickname"))
+            .andDo(print()).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.memberNo").value(1));
     }
@@ -139,29 +126,24 @@ class MemberControllerTest {
     @Test
     @DisplayName("닉네임을 통한 회원조회 : 실패")
     void retrieveMemberFromNicknameCaseFailure() throws Exception {
-        given(memberService.findMemberFromNickname(anyString()))
-            .willThrow(new MemberNotFoundException());
+        given(memberService.findMemberFromNickname(anyString())).willThrow(
+            new MemberNotFoundException());
 
-        mockMvc.perform(get("/members/retrieve")
-                .param("nickname", "example nickname"))
-            .andDo(print())
-            .andExpect(status().is4xxClientError())
+        mockMvc.perform(get("/members/retrieve").param("nickname", "example nickname"))
+            .andDo(print()).andExpect(status().is4xxClientError())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.message")
-                .value("해당 멤버를 찾을 수 없습니다"));
+            .andExpect(jsonPath("$.message").value("해당 멤버를 찾을 수 없습니다"));
     }
 
     @Test
     @DisplayName("이메일을 통한 로그인 대상 회원 조회 : 성공")
     void retrieveSignInUserDetailCaseSuccess() throws Exception {
         SignInUserDetailsDto dummy = SignInUserDetailDummy.dummy();
-        given(memberService.findSignInUserDetailFromEmail(anyString()))
-            .willReturn(SignInUserDetailDummy.dummy());
+        given(memberService.findSignInUserDetailFromEmail(anyString())).willReturn(
+            SignInUserDetailDummy.dummy());
 
-        mockMvc.perform(get("/members/retrieve/user-detail")
-                .param("email", "example@nhn.com"))
-            .andDo(print())
-            .andExpect(status().isOk())
+        mockMvc.perform(get("/members/retrieve/user-detail").param("email", "example@nhn.com"))
+            .andDo(print()).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.identifyNo").value(dummy.getIdentifyNo()))
             .andExpect(jsonPath("$.email").value(dummy.getEmail()))
@@ -173,15 +155,54 @@ class MemberControllerTest {
     @Test
     @DisplayName("이메일을 통한 로그인 대상 회원 조회 : 실패")
     void retrieveSignInUserDetailCaseFailure() throws Exception {
-        given(memberService.findSignInUserDetailFromEmail(anyString()))
-            .willThrow(new MemberNotFoundException());
+        given(memberService.findSignInUserDetailFromEmail(anyString())).willThrow(
+            new MemberNotFoundException());
 
-        mockMvc.perform(get("/members/retrieve/user-detail")
-                .param("email", "example@nhn.com"))
-            .andDo(print())
-            .andExpect(status().is4xxClientError())
+        mockMvc.perform(get("/members/retrieve/user-detail").param("email", "example@nhn.com"))
+            .andDo(print()).andExpect(status().is4xxClientError())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.message")
-                .value("해당 멤버를 찾을 수 없습니다"));
+            .andExpect(jsonPath("$.message").value("해당 멤버를 찾을 수 없습니다"));
+    }
+
+    @Test
+    @DisplayName("이메일을 찾기 : 성공")
+    void memberEmailFromNicknameFindCaseSuccess() throws Exception {
+        String obscuredEmail = "exam****@nhn.com";
+        given(memberService.findMemberEmailFromNickname(anyString())).willReturn(
+            new FindMemberEmailResponse(obscuredEmail));
+
+        FindMemberEmailRequest request = new FindMemberEmailRequest();
+        ReflectionTestUtils.setField(request, "nickname", "example");
+
+        String content = new ObjectMapper().writeValueAsString(request);
+
+        mockMvc.perform(
+                post("/members/find-email")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(content))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.obscuredEmail").value(obscuredEmail));
+    }
+
+    @Test
+    @DisplayName("이메일을 찾기 : 실패")
+    void memberEmailFromNicknameFindCaseFailure() throws Exception {
+        given(memberService.findMemberEmailFromNickname(anyString())).willThrow(
+            new MemberNotFoundException());
+
+        FindMemberEmailRequest request = new FindMemberEmailRequest();
+        ReflectionTestUtils.setField(request, "nickname", "example");
+
+        String content = new ObjectMapper().writeValueAsString(request);
+
+
+        mockMvc.perform(
+                post("/members/find-email")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(content))
+            .andDo(print()).andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.message").value("해당 멤버를 찾을 수 없습니다"));
     }
 }

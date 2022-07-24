@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
@@ -181,6 +182,25 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Integer findLastNo() {
         return memberRepository.findLastNo();
+    }
+
+    @Override
+    public FindMemberEmailResponse findMemberEmailFromNickname(String nickname) {
+        String memberEmail = memberRepository.findByNickname(nickname)
+            .orElseThrow(MemberNotFoundException::new)
+            .getEmail();
+
+        String emailIdPart = memberEmail.substring(0, memberEmail.indexOf("@"));
+        String emailDomainPart = memberEmail.substring(
+            memberEmail.indexOf("@"));
+
+        double idPartHalfLength = emailIdPart.length() / 2.0;
+        String obscuredEmail =
+            emailIdPart.substring(0, (int) Math.ceil(idPartHalfLength)) +
+                "*".repeat((int) Math.floor(idPartHalfLength)) +
+                emailDomainPart;
+
+        return new FindMemberEmailResponse(obscuredEmail);
     }
 
     @Override

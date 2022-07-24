@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -15,11 +14,12 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -27,6 +27,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
@@ -41,6 +43,7 @@ import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameExcepti
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.member.service.impl.MemberServiceImpl;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
@@ -59,9 +62,9 @@ import shop.gaship.gashipshoppingmall.statuscode.status.UserAuthority;
  * -----------------------------------------------------------  <br/>
  * 2022/07/10           김민수               최초 생성                         <br/>
  */
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties(value = DataProtectionConfig.class)
-@Import({DataSourceConfig.class})
+@Import({DataSourceConfig.class, MemberServiceImpl.class})
 @TestPropertySource(
     value = {"classpath:application.properties", "classpath:application-dev.properties"})
 class MemberServiceTest {
@@ -76,6 +79,9 @@ class MemberServiceTest {
 
     @MockBean
     StatusCodeRepository statusCodeRepository;
+
+    @MockBean
+    Aes aes;
 
     @Test
     @DisplayName("새로운 회원 저장")
@@ -284,5 +290,29 @@ class MemberServiceTest {
 
         assertThatThrownBy(() -> memberService.findSignInUserDetailFromEmail("exmaple@nhn.com"))
             .hasMessage(expectErrorMessage);
+    }
+
+    @Test
+    @DisplayName("닉네임을 통해 이메일 찾기를 실행하였을 때 이메일 일부가 감춰진 데이터를 반환합니다. : 성공")
+    void findMemberEmailFromNicknameCaseSuccess() {
+        given(memberRepository.findByNickname(anyString()))
+            .willReturn(Optional.of(MemberDummy.dummy()));
+
+        FindMemberEmailResponse findMemberEmailResponse =
+            memberService.findMemberEmailFromNickname("example nickname");
+
+        assertThat(findMemberEmailResponse.getObscuredEmail())
+            .isEqualTo("exam***@nhn.com");
+    }
+
+    @Test
+    @DisplayName("닉네임을 통해 이메일 찾기를 실행하였을 때 이메일 일부가 감춰진 데이터를 반환합니다. : 실패")
+    void findMemberEmailFromNicknameCaseFailure() {
+        given(memberRepository.findByNickname(anyString()))
+            .willThrow(new MemberNotFoundException());
+
+        assertThatThrownBy(() ->
+            memberService.findMemberEmailFromNickname("example nickname"))
+            .isInstanceOf(MemberNotFoundException.class);
     }
 }
