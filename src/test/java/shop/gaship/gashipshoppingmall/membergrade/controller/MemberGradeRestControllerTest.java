@@ -15,10 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ class MemberGradeRestControllerTest {
     @DisplayName("회원등급을 등록하는 경우")
     @Test
     void memberGradeAdd() throws Exception {
-        mockMvc.perform(post("/grades")
+        mockMvc.perform(post("/api/member-grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addRequestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -69,7 +69,7 @@ class MemberGradeRestControllerTest {
     void memberGradeAdd_whenNameIsNull() throws Exception{
         addRequestDummy.setName(null);
 
-        mockMvc.perform(post("/grades")
+        mockMvc.perform(post("/api/member-grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addRequestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -81,9 +81,10 @@ class MemberGradeRestControllerTest {
     @DisplayName("회원등급을 수정하는 경우")
     @Test
     void memberGradeModify() throws Exception {
-        MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 0L);
+        Integer testMemberGradeNo = 1;
+        MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(testMemberGradeNo, "새싹", 0L);
 
-        mockMvc.perform(put("/grades")
+        mockMvc.perform(put("/api/member-grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -96,9 +97,10 @@ class MemberGradeRestControllerTest {
             "request 의 name 이 null 인 경우")
     @Test
     void memberGradeModify_whenNameIsNull() throws Exception {
-        MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, null, 0L);
+        Integer testMemberGradeNo = 1;
+        MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(testMemberGradeNo, null, 0L);
 
-        mockMvc.perform(put("/grades")
+        mockMvc.perform(put("/api/member-grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -112,7 +114,7 @@ class MemberGradeRestControllerTest {
     void memberGradeRemove() throws Exception {
         int testMemberGradeNo = 1;
 
-        mockMvc.perform(delete("/grades/" + testMemberGradeNo)
+        mockMvc.perform(delete("/api/member-grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -129,7 +131,7 @@ class MemberGradeRestControllerTest {
         when(memberGradeService.findMemberGrade(any()))
                 .thenReturn(testMemberGradeResponseDto);
 
-        mockMvc.perform(get("/grades/" + testMemberGradeNo)
+        mockMvc.perform(get("/api/member-grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -151,18 +153,35 @@ class MemberGradeRestControllerTest {
                         "12개월");
 
         when(memberGradeService.findMemberGrades(pageable))
-                .thenReturn(new PageResponseDto<>(
+                .thenReturn(new PageResponse<>(
                         new PageImpl<>(List.of(dummyMemberGradeResponseDto), pageable, 1)));
 
-        mockMvc.perform(get("/grades")
+        mockMvc.perform(get("/api/member-grades")
                         .queryParam("size", "10")
                         .queryParam("page", "1")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.page", equalTo(page + 1)))
+                .andExpect(jsonPath("$.page", equalTo(page)))
                 .andExpect(jsonPath("$.size", equalTo(size)));
+    }
+
+    @DisplayName("전체 회원등급 다건 조회")
+    @Test
+    void memberGradeDataList() throws Exception{
+        MemberGradeResponseDto dummyMemberGradeResponseDto =
+                MemberGradeDtoDummy.responseDummy("일반",
+                        0L,
+                        "12개월");
+
+        when(memberGradeService.findMemberGrades())
+                .thenReturn(List.of(dummyMemberGradeResponseDto));
+
+        mockMvc.perform(get("/api/member-grades"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", equalTo(1)))
+                .andExpect(jsonPath("$[0].name", equalTo("일반")));
     }
 
     @DisplayName("Exception Handler 테스트")
@@ -175,7 +194,7 @@ class MemberGradeRestControllerTest {
         when(memberGradeService.findMemberGrade(any()))
                 .thenThrow(memberGradeNotFoundException);
 
-        mockMvc.perform(get("/grades/" + testMemberGradeNo)
+        mockMvc.perform(get("/api/member-grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
