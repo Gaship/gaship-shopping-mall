@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 public class GradeHistoryAddRequestDto {
     @NotNull(message = "등록하려는 등급 이력의 memberNo 는 필수값입니다.")
+    @Min(value = 1, message = "memberNo 는 1보다 작을 수 없습니다.")
     private final Integer memberNo;
 
     @NotNull(message = "등록하려는 등급 이력의 totalAmount 는 필수값입니다.")

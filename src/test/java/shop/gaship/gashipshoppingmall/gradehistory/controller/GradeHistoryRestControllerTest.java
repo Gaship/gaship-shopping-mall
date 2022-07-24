@@ -26,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -112,6 +113,7 @@ class GradeHistoryRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.page",equalTo(requestDtoDummy.getPage())))
-                .andExpect(jsonPath("$.size", equalTo(requestDtoDummy.getSize())));
+                .andExpect(jsonPath("$.size", equalTo(requestDtoDummy.getSize())))
+                .andDo(print());
     }
 }

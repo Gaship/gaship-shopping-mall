@@ -1,7 +1,16 @@
 package shop.gaship.gashipshoppingmall.gradehistory.entity;
 
 import java.time.LocalDate;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +43,7 @@ public class GradeHistory {
     @Column(name = "grade_total_amount", nullable = false)
     private Long totalAmount;
 
-    @Column(name = "grade_name", nullable = false)
+    @NotNull(message = "gradeName 은 필수값 입니다.")
     private String gradeName;
 
     /**

@@ -1,11 +1,11 @@
 package shop.gaship.gashipshoppingmall.gradehistory.repository.impl;
 
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
+import java.util.List;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.response.GradeHistoryResponseDto;
 import shop.gaship.gashipshoppingmall.gradehistory.entity.GradeHistory;
 import shop.gaship.gashipshoppingmall.gradehistory.entity.QGradeHistory;
@@ -29,10 +29,9 @@ public class GradeHistoryRepositoryImpl
     @Override
     public Page<GradeHistoryResponseDto>
         getGradeHistoriesByMember(Integer memberNo, PageRequest pageRequest) {
-
         QGradeHistory gradeHistory = QGradeHistory.gradeHistory;
 
-        QueryResults<GradeHistoryResponseDto> queryResults = from(gradeHistory)
+        List<GradeHistoryResponseDto> content = from(gradeHistory)
                 .where(gradeHistory.member.memberNo.eq(memberNo))
                 .orderBy(gradeHistory.at.desc())
                 .limit(pageRequest.getPageSize())
@@ -41,8 +40,13 @@ public class GradeHistoryRepositoryImpl
                         gradeHistory.at,
                         gradeHistory.totalAmount,
                         gradeHistory.gradeName))
-                .fetchResults();
+                .fetch();
 
-        return new PageImpl<>(queryResults.getResults(), pageRequest, queryResults.getTotal());
+        return PageableExecutionUtils.getPage(content,
+                pageRequest,
+                () -> from(gradeHistory)
+                        .where(gradeHistory.member.memberNo.eq(memberNo))
+                        .fetch()
+                        .size());
     }
 }
