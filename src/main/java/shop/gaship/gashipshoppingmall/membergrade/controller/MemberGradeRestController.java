@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -108,12 +109,25 @@ public class MemberGradeRestController {
      * @return responseEntity
      * @author 김세미
      */
-    @GetMapping
+    @GetMapping(params = {"page", "size"})
     public ResponseEntity<PageResponseDto<MemberGradeResponseDto>>
         memberGradeList(Pageable pageable) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(memberGradeService.findMemberGrades(pageable));
+    }
+
+    /**
+     * 회원등급 전체 다건 조회 GET Mapping.
+     *
+     * @return responseEntity 전체 회원등급 목록 (List - MemberGradeResponseDto)
+     * @author 김세미
+     */
+    @GetMapping
+    public ResponseEntity<List<MemberGradeResponseDto>> memberGradeDataList() {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(memberGradeService.findMemberGrades());
     }
 }

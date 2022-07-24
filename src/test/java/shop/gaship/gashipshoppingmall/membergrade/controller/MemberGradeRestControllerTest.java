@@ -165,6 +165,23 @@ class MemberGradeRestControllerTest {
                 .andExpect(jsonPath("$.size", equalTo(size)));
     }
 
+    @DisplayName("전체 회원등급 다건 조회")
+    @Test
+    void memberGradeDataList() throws Exception{
+        MemberGradeResponseDto dummyMemberGradeResponseDto =
+                MemberGradeDtoDummy.responseDummy("일반",
+                        0L,
+                        "12개월");
+
+        when(memberGradeService.findMemberGrades())
+                .thenReturn(List.of(dummyMemberGradeResponseDto));
+
+        mockMvc.perform(get("/api/member-grades"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", equalTo(1)))
+                .andExpect(jsonPath("$[0].name", equalTo("일반")));
+    }
+
     @DisplayName("Exception Handler 테스트")
     @Test
     void exceptionHandler_whenThrowMemberGradeNotFoundException() throws Exception {
