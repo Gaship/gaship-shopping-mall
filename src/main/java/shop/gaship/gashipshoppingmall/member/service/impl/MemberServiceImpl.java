@@ -184,6 +184,13 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findLastNo();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param nickname 찾고자하는 이메일의 멤버 닉네임입니다.
+     * @return 이메일의 일부가 가려진 데이터를 담고있는 객체를 반환합니다.
+     * @throws MemberNotFoundException 닉네임을 통해서 멤버를 찾지 못하였을 때 던집니다.
+     */
     @Override
     public FindMemberEmailResponse findMemberEmailFromNickname(String nickname) {
         String memberEmail = memberRepository.findByNickname(nickname)

@@ -186,6 +186,12 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
     }
 
+    /**
+     * 멤버의 이메일을 찾는 요청을 받는 메서드입니다.
+     *
+     * @param findMemberEmailRequest 멤버의 이메일을 찾기위한 닉네임을 가진 요청객체입니다.
+     * @return 이메일의 일부가 가려진 데이터를 가진 객체를 응답(반환)합니다.
+     */
     @PostMapping("/members/find-email")
     public ResponseEntity<FindMemberEmailResponse> memberEmailFromNicknameFind(
         @Valid @RequestBody FindMemberEmailRequest findMemberEmailRequest) {
