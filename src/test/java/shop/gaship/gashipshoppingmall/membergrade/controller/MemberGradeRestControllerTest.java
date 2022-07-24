@@ -54,7 +54,7 @@ class MemberGradeRestControllerTest {
     @DisplayName("회원등급을 등록하는 경우")
     @Test
     void memberGradeAdd() throws Exception {
-        mockMvc.perform(post("/grades")
+        mockMvc.perform(post("/api/member-grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addRequestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -69,7 +69,7 @@ class MemberGradeRestControllerTest {
     void memberGradeAdd_whenNameIsNull() throws Exception{
         addRequestDummy.setName(null);
 
-        mockMvc.perform(post("/grades")
+        mockMvc.perform(post("/api/member-grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addRequestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -83,7 +83,7 @@ class MemberGradeRestControllerTest {
     void memberGradeModify() throws Exception {
         MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, "새싹", 0L);
 
-        mockMvc.perform(put("/grades")
+        mockMvc.perform(put("/api/member-grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -98,7 +98,7 @@ class MemberGradeRestControllerTest {
     void memberGradeModify_whenNameIsNull() throws Exception {
         MemberGradeModifyRequestDto requestDummy = MemberGradeDtoDummy.modifyRequestDummy(1, null, 0L);
 
-        mockMvc.perform(put("/grades")
+        mockMvc.perform(put("/api/member-grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDummy))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -112,7 +112,7 @@ class MemberGradeRestControllerTest {
     void memberGradeRemove() throws Exception {
         int testMemberGradeNo = 1;
 
-        mockMvc.perform(delete("/grades/" + testMemberGradeNo)
+        mockMvc.perform(delete("/api/member-grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -129,7 +129,7 @@ class MemberGradeRestControllerTest {
         when(memberGradeService.findMemberGrade(any()))
                 .thenReturn(testMemberGradeResponseDto);
 
-        mockMvc.perform(get("/grades/" + testMemberGradeNo)
+        mockMvc.perform(get("/api/member-grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -154,7 +154,7 @@ class MemberGradeRestControllerTest {
                 .thenReturn(new PageResponseDto<>(
                         new PageImpl<>(List.of(dummyMemberGradeResponseDto), pageable, 1)));
 
-        mockMvc.perform(get("/grades")
+        mockMvc.perform(get("/api/member-grades")
                         .queryParam("size", "10")
                         .queryParam("page", "1")
                         .accept(MediaType.APPLICATION_JSON)
@@ -175,7 +175,7 @@ class MemberGradeRestControllerTest {
         when(memberGradeService.findMemberGrade(any()))
                 .thenThrow(memberGradeNotFoundException);
 
-        mockMvc.perform(get("/grades/" + testMemberGradeNo)
+        mockMvc.perform(get("/api/member-grades/" + testMemberGradeNo)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
