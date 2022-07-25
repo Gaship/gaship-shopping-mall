@@ -1,9 +1,12 @@
 package shop.gaship.gashipshoppingmall.category.dto.response;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
- *
  * 카테고리 조회 응답 시 담기는 데이터 객체입니다.
  *
  * @author : 김보민

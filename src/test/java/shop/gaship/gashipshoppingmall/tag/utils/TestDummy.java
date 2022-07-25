@@ -27,19 +27,19 @@ import java.util.stream.IntStream;
  */
 
 public class TestDummy {
-    public static TagRequestDto CreateTestTagRequestDto() {
+    public static TagRequestDto createTestTagRequestDto() {
         return TagRequestDto.builder().title("테스트 타이틀").build();
     }
 
-    public static TagResponseDto CreateTestTagResponseDto(String title) {
+    public static TagResponseDto createTestTagResponseDto(String title) {
         return new TagResponseDto(null, title, LocalDateTime.now(), LocalDateTime.now());
     }
 
-    public static Tag CreateTestTagEntity() {
+    public static Tag createTestTagEntity() {
         return Tag.builder().tagNo(1).title("title....1").build();
     }
 
-    public static List<Tag> CreateTestTagEntityList() {
+    public static List<Tag> createTestTagEntityList() {
         List<Tag> list = new ArrayList<>();
         IntStream.rangeClosed(1, 100).forEach(i -> {
             Tag tag = Tag.builder().tagNo(i).title("title....." + i).build();
@@ -48,7 +48,7 @@ public class TestDummy {
         return list;
     }
 
-    public static List<Tag> Create5SizeTestTagEntityList() {
+    public static List<Tag> create5SizeTestTagEntityList() {
         List<Tag> list = new ArrayList<>();
         IntStream.rangeClosed(0, 4).forEach(i -> {
             Tag tag = Tag.builder().title("title....." + i).build();
@@ -57,14 +57,14 @@ public class TestDummy {
         return list;
     }
 
-    public static TagPageResponseDto<TagResponseDto, Tag> CreateTestTagPageResponseDto() {
+    public static TagPageResponseDto<TagResponseDto, Tag> createTestTagPageResponseDto() {
         Pageable pageable = PageRequest.of(0, 10);
         Function<Tag, TagResponseDto> fn = (Tag tag) -> (TagResponseDto.builder()
                 .title(tag.getTitle())
                 .registerDatetime(tag.getRegisterDatetime())
                 .modifiedDatetime(tag.getModifiedDatetime())
                 .build());
-        Page<Tag> page = new PageImpl<>(TestDummy.CreateTestTagEntityList(), pageable, 100);
+        Page<Tag> page = new PageImpl<>(TestDummy.createTestTagEntityList(), pageable, 100);
 
         return new TagPageResponseDto<>(page, fn);
     }

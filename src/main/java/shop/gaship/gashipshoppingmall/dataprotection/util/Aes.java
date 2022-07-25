@@ -32,9 +32,9 @@ public class Aes {
     /**
      * Aes-256 알고리즘으로 평문을 암호화하는 메서드입니다.
      *
-     * @throws EncodeFailureException EncodeFailureException
      * @param plainText 평문입니다.
      * @return 암호화된 문자열입니다.
+     * @throws EncodeFailureException EncodeFailureException
      */
     public String aesECBEncode(String plainText) {
         try {
@@ -44,7 +44,7 @@ public class Aes {
             byte[] encrpytionByte = c.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
 
             return Base64.encodeBase64String(encrpytionByte);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new EncodeFailureException(ENCODE_ERROR_MESSAGE);
         }
     }
@@ -52,9 +52,9 @@ public class Aes {
     /**
      * Aes-256 알고리즘으로 암호화된 문자열을 평문을 복호화하는 메서드입니다.
      *
-     * @throws DecodeFailureException DecodeFailureException
      * @param encodedText 암호화된 문자열입니다.
      * @return 복호화 된 평문입니다.
+     * @throws DecodeFailureException DecodeFailureException
      */
     public String aesECBDecode(String encodedText) {
         try {

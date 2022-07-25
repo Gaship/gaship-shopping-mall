@@ -1,11 +1,10 @@
 package shop.gaship.gashipshoppingmall.addressLocal.dto.request;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 /**
  * 수정하려는 주소지번호와 배송가능여부를 수정하기위한 값이들어있는 클래스입니다.

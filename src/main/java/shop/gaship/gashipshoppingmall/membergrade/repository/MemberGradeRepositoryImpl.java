@@ -61,4 +61,14 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
 
         return new PageImpl<>(content, pageable, total);
     }
+
+    @Override
+    public MemberGrade findByDefaultGrade() {
+        QMemberGrade memberGrade = QMemberGrade.memberGrade;
+
+        return from(memberGrade)
+            .where(memberGrade.isDefault.eq(true))
+            .select(memberGrade)
+            .fetchOne();
+    }
 }

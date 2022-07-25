@@ -1,13 +1,12 @@
 package shop.gaship.gashipshoppingmall.employee.dto.request;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 /**
  * 직원을생성하기위한 정보들이 담겨져있는 클래스입니다.

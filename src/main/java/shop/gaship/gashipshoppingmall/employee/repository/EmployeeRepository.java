@@ -1,9 +1,9 @@
 package shop.gaship.gashipshoppingmall.employee.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 
-import java.util.Optional;
 
 /**
  * 직원을 다루기위한 레포지토리 인터페이스 입니다.

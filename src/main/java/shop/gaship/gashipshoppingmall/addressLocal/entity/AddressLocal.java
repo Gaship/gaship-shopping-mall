@@ -1,15 +1,23 @@
 package shop.gaship.gashipshoppingmall.addressLocal.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 
 /**
- *
  * 데이터베이스에 있는 주소지와 연동하기위한 클래스입니다.
  *
  * @author : 유호철
@@ -46,7 +54,8 @@ public class AddressLocal {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "upperLocal")
     private List<AddressLocal> subLocal = new ArrayList<>();
 
-    public AddressLocal(String addressName, Integer level, boolean allowDelivery, DayLabor dayLabor, AddressLocal upperLocal) {
+    public AddressLocal(String addressName, Integer level, boolean allowDelivery, DayLabor dayLabor,
+                        AddressLocal upperLocal) {
         this.addressName = addressName;
         this.level = level;
         this.allowDelivery = allowDelivery;

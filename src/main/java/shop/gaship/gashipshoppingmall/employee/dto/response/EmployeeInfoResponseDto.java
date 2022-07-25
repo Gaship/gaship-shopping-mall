@@ -1,10 +1,9 @@
 package shop.gaship.gashipshoppingmall.employee.dto.response;
 
-import lombok.Getter;
-import org.hibernate.validator.constraints.Length;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * 직원정보에대한 반환값이 담겨져있는 클래스입니다.

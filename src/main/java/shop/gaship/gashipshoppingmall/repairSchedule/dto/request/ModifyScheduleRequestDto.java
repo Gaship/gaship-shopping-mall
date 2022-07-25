@@ -1,15 +1,13 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.dto.request;
 
+import java.time.LocalDate;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-
 /**
  * 스케줄에대한 정보를 수정하기위한 정보를 담고있는 클래스입니다.
- *
  *
  * @author 유호철
  * @since 1.0

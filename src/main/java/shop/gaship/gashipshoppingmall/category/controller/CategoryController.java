@@ -1,19 +1,26 @@
 package shop.gaship.gashipshoppingmall.category.controller;
 
+import java.util.List;
+import java.util.Objects;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequestDto;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 import shop.gaship.gashipshoppingmall.message.ErrorResponse;
-
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * 카테고리 컨트롤러 입니다.

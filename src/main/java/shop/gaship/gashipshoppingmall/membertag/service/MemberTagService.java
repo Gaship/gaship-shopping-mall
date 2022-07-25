@@ -1,10 +1,9 @@
 package shop.gaship.gashipshoppingmall.membertag.service;
 
+import java.util.List;
 import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagResponseDto;
 import shop.gaship.gashipshoppingmall.membertag.entity.MemberTag;
-
-import java.util.List;
 
 /**
  * The interface Member tag service.
@@ -30,8 +29,8 @@ public interface MemberTagService {
 
     default MemberTagResponseDto entityToDto(MemberTag memberTag) {
         return MemberTagResponseDto
-                .builder()
-                .tag(memberTag.getTag())
-                .build();
+            .builder()
+            .tag(memberTag.getTag())
+            .build();
     }
 }

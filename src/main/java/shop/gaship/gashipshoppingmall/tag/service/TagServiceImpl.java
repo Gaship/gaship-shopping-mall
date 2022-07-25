@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.tag.service;
 
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,8 +13,6 @@ import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
 import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
-
-import java.util.function.Function;
 
 /**
  * tagservice를 구현하는 구현체입니다.
@@ -29,7 +28,7 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public void addTag(TagRequestDto request) {
-        if(tagRepository.existsByTitle(request.getTitle())){
+        if (tagRepository.existsByTitle(request.getTitle())) {
             throw new DuplicatedTagTitleException();
         }
         Tag tag = dtoToEntity(request);
@@ -39,13 +38,14 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public void modifyTag(TagRequestDto request) {
-        if(tagRepository.existsByTitle(request.getTitle())){
+        if (tagRepository.existsByTitle(request.getTitle())) {
             throw new DuplicatedTagTitleException();
         }
         Tag tag = tagRepository.findById(request.getTagNo()).orElseThrow(TagNotFoundException::new);
         tag.modifyEntity(request);
         tagRepository.save(tag);
     }
+
     @Transactional
     @Override
     public void removeTag(Integer tagNo) {
@@ -59,9 +59,9 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagPageResponseDto<TagResponseDto,Tag> findTags(Pageable pageable) {
+    public TagPageResponseDto<TagResponseDto, Tag> findTags(Pageable pageable) {
         Page<Tag> page = tagRepository.findAll(pageable);
         Function<Tag, TagResponseDto> fn = (this::entityToDto);
-        return new TagPageResponseDto<>(page,fn);
+        return new TagPageResponseDto<>(page, fn);
     }
 }

@@ -1,13 +1,12 @@
 package shop.gaship.gashipshoppingmall.addressLocal.service.impl;
 
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-
-import javax.transaction.Transactional;
 import shop.gaship.gashipshoppingmall.addressLocal.exception.NotExistAddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
@@ -15,8 +14,8 @@ import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
 /**
  * 주소를 서비스레이어에서 사용할수있게하는 구현 클래스입니다.
  *
- * @see AddressLocalService
  * @author : 유호철
+ * @see AddressLocalService
  * @since 1.0
  */
 @Service
@@ -36,7 +35,7 @@ public class AddressLocalServiceImpl implements AddressLocalService {
     @Override
     public void modifyLocalDelivery(ModifyAddressRequestDto modifyDto) {
         AddressLocal addressLocal = repository.findById(modifyDto.getLocalNo())
-                .orElseThrow(NotExistAddressLocal::new);
+            .orElseThrow(NotExistAddressLocal::new);
 
         addressLocal.allowDelivery(modifyDto.isDelivery());
     }

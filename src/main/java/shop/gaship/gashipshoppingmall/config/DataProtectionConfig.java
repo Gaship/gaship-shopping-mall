@@ -24,7 +24,7 @@ public class DataProtectionConfig {
     private String userInfoProtectionKey;
 
     @Bean
-    public String userInformationProtectionValue(){
+    public String userInformationProtectionValue() {
         return findSecretDataFromSecureKeyManager(userInfoProtectionKey);
     }
 
@@ -39,6 +39,11 @@ public class DataProtectionConfig {
                 .getBody())
             .getBody()
             .getSecret();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     public String getUrl() {

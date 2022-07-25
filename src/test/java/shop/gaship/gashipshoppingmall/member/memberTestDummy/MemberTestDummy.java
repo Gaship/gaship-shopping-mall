@@ -85,7 +85,7 @@ public class MemberTestDummy {
         List<Member> list = new ArrayList<>();
         IntStream.rangeClosed(1, 100).forEach(i -> {
             Member member = Member.builder().recommendMember(null)
-                    .memberStatusCodes(null)
+                    .memberStatusCodes(StatusCodeDummy.dummy())
                     .memberGrades(null)
                     .email("jwoo1016" +i + "@naver.com")
                     .password("qwer1234")
@@ -128,8 +128,12 @@ public class MemberTestDummy {
         return Member.builder()
                 .memberNo(0)
                 .recommendMember(null)
-                .memberStatusCodes(null)
-                .memberGrades(null)
+                .memberStatusCodes(StatusCodeDummy.dummy())
+                .memberGrades(MemberGradeDummy.dummy(
+                    MemberGradeDtoDummy.requestDummy("일반", 0L),
+                    StatusCodeDummy.dummy()
+                ))
+                .userAuthorityNo(StatusCodeDummy.dummy())
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -147,8 +151,12 @@ public class MemberTestDummy {
         return Member.builder()
                 .memberNo(0)
                 .recommendMember(null)
-                .memberStatusCodes(null)
-                .memberGrades(null)
+                .memberStatusCodes(StatusCodeDummy.dummy())
+                .memberGrades(MemberGradeDummy.dummy(
+                    MemberGradeDtoDummy.requestDummy("일반", 0L),
+                    StatusCodeDummy.dummy()
+                ))
+                .userAuthorityNo(StatusCodeDummy.dummy())
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -158,6 +166,7 @@ public class MemberTestDummy {
                 .gender(gender)
                 .accumulatePurchaseAmount(accumulatePurchaseAmount)
                 .nextRenewalGradeDate(nextRenewalGradeDate)
+                .isSocial(false)
                 .build();
     }
 }

@@ -1,9 +1,8 @@
 package shop.gaship.gashipshoppingmall.membertag.repository;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.gaship.gashipshoppingmall.membertag.entity.MemberTag;
-
-import java.util.List;
 
 /**
  * memberTag DB에 접근할 수 있는 jpaRepository 입니다.
