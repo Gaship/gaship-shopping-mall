@@ -26,7 +26,7 @@ abstract class BaseEntity {
     private LocalDateTime registerDatetime;
 
     @LastModifiedDate
-    @Column(name = "modified_datetime")
+    @Column(name = "modify_datetime")
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime modifiedDatetime;
 }

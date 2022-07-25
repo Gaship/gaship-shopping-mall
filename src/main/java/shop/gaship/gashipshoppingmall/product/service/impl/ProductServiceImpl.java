@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.product.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
     private final TagRepository tagRepository;
     private final ProductTagRepository productTagRepository;
     private final FileUploadUtil fileUploadUtil;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     private static final String PRODUCT_DIR = File.separator + "products";
 
@@ -122,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         product.updateProduct(category, deliveryType, modifyRequest);
-        fileUploadUtil.deleteFiles(PRODUCT_DIR, product.getImageLinkList());
+        fileUploadUtil.deleteFiles(product.getImageLinkList());
 
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
         product.updateImageLinks(imageLinks);

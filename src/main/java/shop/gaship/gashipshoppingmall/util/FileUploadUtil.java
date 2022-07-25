@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,30 +22,32 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Component
 public class FileUploadUtil {
-    private static final String UPLOAD_BASE_URL = "src/main/resources";
+
+    @Value("${file.upload.url}")
+    private String uploadBaseUrl;
 
     public List<String> uploadFile(String uploadDir, List<MultipartFile> multipartFiles)
             throws IOException {
-        List<String> fileNames = new ArrayList<>();
+        List<String> fileLinks = new ArrayList<>();
+        String date = File.separator + LocalDate.now();
 
-        Path uploadPath = Paths.get(UPLOAD_BASE_URL + uploadDir);
+        Path uploadPath = Paths.get(uploadBaseUrl + uploadDir + date);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
         for (MultipartFile multipartFile : multipartFiles) {
-            String fileName = getFileName(multipartFile);
-            File destination = new File(uploadPath + File.separator + fileName);
-            multipartFile.transferTo(destination);
-            fileNames.add(fileName);
+            String fileLink = uploadPath + File.separator + getFileName(multipartFile);
+            multipartFile.transferTo(new File(fileLink));
+            fileLinks.add(fileLink);
         }
 
-        return fileNames;
+        return fileLinks;
     }
 
-    public void deleteFiles(String uploadDir, List<String> fileNames) {
-        String uploadPath = UPLOAD_BASE_URL + uploadDir;
-        fileNames.stream().map(fileName -> new File(uploadPath + File.separator + fileName))
+    public void deleteFiles(List<String> fileNames) {
+        fileNames.stream()
+                .map(fileName -> new File(uploadBaseUrl + File.separator + fileName))
                 .filter(File::exists)
                 .forEach(File::delete);
     }
