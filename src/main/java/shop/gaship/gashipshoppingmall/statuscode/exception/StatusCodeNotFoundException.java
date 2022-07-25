@@ -1,15 +1,15 @@
 package shop.gaship.gashipshoppingmall.statuscode.exception;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.statuscode.exception
- * fileName       : StatusCodeNotFoundException
- * author         : Semi Kim
- * date           : 2022/07/09
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/09        Semi Kim       최초 생성
+ * 찾는 상태코드가 없는 경우 발생하는 exception.
+ *
+ * @author : 김세미
+ * @since 1.0
  */
 public class StatusCodeNotFoundException extends RuntimeException {
+    private static final String MESSAGE = "해당 상태 코드를 찾을 수 없습니다.";
+
+    public StatusCodeNotFoundException() {
+        super(MESSAGE);
+    }
 }

@@ -2,7 +2,6 @@ package shop.gaship.gashipshoppingmall.member.entity;
 
 import com.google.common.base.Objects;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,10 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -25,12 +26,13 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * @author 김민수
  * @since 1.0
  */
-@Entity(name = "members")
+@Entity
+@Table(name = "members")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
+public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer memberNo;
@@ -41,11 +43,11 @@ public class Member {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_status_no", nullable = false)
-    private StatusCode status;
+    private StatusCode memberStatusCodes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_grade_no", nullable = false)
-    private MemberGrade grade;
+    private MemberGrade memberGrades;
 
     @Column(unique = true)
     private String email;
@@ -67,7 +69,16 @@ public class Member {
 
     private LocalDate nextRenewalGradeDate;
 
-    private LocalDateTime registerDatetime;
+    public void modifyMember(MemberModifyRequestDto memberModifyRequestDto) {
+        this.memberGrades = memberModifyRequestDto.getMemberGrade();
+        this.memberStatusCodes = memberModifyRequestDto.getStatusCode();
+        this.email = memberModifyRequestDto.getEmail();
+        this.password = memberModifyRequestDto.getPassword();
+        this.phoneNumber = memberModifyRequestDto.getPhoneNumber();
+        this.name = memberModifyRequestDto.getName();
+        this.nickname = memberModifyRequestDto.getNickname();
+        this.gender = memberModifyRequestDto.getGender();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -80,8 +91,8 @@ public class Member {
         Member member = (Member) o;
         return Objects.equal(memberNo, member.memberNo) &&
             Objects.equal(recommendMember, member.recommendMember) &&
-            Objects.equal(status, member.status) &&
-            Objects.equal(grade, member.grade) &&
+            Objects.equal(memberStatusCodes, member.memberStatusCodes) &&
+            Objects.equal(memberGrades, member.memberGrades) &&
             Objects.equal(email, member.email) &&
             Objects.equal(password, member.password) &&
             Objects.equal(phoneNumber, member.phoneNumber) &&
@@ -89,16 +100,15 @@ public class Member {
             Objects.equal(birthDate, member.birthDate) &&
             Objects.equal(nickname, member.nickname) &&
             Objects.equal(gender, member.gender) &&
-            Objects.equal(accumulatePurchaseAmount, member.accumulatePurchaseAmount) &&
-            Objects.equal(nextRenewalGradeDate, member.nextRenewalGradeDate) &&
-            Objects.equal(registerDatetime, member.registerDatetime);
+            Objects.equal(accumulatePurchaseAmount,
+                member.accumulatePurchaseAmount) &&
+            Objects.equal(nextRenewalGradeDate, member.nextRenewalGradeDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(memberNo, recommendMember, status, grade, email, password,
-            phoneNumber, name, birthDate, nickname, gender, accumulatePurchaseAmount,
-            nextRenewalGradeDate,
-            registerDatetime);
+        return Objects.hashCode(memberNo, recommendMember, memberStatusCodes, memberGrades, email,
+            password, phoneNumber, name, birthDate, nickname, gender, accumulatePurchaseAmount,
+            nextRenewalGradeDate);
     }
 }

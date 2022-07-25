@@ -1,12 +1,19 @@
 package shop.gaship.gashipshoppingmall.member.service.impl;
 
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
@@ -44,7 +51,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void registerMember(MemberCreationRequest memberCreationRequest) {
+    public void addMember(MemberCreationRequest memberCreationRequest) {
         Member recommendMember = memberRepository
             .findById(memberCreationRequest.getRecommendMemberNo())
             .orElse(null);
@@ -101,5 +108,34 @@ public class MemberServiceImpl implements MemberService {
     public Member findMemberFromNickname(String nickName) {
         return memberRepository.findByNickname(nickName)
             .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Transactional
+    @Override
+    public void modifyMember(MemberModifyRequestDto request) {
+        if (memberRepository.existsByNickname(request.getNickname())){
+            throw new DuplicatedNicknameException();
+        }
+        Member member = memberRepository.findById(request.getMemberNo()).orElseThrow(MemberNotFoundException::new);
+        member.modifyMember(request);
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    @Override
+    public void removeMember(Integer memberNo) {
+        memberRepository.deleteById(memberNo);
+    }
+
+    @Override
+    public MemberResponseDto findMember(Integer memberNo) {
+        return entityToDto(memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new));
+    }
+
+    @Override
+    public MemberPageResponseDto findMembers(Pageable pageable) {
+        Page<Member> page = memberRepository.findAll(pageable);
+        Function<Member,MemberResponseDto> fn = (this::entityToDto);
+        return new MemberPageResponseDto<>(page,fn);
     }
 }

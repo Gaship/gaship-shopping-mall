@@ -2,7 +2,11 @@ package shop.gaship.gashipshoppingmall.member.dummy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -31,12 +35,11 @@ public class MemberDummy extends Member {
         return MemberDummy.builder()
             .memberNo(1)
             .recommendMember(null)
-            .status(status)
-            .grade(MemberGrade.builder()
-                .name("name")
-                .accumulateAmount(0L)
-                .renewalPeriod(status)
-                .build())
+            .memberStatusCodes(status)
+            .memberGrades(MemberGradeDummy.dummy(
+                    MemberGradeDtoDummy.requestDummy("name",0L),
+                    StatusCodeDummy.dummy())
+            )
             .email("example@nhn.com")
             .password("password")
             .name("example")
@@ -45,7 +48,6 @@ public class MemberDummy extends Member {
             .phoneNumber("01012341234")
             .gender("남")
             .accumulatePurchaseAmount(100000L)
-            .registerDatetime(LocalDateTime.now())
             .nextRenewalGradeDate(LocalDate.of(2022, 9, 16))
             .build();
     }

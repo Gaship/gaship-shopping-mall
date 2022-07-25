@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.config;
 
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,31 +17,57 @@ import shop.gaship.gashipshoppingmall.dataprotection.exception.NotFoundDataProte
  * @since 1.0
  */
 @Configuration
+@ConfigurationProperties(prefix = "secure-key-manager")
 public class DataProtectionConfig {
-    @Value("${secure.keymanager.url}")
-    private String secureKeyUrl;
-
-    @Value("${secure.keymanager.appkey}")
+    private String url;
     private String appKey;
-
-    @Value("${secure.keymanager.userInfoProtectionKey}")
     private String userInfoProtectionKey;
 
     @Bean
     public String userInformationProtectionValue(){
-        return Objects.requireNonNull(WebClient.create(secureKeyUrl).get()
-                .uri("/keymanager/v1.0/appkey/{appkey}/secrets/{keyid}", appKey, userInfoProtectionKey)
+        return findSecretDataFromSecureKeyManager(userInfoProtectionKey);
+    }
+
+    String findSecretDataFromSecureKeyManager(String keyId) {
+        String errorMessage = "응답 결과가 없습니다.";
+        return Objects.requireNonNull(WebClient.create(url).get()
+                .uri("/keymanager/v1.0/appkey/{appkey}/secrets/{keyid}", appKey, keyId)
                 .retrieve()
                 .toEntity(SecureKeyResponse.class)
                 .blockOptional()
-                .orElseThrow(() -> new NotFoundDataProtectionReposeData("응답 결과가 없습니다."))
+                .orElseThrow(() -> new NotFoundDataProtectionReposeData(errorMessage))
                 .getBody())
             .getBody()
             .getSecret();
     }
 
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getAppKey() {
+        return appKey;
+    }
+
+    public String getUserInfoProtectionKey() {
+        return userInfoProtectionKey;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
+    }
+
+    public void setUserInfoProtectionKey(String userInfoProtectionKey) {
+        this.userInfoProtectionKey = userInfoProtectionKey;
     }
 }

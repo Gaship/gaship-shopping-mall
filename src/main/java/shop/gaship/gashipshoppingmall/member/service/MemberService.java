@@ -1,25 +1,62 @@
 package shop.gaship.gashipshoppingmall.member.service;
 
 import org.springframework.lang.Nullable;
+import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
- * 회원가입을 위해서 구현체에 필요한 메서드들을 정의한 인터페이스입니다.
+ * member crud를 담당하는 service 입니다.
  *
- * @author 김민수
+ * @author 최정우
  * @since 1.0
  */
 public interface MemberService {
+
 
     /**
      * 회원을 등록하는 메서드입니다.
      *
      * @param memberCreationRequest 회원가입을 위한 정보 객체입니다.
      */
-    void registerMember(MemberCreationRequest memberCreationRequest);
+    void addMember(MemberCreationRequest memberCreationRequest);
+
+    /**
+     * 멤버의 정보를 변경하는 메서드 입니다.
+     *
+     * @param memberModifyRequestDto the member modify request dto
+     */
+    void modifyMember(MemberModifyRequestDto memberModifyRequestDto);
+
+    /**
+     * 멤버를 삭제하는 메서드 입니다.
+     *
+     * @param memberNo the member no
+     */
+    void removeMember(Integer memberNo);
+
+    /**
+     * 멤버를 단건조회하는 메서드입니다.
+     *
+     * @param memberNo the member no
+     * @return the member response dto
+     * @throws MemberNotFoundException the member not found exception
+     */
+    MemberResponseDto findMember(Integer memberNo);
+
+    /**
+     * 멤버를 다건조회하는 메서드입니다.
+     *
+     * @param pageable the pageable
+     * @return the list
+     */
+    MemberPageResponseDto<MemberResponseDto,Member> findMembers(Pageable pageable);
 
     /**
      * 이메일이 존재하는가에 대한 확인을 하는 메서드입니다.
@@ -37,6 +74,36 @@ public interface MemberService {
      */
     Member findMemberFromEmail(String email);
 
+    /**
+     * 회원을 닉네임으로 조회하는 메서드입니다.
+     *
+     * @param nickName 닉네임
+     * @return 검색된 회원
+     */
+    Member findMemberFromNickname(String nickName);
+
+    /**
+     * Entity to dto member response dto.
+     *
+     * @param member the member
+     * @return the member response dto
+     */
+    default MemberResponseDto entityToDto(Member member) {
+        return MemberResponseDto.builder()
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .phoneNumber(member.getPhoneNumber())
+                .name(member.getName())
+                .birthDate(member.getBirthDate())
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+                .birthDate(member.getNextRenewalGradeDate())
+                .registerDatetime(member.getRegisterDatetime())
+                .modifyDatetime(member.getModifiedDatetime())
+                .build();
+    }
+
 
     /**
      * 필수정보를 받아 새로운 회원을 반환하는 메서드입니다.
@@ -47,14 +114,14 @@ public interface MemberService {
      * @param defaultGrade          초기 등급
      * @return 신규 회원가입된 회원 객체를 반환합니다.
      */
-    default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest,
+    default Member creationRequestToMemberEntity(MemberCreationRequest      memberCreationRequest,
                                                  @Nullable Member recommendMember,
                                                  StatusCode defaultStatus,
                                                  MemberGrade defaultGrade) {
         return Member.builder()
             .recommendMember(recommendMember)
-            .status(defaultStatus)
-            .grade(defaultGrade)
+            .memberStatusCodes(defaultStatus)
+            .memberGrades(defaultGrade)
             .email(memberCreationRequest.getEmail())
             .nickname(memberCreationRequest.getNickName())
             .name(memberCreationRequest.getName())
@@ -65,12 +132,4 @@ public interface MemberService {
             .accumulatePurchaseAmount(0L)
             .build();
     }
-
-    /**
-     * 회원을 닉네임으로 조회하는 메서드입니다.
-     *
-     * @param nickName 닉네임
-     * @return 검색된 회원
-     */
-    Member findMemberFromNickname(String nickName);
 }
