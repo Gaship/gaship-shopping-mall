@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 public class AddressListAddRequestDto {
     private final Integer addressLocalNo;
-
+//todo: zipcode address addressdetail valid 추가
     private final Integer memberNo;
 
     private final String address;
