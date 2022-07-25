@@ -18,9 +18,10 @@ import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dummy.MemberTagDummy;
 import shop.gaship.gashipshoppingmall.membertag.exception.IllegalTagSelectionException;
 import shop.gaship.gashipshoppingmall.membertag.repository.MemberTagRepository;
+import shop.gaship.gashipshoppingmall.tag.dummy.TagDummy;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
-import shop.gaship.gashipshoppingmall.tag.utils.TestDummy;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +60,7 @@ class MemberTagServiceImplTest {
     @Test
     void deleteAllAndAddAllMemberTags() {
         Member member = MemberTestDummy.member1();
-        List<Tag> tagList = TestDummy.create5SizeTestTagEntityList();
+        List<Tag> tagList = TagDummy.TagDummyListPersist();
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
@@ -77,7 +78,7 @@ class MemberTagServiceImplTest {
     @Test
     void deleteAllAndAddAllMemberTagsMemberNotFoundExceptionFail() {
         MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy();
-        List<Tag> tagList = TestDummy.create5SizeTestTagEntityList();
+        List<Tag> tagList = TagDummy.TagDummyListPersist();
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
         when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
@@ -98,7 +99,7 @@ class MemberTagServiceImplTest {
     void deleteAllAndAddAllMemberTagsIllegalTagSelectionExceptionFail() {
         MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy();
         Member member = MemberTestDummy.member1();
-        List<Tag> tagList = TestDummy.createTestTagEntityList();
+        List<Tag> tagList = TagDummy.TagListDummyPersist();
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
