@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
+import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -8,10 +9,14 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.exception.*;
+import shop.gaship.gashipshoppingmall.membergrade.exception.AccumulateAmountIsOverlap;
+import shop.gaship.gashipshoppingmall.membergrade.exception.CannotDeleteDefaultMemberGrade;
+import shop.gaship.gashipshoppingmall.membergrade.exception.DefaultMemberGradeIsExist;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
+import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -21,8 +26,8 @@ import shop.gaship.gashipshoppingmall.statuscode.status.RenewalPeriod;
  * 회원등급 Service 구현체.
  *
  * @author : 김세미
- * @since 1.0
  * @see shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService
+ * @since 1.0
  */
 @RequiredArgsConstructor
 @Service
@@ -31,45 +36,65 @@ public class MemberGradeServiceImpl implements MemberGradeService {
     private final StatusCodeRepository statusCodeRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws StatusCodeNotFoundException 상태코드를 찾을 수 없습니다.
+     * @throws AccumulateAmountIsOverlap 기준누적금액이 중복됩니다.
+     * @throws DefaultMemberGradeIsExist 기본회원등급이 이미 존재합니다.
+     */
     @Transactional
     @Override
-    public void addMemberGrade(MemberGradeAddRequestDto request) {
+    public void addMemberGrade(MemberGradeAddRequestDto requestDto) {
         StatusCode renewalPeriod = statusCodeRepository
-                .findByGroupCodeName(RenewalPeriod.GROUP)
-                .orElseThrow(StatusCodeNotFoundException::new);
+            .findByGroupCodeName(RenewalPeriod.GROUP)
+            .orElseThrow(StatusCodeNotFoundException::new);
 
-        checkOverlapAccumulateAmount(request.getAccumulateAmount());
+        checkOverlapAccumulateAmount(requestDto.getAccumulateAmount());
 
-        if (request.getIsDefault()) {
+        if (requestDto.getIsDefault()) {
             checkExistDefaultMemberGrade();
-            memberGradeRepository.save(MemberGrade.createDefault(renewalPeriod, request));
+            memberGradeRepository.save(MemberGrade.createDefault(renewalPeriod, requestDto));
         } else {
-            memberGradeRepository.save(MemberGrade.create(renewalPeriod, request));
+            memberGradeRepository.save(MemberGrade.create(renewalPeriod, requestDto));
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberGradeNotFoundException 회원등급을 찾을 수 없습니다.
+     * @throws AccumulateAmountIsOverlap 기준누적금액이 중복됩니다.
+     */
     @Transactional
     @Override
-    public void modifyMemberGrade(MemberGradeModifyRequestDto request) {
+    public void modifyMemberGrade(MemberGradeModifyRequestDto requestDto) {
         MemberGrade memberGrade = memberGradeRepository
-                .findById(request.getNo())
-                .orElseThrow(MemberGradeNotFoundException::new);
+            .findById(requestDto.getNo())
+            .orElseThrow(MemberGradeNotFoundException::new);
 
-        if (!memberGrade.getAccumulateAmount().equals(request.getAccumulateAmount())) {
-            checkOverlapAccumulateAmount(request.getAccumulateAmount());
+        if (!memberGrade.getAccumulateAmount().equals(requestDto.getAccumulateAmount())) {
+            checkOverlapAccumulateAmount(requestDto.getAccumulateAmount());
         }
 
-        memberGrade.modifyDetails(request);
+        memberGrade.modifyDetails(requestDto);
 
         memberGradeRepository.save(memberGrade);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberGradeNotFoundException 회원등급을 찾을 수 없습니다.
+     * @throws CannotDeleteDefaultMemberGrade 기본회원등급은 삭제할 수 없습니다.
+     * @throws MemberGradeInUseException 사용중인 회원등급입니다.
+     */
     @Transactional
     @Override
     public void removeMemberGrade(Integer memberGradeNo) {
         MemberGrade memberGrade = memberGradeRepository
-                .findById(memberGradeNo)
-                .orElseThrow(MemberGradeNotFoundException::new);
+            .findById(memberGradeNo)
+            .orElseThrow(MemberGradeNotFoundException::new);
 
         if (memberGrade.isDefault()) {
             throw new CannotDeleteDefaultMemberGrade();
@@ -82,16 +107,32 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         memberGradeRepository.delete(memberGrade);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberGradeNotFoundException 회원등급을 찾을 수 없습니다.
+     */
     @Override
     public MemberGradeResponseDto findMemberGrade(Integer memberGradeNo) {
         return memberGradeRepository.getMemberGradeBy(memberGradeNo)
-                .orElseThrow(MemberGradeNotFoundException::new);
+            .orElseThrow(MemberGradeNotFoundException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public PageResponseDto<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
-        return new PageResponseDto<>(memberGradeRepository
-                .getMemberGrades(pageable));
+    public PageResponse<MemberGradeResponseDto> findMemberGrades(Pageable pageable) {
+        return new PageResponse<>(memberGradeRepository
+            .getMemberGrades(pageable));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MemberGradeResponseDto> findMemberGrades() {
+        return memberGradeRepository.getAll();
     }
 
     /**

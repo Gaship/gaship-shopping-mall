@@ -1,9 +1,12 @@
 package shop.gaship.gashipshoppingmall.membergrade.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
+import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 
 /**
  * 회원등급 Custom Repository.
@@ -11,6 +14,7 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeRespon
  * @author : 김세미
  * @since 1.0
  */
+@NoRepositoryBean
 public interface MemberGradeRepositoryCustom {
     /**
      * 회원등급 단건 조회.
@@ -27,4 +31,18 @@ public interface MemberGradeRepositoryCustom {
      * @return Page - MemberGradeResponseDto
      */
     Page<MemberGradeResponseDto> getMemberGrades(Pageable pageable);
+
+    /**
+     * 회원의 기본 등급을 조회합니다.
+     *
+     * @return 회원의 기본등급이 조회됩니다.
+     */
+    MemberGrade findByDefaultGrade();
+
+    /**
+     * 전체 회원등급 다건 조회.
+     *
+     * @return List - MemberGradeResponseDto
+     */
+    List<MemberGradeResponseDto> getAll();
 }

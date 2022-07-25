@@ -1,11 +1,10 @@
 package shop.gaship.gashipshoppingmall.employee.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * 직원의 정보를 수정하기위한 정보가 담겨있는 클래스입니다.

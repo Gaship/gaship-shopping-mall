@@ -1,14 +1,12 @@
 package shop.gaship.gashipshoppingmall.employee.service;
 
+import java.util.List;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 
-import java.util.List;
-
 /**
  * 직원을 서비스레이어에서 사용하기위한 인터페이스 클래스입니다.
- *
  *
  * @author 유호철
  * @since 1.0

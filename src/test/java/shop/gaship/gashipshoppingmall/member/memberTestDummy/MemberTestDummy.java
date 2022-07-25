@@ -9,6 +9,9 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -46,10 +49,15 @@ public class MemberTestDummy {
     private static final LocalDateTime modifyDatetime = LocalDateTime.now();
 
     public static MemberModifyRequestDto memberModifyRequestDto() {
+        MemberGradeAddRequestDto memberGradeAddRequestDto = new MemberGradeAddRequestDto();
+        memberGradeAddRequestDto.setIsDefault(true);
+        memberGradeAddRequestDto.setName("vip");
+        memberGradeAddRequestDto.setAccumulateAmount(0L);
+
         return MemberModifyRequestDto.builder()
                 .memberNo(memberNo)
                 .statusCode(StatusCodeDummy.dummy())
-//                .memberGrade()todo
+                .memberGrade(MemberGradeDummy.dummy(memberGradeAddRequestDto,StatusCodeDummy.dummy()))
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -81,7 +89,7 @@ public class MemberTestDummy {
         List<Member> list = new ArrayList<>();
         IntStream.rangeClosed(1, 100).forEach(i -> {
             Member member = Member.builder().recommendMember(null)
-                    .memberStatusCodes(null)
+                    .memberStatusCodes(StatusCodeDummy.dummy())
                     .memberGrades(null)
                     .email("jwoo1016" +i + "@naver.com")
                     .password("qwer1234")
@@ -125,8 +133,12 @@ public class MemberTestDummy {
         return Member.builder()
                 .memberNo(0)
                 .recommendMember(null)
-                .memberStatusCodes(null)
-                .memberGrades(null)
+                .memberStatusCodes(StatusCodeDummy.dummy())
+                .memberGrades(MemberGradeDummy.dummy(
+                    MemberGradeDtoDummy.requestDummy("일반", 0L),
+                    StatusCodeDummy.dummy()
+                ))
+                .userAuthorityNo(StatusCodeDummy.dummy())
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -136,6 +148,30 @@ public class MemberTestDummy {
                 .gender(gender)
                 .accumulatePurchaseAmount(accumulatePurchaseAmount)
                 .nextRenewalGradeDate(nextRenewalGradeDate)
+                .build();
+    }
+
+    public static Member memberEntityNotFlushed() {
+
+        return Member.builder()
+                .memberNo(0)
+                .recommendMember(null)
+                .memberStatusCodes(StatusCodeDummy.dummy())
+                .memberGrades(MemberGradeDummy.dummy(
+                    MemberGradeDtoDummy.requestDummy("일반", 0L),
+                    StatusCodeDummy.dummy()
+                ))
+                .userAuthorityNo(StatusCodeDummy.dummy())
+                .email(email)
+                .password(password)
+                .phoneNumber(phoneNumber)
+                .name(name)
+                .birthDate(birthDate)
+                .nickname(nickname)
+                .gender(gender)
+                .accumulatePurchaseAmount(accumulatePurchaseAmount)
+                .nextRenewalGradeDate(nextRenewalGradeDate)
+                .isSocial(false)
                 .build();
     }
 }

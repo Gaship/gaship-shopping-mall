@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.member.repository;
 
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
 /**
@@ -15,4 +16,6 @@ public interface MemberRepositoryCustom {
     Optional<Member> findByEmail(String email);
 
     Optional<Member> findByNickname(String nickname);
+
+    Optional<SignInUserDetailsDto> findSignInUserDetail(String email);
 }

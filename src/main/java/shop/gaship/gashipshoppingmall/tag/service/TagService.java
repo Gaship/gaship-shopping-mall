@@ -38,6 +38,7 @@ public interface TagService {
      * methodName : delete
      * author : choijungwoo
      * description : 태그를 삭제하는 메서드
+     *
      * @param tagNo TagNo
      */
     void removeTag(Integer tagNo);
@@ -58,10 +59,11 @@ public interface TagService {
      * methodName : getList
      * author : choijungwoo
      * description : 태그를 페이징하는 메서드
+     *
      * @param pageable Pageable
      * @return the list
      */
-    TagPageResponseDto<TagResponseDto,Tag> findTags(Pageable pageable);
+    TagPageResponseDto<TagResponseDto, Tag> findTags(Pageable pageable);
 
     /**
      * .
@@ -71,10 +73,8 @@ public interface TagService {
      * @param dto TagRequestDto
      * @return the tag
      */
-    default Tag dtoToEntity(TagRequestDto dto){
-        return Tag.builder()
-                .title(dto.getTitle())
-                .build();
+    default Tag dtoToEntity(TagRequestDto dto) {
+        return Tag.builder().title(dto.getTitle()).build();
     }
 
     /**
@@ -85,11 +85,9 @@ public interface TagService {
      * @param tag Tag
      * @return the tag response dto
      */
-    default TagResponseDto entityToDto(Tag tag){
-        return TagResponseDto.builder()
-                .title(tag.getTitle())
-                .registerDatetime(tag.getRegisterDatetime())
-                .modifiedDatetime(tag.getModifiedDatetime())
-                .build();
+    default TagResponseDto entityToDto(Tag tag) {
+        return TagResponseDto.builder().tagNo(tag.getTagNo()).title(tag.getTitle())
+            .registerDatetime(tag.getRegisterDatetime()).modifiedDatetime(tag.getModifiedDatetime())
+            .build();
     }
 }

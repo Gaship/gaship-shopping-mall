@@ -6,7 +6,7 @@ package shop.gaship.gashipshoppingmall.tag.exception;
  * @author 최정우
  * @since 1.0
  */
-public class TagNotFoundException extends RuntimeException{
+public class TagNotFoundException extends RuntimeException {
     public static final String MESSAGE = "해당 태그를 찾을 수 없습니다";
 
     public TagNotFoundException() {

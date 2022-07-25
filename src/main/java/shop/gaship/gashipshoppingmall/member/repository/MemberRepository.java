@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.member.repository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 
@@ -18,4 +19,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer>, Member
     boolean existsByNickname(String nickname);
 
     List<Member> findByMemberGrades(MemberGrade memberGrade);
+
+    @Query("SELECT MAX(m.memberNo) From Member m")
+    Integer findLastNo();
 }
