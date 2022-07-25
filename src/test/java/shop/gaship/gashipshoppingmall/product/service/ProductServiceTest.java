@@ -34,6 +34,7 @@ import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
@@ -47,6 +48,7 @@ import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
 import shop.gaship.gashipshoppingmall.productTag.repository.ProductTagRepository;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
@@ -401,6 +403,39 @@ class ProductServiceTest {
         checkContent(result);
     }
 
+    @DisplayName("상태코드를 통해 제품들 조회하기 실패경우")
+    @Test
+    void findProductByStatusNameFail() {
+        //given
+        given(statusCodeRepository.findByStatusCodeName(any()))
+                .willReturn(Optional.empty());
+
+        //when & then
+        assertThatThrownBy(()->service.findProductStatusCode("aaaa",pageRequest))
+                .isInstanceOf(StatusCodeNotFoundException.class);
+    }
+
+    @DisplayName("상태코드를 통해 제품들을 조회하기 성공하는경우")
+    @Test
+    void findProductByStatusNameSuccess() {
+        //given
+        StatusCode d1 = StatusCodeDummy.dummy();
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .statusName(d1.getStatusCodeName())
+                .pageable(pageRequest)
+                .build();
+        given(repository.findProduct(requestDto))
+                .willReturn(page);
+        given(statusCodeRepository.findByStatusCodeName(requestDto.getStatusName()))
+                .willReturn(Optional.of(d1));
+        //when
+        PageResponse<ProductAllInfoResponseDto> result = service.findProductStatusCode(requestDto.getStatusName(),pageRequest);
+
+        //then
+        verify(repository, times(1)).findProduct(requestDto);
+
+        checkContent(result);
+    }
     private void checkContent(PageResponse<ProductAllInfoResponseDto> result) {
         assertThat(result.getContent().get(0).getUpperName()).isEqualTo(response.getUpperName());
         assertThat(result.getContent().get(0).getProductNo()).isEqualTo(response.getProductNo());
