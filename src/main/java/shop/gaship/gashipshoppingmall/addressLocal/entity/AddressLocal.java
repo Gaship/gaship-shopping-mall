@@ -2,11 +2,11 @@ package shop.gaship.gashipshoppingmall.addressLocal.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 
 /**
  *

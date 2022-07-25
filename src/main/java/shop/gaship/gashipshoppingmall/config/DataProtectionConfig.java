@@ -41,12 +41,6 @@ public class DataProtectionConfig {
             .getSecret();
     }
 
-
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
     public String getUrl() {
         return url;
     }

@@ -67,4 +67,7 @@ public class MemberCreationRequest {
 
     @NotNull
     private Boolean isUniqueEmail;
+
+    @NotNull
+    private String encodedEmailForSearch;
 }

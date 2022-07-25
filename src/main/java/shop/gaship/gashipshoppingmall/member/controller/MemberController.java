@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.controller;
 
 import java.net.URI;
+import java.security.NoSuchAlgorithmException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 김민수
  * @author 최정우
  * @author 최겸준
+ * @author 조재철
  * @since 1.0
  */
 @RestController
@@ -45,7 +47,8 @@ public class MemberController {
      */
     @PostMapping("/members")
     public ResponseEntity<Void> memberAdd(
-            @Valid @RequestBody MemberCreationRequest memberCreationRequest) {
+            @Valid @RequestBody MemberCreationRequest memberCreationRequest)
+        throws NoSuchAlgorithmException {
         if (memberCreationRequest.getIsUniqueEmail() &&
                 memberCreationRequest.getIsVerifiedEmail()) {
             memberService.addMember(memberCreationRequest);
@@ -62,7 +65,7 @@ public class MemberController {
      */
     @PostMapping(value = "/members", params = "isOauth")
     public ResponseEntity<Void> memberAdd(@RequestBody MemberCreationRequestOauth memberCreationRequestOauth,
-            @RequestParam String isOauth) {
+            @RequestParam String isOauth) throws NoSuchAlgorithmException {
         if (Boolean.parseBoolean(isOauth)) {
             memberService.addMember(memberCreationRequestOauth);
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -107,7 +110,9 @@ public class MemberController {
      */
     @GetMapping("/members/lastNo")
     public ResponseEntity<Integer> retrieveLastNo() {
-        return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(memberService.findLastNo());
+        ResponseEntity<Integer> body = ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+            .body(memberService.findLastNo());
+        return body;
     }
 
     /**
@@ -159,7 +164,8 @@ public class MemberController {
      * @return ResponseEntity<MemberResponseDto> 변경된 dto를 entity화시켜서 반환합니다.
      */
     @GetMapping(value = "/members/email/{email}")
-    public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable String email) {
+    public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable String email)
+        throws NoSuchAlgorithmException {
         MemberResponseDto memberResponseDto = memberService.findMemberFromEmail(email);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

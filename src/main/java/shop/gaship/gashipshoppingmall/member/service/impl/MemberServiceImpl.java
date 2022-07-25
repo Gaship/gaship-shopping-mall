@@ -1,14 +1,16 @@
 package shop.gaship.gashipshoppingmall.member.service.impl;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
@@ -30,15 +32,17 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 /**
  * MemberService를 구현하는 클래스입니다.
  *
- * @see MemberService
  * @author 김민수
  * @author 최겸준
  * @author 최정우
+ * @author 조재철
+ * @see MemberService
  * @since 1.0
  */
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+
     /**
      * 신규회훤의 기본 상태 번호입니다.
      */
@@ -52,11 +56,13 @@ public class MemberServiceImpl implements MemberService {
     private final StatusCodeRepository statusCodeRepository;
     private final MemberGradeRepository memberGradeRepository;
     private final Aes aes;
-    private final PasswordEncoder passwordEncoder;
+    private final Sha512 sha512;
+
 
     @Override
     @Transactional
-    public void addMember(MemberCreationRequest memberCreationRequest) {
+    public void addMember(MemberCreationRequest memberCreationRequest)
+        throws NoSuchAlgorithmException {
         Member recommendMember = memberRepository
             .findById(memberCreationRequest.getRecommendMemberNo())
             .orElse(null);
@@ -77,7 +83,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void addMember(MemberCreationRequestOauth memberCreationRequestOauth) {
+    public void addMember(MemberCreationRequestOauth memberCreationRequestOauth)
+        throws NoSuchAlgorithmException {
         StatusCode defaultStatus = statusCodeRepository.findById(MEMBER_STATUS_ID)
             .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findById(MEMBER_GRADE_ID)
@@ -99,35 +106,38 @@ public class MemberServiceImpl implements MemberService {
      * @return 중요 정보가 암호화 된 회원정보 객체
      */
     private MemberCreationRequest encodePrivacyUserInformation(
-        MemberCreationRequest memberCreationRequest) {
-            memberCreationRequest.setEmail(aes.aesECBEncode(memberCreationRequest.getEmail()));
-            memberCreationRequest.setName(aes.aesECBEncode(memberCreationRequest.getName()));
-            memberCreationRequest.setPhoneNumber(
-                aes.aesECBEncode(memberCreationRequest.getPhoneNumber()));
-            memberCreationRequest.setPassword(
-                passwordEncoder.encode(memberCreationRequest.getPassword()));
+        MemberCreationRequest memberCreationRequest) throws NoSuchAlgorithmException {
+        String email = memberCreationRequest.getEmail();
+        memberCreationRequest.setEmail(aes.aesECBEncode(memberCreationRequest.getEmail()));
+        memberCreationRequest.setName(aes.aesECBEncode(memberCreationRequest.getName()));
+        memberCreationRequest.setPhoneNumber(
+            aes.aesECBEncode(memberCreationRequest.getPhoneNumber()));
+        memberCreationRequest.setPassword(memberCreationRequest.getPassword());
+        memberCreationRequest.setEncodedEmailForSearch(sha512.encrypt(email));
 
-            return memberCreationRequest;
+        return memberCreationRequest;
     }
 
     /**
      * 소셜회원가입시 회원 정보 중 중요한 정보를 암호화하여 저장하는 메서드입니다.
      *
+     * @param email
      * @param memberCreationRequestOauth 회원 가입할 정보가 담긴 객체
      * @return 중요 정보가 암호화 된 회원정보 객체
      */
     private MemberCreationRequestOauth encodePrivacyUserInformation(
-        MemberCreationRequestOauth memberCreationRequestOauth) {
-        memberCreationRequestOauth.setEmail(aes.aesECBEncode(memberCreationRequestOauth.getEmail()));
+        MemberCreationRequestOauth memberCreationRequestOauth) throws NoSuchAlgorithmException {
+        String email = memberCreationRequestOauth.getEmail();
+        memberCreationRequestOauth.setEmail(aes.aesECBEncode(email));
         memberCreationRequestOauth.setName(aes.aesECBEncode(memberCreationRequestOauth.getName()));
+        memberCreationRequestOauth.setEncodedEmailForSearch(sha512.encrypt(email));
 
         if (!Objects.isNull(memberCreationRequestOauth.getPhoneNumber())) {
             memberCreationRequestOauth.setPhoneNumber(
                 aes.aesECBEncode(memberCreationRequestOauth.getPhoneNumber()));
         }
 
-        memberCreationRequestOauth.setPassword(
-            passwordEncoder.encode(memberCreationRequestOauth.getPassword()));
+        memberCreationRequestOauth.setPassword(memberCreationRequestOauth.getPassword());
 
         return memberCreationRequestOauth;
     }
@@ -138,15 +148,18 @@ public class MemberServiceImpl implements MemberService {
             findMemberFromEmail(email);
         } catch (MemberNotFoundException e) {
             return false;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
         return true;
     }
 
     @Override
-    public MemberResponseDto findMemberFromEmail(String email) {
-        Member member = memberRepository.findByEmail(email)
+    public MemberResponseDto findMemberFromEmail(String email) throws NoSuchAlgorithmException {
+
+        Member member = memberRepository.findByEncodedEmailForSearch(sha512.encrypt(email))
             .orElseThrow(MemberNotFoundException::new);
-        return entityToMemberResponseDto(member);
+        return entityToMemberResponseDto(member, aes);
     }
 
     @Override
@@ -158,10 +171,11 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void modifyMember(MemberModifyRequestDto request) {
-        if (memberRepository.existsByNickname(request.getNickname())){
+        if (memberRepository.existsByNickname(request.getNickname())) {
             throw new DuplicatedNicknameException();
         }
-        Member member = memberRepository.findById(request.getMemberNo()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(request.getMemberNo())
+            .orElseThrow(MemberNotFoundException::new);
         member.modifyMember(request);
         memberRepository.save(member);
     }
@@ -174,14 +188,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto findMember(Integer memberNo) {
-        return entityToMemberResponseDto(memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new));
+        return entityToMemberResponseDto(
+            memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new), aes);
     }
 
     @Override
     public MemberPageResponseDto findMembers(Pageable pageable) {
         Page<Member> page = memberRepository.findAll(pageable);
-        Function<Member,MemberResponseDto> fn = (this::entityToMemberResponseDto);
-        return new MemberPageResponseDto<>(page,fn);
+        Function<Member, MemberResponseDto> fn = (member -> entityToMemberResponseDto(member, aes));
+        return new MemberPageResponseDto<>(page, fn);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import lombok.Setter;
  * oauth로 회원가입요청 올시에 값을 바인딩할 dto 클래스입니다.
  *
  * @author : 최겸준
+ * @author : 조재철
  * @since 1.0
  */
 @Getter
@@ -20,4 +22,5 @@ public class MemberCreationRequestOauth {
     private String gender;
     private String phoneNumber;
     private LocalDate birthDate;
+    private String encodedEmailForSearch;
 }
