@@ -8,6 +8,8 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordQualificationResult;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -22,7 +24,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * @since 1.0
  */
 public interface MemberService {
-
     /**
      * 회원을 등록하는 메서드입니다.
      *
@@ -176,4 +177,12 @@ public interface MemberService {
      */
     FindMemberEmailResponse findMemberEmailFromNickname(String nickname);
 
+    /**
+     * 비밀번호 재발급을 위해 멤버의 정보 일치한지 확인합니다.
+     *
+     * @param reissuePasswordRequest 비밀번호를 재발급 받기 위해 이름, 이메일 정보가 담긴 객체입니다.
+     * @return 재발급 자격 여부를 반환합니다.
+     */
+    ReissuePasswordQualificationResult checkReissuePasswordQualification(
+        ReissuePasswordRequest reissuePasswordRequest);
 }

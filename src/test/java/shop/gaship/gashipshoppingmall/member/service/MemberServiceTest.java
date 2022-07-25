@@ -315,4 +315,16 @@ class MemberServiceTest {
             memberService.findMemberEmailFromNickname("example nickname"))
             .isInstanceOf(MemberNotFoundException.class);
     }
+
+    @Test
+    @DisplayName("이메일과 이름을 통해서 비밀번호 발급 자격을 확인합니다 : 성공")
+    void checkReissuePasswordQualificationCaseSuccess() {
+//        TODO : 엔티티 병합 후 진행예정
+    }
+
+    @Test
+    @DisplayName("이메일과 이름을 통해서 비밀번호 발급 자격을 확인합니다 : 실패")
+    void checkReissuePasswordQualificationCaseFailure() {
+//        TODO : 엔티티 병합 후 진행예정
+    }
 }

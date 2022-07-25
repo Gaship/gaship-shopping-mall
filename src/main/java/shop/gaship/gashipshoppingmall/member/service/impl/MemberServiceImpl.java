@@ -15,6 +15,8 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordQualificationResult;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
@@ -208,6 +210,13 @@ public class MemberServiceImpl implements MemberService {
                 emailDomainPart;
 
         return new FindMemberEmailResponse(obscuredEmail);
+    }
+
+    @Override
+    public ReissuePasswordQualificationResult checkReissuePasswordQualification(
+        ReissuePasswordRequest reissuePasswordRequest) {
+//        TODO : 엔티티 병합 후 진행예정
+        return null;
     }
 
     @Override
