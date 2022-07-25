@@ -1,13 +1,17 @@
 package shop.gaship.gashipshoppingmall.tag.entity;
 
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
-
-import javax.persistence.*;
 
 /**
  * 태그의 엔티티입니다.

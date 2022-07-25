@@ -1,10 +1,12 @@
 package shop.gaship.gashipshoppingmall.category.dto.request;
 
-import lombok.*;
-import org.hibernate.validator.constraints.Length;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * 카테고리 생성 요청에 담기는 데이터 객체입니다.

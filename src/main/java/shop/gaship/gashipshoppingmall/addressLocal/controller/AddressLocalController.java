@@ -1,16 +1,21 @@
 package shop.gaship.gashipshoppingmall.addressLocal.controller;
 
+import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
 
-import javax.validation.Valid;
-import java.util.List;
 /**
  * 주소지정보를 위한 요청을 다루기 위한 컨트롤러입니다.
  *
@@ -31,26 +36,28 @@ public class AddressLocalController {
      * @author 유호철
      */
     @PutMapping
-    public ResponseEntity<Void> addressLocalModify(@Valid @RequestBody ModifyAddressRequestDto dto) {
+    public ResponseEntity<Void> addressLocalModify(
+        @Valid @RequestBody ModifyAddressRequestDto dto) {
         service.modifyLocalDelivery(dto);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+            .contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
 
     /**
      * get 요청시 조회를 할수있는 메서드입니다.
      *
-     * @param address  : 검색할 주소지 입니다.
+     * @param address : 검색할 주소지 입니다.
      * @return list : 검색된 주소지와 하위주소지가 담긴 리스트입니다.
      * @author 유호철
      */
     @GetMapping
-    public ResponseEntity<List<GetAddressLocalResponseDto>> addressLocalList(@RequestParam("address") String address) {
+    public ResponseEntity<List<GetAddressLocalResponseDto>> addressLocalList(
+        @RequestParam("address") String address) {
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findAddressLocals(address));
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(service.findAddressLocals(address));
     }
 }

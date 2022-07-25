@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.membergrade.dto.response;
+package shop.gaship.gashipshoppingmall.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,11 +11,11 @@ import org.springframework.data.domain.Pageable;
  * 목록 조회 반환 타입으로 사용되는 page 정보와 data 를 담은 Data Transfer Object.
  *
  * @param <T> the type parameter
- * @author : 김세미
+ * @author : 최정우, 김세미
  * @since 1.0
  */
 @Getter
-public class PageResponseDto<T> {
+public class PageResponse<T> {
     private final List<T> dtoList;
     //총 페이지 번호
     private final int totalPage;
@@ -39,7 +39,7 @@ public class PageResponseDto<T> {
      *
      * @param result the result
      */
-    public PageResponseDto(Page<T> result) {
+    public PageResponse(Page<T> result) {
 
         dtoList = result.toList();
 
@@ -51,7 +51,9 @@ public class PageResponseDto<T> {
 
     private void makePageList(Pageable pageable) {
 
-        this.page = pageable.getPageNumber() + 1; // 0부터 시작하므로 1을 추가
+        // 0부터 시작하므로 1을 추가
+        this.page = pageable.getPageNumber();
+
         this.size = pageable.getPageSize();
 
         //temp end page

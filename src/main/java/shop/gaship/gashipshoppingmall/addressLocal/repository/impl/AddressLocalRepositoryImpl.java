@@ -1,13 +1,13 @@
 package shop.gaship.gashipshoppingmall.addressLocal.repository.impl;
 
 import com.querydsl.core.types.Projections;
+import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.custom.AddressLocalRepositoryCustom;
 
-import java.util.List;
 
 /**
  * 주소지를 QueryDsl 을 통해 사용하는 클래스입니다.

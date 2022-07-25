@@ -1,13 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.Getter;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.dto

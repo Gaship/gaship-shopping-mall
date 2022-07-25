@@ -2,8 +2,6 @@ package shop.gaship.gashipshoppingmall.member.dummy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
@@ -22,8 +20,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * 2022/07/10           김민수               최초 생성                         <br/>
  */
 public class MemberDummy extends Member {
-    private MemberDummy() {
-    }
+    private MemberDummy() {}
 
     public static Member dummy() {
         StatusCode status = StatusCode.builder()
@@ -37,9 +34,14 @@ public class MemberDummy extends Member {
             .recommendMember(null)
             .memberStatusCodes(status)
             .memberGrades(MemberGradeDummy.dummy(
-                    MemberGradeDtoDummy.requestDummy("name",0L),
-                    StatusCodeDummy.dummy())
+                MemberGradeDtoDummy.requestDummy("name",0L),
+                StatusCodeDummy.dummy())
             )
+            .userAuthorityNo(StatusCode.builder()
+                .statusCodeName("ROLE_USER")
+                .groupCodeName("ex")
+                .priority(1)
+                .build())
             .email("example@nhn.com")
             .password("password")
             .name("example")
@@ -49,6 +51,7 @@ public class MemberDummy extends Member {
             .gender("남")
             .accumulatePurchaseAmount(100000L)
             .nextRenewalGradeDate(LocalDate.of(2022, 9, 16))
+            .isSocial(false)
             .build();
     }
 }

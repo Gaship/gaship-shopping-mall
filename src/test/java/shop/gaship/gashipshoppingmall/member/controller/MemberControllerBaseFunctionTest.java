@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -78,7 +79,8 @@ public class MemberControllerBaseFunctionTest {
     @DisplayName("회원 단건 조회 테스트")
     @Test
     void getMemberTest() throws Exception {
-        when(memberService.findMember(any(Integer.class))).thenReturn(
+        when(memberService.findMember(anyInt()))
+            .thenReturn(
             MemberTestDummy.memberResponseDto());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/members/1")

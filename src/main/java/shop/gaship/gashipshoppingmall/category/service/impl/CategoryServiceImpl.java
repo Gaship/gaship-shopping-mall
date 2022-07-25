@@ -17,11 +17,10 @@ import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 
 /**
- *
  * 카테고리 서비스 구현체입니다.
  *
- * @see shop.gaship.gashipshoppingmall.category.service.CategoryService
  * @author : 김보민
+ * @see shop.gaship.gashipshoppingmall.category.service.CategoryService
  * @since 1.0
  */
 @Service
@@ -32,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * root 카테고리 추가 메서드입니다.
-     * 
+     *
      * @param createRequest 카테고리 생성 요청
      * @author 김보민
      */
@@ -40,8 +39,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void addRootCategory(CategoryCreateRequestDto createRequest) {
         Category category = new Category(
-                createRequest.getName(),
-                1
+            createRequest.getName(),
+            1
         );
 
         categoryRepository.save(category);
@@ -49,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 하위 카테고리 추가 메서드입니다.
-     * 
+     *
      * @param createRequest 카테고리 생성 요청
      * @throws CategoryNotFoundException 카테고리를 못찾음
      * @author 김보민
@@ -58,11 +57,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void addLowerCategory(CategoryCreateRequestDto createRequest) {
         Category upperCategory = categoryRepository.findById(createRequest.getUpperCategoryNo())
-                .orElseThrow(CategoryNotFoundException::new);
+            .orElseThrow(CategoryNotFoundException::new);
 
         Category category = new Category(
-                createRequest.getName(),
-                upperCategory.getLevel() + 1
+            createRequest.getName(),
+            upperCategory.getLevel() + 1
         );
 
         upperCategory.insertLowerCategory(category);
@@ -79,16 +78,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void modifyCategory(CategoryModifyRequestDto modifyRequest) {
         Category category = categoryRepository.findById(modifyRequest.getNo())
-                .orElseThrow(CategoryNotFoundException::new);
+            .orElseThrow(CategoryNotFoundException::new);
 
         category.updateCategoryName(modifyRequest.getName());
 
         categoryRepository.save(category);
     }
-    
+
     /**
      * 카테고리 단건 조회 메서드입니다.
-     * 
+     *
      * @param categoryNo 조회할 카테고리 번호
      * @return CategoryResponseDto 카테고리 데이터
      * @throws CategoryNotFoundException 카테고리를 못찾음
@@ -97,7 +96,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponseDto findCategory(Integer categoryNo) {
         return categoryRepository.findCategoryById(categoryNo)
-                .orElseThrow(CategoryNotFoundException::new);
+            .orElseThrow(CategoryNotFoundException::new);
     }
 
     /**
@@ -113,20 +112,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 하위 카테고리 조회 메서드입니다.
-     * 
+     *
      * @param categoryNo 하위카테고리를 조회할 상위 카테고리 번호
-     * @throws CategoryNotFoundException 카테고리를 못찾음
+     * @throws CategoryNotFoundException            카테고리를 못찾음
      * @throws CategoryRemainLowerCategoryException 하위 카테고리가 존재할 시 삭제 불가
-     * @throws CategoryRemainProductException 해당 카테고리에 속한 상품이 있을 경우 삭제 불가
+     * @throws CategoryRemainProductException       해당 카테고리에 속한 상품이 있을 경우 삭제 불가
      * @author 김보민
      */
     @Transactional
     @Override
     public void removeCategory(Integer categoryNo) {
         Category category = categoryRepository.findById(categoryNo)
-                .orElseThrow(CategoryNotFoundException::new);
+            .orElseThrow(CategoryNotFoundException::new);
         List<CategoryResponseDto> lowerCategories = categoryRepository
-                .findAllLowerCategories(categoryNo);
+            .findAllLowerCategories(categoryNo);
 
         //해당 카테고리의 하위 카테고리가 존재할 시 삭제 실패
         if (!lowerCategories.isEmpty()) {
@@ -154,7 +153,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponseDto> findLowerCategories(Integer categoryNo) {
         Category category = categoryRepository.findById(categoryNo)
-                .orElseThrow(CategoryNotFoundException::new);
+            .orElseThrow(CategoryNotFoundException::new);
 
         return categoryRepository.findAllLowerCategories(category.getNo());
     }

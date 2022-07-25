@@ -2,6 +2,9 @@ package shop.gaship.gashipshoppingmall.repairSchedule.repository.impl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -12,10 +15,6 @@ import shop.gaship.gashipshoppingmall.repairSchedule.dto.response.GetRepairSched
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.QRepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.RepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.repository.custom.RepairScheduleRepositoryCustom;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 
 /**

@@ -1,10 +1,9 @@
 package shop.gaship.gashipshoppingmall.member.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Getter;
 
 
 /**
@@ -45,7 +44,11 @@ public class MemberResponseDto {
      * @param modifyDatetime           the modify datetime
      */
     @Builder
-    public MemberResponseDto(String recommendMemberNickname, String email, String password, String phoneNumber, String name, LocalDate birthDate, String nickname, String gender, Long accumulatePurchaseAmount, LocalDate nextRenewalGradeDate, LocalDateTime registerDatetime, LocalDateTime modifyDatetime, Boolean isBlackMember) {
+    public MemberResponseDto(String recommendMemberNickname, String email, String password,
+                             String phoneNumber, String name, LocalDate birthDate, String nickname,
+                             String gender, Long accumulatePurchaseAmount,
+                             LocalDate nextRenewalGradeDate, LocalDateTime registerDatetime,
+                             LocalDateTime modifyDatetime, Boolean isBlackMember) {
         this.recommendMemberNickname = recommendMemberNickname;
         this.email = email;
         this.password = password;

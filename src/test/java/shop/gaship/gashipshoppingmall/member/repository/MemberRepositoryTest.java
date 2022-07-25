@@ -2,14 +2,14 @@ package shop.gaship.gashipshoppingmall.member.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
@@ -45,6 +45,7 @@ class MemberRepositoryTest {
         entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
         entityManager.persist(memberDummy.getMemberStatusCodes());
         entityManager.persist(memberDummy.getMemberGrades());
+        entityManager.persist(memberDummy.getUserAuthorityNo());
 
         Member savedDummy = memberRepository.save(memberDummy);
         Member member = memberRepository.findById(savedDummy.getMemberNo()).orElse(null);
@@ -59,6 +60,8 @@ class MemberRepositoryTest {
         entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
         entityManager.persist(memberDummy.getMemberStatusCodes());
         entityManager.persist(memberDummy.getMemberGrades());
+        entityManager.persist(memberDummy.getUserAuthorityNo());
+
         Member cachedMember = memberRepository.save(memberDummy);
 
         Member member = memberRepository.findByEmail(memberDummy.getEmail())
@@ -83,6 +86,8 @@ class MemberRepositoryTest {
         entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
         entityManager.persist(memberDummy.getMemberStatusCodes());
         entityManager.persist(memberDummy.getMemberGrades());
+        entityManager.persist(memberDummy.getUserAuthorityNo());
+
         Member cachedMember = memberRepository.save(memberDummy);
 
         Member member = memberRepository.findByNickname(memberDummy.getNickname())
@@ -90,5 +95,25 @@ class MemberRepositoryTest {
 
         assertThat(member).isNotNull()
             .isEqualTo(cachedMember);
+    }
+
+    @Test
+    @DisplayName("custom query findSignInUserDetail Optional 테스트")
+    void findSignInUserDetailTest() {
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
+        entityManager.persist(memberDummy.getMemberStatusCodes());
+        entityManager.persist(memberDummy.getMemberGrades());
+        entityManager.persist(memberDummy.getUserAuthorityNo());
+
+        Member cachedMember = memberRepository.save(memberDummy);
+
+        SignInUserDetailsDto userDetailsDto = memberRepository.findSignInUserDetail("example@nhn.com")
+            .orElse(null);
+
+        assertThat(userDetailsDto.getEmail()).isEqualTo(cachedMember.getEmail());
+        assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(cachedMember.getMemberNo());
+        assertThat(userDetailsDto.getHashedPassword()).isEqualTo(cachedMember.getPassword());
+        assertThat(userDetailsDto.getAuthorities())
+            .isEqualTo(List.of(cachedMember.getUserAuthorityNo().getStatusCodeName()));
     }
 }

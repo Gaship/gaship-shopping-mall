@@ -1,9 +1,8 @@
 package shop.gaship.gashipshoppingmall.tag.dto.response;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 /**
  * 태그 단건 조회시에 필요한 값을 담는 dto입니다.

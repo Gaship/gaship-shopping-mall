@@ -1,8 +1,18 @@
 package shop.gaship.gashipshoppingmall.membergrade.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -49,7 +59,7 @@ public class MemberGrade {
     /**
      * 회원가입 및 기본 등급에 사용되는 회원 등급 생성시 사용되는 메서드.
      *
-     * @param renewalPeriod 갱신기간 StatusCode
+     * @param renewalPeriod            갱신기간 StatusCode
      * @param memberGradeAddRequestDto 회원등급 등록 요청 dto
      * @return memberGrade
      * @author 김세미
@@ -62,7 +72,7 @@ public class MemberGrade {
     /**
      * 기본 등급 이외의 등급 생성시 사용되는 메서드.
      *
-     * @param renewalPeriod 갱신기간 StatusCode
+     * @param renewalPeriod            갱신기간 StatusCode
      * @param memberGradeAddRequestDto 회원등급 등록 요청 dto
      * @return memberGrade
      * @author 김세미

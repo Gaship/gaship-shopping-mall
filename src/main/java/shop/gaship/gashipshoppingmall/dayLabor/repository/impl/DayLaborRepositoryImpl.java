@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.dayLabor.repository.impl;
 
 import com.querydsl.core.types.Projections;
+import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
@@ -8,7 +9,6 @@ import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.QDayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.repository.custom.DayLaborRepositoryCustom;
 
-import java.util.List;
 
 /**
  * 지역별물량을 QueryDsl 을통해 사용하기위한 클래스 구현체입니다.

@@ -1,11 +1,11 @@
 package shop.gaship.gashipshoppingmall.membergrade.service;
 
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
-
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 회원등급 Service Interface.
@@ -23,10 +23,10 @@ public interface MemberGradeService {
      * 기존에 기본회원등급이 존재한다면 등록 불가.
      * request 의 isDefault 값에 따라 기본회원등급 등록 / 이외의 회원등급 등록 으로 나뉜다.
      *
-     * @param request MemberGradeAddRequestDto.
+     * @param requestDto MemberGradeAddRequestDto.
      * @author 김세미
      */
-    void addMemberGrade(MemberGradeAddRequestDto request);
+    void addMemberGrade(MemberGradeAddRequestDto requestDto);
 
     /**
      * 회원등급 수정을 위한 메서드
@@ -34,15 +34,15 @@ public interface MemberGradeService {
      * 기준누적금액이 회원등급끼리 중복되는 부분을 방지하기 위해
      * 해당 기준누적금액과 동일한 기준누적금액을 가지고 있는 다른 회원등급이 존재하면 수정 불가.
      *
-     * @param request MemberGradeModifyRequestDto
+     * @param requestDto MemberGradeModifyRequestDto
      * @author 김세미
      */
-    void modifyMemberGrade(MemberGradeModifyRequestDto request);
+    void modifyMemberGrade(MemberGradeModifyRequestDto requestDto);
 
     /**
      * 회원등급 삭제를 위한 메서드
      * 기본 회원 등급은 삭제할 수 없으며 해당 회원등급을 사용중인 member 가 존재하면 삭제할 수 없다.
-     * 
+     *
      * @param memberGradeNo Integer
      * @author 김세미
      */
@@ -64,5 +64,13 @@ public interface MemberGradeService {
      * @return PageResponseDto
      * @author 김세미
      */
-    PageResponseDto<MemberGradeResponseDto> findMemberGrades(Pageable pageable);
+    PageResponse<MemberGradeResponseDto> findMemberGrades(Pageable pageable);
+
+    /**
+     * pagination 이 적용되지 않은 다건 조회를 위한 메서드.
+     *
+     * @return list 회원등급 응답 dto 목록 (List)
+     * @author 김세미
+     */
+    List<MemberGradeResponseDto> findMemberGrades();
 }

@@ -1,7 +1,9 @@
 package shop.gaship.gashipshoppingmall.member.repository;
 
+import com.querydsl.core.types.Projections;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.QMember;
 
@@ -39,5 +41,23 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                 .select(member)
                 .fetchOne()
         );
+    }
+
+    @Override
+    public Optional<SignInUserDetailsDto> findSignInUserDetail(String email) {
+        QMember member = QMember.member;
+
+        return
+            Optional.ofNullable(from(member)
+                .where(member.email.eq(email))
+                .select(
+                    Projections.constructor(SignInUserDetailsDto.class,
+                        member.memberNo,
+                        member.email,
+                        member.password,
+                        Projections.list(member.userAuthorityNo.statusCodeName))
+                )
+                .fetchOne()
+            );
     }
 }

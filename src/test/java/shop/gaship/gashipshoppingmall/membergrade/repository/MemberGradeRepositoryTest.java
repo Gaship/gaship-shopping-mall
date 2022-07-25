@@ -52,15 +52,10 @@ class MemberGradeRepositoryTest {
         testEntityManager.persist(renewalPeriod);
         MemberGrade result = memberGradeRepository.save(memberGrade);
 
-        Long count = memberGradeRepository.count();
-
         assertThat(result).isNotNull();
-        assertThat(result.getNo()).isEqualTo(1);
         assertThat(result.getName()).isEqualTo(memberGrade.getName());
         assertThat(result.getAccumulateAmount()).isEqualTo(memberGrade.getAccumulateAmount());
         assertThat(result.getRenewalPeriodStatusCode()).isEqualTo(memberGrade.getRenewalPeriodStatusCode());
-
-        assertThat(count).isEqualTo(1L);
     }
     @Order(1)
     @Test
@@ -198,5 +193,31 @@ class MemberGradeRepositoryTest {
         boolean result = memberGradeRepository.existsByAccumulateAmountEquals(dummyAccumulateAmount);
 
         assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("기본 회원등급을 조회하는 쿼리")
+    void findByIsDefaultTest() {
+        testEntityManager.persist(renewalPeriod);
+        MemberGrade memberGrade = MemberGrade.createDefault(renewalPeriod, memberGradeAddRequestDto);
+        testEntityManager.persist(memberGrade);
+
+        MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
+
+        assertThat(defaultGrade).isEqualTo(memberGrade);
+    }
+
+    @DisplayName("전체 회원등급 다건 조회")
+    @Test
+    void getAll(){
+        testEntityManager.persist(renewalPeriod);
+        testEntityManager.persist(memberGrade);
+        testEntityManager.clear();
+
+        List<MemberGradeResponseDto> result = memberGradeRepository.getAll();
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.get(result.size()-1).getName())
+                .isEqualTo(memberGrade.getName());
     }
 }

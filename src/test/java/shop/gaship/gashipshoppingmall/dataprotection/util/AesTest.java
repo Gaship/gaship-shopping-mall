@@ -1,14 +1,19 @@
 package shop.gaship.gashipshoppingmall.dataprotection.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
+import javax.crypto.spec.SecretKeySpec;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
+import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
+import shop.gaship.gashipshoppingmall.dataprotection.exception.DecodeFailureException;
+import shop.gaship.gashipshoppingmall.dataprotection.exception.EncodeFailureException;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.dataprotection.protection <br/>
@@ -22,7 +27,8 @@ import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
  * 2022/07/10           김민수               최초 생성                         <br/>
  */
 @SpringBootTest
-@TestPropertySource(value = {"classpath:application-dev.properties"})
+@EnableConfigurationProperties(value = DataProtectionConfig.class)
+@TestPropertySource(value = "classpath:application-dev.properties")
 class AesTest {
     @Autowired
     Aes aes;
@@ -36,4 +42,26 @@ class AesTest {
 
         assertThat(decodedText).isEqualTo(text);
     }
+
+
+    @Test
+    @DisplayName("개인정보 복호화 실패 오류 확인")
+    void aesECBDecodeFailure() {
+        ReflectionTestUtils.setField(aes, "secretKeySpec",
+            new SecretKeySpec("1234".repeat(30).getBytes(), "AES"));
+        String text = "01012345678";
+        assertThatThrownBy(() -> aes.aesECBDecode(text))
+            .isInstanceOf(DecodeFailureException.class);
+    }
+
+    @Test
+    @DisplayName("개인정보 암호화 실패 오류 확인")
+    void aesECBEncodeFailure() {
+        ReflectionTestUtils.setField(aes, "secretKeySpec",
+            new SecretKeySpec("1234".repeat(30).getBytes(), "AES"));
+        String text = "01012345678";
+        assertThatThrownBy(() -> aes.aesECBEncode(text))
+            .isInstanceOf(EncodeFailureException.class);
+    }
+
 }

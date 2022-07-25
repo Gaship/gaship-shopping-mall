@@ -1,10 +1,10 @@
 package shop.gaship.gashipshoppingmall.addressLocal.repository;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.custom.AddressLocalRepositoryCustom;
 
-import java.util.List;
 
 /**
  * 주소지를 다루기위한 레포지토리 인터페이스 입니다.
