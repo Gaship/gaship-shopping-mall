@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -49,7 +50,7 @@ class AddressListControllerTest {
     @Test
     void addressListAdd() throws Exception {
         String body = objectMapper.writeValueAsString(AddressListDummy.addressListAddRequestDtoDummy());
-        mockMvc.perform(post("/members/1/addressLists")
+        mockMvc.perform(post("/api/members/1/addressLists")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -62,7 +63,7 @@ class AddressListControllerTest {
     @Test
     void addressListModify() throws Exception {
         String body = objectMapper.writeValueAsString(AddressListDummy.addressListModifyRequestDtoDummy());
-        mockMvc.perform(put("/members/1/addressLists")
+        mockMvc.perform(put("/api/members/1/addressLists")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -75,7 +76,7 @@ class AddressListControllerTest {
     @DisplayName("배송지 목록 삭제 테스트")
     @Test
     void addressListRemove() throws Exception {
-        mockMvc.perform(delete("/members/1/addressLists/1")
+        mockMvc.perform(delete("/api/members/1/addressLists/1")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -89,7 +90,7 @@ class AddressListControllerTest {
         when(addressListService.findAddressList(any()))
                 .thenReturn(AddressListDummy.addressListResponseDto1());
 
-        mockMvc.perform(get("/members/1/addressLists/1")
+        mockMvc.perform(get("/api/members/1/addressLists/1")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -104,9 +105,9 @@ class AddressListControllerTest {
     @DisplayName("배송지 목록 다건조회 테스트")
     @Test
     void addressListList() throws Exception {
-        when(addressListService.findAddressLists(any())).thenReturn(AddressListDummy.addressListPageResponseDto());
+        when(addressListService.findAddressLists(any(Integer.class),any(Pageable.class))).thenReturn(AddressListDummy.addressListPageResponseDto());
 
-        mockMvc.perform(get("/members/1/addressLists")
+        mockMvc.perform(get("/api/members/1/addressLists")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -122,6 +123,6 @@ class AddressListControllerTest {
                 .andExpect(jsonPath("$.end").value(1))
                 .andExpect(jsonPath("$.pageList").isArray());
 
-        verify(addressListService,times(1)).findAddressLists(any(PageRequest.class));
+        verify(addressListService,times(1)).findAddressLists(any(),any());
     }
 }

@@ -220,14 +220,14 @@ class AddressListServiceImplTest {
         Pageable pageable = PageRequest.of(page,size);
         List<AddressList> list = AddressListDummy.addressListEntityList();
         Page<AddressList> resultPage = new PageImpl<>(list,pageable,103);
-        when(addressListRepository.findAllByStatusCode_StatusCodeName(AddressStatus.USE.getValue(),pageable))
+        when(addressListRepository.findByMember_MemberNoAndStatusCode_StatusCodeName(any(),any(),any()))
                 .thenReturn(resultPage);
 
-        AddressListPageResponseDto<AddressListResponseDto, AddressList> result = addressListService.findAddressLists(pageable);
+        AddressListPageResponseDto<AddressListResponseDto, AddressList> result = addressListService.findAddressLists(1,pageable);
 
         assertThat(result.getPage()).isEqualTo(page + 1);
         assertThat(result.getSize()).isEqualTo(size);
         assertThat(result.getDtoList()).hasSize(103);
-        verify(addressListRepository,times(1)).findAllByStatusCode_StatusCodeName(any(String.class),any(Pageable.class));
+        verify(addressListRepository,times(1)).findByMember_MemberNoAndStatusCode_StatusCodeName(any(),any(),any(Pageable.class));
     }
 }

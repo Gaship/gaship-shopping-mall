@@ -40,12 +40,11 @@ public class AddressListServiceImpl implements AddressListService {
     private final MemberRepository memberRepository;
 
     /**
-     * 배송지목록의 등록을 하기 위한 메서드
-     *
-     * @param request 등록에 필요한 정보를 담는 dto 입니다.
-     * @Exception NotExistAddressLocal  주소지역 id 값으로 주소지역 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @Exception MemberNotFoundException 회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @Exception StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * {@inheritDoc}
+     * 
+     * @throws  NotExistAddressLocal  주소지역 id 값으로 주소지역 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws  MemberNotFoundException 회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws  StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
     @Transactional
     @Override
@@ -57,12 +56,12 @@ public class AddressListServiceImpl implements AddressListService {
     }
 
     /**
-     * 배송지목록의 등록을 하기 위한 메서드
-     *
+     * {@inheritDoc}
+     * 
      * @param request 등록에 필요한 정보를 담는 dto 입니다.
-     * @Exception NotExistAddressLocal  주소지역 id 값으로 주소지역 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @Exception MemberNotFoundException 회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @Exception StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws NotExistAddressLocal  주소지역 id 값으로 주소지역 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws MemberNotFoundException 회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
     @Transactional
     @Override
@@ -74,11 +73,11 @@ public class AddressListServiceImpl implements AddressListService {
     }
 
     /**
-     * 배송지목록의 상태값을 delete 로 수정하기 위한 메서드
+     * {@inheritDoc}
      *
      * @param request 수정에 필요한 정보를 담는 dto 입니다.
-     * @Exception NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @Exception StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
     @Transactional
     @Override
@@ -90,11 +89,11 @@ public class AddressListServiceImpl implements AddressListService {
     }
 
     /**
-     * 배송지목록의 상태를 delete 로 변경 하기 위한 메서드
+     * {@inheritDoc}
      *
      * @param addressListId 조회에 필요한 정보를 담는 값입니다.
-     * @Exception NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @Exception StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
     @Transactional
     @Override
@@ -106,10 +105,10 @@ public class AddressListServiceImpl implements AddressListService {
     }
 
     /**
-     * 배송지목록의 단건 조회 하기 위한 메서드
+     * {@inheritDoc}
      *
      * @param addressListId 조회에 필요한 정보를 담는 dto 입니다.
-     * @Exception NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
     @Override
     public AddressListResponseDto findAddressList(Integer addressListId) {
@@ -117,15 +116,14 @@ public class AddressListServiceImpl implements AddressListService {
     }
 
     /**
-     * 배송지목록의 다건 조회를 하기 위한 메서드
+     * {@inheritDoc}
      *
      * @param pageable 배송지목록의 다건 조회에 필요한 정보를 담는 pageable 입니다.
      */
     @Override
-    public AddressListPageResponseDto<AddressListResponseDto, AddressList> findAddressLists(Pageable pageable) {
-        Page<AddressList> page = addressListRepository.findAllByStatusCode_StatusCodeName(AddressStatus.USE.getValue(), pageable);
-        Function<AddressList, AddressListResponseDto> fn = this::entityToDto;
+    public AddressListPageResponseDto<AddressListResponseDto, AddressList> findAddressLists(Integer memberId, Pageable pageable) {
+        Page<AddressList> page = addressListRepository.findByMember_MemberNoAndStatusCode_StatusCodeName(memberId, AddressStatus.USE.getValue(), pageable);
 
-        return new AddressListPageResponseDto<>(page, fn);
+        return new AddressListPageResponseDto<>(page, this::entityToDto);
     }
 }

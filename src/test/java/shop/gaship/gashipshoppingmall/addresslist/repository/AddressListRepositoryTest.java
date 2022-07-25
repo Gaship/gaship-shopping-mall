@@ -63,7 +63,8 @@ class AddressListRepositoryTest {
         Member member1 = memberRepository.save(NotNullDummy.notNullRecommendedMemberDummy(statusCode2,memberGrade1));
         Member member2 = memberRepository.save(NotNullDummy.notNullMemberDummy1(member1,statusCode2,memberGrade1));
 
-        IntStream.rangeClosed(1,15).forEach(i ->
+        System.out.println("=============================");
+        IntStream.rangeClosed(1,5).forEach(i ->
                 addressListRepository
                         .save(AddressList.builder()
                                 .addressListNo(i)
@@ -74,7 +75,7 @@ class AddressListRepositoryTest {
                                 .addressDetail("현대아파트 65층 화장실")
                                 .zipCode("12344")
                                 .build()));
-        IntStream.rangeClosed(1,10).forEach(i ->
+        IntStream.rangeClosed(1,8).forEach(i ->
                 addressListRepository
                         .save(AddressList.builder()
                                 .addressListNo(i + 15)
@@ -85,11 +86,12 @@ class AddressListRepositoryTest {
                                 .addressDetail("현대아파트 65층 화장실")
                                 .zipCode("12344")
                                 .build()));
-        Pageable pageable = PageRequest.of(1, 10);
+        Pageable pageable = PageRequest.of(1, 3);
 
-        Page<AddressList> pageList = addressListRepository.findAllByStatusCode_StatusCodeName(AddressStatus.USE.getValue(), pageable);
-
+        System.out.println("-----------------------------");
+        Page<AddressList> pageList = addressListRepository.findByMember_MemberNoAndStatusCode_StatusCodeName(member2.getMemberNo(),AddressStatus.USE.getValue(), pageable);
+        pageList.stream().forEach(i-> System.out.println(i.getStatusCode().getStatusCodeName()));
         assertThat(pageList.getTotalPages()).isEqualTo(2);
-        assertThat(pageList.getTotalElements()).isEqualTo(15);
+        assertThat(pageList.getTotalElements()).isEqualTo(5);
     }
 }

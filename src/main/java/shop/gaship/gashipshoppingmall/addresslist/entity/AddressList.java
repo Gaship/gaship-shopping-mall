@@ -32,11 +32,11 @@ public class AddressList {
     @JoinColumn(name = "address_local_no", nullable = false)
     private AddressLocal addressLocal;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,optional = false)
     @JoinColumn(name = "status_code_no", nullable = false)
     private StatusCode statusCode;
 
