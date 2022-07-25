@@ -12,8 +12,6 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
-import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,7 +55,7 @@ public class MemberTestDummy {
         return MemberModifyRequestDto.builder()
                 .memberNo(memberNo)
                 .statusCode(StatusCodeDummy.dummy())
-                .memberGrade(MemberGradeDummy.dummy(memberGradeAddRequestDto,StatusCodeDummy.dummy()))
+                .memberGrade(MemberGradeDummy.dummy(memberGradeAddRequestDto, StatusCodeDummy.dummy()))
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -91,7 +89,7 @@ public class MemberTestDummy {
             Member member = Member.builder().recommendMember(null)
                     .memberStatusCodes(StatusCodeDummy.dummy())
                     .memberGrades(null)
-                    .email("jwoo1016" +i + "@naver.com")
+                    .email("jwoo1016" + i + "@naver.com")
                     .password("qwer1234")
                     .phoneNumber("010531783" + (i - 1) / 10 + (i - 1) % 10)
                     .name("최정우")
@@ -107,9 +105,9 @@ public class MemberTestDummy {
         return list;
     }
 
-    public static MemberPageResponseDto<MemberResponseDto,Member> CreateTestMemberPageResponseDto(){
-        Pageable pageable = PageRequest.of(0,10);
-        Function<Member, MemberResponseDto> fn = (Member member)-> MemberResponseDto.builder()
+    public static MemberPageResponseDto<MemberResponseDto, Member> CreateTestMemberPageResponseDto() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Function<Member, MemberResponseDto> fn = (Member member) -> MemberResponseDto.builder()
                 .recommendMemberNickname(null)
                 .email(member.getEmail())
                 .password(member.getPassword())
@@ -123,9 +121,9 @@ public class MemberTestDummy {
                 .registerDatetime(member.getRegisterDatetime())
                 .modifyDatetime(member.getModifiedDatetime())
                 .build();
-        Page<Member> page = new PageImpl<>(MemberTestDummy.CreateTestMemberEntityList(),pageable,100);
+        Page<Member> page = new PageImpl<>(MemberTestDummy.CreateTestMemberEntityList(), pageable, 100);
 
-        return new MemberPageResponseDto<>(page,fn);
+        return new MemberPageResponseDto<>(page, fn);
     }
 
     public static Member member1() {
@@ -135,8 +133,8 @@ public class MemberTestDummy {
                 .recommendMember(null)
                 .memberStatusCodes(StatusCodeDummy.dummy())
                 .memberGrades(MemberGradeDummy.dummy(
-                    MemberGradeDtoDummy.requestDummy("일반", 0L),
-                    StatusCodeDummy.dummy()
+                        MemberGradeDtoDummy.requestDummy("일반", 0L),
+                        StatusCodeDummy.dummy()
                 ))
                 .userAuthorityNo(StatusCodeDummy.dummy())
                 .email(email)
@@ -158,8 +156,8 @@ public class MemberTestDummy {
                 .recommendMember(null)
                 .memberStatusCodes(StatusCodeDummy.dummy())
                 .memberGrades(MemberGradeDummy.dummy(
-                    MemberGradeDtoDummy.requestDummy("일반", 0L),
-                    StatusCodeDummy.dummy()
+                        MemberGradeDtoDummy.requestDummy("일반", 0L),
+                        StatusCodeDummy.dummy()
                 ))
                 .userAuthorityNo(StatusCodeDummy.dummy())
                 .email(email)

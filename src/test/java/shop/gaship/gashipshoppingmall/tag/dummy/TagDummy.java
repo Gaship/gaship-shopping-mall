@@ -54,10 +54,16 @@ public class TagDummy {
                 .build();
     }
 
-    public static Tag TagDummyUnPersist() {
-        return Tag.builder()
-                .title("title....1")
-                .build();
+    public static List<Tag> TagDummyListUnPersist() {
+        List<Tag> list = new ArrayList<>();
+        IntStream.rangeClosed(1,5).forEach(i-> list.add(Tag.builder().title("title.." + i).build()));
+        return list;
+    }
+
+    public static List<Tag> TagDummyListPersist() {
+        List<Tag> list = new ArrayList<>();
+        IntStream.rangeClosed(1,5).forEach(i-> list.add(Tag.builder().tagNo(i).title("title.." + i).build()));
+        return list;
     }
 
     public static Tag TagDummyPersist() {

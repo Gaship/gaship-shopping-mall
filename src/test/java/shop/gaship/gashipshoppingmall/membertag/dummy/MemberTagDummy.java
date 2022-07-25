@@ -5,7 +5,6 @@ import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagResponseDto;
 import shop.gaship.gashipshoppingmall.membertag.entity.MemberTag;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
-import shop.gaship.gashipshoppingmall.tag.utils.TestDummy;
 
 import java.util.ArrayList;
 import java.util.List;
