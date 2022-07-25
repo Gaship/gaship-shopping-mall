@@ -4,14 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
-import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
-import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
-import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 
 /**
  * 상품 서비스 인터페이스 입니다.
@@ -27,8 +24,6 @@ public interface ProductService {
      * @param files         리스트 형태의 다중 이미지 파일
      * @param createRequest 상품 생성 요청 dto
      * @throws IOException 파일 업로드 시 IOException 이 발생할 수 있습니다.
-     * @throws CategoryNotFoundException 카테고리가 존재하지않을경우 발생합니다.
-     * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
      * @author 김보민
      */
     void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest)
@@ -40,9 +35,6 @@ public interface ProductService {
      * @param files         리스트 형태의 다중 이미지 파일
      * @param modifyRequest 상품 수정 요청 dto
      * @throws IOException 파일 업로드 시 IOException 이 발생할 수 있습니다.
-     * @throws ProductNotFoundException 제품이 존재하지않을경우 발생합니다.
-     * @throws CategoryNotFoundException 카테고리가 존재하지않을경우 발생합니다.
-     * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
      * @author 김보민
      */
     void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest)
@@ -52,8 +44,6 @@ public interface ProductService {
      * 상품 판매상태를 수정하는 메서드입니다.
      *
      * @param salesStatusModifyRequest 상품 판매상태 수정 요청 dto
-     * @throws ProductNotFoundException 제품이 존재하지않을경우 발생합니다.
-     * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
      * @author 김보민
      */
     void modifyProductSalesStatus(SalesStatusModifyRequestDto salesStatusModifyRequest);
@@ -75,7 +65,6 @@ public interface ProductService {
      *
      * @param no 조회할 제품번호입니다.
      * @return product response dto 제품의정보가담긴 객체로 반환됩니다.
-     * @throws ProductNotFoundException 제품이존재하지않을경우 예외가 발생합니다.
      * @author 유호철
      */
     ProductAllInfoResponseDto findProduct(Integer no);

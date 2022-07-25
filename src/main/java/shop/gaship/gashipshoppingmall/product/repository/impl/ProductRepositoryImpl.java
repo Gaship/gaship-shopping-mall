@@ -1,14 +1,14 @@
 package shop.gaship.gashipshoppingmall.product.repository.impl;
 
-import com.querydsl.core.QueryResults;
+
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.QBean;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.JPAExpressions;
+import java.util.List;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
@@ -17,6 +17,7 @@ import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
 import shop.gaship.gashipshoppingmall.productTag.entity.QProductTag;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
+
 
 /**
  * QueryDsl 을 쓰기위한 Repo 구현체입니다.
@@ -42,12 +43,12 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         QCategory top = new QCategory("top");
 
 
-        QueryResults<ProductAllInfoResponseDto> result = from(product)
+        List<ProductAllInfoResponseDto> content = from(product)
                 .innerJoin(category)
                 .on(product.category.no.eq(category.no))
                 .innerJoin(productTag)
                 .on(product.productTags.contains(productTag))
-                .innerJoin(productTag.tag,tag)
+                .innerJoin(productTag.tag, tag)
                 .where(eqProductName(requestDto.getProductName()),
                         eqProductCode(requestDto.getCode()),
                         eqCategory(requestDto.getCategoryNo()),
@@ -84,11 +85,25 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                                 .where(upper.no.eq(category.upperCategory.no))
                                 .from(upper)))
                 .distinct()
-                .offset(requestDto.getPageable().getOffset())
                 .limit(requestDto.getPageable().getPageSize())
-                .fetchResults();
+                .offset(requestDto.getPageable().getOffset())
+                .fetch();
 
-        return new PageImpl<>(result.getResults(), requestDto.getPageable(), result.getTotal());
+        return PageableExecutionUtils.getPage(content,  requestDto.getPageable(),
+                () -> from(product)
+                        .innerJoin(category)
+                        .on(product.category.no.eq(category.no))
+                        .innerJoin(productTag)
+                        .on(product.productTags.contains(productTag))
+                        .innerJoin(productTag.tag, tag)
+                        .where(eqProductName(requestDto.getProductName()),
+                                eqProductCode(requestDto.getCode()),
+                                eqCategory(requestDto.getCategoryNo()),
+                                eqPrice(requestDto.getMinAmount(), requestDto.getMaxAmount()),
+                                eqTagNo(requestDto.getTagNo()),
+                                eqProductNo(requestDto.getProductNo()))
+                        .fetch()
+                        .size());
     }
 
     private BooleanExpression eqProductNo(Integer productNo) {

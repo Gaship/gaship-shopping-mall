@@ -1,13 +1,15 @@
 package shop.gaship.gashipshoppingmall.product.dto.request;
 
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+
 
 /**
  * 상품들을 조회할때 조건들이 들어있는 클래스입니다.
@@ -20,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 public class ProductRequestDto {
     @Builder.Default
     private Integer productNo = 0;
@@ -46,4 +47,30 @@ public class ProductRequestDto {
     @NotNull
     @Builder.Default
     private Pageable pageable = PageRequest.of(0, 10);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ProductRequestDto that = (ProductRequestDto) o;
+        return Objects.equals(productNo, that.productNo)
+                && Objects.equals(productName, that.productName)
+                && Objects.equals(code, that.code)
+                && Objects.equals(categoryNo, that.categoryNo)
+                && Objects.equals(minAmount, that.minAmount)
+                && Objects.equals(maxAmount, that.maxAmount)
+                && Objects.equals(tagNo, that.tagNo)
+                && Objects.equals(pageable, that.pageable);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productNo, productName,
+                code, categoryNo, minAmount, maxAmount,
+                tagNo, pageable);
+    }
 }

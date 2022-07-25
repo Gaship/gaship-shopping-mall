@@ -1,5 +1,7 @@
 package shop.gaship.gashipshoppingmall.product.dto.request;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -18,10 +20,11 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class SalesStatusModifyRequestDto {
+    @Min(1)
     @NotNull
     private Integer productNo;
 
     @Length(max = 20, message = "상태코드명은 20자 이하여야 합니다.")
-    @NotNull
+    @NotBlank
     private String statusCodeName;
 }

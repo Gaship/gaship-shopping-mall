@@ -32,7 +32,7 @@ import shop.gaship.gashipshoppingmall.response.PageResponse;
  * @since 1.0
  */
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService service;
@@ -194,7 +194,7 @@ public class ProductController {
      */
     @GetMapping()
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>>
-    productListAll(Pageable pageable) {
+        productListAll(Pageable pageable) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

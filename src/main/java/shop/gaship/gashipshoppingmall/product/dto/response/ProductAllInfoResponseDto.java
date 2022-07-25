@@ -4,6 +4,8 @@ package shop.gaship.gashipshoppingmall.product.dto.response;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -40,6 +42,7 @@ public class ProductAllInfoResponseDto {
 
     private List<String> tags = new ArrayList<>();
 
+    @Builder
     public ProductAllInfoResponseDto(Integer productNo, String productName, String productCode,
                                      String categoryName, Long amount, LocalDateTime dateTime,
                                      String manufacturer, String country, String seller,

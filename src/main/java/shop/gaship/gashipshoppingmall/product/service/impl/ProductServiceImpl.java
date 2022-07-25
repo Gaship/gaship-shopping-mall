@@ -54,6 +54,12 @@ public class ProductServiceImpl implements ProductService {
 
     private static final String PRODUCT_DIR = File.separator + "products";
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws CategoryNotFoundException 카테고리가 존재하지않을경우 발생합니다.
+     * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
+     */
     @Transactional
     @Override
     public void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest)
@@ -76,6 +82,33 @@ public class ProductServiceImpl implements ProductService {
         addProductTags(product, createRequest.getTagNos());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws ProductNotFoundException 제품이 존재하지않을경우 발생합니다.
+     * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
+     */
+    @Transactional
+    @Override
+    public void modifyProductSalesStatus(SalesStatusModifyRequestDto salesStatusModifyRequest) {
+        Product product = repository.findById(salesStatusModifyRequest.getProductNo())
+                .orElseThrow(ProductNotFoundException::new);
+        StatusCode salesStatus = statusCodeRepository
+                .findByStatusCodeName(salesStatusModifyRequest.getStatusCodeName())
+                .orElseThrow(StatusCodeNotFoundException::new);
+
+        product.updateSalesStatus(salesStatus);
+        repository.save(product);
+    }
+
+    /**
+     *{@inheritDoc}
+     *
+     *
+     * @throws ProductNotFoundException 제품이 존재하지않을경우 발생합니다.
+     * @throws CategoryNotFoundException 카테고리가 존재하지않을경우 발생합니다.
+     * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
+     */
     @Transactional
     @Override
     public void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest)
@@ -100,19 +133,9 @@ public class ProductServiceImpl implements ProductService {
         addProductTags(product, modifyRequest.getTagNos());
     }
 
-    @Transactional
-    @Override
-    public void modifyProductSalesStatus(SalesStatusModifyRequestDto salesStatusModifyRequest) {
-        Product product = repository.findById(salesStatusModifyRequest.getProductNo())
-                .orElseThrow(ProductNotFoundException::new);
-        StatusCode salesStatus = statusCodeRepository
-                .findByStatusCodeName(salesStatusModifyRequest.getStatusCodeName())
-                .orElseThrow(StatusCodeNotFoundException::new);
-
-        product.updateSalesStatus(salesStatus);
-        repository.save(product);
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductByCode(String productCode,
                                                                      Pageable pageable) {
@@ -125,6 +148,11 @@ public class ProductServiceImpl implements ProductService {
         return new PageResponse<>(products);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws ProductNotFoundException 제품이존재하지않을경우 예외가 발생합니다.
+     */
     @Override
     public ProductAllInfoResponseDto findProduct(Integer no) {
         if (repository.findById(no).isEmpty()) {
@@ -139,6 +167,9 @@ public class ProductServiceImpl implements ProductService {
         return product.getContent().get(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductByPrice(Long min, Long max,
                                                                       Pageable pageable) {
@@ -152,6 +183,11 @@ public class ProductServiceImpl implements ProductService {
         return new PageResponse<>(products);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws CategoryNotFoundException 카테고리값이 없을시 발생한다.
+     */
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductByCategory(Integer no,
                                                                          Pageable pageable) {
@@ -167,6 +203,9 @@ public class ProductServiceImpl implements ProductService {
         return new PageResponse<>(products);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductByName(String name,
                                                                      Pageable pageable) {
@@ -179,6 +218,9 @@ public class ProductServiceImpl implements ProductService {
         return new PageResponse<>(products);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductsInfo(Pageable pageable) {
         ProductRequestDto requestDto = ProductRequestDto.builder()

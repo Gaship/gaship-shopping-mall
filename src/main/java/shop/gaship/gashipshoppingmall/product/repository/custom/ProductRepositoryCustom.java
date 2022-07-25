@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.product.repository.custom;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 
@@ -10,6 +11,7 @@ import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoRespons
  * @author : 유호철
  * @since 1.0
  */
+@NoRepositoryBean
 public interface ProductRepositoryCustom {
 
     /**
