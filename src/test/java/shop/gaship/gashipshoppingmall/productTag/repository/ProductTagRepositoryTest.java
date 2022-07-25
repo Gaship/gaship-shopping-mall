@@ -107,11 +107,8 @@ class ProductTagRepositoryTest {
 
         productRepository.save(product);
         productTagRepository.save(productTag);
-
-        List<Tag> result = productTagRepository.findTagByProductNo(product.getNo());
-
-        assertThat(result.get(0).getTagNo()).isEqualTo(tag.getTagNo());
-        assertThat(result.get(0).getTitle()).isEqualTo(tag.getTitle());
+        List<String> tagName = productTagRepository.findTagsByProductNo(product.getNo());
+        assertThat(tagName.get(0)).isEqualTo(tag.getTitle());
     }
 
 }

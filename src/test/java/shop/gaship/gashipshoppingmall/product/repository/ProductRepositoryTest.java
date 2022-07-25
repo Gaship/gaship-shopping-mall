@@ -24,6 +24,7 @@ import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.productTag.repository.ProductTagRepository;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
@@ -165,7 +166,7 @@ class ProductRepositoryTest {
 
         ProductRequestDto requestDto = new ProductRequestDto();
 
-        Page<ProductAllInfoResponseDto> page = repository.findProduct(requestDto);
+        PageResponse<ProductAllInfoResponseDto> page = repository.findProduct(requestDto);
         List<ProductAllInfoResponseDto> result = page.getContent();
 
         assertThat(page.getSize()).isEqualTo(pageRequest.getPageSize());
