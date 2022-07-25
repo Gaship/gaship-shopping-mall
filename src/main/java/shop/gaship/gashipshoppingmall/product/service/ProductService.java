@@ -109,4 +109,14 @@ public interface ProductService {
      * @author 유호철
      */
     PageResponse<ProductAllInfoResponseDto> findProductsInfo(Pageable pageable);
+
+
+    /**
+     * 상품상태에 맞는 상품들의 정보를 반환합니다.
+     *
+     * @param statusName 상품상태의 정보
+     * @param pageable   페이징 정보
+     * @return the page response
+     */
+    PageResponse<ProductAllInfoResponseDto> findProductStatusCode(String statusName, Pageable pageable);
 }

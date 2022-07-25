@@ -48,6 +48,9 @@ public class ProductRequestDto {
     @Builder.Default
     private Pageable pageable = PageRequest.of(0, 10);
 
+    @Builder.Default
+    private String statusName = null;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

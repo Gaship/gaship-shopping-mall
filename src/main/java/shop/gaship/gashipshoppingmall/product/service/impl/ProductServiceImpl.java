@@ -230,6 +230,28 @@ public class ProductServiceImpl implements ProductService {
         findProductTagInfo(products);
         return new PageResponse<>(products);
     }
+    /**
+     * 상품상태에 맞는 상품들의 정보를 반환합니다.
+     *
+     * @param statusName 상품상태의 정보
+     * @param pageable   페이징 정보
+     * @return the page response
+     */
+
+    @Override
+    public PageResponse<ProductAllInfoResponseDto>  findProductStatusCode(String statusName,
+                                                                          Pageable pageable) {
+        if (statusCodeRepository.findByStatusCodeName(statusName).isEmpty()) {
+            throw new StatusCodeNotFoundException();
+        }
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+                .statusName(statusName)
+                .pageable(pageable)
+                .build();
+        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        findProductTagInfo(products);
+        return new PageResponse<>(products);
+    }
 
     /**
      * 상품 태그 등록 메서드입니다.

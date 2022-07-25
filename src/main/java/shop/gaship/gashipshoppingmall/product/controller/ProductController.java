@@ -128,6 +128,25 @@ public class ProductController {
                 .body(service.findProduct(productNo));
     }
 
+
+    /**
+     * get 요청을 받아서 상태이름을 통해 상품들을 조회하기위한 메서드입니다.
+     *
+     * @param statusName 상태이름이 입력됩니다.
+     * @param pageable   페이징정보가 들어갑니다.
+     * @return 검색된 제품의 정보가 반환됩니다.
+     * @author 유호철
+     */
+    @GetMapping("/statusCode")
+    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListSearchStatusCode(
+            @RequestParam("statusName") String statusName,
+            Pageable pageable) {
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findProductStatusCode(statusName, pageable));
+    }
     /**
      * get 요청을 받아서 금액으로 제품들을 정렬하기위한 메서드입니다.
      *
@@ -137,6 +156,7 @@ public class ProductController {
      * @return response entity 정렬된 제품들이반환됩니다.
      * @author 유호철
      */
+
     @GetMapping("/price")
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productAmountList(
             @RequestParam("min") Long minAmount,

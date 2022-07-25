@@ -6,6 +6,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.JPAExpressions;
 import java.util.List;
+
+import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -43,18 +45,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         QCategory top = new QCategory("top");
 
 
-        List<ProductAllInfoResponseDto> content = from(product)
-                .innerJoin(category)
-                .on(product.category.no.eq(category.no))
-                .innerJoin(productTag)
-                .on(product.productTags.contains(productTag))
-                .innerJoin(productTag.tag, tag)
-                .where(eqProductName(requestDto.getProductName()),
-                        eqProductCode(requestDto.getCode()),
-                        eqCategory(requestDto.getCategoryNo()),
-                        eqPrice(requestDto.getMinAmount(), requestDto.getMaxAmount()),
-                        eqTagNo(requestDto.getTagNo()),
-                        eqProductNo(requestDto.getProductNo()))
+        List<ProductAllInfoResponseDto> content = productQuery(requestDto)
                 .select(Projections.constructor(ProductAllInfoResponseDto.class,
                         product.no.as("productNo"),
                         product.name.as("productName"),
@@ -90,20 +81,25 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .fetch();
 
         return PageableExecutionUtils.getPage(content,  requestDto.getPageable(),
-                () -> from(product)
-                        .innerJoin(category)
-                        .on(product.category.no.eq(category.no))
-                        .innerJoin(productTag)
-                        .on(product.productTags.contains(productTag))
-                        .innerJoin(productTag.tag, tag)
-                        .where(eqProductName(requestDto.getProductName()),
-                                eqProductCode(requestDto.getCode()),
-                                eqCategory(requestDto.getCategoryNo()),
-                                eqPrice(requestDto.getMinAmount(), requestDto.getMaxAmount()),
-                                eqTagNo(requestDto.getTagNo()),
-                                eqProductNo(requestDto.getProductNo()))
+                () -> productQuery(requestDto)
                         .fetch()
                         .size());
+    }
+
+    private JPQLQuery<Product> productQuery(ProductRequestDto requestDto) {
+        return from(product)
+                .innerJoin(category)
+                .on(product.category.no.eq(category.no))
+                .innerJoin(productTag)
+                .on(product.productTags.contains(productTag))
+                .innerJoin(productTag.tag, tag)
+                .where(eqProductName(requestDto.getProductName()),
+                        eqProductCode(requestDto.getCode()),
+                        eqCategory(requestDto.getCategoryNo()),
+                        eqPrice(requestDto.getMinAmount(), requestDto.getMaxAmount()),
+                        eqTagNo(requestDto.getTagNo()),
+                        eqProductNo(requestDto.getProductNo()),
+                        eqStatus(requestDto.getStatusName()));
     }
 
     private BooleanExpression eqProductNo(Integer productNo) {
@@ -147,5 +143,12 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
             return null;
         }
         return tag.tagNo.eq(tagNo);
+    }
+
+    private BooleanExpression eqStatus(String statusName) {
+        if (StringUtils.isNullOrEmpty(statusName)) {
+            return null;
+        }
+        return product.salesStatus.statusCodeName.eq(statusName);
     }
 }
