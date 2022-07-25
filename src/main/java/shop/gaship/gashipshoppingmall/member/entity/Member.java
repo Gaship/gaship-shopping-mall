@@ -2,15 +2,8 @@ package shop.gaship.gashipshoppingmall.member.entity;
 
 import com.google.common.base.Objects;
 import java.time.LocalDate;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +20,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * @since 1.0
  */
 @Entity
-@Table(name = "members")
+@Table(name = "members", indexes = @Index(columnList = "memberNo"))
 @Getter
 @Builder
 @NoArgsConstructor

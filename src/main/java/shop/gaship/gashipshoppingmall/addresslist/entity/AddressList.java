@@ -20,7 +20,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Builder
-@Table(name = "Address_lists")
+@Table(name = "Address_lists",indexes = @Index(columnList = "addressListNo"))
 @ToString
 public class AddressList {
     @Id
