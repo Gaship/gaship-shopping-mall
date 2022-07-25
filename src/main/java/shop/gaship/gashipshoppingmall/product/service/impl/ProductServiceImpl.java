@@ -1,11 +1,6 @@
 package shop.gaship.gashipshoppingmall.product.service.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +28,11 @@ import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 상품 서비스 구현체 입니다.
@@ -143,9 +143,9 @@ public class ProductServiceImpl implements ProductService {
                 .code(productCode)
                 .pageable(pageable)
                 .build();
-        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        return new PageResponse<>(products);
+        return products;
     }
 
     /**
@@ -161,7 +161,7 @@ public class ProductServiceImpl implements ProductService {
         ProductRequestDto requestDto = ProductRequestDto.builder()
                 .productNo(no)
                 .build();
-        Page<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
+        PageResponse<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
         findProductTagInfo(product);
 
         return product.getContent().get(0);
@@ -178,9 +178,9 @@ public class ProductServiceImpl implements ProductService {
                 .maxAmount(max)
                 .pageable(pageable)
                 .build();
-        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        return new PageResponse<>(products);
+        return products;
     }
 
     /**
@@ -198,9 +198,9 @@ public class ProductServiceImpl implements ProductService {
                 .categoryNo(no)
                 .pageable(pageable)
                 .build();
-        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        return new PageResponse<>(products);
+        return products;
     }
 
     /**
@@ -213,9 +213,9 @@ public class ProductServiceImpl implements ProductService {
                 .productName(name)
                 .pageable(pageable)
                 .build();
-        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        return new PageResponse<>(products);
+        return products;
     }
 
     /**
@@ -226,9 +226,9 @@ public class ProductServiceImpl implements ProductService {
         ProductRequestDto requestDto = ProductRequestDto.builder()
                 .pageable(pageable)
                 .build();
-        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        return new PageResponse<>(products);
+        return products;
     }
     /**
      * 상품상태에 맞는 상품들의 정보를 반환합니다.
@@ -248,9 +248,9 @@ public class ProductServiceImpl implements ProductService {
                 .statusName(statusName)
                 .pageable(pageable)
                 .build();
-        Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        return new PageResponse<>(products);
+        return products;
     }
 
     /**
@@ -279,10 +279,11 @@ public class ProductServiceImpl implements ProductService {
      * @param products 태그를 등록할 상품
      * @author 유호철
      */
-    private void findProductTagInfo(Page<ProductAllInfoResponseDto> products) {
-        products.forEach(p -> {
-            List<Tag> tag = productTagRepository.findTagByProductNo(p.getProductNo());
-            tag.forEach(t -> p.getTags().add(t.getTitle()));
+    private void findProductTagInfo(PageResponse<ProductAllInfoResponseDto> products) {
+        products.getContent().forEach(product -> {
+            List<String> tagNameList = productTagRepository.findTagsByProductNo(product.getProductNo());
+            product.getTags().addAll(tagNameList);
         });
+
     }
 }

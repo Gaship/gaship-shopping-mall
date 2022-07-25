@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.productTag.repository.custom.ProductTagRepositoryCustom;
 
+import java.util.List;
+
 /**
  * 상품 태그 jpa 레퍼지토리 입니다.
  *
@@ -19,4 +21,6 @@ public interface ProductTagRepository extends JpaRepository<ProductTag, ProductT
      * @author 김보민
      */
     void deleteAllByPkProductNo(Integer productNo);
+
+    List<ProductTag> findByProductNoIn(List<Integer> productNos);
 }

@@ -18,6 +18,7 @@ import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
 import shop.gaship.gashipshoppingmall.productTag.entity.QProductTag;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 
 
@@ -39,7 +40,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Page<ProductAllInfoResponseDto> findProduct(ProductRequestDto requestDto) {
+    public PageResponse<ProductAllInfoResponseDto> findProduct(ProductRequestDto requestDto) {
 
         QCategory upper = new QCategory("upper");
         QCategory top = new QCategory("top");
@@ -80,10 +81,10 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .offset(requestDto.getPageable().getOffset())
                 .fetch();
 
-        return PageableExecutionUtils.getPage(content,  requestDto.getPageable(),
+        return new PageResponse<>(PageableExecutionUtils.getPage(content,  requestDto.getPageable(),
                 () -> productQuery(requestDto)
                         .fetch()
-                        .size());
+                        .size()));
     }
 
     private JPQLQuery<Product> productQuery(ProductRequestDto requestDto) {

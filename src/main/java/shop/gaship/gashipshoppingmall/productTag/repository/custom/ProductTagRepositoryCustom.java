@@ -1,9 +1,8 @@
 package shop.gaship.gashipshoppingmall.productTag.repository.custom;
 
-import org.springframework.data.repository.NoRepositoryBean;
-import shop.gaship.gashipshoppingmall.tag.entity.Tag;
-
 import java.util.List;
+import org.springframework.data.repository.NoRepositoryBean;
+
 
 /**
  * QueryDsl 을쓰기위한 인터페이스입니다.
@@ -21,5 +20,6 @@ public interface ProductTagRepositoryCustom {
      * @return list 태그의 값이 반환됩니다.
      * @author 유호철
      */
-    List<Tag> findTagByProductNo(Integer productNo);
+    List<String> findTagsByProductNo(Integer productNo);
+
 }
