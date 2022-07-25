@@ -5,9 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.gaship.gashipshoppingmall.tag.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
+import shop.gaship.gashipshoppingmall.tag.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
@@ -50,7 +50,7 @@ public class TagServiceImpl implements TagService {
      *
      * @param request 수정에 필요한 정보를 담는 dto 입니다.
      * @throws DuplicatedTagTitleException 수정하려는 태그명이 이미 존재할 경우 나오는 예외입니다.
-     * @throws TagNotFoundException 수정하려는 태그 조회 실패 시 나오는 예외입니다.
+     * @throws TagNotFoundException        수정하려는 태그 조회 실패 시 나오는 예외입니다.
      */
     @Transactional
     @Override
