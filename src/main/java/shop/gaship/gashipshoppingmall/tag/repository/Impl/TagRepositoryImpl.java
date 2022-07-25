@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepositoryCustom;
@@ -33,16 +34,16 @@ public class TagRepositoryImpl extends QuerydslRepositorySupport implements TagR
     public Page<Tag> getAllTags(Pageable pageable) {
         QTag tag = QTag.tag;
 
-        QueryResults<Tag> results = from(tag)
+        List<Tag> list = from(tag)
                 .orderBy(tag.title.asc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
-                .orderBy(tag.title.asc())
-                .fetchResults();
+                .fetch();
 
-        List<Tag> content = results.getResults();
-        long total = results.getTotal();
-
-        return new PageImpl<>(content, pageable, total);
+        return PageableExecutionUtils.getPage(list,
+                pageable,
+                ()->from(tag)
+                        .fetch()
+                        .size());
     }
 }

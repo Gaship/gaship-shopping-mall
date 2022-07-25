@@ -30,10 +30,10 @@ public class TagServiceImpl implements TagService {
     private final TagRepositoryCustom tagRepositoryCustom;
 
     /**
-     * 태그 등록을 하기 위한 메서드
+     * {@inheritDoc}
      *
      * @param request 등록에 필요한 정보를 담는 dto 입니다.
-     * @Exception DuplicatedTagTitleException 등록하려는 태그명이 이미 존재할 경우 나오는 예외입니다.
+     * @throws DuplicatedTagTitleException 등록하려는 태그명이 이미 존재할 경우 나오는 예외입니다.
      */
     @Transactional
     @Override
@@ -46,11 +46,11 @@ public class TagServiceImpl implements TagService {
     }
 
     /**
-     * 태그 수정을 하기 위한 메서드
+     * {@inheritDoc}
      *
      * @param request 수정에 필요한 정보를 담는 dto 입니다.
-     * @Exception DuplicatedTagTitleException 수정하려는 태그명이 이미 존재할 경우 나오는 예외입니다.
-     * @Exception TagNotFoundException 수정하려는 태그 조회 실패 시 나오는 예외입니다.
+     * @throws DuplicatedTagTitleException 수정하려는 태그명이 이미 존재할 경우 나오는 예외입니다.
+     * @throws TagNotFoundException 수정하려는 태그 조회 실패 시 나오는 예외입니다.
      */
     @Transactional
     @Override
@@ -64,11 +64,11 @@ public class TagServiceImpl implements TagService {
     }
 
     /**
-     * 태그 단건 조회를 하기 위한 메서드
+     * {@inheritDoc}
      *
      * @param tagNo 단건 조회하려는 태그의 식별번호입니다.
      * @return TagResponseDto
-     * @Exception TagNotFoundException 수정하려는 태그 조회 실패 시 나오는 예외입니다.
+     * @throws TagNotFoundException 수정하려는 태그 조회 실패 시 나오는 예외입니다.
      */
     @Override
     public TagResponseDto findTag(Integer tagNo) {
@@ -77,7 +77,7 @@ public class TagServiceImpl implements TagService {
     }
 
     /**
-     * 태그 다건 조회를 하기 위한 메서드
+     * {@inheritDoc}
      *
      * @param pageable 다건 조회하려는 태그 페이지의 page, size 가 담겨져있습니다.
      * @return TagResponseDto

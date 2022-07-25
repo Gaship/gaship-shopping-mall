@@ -18,6 +18,7 @@ public interface TagService {
      * 태그 등록을 하기 위한 메서드
      *
      * @param request 등록에 필요한 정보를 담고있는 dto 입니다.
+     * @author 최정우
      */
     void addTag(TagAddRequestDto request);
 
@@ -25,6 +26,7 @@ public interface TagService {
      * 태그 수정을 하기 위한 메서드
      *
      * @param request 수정에 필요한 정보를 담고있는 dto 입니다.
+     * @author 최정우
      */
     void modifyTag(TagModifyRequestDto request);
 
@@ -32,6 +34,7 @@ public interface TagService {
      * 태그 단건 조회를 하기 위한 메서드
      *
      * @param tagNo 조회하길 원하는 tag 의 식별번호를 담고있다.
+     * @author 최정우
      */
     TagResponseDto findTag(Integer tagNo);
 
@@ -39,6 +42,7 @@ public interface TagService {
      * 태그 다건 조회를 하기 위한 메서드
      *
      * @param pageable 태그 조회시에 사용되며 조회하고자하는 tag 의 page 와 size 정보를 담고 있다.
+     * @author 최정우
      */
     PageResponseDto<TagResponseDto, Tag> findTags(Pageable pageable);
 
@@ -47,6 +51,7 @@ public interface TagService {
      *
      * @param dto 태그의 등록, 수정시에 필요한 정보를 담고 있는 dto
      * @return Tag
+     * @author 최정우
      */
     default Tag dtoToEntity(TagAddRequestDto dto) {
         return Tag.builder()
@@ -59,6 +64,7 @@ public interface TagService {
      *
      * @param tag 변환시키려는 Tag 객체
      * @return TagResponseDto
+     * @author 최정우
      */
     default TagResponseDto entityToDto(Tag tag) {
         return TagResponseDto.builder()
