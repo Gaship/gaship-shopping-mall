@@ -1,21 +1,23 @@
-package shop.gaship.gashipshoppingmall.tag.dto;
+package shop.gaship.gashipshoppingmall.tag.dto.response;
+
+import lombok.Getter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import lombok.Getter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 /**
- * 태그 리스트 요청을 한 후 반환값에 담기는 정보를 담는 dto 입니다.
+ * 목록 조회 반환 타입으로 사용되는 page 정보와 data 를 담은 Data Transfer Object.
  *
- * @author 최정우
+ * @param <D,E> D = Dto,  E = Entity
+ * @author : 최정우
  * @since 1.0
  */
 @Getter
-public class TagPageResponseDto<D, E> {
+public class PageResponseDto<D, E> {
     //DTO리스트
     private final List<D> dtoList;
 
@@ -40,7 +42,7 @@ public class TagPageResponseDto<D, E> {
     //페이지 번호  목록
     private List<Integer> pageList;
 
-    public TagPageResponseDto(Page<E> result, Function<E, D> fn) {
+    public PageResponseDto(Page<E> result, Function<E, D> fn) {
 
         dtoList = result.stream().map(fn).collect(Collectors.toList());
 
@@ -49,8 +51,8 @@ public class TagPageResponseDto<D, E> {
         makePageList(result.getPageable());
     }
 
-
     private void makePageList(Pageable pageable) {
+
         this.page = pageable.getPageNumber() + 1; // 0부터 시작하므로 1을 추가
         this.size = pageable.getPageSize();
 
