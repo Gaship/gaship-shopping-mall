@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.addressLocal.dummy;
 
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.addressLocal.dummy
@@ -27,5 +28,9 @@ public class AddressLocalDummy {
 
     public static AddressLocal dummy3() {
         return new AddressLocal("그냥시", 2, true, null, null);
+    }
+
+    public static AddressLocal dummy4() {
+        return new AddressLocal("그냥시", 2, true, DayLaboyDummy.dummy1(), null);
     }
 }
