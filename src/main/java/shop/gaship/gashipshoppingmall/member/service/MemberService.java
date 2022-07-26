@@ -2,7 +2,6 @@ package shop.gaship.gashipshoppingmall.member.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
@@ -129,10 +128,7 @@ public interface MemberService {
             .modifyDatetime(member.getModifiedDatetime())
             .social(member.isSocial())
             .build();
-
-
     }
-
 
     /**
      * 필수정보를 받아 새로운 회원을 반환하는 메서드입니다.
@@ -148,9 +144,6 @@ public interface MemberService {
         StatusCode defaultStatus,
         MemberGrade defaultGrade) {
 
-        Set<MembersRole> authorities = new HashSet<>();
-        authorities.add(MembersRole.ROLE_USER);
-
         return Member.builder()
             .recommendMember(recommendMember)
             .memberStatusCodes(defaultStatus)
@@ -163,7 +156,7 @@ public interface MemberService {
             .birthDate(memberCreationRequest.getBirthDate())
             .gender(memberCreationRequest.getGender())
             .accumulatePurchaseAmount(0L)
-            .roleSet(authorities)
+            .roleSet(Set.of(MembersRole.ROLE_USER))
             .encodedEmailForSearch(memberCreationRequest.getEncodedEmailForSearch())
             .build();
     }
@@ -181,9 +174,6 @@ public interface MemberService {
         StatusCode defaultStatus,
         MemberGrade defaultGrade) {
 
-        Set<MembersRole> authorities = new HashSet<>();
-        authorities.add(MembersRole.ROLE_USER);
-
         Member build = Member.builder()
             .memberStatusCodes(defaultStatus)
             .memberGrades(defaultGrade)
@@ -197,7 +187,7 @@ public interface MemberService {
             .birthDate(memberCreationRequestOauth.getBirthDate())
             .gender(memberCreationRequestOauth.getGender())
             .isSocial(true)
-            .roleSet(authorities)
+            .roleSet(Set.of(MembersRole.ROLE_USER))
             .encodedEmailForSearch(memberCreationRequestOauth.getEncodedEmailForSearch())
             .build();
 
