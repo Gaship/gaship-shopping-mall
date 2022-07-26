@@ -93,4 +93,17 @@ class MemberGradeTest {
         assertThat(memberGrade.getName()).isEqualTo(modifyNameData);
         assertThat(memberGrade.getAccumulateAmount()).isEqualTo(modifyAccumulateAmountData);
     }
+
+    @DisplayName("builder 테스트")
+    @Test
+    void memberGradeBuilder(){
+        MemberGrade result = MemberGrade.builder()
+                .isDefault(false)
+                .renewalPeriod(StatusCodeDummy.dummy())
+                .memberGradeAddRequestDto(memberGradeAddRequestDto)
+                .build();
+
+        assertThat(result.getName()).isEqualTo(memberGradeAddRequestDto.getName());
+        assertThat(result.getAccumulateAmount()).isEqualTo(memberGradeAddRequestDto.getAccumulateAmount());
+    }
 }
