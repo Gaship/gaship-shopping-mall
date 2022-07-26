@@ -15,8 +15,9 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class SignInUserDetailsDto {
-    private Integer identifyNo;
+    private Integer memberNo;
     private String email;
     private String hashedPassword;
     private List<String> authorities;
+    private Boolean isSocial;
 }

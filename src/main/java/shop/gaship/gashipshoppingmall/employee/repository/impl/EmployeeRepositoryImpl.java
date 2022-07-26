@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.employee.repository.impl;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
@@ -41,8 +42,9 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport implements
                     SignInUserDetailsDto.class,
                     employee.employeeNo,
                     employee.email,
-                    employee.password,
-                    Projections.list(employee.statusCode.statusCodeName))
+                    employee.password.as("hashedPassword"),
+                    Projections.list(employee.statusCode.statusCodeName),
+                    Expressions.asBoolean(false))
             )
             .fetchOne()
         );
