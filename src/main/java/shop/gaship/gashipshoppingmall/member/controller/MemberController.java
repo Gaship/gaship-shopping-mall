@@ -120,7 +120,7 @@ public class MemberController {
      * @param memberModifyRequestDto the member modify request dto
      * @return the response entity
      */
-    @PutMapping("/members/{memberNo}")
+    @PutMapping("/api/members/{memberNo}")
     public ResponseEntity<Void> memberModify(
         @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
         memberService.modifyMember(memberModifyRequestDto);
@@ -133,7 +133,7 @@ public class MemberController {
      * @param memberNo the member no
      * @return the response entity
      */
-    @DeleteMapping("/members/{memberNo}")
+    @DeleteMapping("/api/members/{memberNo}")
     public ResponseEntity<Void> memberRemove(@PathVariable Integer memberNo) {
         memberService.removeMember(memberNo);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
@@ -145,7 +145,7 @@ public class MemberController {
      * @param memberNo the member no
      * @return the response entity
      */
-    @GetMapping("/members/{memberNo}")
+    @GetMapping("/api/members/{memberNo}")
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable Integer memberNo) {
         MemberResponseDto memberResponseDto = memberService.findMember(memberNo);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
@@ -171,16 +171,10 @@ public class MemberController {
      * @param pageable the pageable
      * @return the response entity
      */
-    @GetMapping("/members")
+    @GetMapping("/api/members")
     public ResponseEntity<MemberPageResponseDto<MemberResponseDto, Member>> memberList(
         Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
             .body(memberService.findMembers(pageable));
-    }
-
-    @PutMapping("/admins/{adminNo}/members")
-    public ResponseEntity<Void> memberModifyByAdmin(MemberModifyRequestDto request) {
-        memberService.modifyMember(request);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
     }
 }

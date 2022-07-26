@@ -9,12 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
-import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
-import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
-import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.*;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -153,11 +148,13 @@ public class MemberServiceImpl implements MemberService {
         if (memberRepository.existsByNickname(request.getNickname())) {
             throw new DuplicatedNicknameException();
         }
+
         Member member = memberRepository.findById(request.getMemberNo())
             .orElseThrow(MemberNotFoundException::new);
         member.modifyMember(request);
         memberRepository.save(member);
     }
+
 
     @Transactional
     @Override
@@ -188,4 +185,5 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findSignInUserDetail(email)
             .orElseThrow(MemberNotFoundException::new);
     }
+
 }
