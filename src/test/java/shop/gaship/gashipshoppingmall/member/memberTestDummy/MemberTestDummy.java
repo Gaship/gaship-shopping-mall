@@ -35,7 +35,7 @@ public class MemberTestDummy {
     private static final Integer memberNo = 1;
     private static final String recommendMemberNickname = "최정우친구";
     private static final String email = "abcd1010@naver.com";
-    private static final String password = "1234";
+    private static final String password = "qwer1234!";
     private static final String phoneNumber = "01053171234";
     private static final String name = "최정우";
     private static final LocalDate birthDate = LocalDate.now();
@@ -47,16 +47,9 @@ public class MemberTestDummy {
     private static final LocalDateTime modifyDatetime = LocalDateTime.now();
 
     public static MemberModifyRequestDto memberModifyRequestDto() {
-        MemberGradeAddRequestDto memberGradeAddRequestDto = new MemberGradeAddRequestDto();
-        memberGradeAddRequestDto.setIsDefault(true);
-        memberGradeAddRequestDto.setName("vip");
-        memberGradeAddRequestDto.setAccumulateAmount(0L);
 
         return MemberModifyRequestDto.builder()
                 .memberNo(memberNo)
-                .statusCode(StatusCodeDummy.dummy())
-                .memberGrade(MemberGradeDummy.dummy(memberGradeAddRequestDto, StatusCodeDummy.dummy()))
-                .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
                 .name(name)
