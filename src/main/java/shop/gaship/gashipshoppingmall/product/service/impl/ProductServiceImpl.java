@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.product.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.product.event.ProductSaveUpdateEvent;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
@@ -51,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
     private final TagRepository tagRepository;
     private final ProductTagRepository productTagRepository;
     private final FileUploadUtil fileUploadUtil;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     private static final String PRODUCT_DIR = File.separator + "products";
 
@@ -77,6 +80,8 @@ public class ProductServiceImpl implements ProductService {
 
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
         product.updateImageLinks(imageLinks);
+
+        applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks));
 
         repository.save(product);
         addProductTags(product, createRequest.getTagNos());
@@ -114,17 +119,18 @@ public class ProductServiceImpl implements ProductService {
             throws IOException {
         Product product = repository.findById(modifyRequest.getNo())
                 .orElseThrow(ProductNotFoundException::new);
-
         Category category = categoryRepository.findById(modifyRequest.getCategoryNo())
                 .orElseThrow(CategoryNotFoundException::new);
         StatusCode deliveryType = statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo())
                 .orElseThrow(StatusCodeNotFoundException::new);
 
-        product.updateProduct(category, deliveryType, modifyRequest);
         fileUploadUtil.deleteFiles(product.getImageLinkList());
-
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
+
+        applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks));
+
         product.updateImageLinks(imageLinks);
+        product.updateProduct(category, deliveryType, modifyRequest);
 
         productTagRepository.deleteAllByPkProductNo(product.getNo());
         addProductTags(product, modifyRequest.getTagNos());
