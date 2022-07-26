@@ -5,6 +5,9 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 
+/**
+ * 직원 관련 커스텀 쿼리를 선언하는 인터페이스입니다.
+ */
 @NoRepositoryBean
 public interface EmployeeRepositoryCustom {
     /**

@@ -11,6 +11,7 @@ import shop.gaship.gashipshoppingmall.employee.entity.Employee;
  *
  * @author : 유호철
  * @see JpaRepository
+ * @see EmployeeRepositoryCustom
  * @since 1.0
  */
 public interface EmployeeRepository
