@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 
 /**
  * 직원에대한 요청을 처리하기위한 컨트롤러 클래스입니다.
@@ -25,7 +27,7 @@ import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
  * @since 1.0
  */
 @RestController
-@RequestMapping("/employees")
+@RequestMapping("/api/employees")
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
@@ -83,4 +85,14 @@ public class EmployeeController {
             .body(employeeService.findEmployees());
     }
 
+    /**
+     * get 요청시 직원 로그인을 요청하는 직원의 상세 정보가 반환되는 메서드입니다.
+     *
+     * @param email 로그인 할 직원의 이메일입니다.
+     * @return 로그인에 필요한 직원의 상세정보가 담긴 객체가 반환됩니다.
+     */
+    @GetMapping(value = "/user-detail", params = "email")
+    public ResponseEntity<SignInUserDetailsDto> employeeSignInRequest(@RequestParam String email) {
+        return ResponseEntity.ok(employeeService.findSignInEmployeeFromEmail(email));
+    }
 }

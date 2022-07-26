@@ -4,6 +4,7 @@ import java.util.List;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 
 /**
  * 직원을 서비스레이어에서 사용하기위한 인터페이스 클래스입니다.
@@ -45,4 +46,11 @@ public interface EmployeeService {
      * @author 유호철
      */
     List<EmployeeInfoResponseDto> findEmployees();
+
+    /**
+     * 직원이 로그인을 시도했을 시 해당 계정에 맞는 직원 상세정보를 전달합니다.
+     *
+     * @return 로그인 할 직원의 계정 상세정보를 반환합니다.
+     */
+    SignInUserDetailsDto findSignInEmployeeFromEmail(String email);
 }
