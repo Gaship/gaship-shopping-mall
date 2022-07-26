@@ -7,24 +7,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
-import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
-import shop.gaship.gashipshoppingmall.membergrade.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.*;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -356,8 +355,9 @@ class MemberGradeServiceImplTest {
         verify(memberGradeRepository).getMemberGradeBy(any());
     }
 
+    @DisplayName("pagination 이 적용된 회원등급 다건 조회")
     @Test
-    void findMemberGrades() {
+    void findMemberGrades_withPageable() {
         int page = 1;
         int size = 10;
         Pageable pageable = PageRequest.of(page, size);
@@ -369,12 +369,31 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.getMemberGrades(pageable))
                 .thenReturn(new PageImpl<>(List.of(dummyMemberGradeResponseDto), pageable, 1));
 
-        PageResponseDto<MemberGradeResponseDto> result = memberGradeService.findMemberGrades(pageable);
+        PageResponse<MemberGradeResponseDto> result = memberGradeService.findMemberGrades(pageable);
 
-        assertThat(result.getPage()).isEqualTo(page + 1);
+        assertThat(result.getPage()).isEqualTo(page);
         assertThat(result.getSize()).isEqualTo(size);
-        assertThat(result.getDtoList()).hasSize(1);
+        assertThat(result.getContent()).hasSize(1);
 
         verify(memberGradeRepository).getMemberGrades(any());
+    }
+
+    @DisplayName("전체 회원등급 다건 조회")
+    @Test
+    void findMemberGrades_all(){
+        MemberGradeResponseDto dummyMemberGradeResponseDto =
+                MemberGradeDtoDummy.responseDummy("일반",
+                        0L,
+                        "12개월");
+
+        when(memberGradeRepository.getAll())
+                .thenReturn(List.of(dummyMemberGradeResponseDto));
+
+        List<MemberGradeResponseDto> result = memberGradeService.findMemberGrades();
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.get(0).getName()).isEqualTo("일반");
+        assertThat(result.get(0).getAccumulateAmount()).isZero();
+        assertThat(result.get(0).getRenewalPeriodStatusCode()).isEqualTo("12개월");
     }
 }

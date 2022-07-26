@@ -22,6 +22,13 @@ public class CategoryDummy {
         return dummy;
     }
 
+    public static Category bottomDummy(){
+        Category dummy =  new Category(
+                "제일하위",3);
+        dummy.updateUpperCategory(dummy());
+        return dummy;
+    }
+
     public static CategoryResponseDto upperDtoDummy() {
         return CategoryResponseDto.builder()
                 .no(1)
