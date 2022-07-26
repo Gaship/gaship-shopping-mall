@@ -105,7 +105,7 @@ class GradeHistoryServiceImplTest {
         assertThat(result).isNotNull();
         assertThat(result.getPage()).isEqualTo(page);
         assertThat(result.getSize()).isEqualTo(size);
-        assertThat(result.getDtoList()).hasSize(1);
+        assertThat(result.getContent()).hasSize(1);
     }
 
     @DisplayName("멤버 통한 등급이력 다건 조회시" +
