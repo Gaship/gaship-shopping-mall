@@ -31,17 +31,11 @@ class TagRepositoryTest {
     @Autowired
     TestEntityManager testEntityManager;
 
-    EntityManager entityManager;
-
-    @BeforeEach
-    void setUp(){
-        entityManager = testEntityManager.getEntityManager();
-    }
     @DisplayName("태그 다건 조회 테스트")
     @Test
     void getAllTagsTest() {
 
-        IntStream.rangeClosed(1, 100).forEach(i -> tagRepository.save(Tag.builder().tagNo(i).title("title....." + i).build()));
+        IntStream.rangeClosed(1, 100).forEach(i -> tagRepository.save(Tag.builder().title("title....." + i).build()));
         Pageable pageable = PageRequest.of(0,10, Sort.by("title"));
         Page<Tag> allTags = tagRepository.getAllTags(pageable);
         assertThat(allTags).isNotEmpty();
