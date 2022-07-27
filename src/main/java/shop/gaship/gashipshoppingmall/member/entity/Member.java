@@ -95,9 +95,6 @@ public class Member extends BaseEntity {
      * @param memberModifyRequestDto 변경할 멤버의 정보가 담긴 객체입니다.
      */
     public void modifyMember(MemberModifyRequestDto memberModifyRequestDto) {
-        this.memberGrades = memberModifyRequestDto.getMemberGrade();
-        this.memberStatusCodes = memberModifyRequestDto.getStatusCode();
-        this.email = memberModifyRequestDto.getEmail();
         this.password = memberModifyRequestDto.getPassword();
         this.phoneNumber = memberModifyRequestDto.getPhoneNumber();
         this.name = memberModifyRequestDto.getName();

@@ -196,3 +196,6 @@ $RECYCLE.BIN/
 
 #.idea
 *.idea
+
+#local file upload directory
+src/main/upload

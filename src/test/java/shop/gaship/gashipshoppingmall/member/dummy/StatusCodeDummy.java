@@ -17,4 +17,22 @@ public class StatusCodeDummy {
                 .explanation("홰언샹테")
                 .build();
     }
+
+    public static StatusCode AddressListUseStateDummy(){
+        return StatusCode.builder()
+                .statusCodeName(MemberStatus.ACTIVATION.getValue())
+                .groupCodeName(MemberStatus.GROUP)
+                .priority(1)
+                .explanation("사용")
+                .build();
+    }
+
+    public static StatusCode AddressListDeleteStateDummy(){
+        return StatusCode.builder()
+                .statusCodeName(MemberStatus.ACTIVATION.getValue())
+                .groupCodeName(MemberStatus.GROUP)
+                .priority(2)
+                .explanation("삭제")
+                .build();
+    }
 }

@@ -134,6 +134,7 @@ public interface MemberService {
             .modifyDatetime(member.getModifiedDatetime()).social(member.isSocial()).build();
     }
 
+
     /**
      * 필수정보를 받아 새로운 회원을 반환하는 메서드입니다.
      *

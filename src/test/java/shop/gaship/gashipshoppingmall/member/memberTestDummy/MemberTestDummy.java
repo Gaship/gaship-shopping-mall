@@ -37,7 +37,7 @@ public class MemberTestDummy {
     private static final Integer memberNo = 1;
     private static final String recommendMemberNickname = "최정우친구";
     private static final String email = "abcd1010@naver.com";
-    private static final String password = "1234";
+    private static final String password = "qwer1234!";
     private static final String phoneNumber = "01053171234";
     private static final String name = "최정우";
     private static final LocalDate birthDate = LocalDate.now();
@@ -49,16 +49,9 @@ public class MemberTestDummy {
     private static final LocalDateTime modifyDatetime = LocalDateTime.now();
 
     public static MemberModifyRequestDto memberModifyRequestDto() {
-        MemberGradeAddRequestDto memberGradeAddRequestDto = new MemberGradeAddRequestDto();
-        memberGradeAddRequestDto.setIsDefault(true);
-        memberGradeAddRequestDto.setName("vip");
-        memberGradeAddRequestDto.setAccumulateAmount(0L);
 
         return MemberModifyRequestDto.builder()
                 .memberNo(memberNo)
-                .statusCode(StatusCodeDummy.dummy())
-                .memberGrade(MemberGradeDummy.dummy(memberGradeAddRequestDto,StatusCodeDummy.dummy()))
-                .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
                 .name(name)
@@ -70,6 +63,7 @@ public class MemberTestDummy {
     public static MemberResponseDto memberResponseDto() {
 
         return MemberResponseDto.builder()
+                .recommendMemberNickname(recommendMemberNickname)
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -90,7 +84,7 @@ public class MemberTestDummy {
             Member member = Member.builder().recommendMember(null)
                     .memberStatusCodes(StatusCodeDummy.dummy())
                     .memberGrades(null)
-                    .email("jwoo1016" +i + "@naver.com")
+                    .email("jwoo1016" + i + "@naver.com")
                     .password("qwer1234")
                     .phoneNumber("010531783" + (i - 1) / 10 + (i - 1) % 10)
                     .name("최정우")
@@ -109,6 +103,7 @@ public class MemberTestDummy {
     public static MemberPageResponseDto<MemberResponseDto,Member> CreateTestMemberPageResponseDto(){
         Pageable pageable = PageRequest.of(0,10);
         Function<Member, MemberResponseDto> fn = (Member member)-> MemberResponseDto.builder()
+                .recommendMemberNickname(null)
                 .email(member.getEmail())
                 .password(member.getPassword())
                 .phoneNumber(member.getPhoneNumber())
@@ -121,9 +116,9 @@ public class MemberTestDummy {
                 .registerDatetime(member.getRegisterDatetime())
                 .modifyDatetime(member.getModifiedDatetime())
                 .build();
-        Page<Member> page = new PageImpl<>(MemberTestDummy.CreateTestMemberEntityList(),pageable,100);
+        Page<Member> page = new PageImpl<>(MemberTestDummy.CreateTestMemberEntityList(), pageable, 100);
 
-        return new MemberPageResponseDto<>(page,fn);
+        return new MemberPageResponseDto<>(page, fn);
     }
 
     public static Member member1() {
@@ -133,8 +128,8 @@ public class MemberTestDummy {
                 .recommendMember(null)
                 .memberStatusCodes(StatusCodeDummy.dummy())
                 .memberGrades(MemberGradeDummy.dummy(
-                    MemberGradeDtoDummy.requestDummy("일반", 0L),
-                    StatusCodeDummy.dummy()
+                        MemberGradeDtoDummy.requestDummy("일반", 0L),
+                        StatusCodeDummy.dummy()
                 ))
                 .roleSet(Set.of(MembersRole.ROLE_USER))
                 .email(email)
@@ -156,8 +151,8 @@ public class MemberTestDummy {
                 .recommendMember(null)
                 .memberStatusCodes(StatusCodeDummy.dummy())
                 .memberGrades(MemberGradeDummy.dummy(
-                    MemberGradeDtoDummy.requestDummy("일반", 0L),
-                    StatusCodeDummy.dummy()
+                        MemberGradeDtoDummy.requestDummy("일반", 0L),
+                        StatusCodeDummy.dummy()
                 ))
                 .roleSet(Set.of(MembersRole.ROLE_USER))
                 .email(email)

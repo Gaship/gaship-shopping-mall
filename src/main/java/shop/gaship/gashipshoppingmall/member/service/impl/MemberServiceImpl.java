@@ -31,6 +31,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
+import shop.gaship.gashipshoppingmall.statuscode.status.UserAuthority;
 
 /**
  * MemberService를 구현하는 클래스입니다.
@@ -230,9 +231,11 @@ public class MemberServiceImpl implements MemberService {
         if (memberRepository.existsByNickname(request.getNickname())) {
             throw new DuplicatedNicknameException();
         }
+
         Member member = memberRepository.findById(request.getMemberNo())
             .orElseThrow(MemberNotFoundException::new);
         member.modifyMember(request);
+        memberRepository.save(member);
     }
 
     /**
@@ -259,6 +262,7 @@ public class MemberServiceImpl implements MemberService {
      *
      * @param memberNo 멤버 고유정보
      */
+
     @Transactional
     @Override
     public void removeMember(Integer memberNo) {

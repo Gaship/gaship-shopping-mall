@@ -9,11 +9,13 @@ import shop.gaship.gashipshoppingmall.employee.entity.Employee;
  * 직원을 다루기위한 레포지토리 인터페이스 입니다.
  * JPA 를 사용합니다.
  *
- * @see JpaRepository
  * @author : 유호철
+ * @see JpaRepository
+ * @see EmployeeRepositoryCustom
  * @since 1.0
  */
-public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+public interface EmployeeRepository
+    extends JpaRepository<Employee, Integer>, EmployeeRepositoryCustom {
 
     /**
      * 이메일을통해 직원을 조회하기위한 메서드입니다.
