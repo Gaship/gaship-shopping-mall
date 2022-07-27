@@ -45,9 +45,9 @@ public class FileUploadUtil {
         return fileLinks;
     }
 
-    public void deleteFiles(List<String> fileNames) {
-        fileNames.stream()
-                .map(fileName -> new File(uploadBaseUrl + File.separator + fileName))
+    public void deleteFiles(List<String> fileLinks) {
+        fileLinks.stream()
+                .map(File::new)
                 .filter(File::exists)
                 .forEach(File::delete);
     }

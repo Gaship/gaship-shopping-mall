@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.member.repository;
+package shop.gaship.gashipshoppingmall.member.repository.Impl;
 
 import com.querydsl.core.types.Projections;
 import java.util.Optional;
@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.QMember;
+import shop.gaship.gashipshoppingmall.member.repository.MemberRepositoryCustom;
 
 /**
  * MemberRepositoryCustom 인터페이스에서 제작한 커스텀 쿼리를 구현하는 클래스입니다.

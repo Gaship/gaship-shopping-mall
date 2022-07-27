@@ -92,9 +92,6 @@ public class Member extends BaseEntity {
     private Boolean isSocial;
 
     public void modifyMember(MemberModifyRequestDto memberModifyRequestDto) {
-        this.memberGrades = memberModifyRequestDto.getMemberGrade();
-        this.memberStatusCodes = memberModifyRequestDto.getStatusCode();
-        this.email = memberModifyRequestDto.getEmail();
         this.password = memberModifyRequestDto.getPassword();
         this.phoneNumber = memberModifyRequestDto.getPhoneNumber();
         this.name = memberModifyRequestDto.getName();
