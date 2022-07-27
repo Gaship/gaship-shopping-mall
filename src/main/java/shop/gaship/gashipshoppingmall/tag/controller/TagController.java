@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.tag.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.tag.dto.TagPageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.TagResponseDto;
+import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
 import shop.gaship.gashipshoppingmall.tag.service.TagService;
 
@@ -26,7 +26,6 @@ import shop.gaship.gashipshoppingmall.tag.service.TagService;
  * @since 1.0
  */
 @RestController
-@Slf4j
 @RequiredArgsConstructor
 public class TagController {
 
@@ -38,15 +37,16 @@ public class TagController {
      *
      * @param request the request
      * @return the response entity
-     * @throws DuplicatedTagTitleException 태그를 등록할 때 등록하려는 태그명이 기존의 태그명중에 있을경우 에러가 발생합니다.
+     * @throws DuplicatedTagTitleException 태그를 등록할 때 등록하려는 태그명이 기존의 태그명중에 있을경우 에러가
+     *                                     발생합니다.
      */
     @PostMapping("/admins/{adminNo}/tags")
     public ResponseEntity<Void> tagAdd(@RequestBody TagRequestDto request) {
         tagService.addTag(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-            .contentType(MediaType.APPLICATION_JSON)
-            .build();
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
@@ -55,15 +55,16 @@ public class TagController {
      *
      * @param request the request
      * @return the response entity
-     * @throws DuplicatedTagTitleException 태그를 등록할 때 등록하려는 태그명이 기존의 태그명중에 있을경우 에러가 발생합니다.
+     * @throws DuplicatedTagTitleException 태그를 등록할 때 등록하려는 태그명이 기존의 태그명중에 있을경우 에러가
+     *                                     발생합니다.
      */
     @PutMapping("/admins/{adminNo}/tags")
     public ResponseEntity<Void> tagModify(@RequestBody TagRequestDto request) {
         tagService.modifyTag(request);
 
         return ResponseEntity.status(HttpStatus.OK)
-            .contentType(MediaType.APPLICATION_JSON)
-            .build();
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
@@ -78,8 +79,8 @@ public class TagController {
         tagService.removeTag(tagNo);
 
         return ResponseEntity.status(HttpStatus.OK)
-            .contentType(MediaType.APPLICATION_JSON)
-            .build();
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
@@ -88,13 +89,13 @@ public class TagController {
      *
      * @param tagNo the tag no
      * @return the response entity
-     * * @throws TagNotFoundException 조회하려는 태그가 없을경우 발생하는 에러입니다.
+     *         * @throws TagNotFoundException 조회하려는 태그가 없을경우 발생하는 에러입니다.
      */
     @GetMapping("/admins/{adminNo}/tags/{tagNo}")
     public ResponseEntity<TagResponseDto> tagDetails(@PathVariable Integer tagNo) {
         return ResponseEntity.status(HttpStatus.OK)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(tagService.findTag(tagNo));
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(tagService.findTag(tagNo));
     }
 
     /**
@@ -105,10 +106,10 @@ public class TagController {
      * @return the response entity
      */
     @GetMapping("/admins/{adminNo}/tags")
-    public ResponseEntity<TagPageResponseDto> tagList(Pageable pageable) {
+    public ResponseEntity<TagPageResponseDto<TagResponseDto, Tag>> tagList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(tagService.findTags(pageable));
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(tagService.findTags(pageable));
     }
 
 }

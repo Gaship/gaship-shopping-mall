@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -29,12 +28,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
-import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
-import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
-import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
@@ -84,12 +83,12 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("새로운 회원 저장")
-    void registerMember() throws NoSuchAlgorithmException {
+    void registerMember() {
         MemberCreationRequest dummy = MemberCreationRequestDummy.dummy();
 
         String plainEmailDummy = dummy.getEmail();
 
-        given(statusCodeRepository.findByStatusCodeName(MemberStatus.DORMANCY.name()))
+        given(statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name()))
             .willReturn(Optional.of(StatusCodeDummy.dummy()));
         given(memberGradeRepository.findByDefaultGrade()).willReturn(
             MemberGradeDummy.defaultDummy(
@@ -131,7 +130,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하는 경우")
-    void findMemberFromEmailCaseFounded() throws NoSuchAlgorithmException {
+    void findMemberFromEmailCaseFounded() {
         given(memberRepository.findByEncodedEmailForSearch(anyString()))
             .willReturn(Optional.of(MemberDummy.dummy()));
 
@@ -275,7 +274,7 @@ class MemberServiceTest {
         assertThat(userDetailsDto.getEmail()).isEqualTo(dummy.getEmail());
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(dummy.getPassword());
         assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(dummy.getMemberNo());
-        assertThat(userDetailsDto.getIsSocial()).isEqualTo(false);
+        assertThat(userDetailsDto.getIsSocial()).isFalse();
         assertThat(userDetailsDto.getAuthorities()).isEqualTo(List.of(dummy.getMemberGrades().getName()));
         assertThat(userDetailsDto).isInstanceOf(SignInUserDetailsDto.class);
     }

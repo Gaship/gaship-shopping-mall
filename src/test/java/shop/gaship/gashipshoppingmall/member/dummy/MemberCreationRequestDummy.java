@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.dummy;
 
 import java.time.LocalDate;
-import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.dummy <br/>

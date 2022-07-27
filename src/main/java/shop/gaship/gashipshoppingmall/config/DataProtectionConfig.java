@@ -18,8 +18,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 import shop.gaship.gashipshoppingmall.dataprotection.dto.SecureKeyResponse;
@@ -34,7 +32,6 @@ import shop.gaship.gashipshoppingmall.dataprotection.exception.NotFoundDataProte
 @Configuration
 @ConfigurationProperties(prefix = "secure-key-manager")
 public class DataProtectionConfig {
-
     private String url;
     private String appKey;
     private String userInfoProtectionKey;
@@ -78,11 +75,6 @@ public class DataProtectionConfig {
             UnrecoverableKeyException | IOException | KeyManagementException e) {
             throw new NotFoundDataProtectionReposeData(errorMessage);
         }
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     public String getUrl() {

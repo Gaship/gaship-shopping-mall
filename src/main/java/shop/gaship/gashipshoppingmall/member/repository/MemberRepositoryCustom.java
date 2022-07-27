@@ -2,7 +2,7 @@ package shop.gaship.gashipshoppingmall.member.repository;
 
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
 /**
