@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.dummy;
 
 import java.time.LocalDate;
+import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 
 /**
@@ -30,6 +31,7 @@ public class MemberCreationRequestDummy {
             .phoneNumber("01012341234")
             .isUniqueEmail(true)
             .isVerifiedEmail(true)
+            .encodedEmailForSearch("example@nhn.com")
             .build();
     }
 }

@@ -24,7 +24,7 @@ public class Sha512 {
      * @return 암호화가 완료된 문자열을 반환합니다.
      * @throws NoSuchAlgorithmException 올바르지 않은 알고리즘을 설정 하였을 때 예외를 던집니다.
      */
-    public static String encrypt(String text) {
+    public String encryptPlainText(String text) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(text.getBytes());
@@ -40,7 +40,7 @@ public class Sha512 {
      * @param digest 암호화 된 해시값입니다.
      * @return 해시값을 16진수로 변환하여 반환합니다.
      */
-    private static String bytesToHex(byte[] digest) {
+    private String bytesToHex(byte[] digest) {
         StringBuilder builder = new StringBuilder();
 
         for (byte b : digest) {

@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.member.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,11 +56,8 @@ public class MemberControllerBaseFunctionTest {
         String body = objectMapper.writeValueAsString(MemberTestDummy.memberModifyRequestDto());
         doNothing().when(memberService).modifyMember(MemberTestDummy.memberModifyRequestDto());
 
-        mockMvc.perform(put("/api/members/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+        mockMvc.perform(put("/api/members/1").accept(MediaType.APPLICATION_JSON).content(body)
+            .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
         verify(memberService).modifyMember(any());
     }
@@ -68,10 +66,8 @@ public class MemberControllerBaseFunctionTest {
     @Test
     void deleteMemberTest() throws Exception {
         doNothing().when(memberService).removeMember(any(Integer.class));
-        mockMvc.perform(delete("/api/members/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+        mockMvc.perform(delete("/api/members/1").accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
         verify(memberService).removeMember(any());
     }
@@ -79,14 +75,11 @@ public class MemberControllerBaseFunctionTest {
     @DisplayName("회원 단건 조회 테스트")
     @Test
     void getMemberTest() throws Exception {
-        when(memberService.findMember(anyInt()))
-            .thenReturn(
-                MemberTestDummy.memberResponseDto());
+        when(memberService.findMember(anyInt())).thenReturn(MemberTestDummy.memberResponseDto());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/members/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/members/1").accept(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
         verify(memberService).findMember(any());
@@ -98,13 +91,9 @@ public class MemberControllerBaseFunctionTest {
         MemberPageResponseDto<MemberResponseDto, Member> memberResponseDto =
             MemberTestDummy.CreateTestMemberPageResponseDto();
         when(memberService.findMembers(any(Pageable.class))).thenReturn(memberResponseDto);
-        mockMvc.perform(get("/api/members")
-                .queryParam("page", "0")
-                .queryParam("size", "10")
-                .queryParam("sort", "title")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
+        mockMvc.perform(get("/api/members").queryParam("page", "0").queryParam("size", "10")
+                .queryParam("sort", "title").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
         verify(memberService).findMembers(PageRequest.of(0, 10, Sort.by("title")));
@@ -117,12 +106,10 @@ public class MemberControllerBaseFunctionTest {
 
         String body = objectMapper.writeValueAsString(MemberModifyByAdminDtoDummy.dummy());
 
-        mockMvc.perform(put("/api/members/{memberNo}/role", 1)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+        mockMvc.perform(
+            put("/api/members/{memberNo}/role", 1).accept(MediaType.APPLICATION_JSON).content(body)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
-        verify(memberService).modifyMemberByAdmin(any(MemberModifyByAdminDto.class));
+        then(memberService).should().modifyMemberByAdmin(any(MemberModifyByAdminDto.class));
     }
 }

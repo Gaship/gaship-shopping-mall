@@ -1,5 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.service;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
@@ -7,20 +9,22 @@ import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
+import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.ReissuePasswordQualificationResult;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
-
-import java.util.stream.Collectors;
 
 /**
  * 회원가입, member crud를 위해서 구현체에 필요한 메서드들을 정의한 인터페이스입니다.
  *
  * @author 최정우
  * @author 최겸준
+ * @author 조재철
  * @since 1.0
  */
 public interface MemberService {
@@ -67,7 +71,6 @@ public interface MemberService {
      *
      * @param memberNo 멤버고유정보
      * @return 멤버의 상세정보가 담긴 객체를 반환합니다.
-     *
      */
     MemberResponseDto findMember(Integer memberNo);
 
@@ -118,27 +121,18 @@ public interface MemberService {
      * @return 변환된 MemberResponseDto객체입니다.
      */
     default MemberResponseDto entityToMemberResponseDto(Member member, Aes aes) {
-        return MemberResponseDto.builder()
-                .memberNo(member.getMemberNo())
-                .memberStatus(member.getMemberStatusCodes().toString())
-                .email(aes.aesECBDecode(member.getEmail()))
-                .authorities(member.getRoleSet().stream()
-                        .map(Enum::toString)
-                        .collect(Collectors.toList()))
-                .password(member.getPassword())
-                .nickname(member.getNickname())
-                .name(member.getName())
-                .gender(member.getGender())
-                .phoneNumber(member.getPhoneNumber())
-                .birthDate(member.getBirthDate())
-                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
-                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
-                .registerDatetime(member.getRegisterDatetime())
-                .modifyDatetime(member.getModifiedDatetime())
-                .social(member.isSocial())
-                .build();
+        return MemberResponseDto.builder().memberNo(member.getMemberNo())
+            .memberStatus(member.getMemberStatusCodes().toString())
+            .email(aes.aesEcbDecode(member.getEmail())).authorities(
+                member.getRoleSet().stream().map(Enum::toString).collect(Collectors.toList()))
+            .password(member.getPassword()).nickname(member.getNickname()).name(member.getName())
+            .gender(member.getGender()).phoneNumber(member.getPhoneNumber())
+            .birthDate(member.getBirthDate())
+            .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+            .nextRenewalGradeDate(member.getNextRenewalGradeDate())
+            .registerDatetime(member.getRegisterDatetime())
+            .modifyDatetime(member.getModifiedDatetime()).social(member.isSocial()).build();
     }
-
 
     /**
      * 필수정보를 받아 새로운 회원을 반환하는 메서드입니다.
@@ -159,8 +153,8 @@ public interface MemberService {
             .password(memberCreationRequest.getPassword())
             .phoneNumber(memberCreationRequest.getPhoneNumber())
             .birthDate(memberCreationRequest.getBirthDate())
-            .gender(memberCreationRequest.getGender()).accumulatePurchaseAmount(0L)
-            .isSocial(false).build();
+            .gender(memberCreationRequest.getGender()).accumulatePurchaseAmount(0L).isSocial(false)
+            .build();
     }
 
     /**
@@ -172,7 +166,8 @@ public interface MemberService {
      * @return 신규 회원가입된 회원 객체를 반환합니다.
      */
     default Member creationRequestToMemberEntity(
-        MemberCreationRequestOauth memberCreationRequestOauth, StatusCode defaultStatus, MemberGrade defaultGrade) {
+        MemberCreationRequestOauth memberCreationRequestOauth, StatusCode defaultStatus,
+        MemberGrade defaultGrade) {
         return Member.builder().memberStatusCodes(defaultStatus).memberGrades(defaultGrade)
             .email(memberCreationRequestOauth.getEmail())
             .nickname(memberCreationRequestOauth.getNickName())
@@ -181,8 +176,7 @@ public interface MemberService {
             .phoneNumber(memberCreationRequestOauth.getPhoneNumber())
             .birthDate(memberCreationRequestOauth.getBirthDate())
             .gender(memberCreationRequestOauth.getGender()).accumulatePurchaseAmount(0L)
-            .isSocial(true)
-            .build();
+            .isSocial(true).build();
     }
 
     /**
@@ -199,4 +193,22 @@ public interface MemberService {
      * @return 마지막 회원번호입니다.
      */
     Integer findLastNo();
+
+
+    /**
+     * 닉네임을 통해서 데이터의 일부가 가려진 이메일을 얻어옵니다.
+     *
+     * @param nickname 멤버의 닉네임 입니다.
+     * @return 이메일 데이터 일부가 가려진 결과를 가진 객체를 반환합니다.
+     */
+    FindMemberEmailResponse findMemberEmailFromNickname(String nickname);
+
+    /**
+     * 비밀번호 재발급을 위해 멤버의 정보 일치한지 확인합니다.
+     *
+     * @param reissuePasswordRequest 비밀번호를 재발급 받기 위해 이름, 이메일 정보가 담긴 객체입니다.
+     * @return 재발급 자격 여부를 반환합니다.
+     */
+    ReissuePasswordQualificationResult checkReissuePasswordQualification(
+        ReissuePasswordRequest reissuePasswordRequest) throws NoSuchAlgorithmException;
 }

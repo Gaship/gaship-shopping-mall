@@ -20,7 +20,7 @@ public class SignInUserDetailDummy {
         return SignInUserDetailsDto.builder()
                 .authorities(List.of(dummyMember.getMemberGrades().getName()))
                 .email(dummyMember.getEmail())
-                .identifyNo(dummyMember.getMemberNo())
+                .memberNo(dummyMember.getMemberNo())
                 .hashedPassword(dummyMember.getPassword())
                 .isSocial(false)
                 .build();
