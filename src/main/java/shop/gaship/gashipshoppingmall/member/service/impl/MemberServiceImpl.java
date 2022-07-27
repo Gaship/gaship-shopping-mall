@@ -63,6 +63,10 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
 
+        if(memberRepository.existsByNickname(memberCreationRequest.getNickName())){
+            throw new DuplicatedNicknameException();
+        }
+
         Member savedMember =
             creationRequestToMemberEntity(encodePrivacyUserInformation(memberCreationRequest),
                 recommendMember, defaultStatus, defaultAuthority, defaultGrade);
@@ -224,7 +228,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         member.modifyMemberByAdmin(member.getNickname(), statusCode);
-        memberRepository.save(member);
     }
 
     /**

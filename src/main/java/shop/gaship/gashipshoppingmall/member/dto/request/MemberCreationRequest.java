@@ -59,6 +59,10 @@ public class MemberCreationRequest {
     private String nickName;
 
     @Length(max = 1)
+    @Pattern(
+            regexp = "^[남|녀]$",
+            message = "성별은 남, 녀만 입력이 가능합니다."
+    )
     private String gender;
 
     @NotNull(message = "이메일 인증을 완료해주세요.")

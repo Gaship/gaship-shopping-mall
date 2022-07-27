@@ -22,11 +22,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class BaseEntity {
     @CreatedDate
     @Column(name = "register_datetime", updatable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     public LocalDateTime registerDatetime;
 
     @LastModifiedDate
     @Column(name = "modified_datetime")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     public LocalDateTime modifiedDatetime;
 }
