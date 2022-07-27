@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
@@ -37,6 +38,7 @@ public class EmployeeController {
      * @param dto 직원을 생성하기위한 기본정보들이 포함되어있습니다.
      * @author 유호철
      */
+    @AdminAuthority
     @PostMapping
     public ResponseEntity<Void> addEmployee(@Valid @RequestBody CreateEmployeeRequestDto dto) {
         employeeService.addEmployee(dto);

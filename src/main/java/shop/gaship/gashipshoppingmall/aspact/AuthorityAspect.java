@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import shop.gaship.gashipshoppingmall.aspact.exception.InvalidAuthorityException;
@@ -18,6 +19,7 @@ import shop.gaship.gashipshoppingmall.aspact.exception.InvalidAuthorityException
  * @since 1.0
  */
 @Aspect
+@Component
 public class AuthorityAspect {
     private static final String MEMBER_AUTHORITY = "ROLE_MEMBER";
     private static final String MANAGER_AUTHORITY = "ROLE_MANAGER";
