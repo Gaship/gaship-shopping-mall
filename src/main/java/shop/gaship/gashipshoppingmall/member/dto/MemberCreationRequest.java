@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class MemberCreationRequest {
 
     @NotBlank
     @Length(max = 255)
+    @Email
     private String email;
 
     @NotBlank
@@ -41,10 +43,7 @@ public class MemberCreationRequest {
 
     @NotBlank
     @Length(max = 100)
-    @Pattern(
-        regexp = "^[가-힣]+",
-        message = "이름을 정확히 입력하여주십시오."
-    )
+    @Pattern(regexp = "^[가-힣]+", message = "이름을 정확히 입력하여주십시오.")
     private String name;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-dd")
@@ -52,20 +51,17 @@ public class MemberCreationRequest {
 
     @NotBlank
     @Length(max = 20)
-    @Pattern(
-        regexp = "^[가-힣a-zA-Z\\d]{0,20}",
-        message = "닉네임은 한글 또는 영문, 숫자만 입력이 가능합니다."
-    )
+    @Pattern(regexp = "^[가-힣a-zA-Z\\d]{0,20}", message = "닉네임은 한글 또는 영문, 숫자만 입력이 가능합니다.")
     private String nickName;
 
     @NotBlank
     @Length(max = 1)
     private String gender;
 
-    @NotNull
+    @NotNull(message = "이메일 중복확인 또는 이메일 검증이 필요합니다.")
     private Boolean isVerifiedEmail;
 
-    @NotNull
+    @NotNull(message = "이메일 중복확인 또는 이메일 검증이 필요합니다.")
     private Boolean isUniqueEmail;
 
     @NotNull

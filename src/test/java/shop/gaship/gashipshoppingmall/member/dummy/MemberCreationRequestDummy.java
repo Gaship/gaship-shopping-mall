@@ -30,6 +30,7 @@ public class MemberCreationRequestDummy {
             .phoneNumber("01012341234")
             .isUniqueEmail(true)
             .isVerifiedEmail(true)
+            .encodedEmailForSearch("example@nhn.com")
             .build();
     }
 }

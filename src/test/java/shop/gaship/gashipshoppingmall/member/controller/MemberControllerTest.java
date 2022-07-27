@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -13,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.security.NoSuchAlgorithmException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,10 +28,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailRequest;
 import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordQualificationResult;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
+import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
@@ -165,7 +170,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("이메일을 찾기 : 성공")
+    @DisplayName("이메일 찾기 : 성공")
     void memberEmailFromNicknameFindCaseSuccess() throws Exception {
         String obscuredEmail = "exam****@nhn.com";
         given(memberService.findMemberEmailFromNickname(anyString())).willReturn(
@@ -186,7 +191,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("이메일을 찾기 : 실패")
+    @DisplayName("이메일 찾기 : 실패")
     void memberEmailFromNicknameFindCaseFailure() throws Exception {
         given(memberService.findMemberEmailFromNickname(anyString())).willThrow(
             new MemberNotFoundException());
@@ -204,5 +209,56 @@ class MemberControllerTest {
             .andDo(print()).andExpect(status().is4xxClientError())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value("해당 멤버를 찾을 수 없습니다"));
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기 자격확인 : 성공")
+    void reissuePasswordCheckCaseSuccess() throws Exception {
+        given(memberService.checkReissuePasswordQualification(any(ReissuePasswordRequest.class)))
+            .willReturn(new ReissuePasswordQualificationResult(true));
+
+        ReissuePasswordRequest request = new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
+        mockMvc.perform(post("/members/find-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(request))
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.qualified").value(true))
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기 자격확인 : 이름이 달라 실패")
+    void reissuePasswordCheckCaseFailure1() throws Exception {
+        given(memberService.checkReissuePasswordQualification(any(ReissuePasswordRequest.class)))
+            .willThrow(new InvalidReissueQualificationException());
+
+        ReissuePasswordRequest request = new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
+        mockMvc.perform(post("/members/find-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(request))
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$.message")
+                .value("유효하지 않은 접근으로 인해 요청을 취하합니다."))
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기 자격확인 : 존재하는 사용자가 없어 실패")
+    void reissuePasswordCheckCaseFailure2() throws Exception {
+        given(memberService.checkReissuePasswordQualification(any(ReissuePasswordRequest.class)))
+            .willThrow(new MemberNotFoundException());
+
+        ReissuePasswordRequest request = new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
+
+        mockMvc.perform(post("/members/find-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(request))
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$.message")
+                .value("해당 멤버를 찾을 수 없습니다"))
+            .andDo(print());
     }
 }

@@ -37,8 +37,8 @@ class AesTest {
     @DisplayName("개인정보 암호화 및 복호화 후 같은지 비교")
     void compareSameAesECBEncodeAndAesECBDecode() {
         String text = "01012345678";
-        String encodedText = aes.aesECBEncode(text);
-        String decodedText = aes.aesECBDecode(encodedText);
+        String encodedText = aes.aesEcbEncode(text);
+        String decodedText = aes.aesEcbDecode(encodedText);
 
         assertThat(decodedText).isEqualTo(text);
     }
@@ -50,17 +50,17 @@ class AesTest {
         ReflectionTestUtils.setField(aes, "secretKeySpec",
             new SecretKeySpec("1234".repeat(30).getBytes(), "AES"));
         String text = "01012345678";
-        assertThatThrownBy(() -> aes.aesECBDecode(text))
+        assertThatThrownBy(() -> aes.aesEcbDecode(text))
             .isInstanceOf(DecodeFailureException.class);
     }
 
     @Test
     @DisplayName("개인정보 암호화 실패 오류 확인")
-    void aesECBEncodeFailure() {
+    void aesEcbEncodeFailure() {
         ReflectionTestUtils.setField(aes, "secretKeySpec",
             new SecretKeySpec("1234".repeat(30).getBytes(), "AES"));
         String text = "01012345678";
-        assertThatThrownBy(() -> aes.aesECBEncode(text))
+        assertThatThrownBy(() -> aes.aesEcbEncode(text))
             .isInstanceOf(EncodeFailureException.class);
     }
 

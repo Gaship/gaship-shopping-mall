@@ -19,29 +19,32 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
-import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
-import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordQualificationResult;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordRequest;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
+import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
@@ -73,8 +76,11 @@ class MemberServiceTest {
     @Autowired
     MemberService memberService;
 
-    @Autowired
+    @MockBean
     Aes aes;
+
+    @MockBean
+    Sha512 sha512;
 
     @MockBean
     MemberRepository memberRepository;
@@ -92,7 +98,7 @@ class MemberServiceTest {
 
         String plainEmailDummy = dummy.getEmail();
 
-        given(statusCodeRepository.findByStatusCodeName(MemberStatus.DORMANCY.name()))
+        given(statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name()))
             .willReturn(Optional.of(StatusCodeDummy.dummy()));
         given(memberGradeRepository.findByDefaultGrade()).willReturn(
             MemberGradeDummy.defaultDummy(
@@ -112,11 +118,12 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("이메일을 통해 현존하는 회원의 존재여부 확인 : 존재하는 경우")
-    void isAvailableEmailCaseFounded() {
+    void isAvailableEmailCaseFounded() throws NoSuchAlgorithmException {
+        given(sha512.encryptPlainText(anyString())).willReturn("a".repeat(10));
         given(memberRepository.findByEncodedEmailForSearch(anyString())).willReturn(
             Optional.of(MemberDummy.dummy()));
 
-        boolean isAvailableMember = memberService.isAvailableEmail(aes.aesECBEncode("example@nhn.com"));
+        boolean isAvailableMember = memberService.isAvailableEmail("example@nhn.com");
 
         assertThat(isAvailableMember).isTrue();
     }
@@ -135,6 +142,7 @@ class MemberServiceTest {
     @Test
     @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하는 경우")
     void findMemberFromEmailCaseFounded() throws NoSuchAlgorithmException {
+        given(sha512.encryptPlainText(anyString())).willReturn("a".repeat(10));
         given(memberRepository.findByEncodedEmailForSearch(anyString()))
             .willReturn(Optional.of(MemberDummy.dummy()));
 
@@ -213,7 +221,7 @@ class MemberServiceTest {
             .isInstanceOf(DuplicatedNicknameException.class)
             .hasMessage("중복된 닉네임입니다");
 
-        verify(memberRepository,times(1)).existsByNickname(any());
+        verify(memberRepository, times(1)).existsByNickname(any());
         verify(memberRepository, never())
             .findById(any());
     }
@@ -279,7 +287,8 @@ class MemberServiceTest {
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(dummy.getPassword());
         assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(dummy.getMemberNo());
         assertThat(userDetailsDto.getIsSocial()).isEqualTo(false);
-        assertThat(userDetailsDto.getAuthorities()).isEqualTo(List.of(dummy.getMemberGrades().getName()));
+        assertThat(userDetailsDto.getAuthorities()).isEqualTo(
+            List.of(dummy.getMemberGrades().getName()));
         assertThat(userDetailsDto).isInstanceOf(SignInUserDetailsDto.class);
     }
 
@@ -320,13 +329,52 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("이메일과 이름을 통해서 비밀번호 발급 자격을 확인합니다 : 성공")
-    void checkReissuePasswordQualificationCaseSuccess() {
-//        TODO : 엔티티 병합 후 진행예정
+    void checkReissuePasswordQualificationCaseSuccess() throws NoSuchAlgorithmException {
+        given(sha512.encryptPlainText(anyString())).willReturn("a".repeat(10));
+        given(memberRepository.findByEncodedEmailForSearch(anyString()))
+            .willReturn(Optional.of(MemberDummy.dummy()));
+
+        ReissuePasswordRequest reissuePasswordRequest =
+            new ReissuePasswordRequest("example@nhn.com", "example");
+//            new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
+
+        ReissuePasswordQualificationResult result =
+            memberService.checkReissuePasswordQualification(reissuePasswordRequest);
+
+        assertThat(result.getQualified()).isTrue();
     }
 
     @Test
-    @DisplayName("이메일과 이름을 통해서 비밀번호 발급 자격을 확인합니다 : 실패")
-    void checkReissuePasswordQualificationCaseFailure() {
-//        TODO : 엔티티 병합 후 진행예정
+    @DisplayName("이메일과 이름을 통해서 비밀번호 발급 자격을 확인합니다 : 이름이 달라 실패")
+    void checkReissuePasswordQualificationCaseFailure1() throws NoSuchAlgorithmException {
+        given(sha512.encryptPlainText(anyString())).willReturn("a".repeat(10));
+        given(memberRepository.findByEncodedEmailForSearch(anyString()))
+            .willReturn(Optional.of(MemberDummy.dummy()));
+
+        ReissuePasswordRequest reissuePasswordRequest =
+            new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
+
+
+        assertThatThrownBy(() ->
+            memberService.checkReissuePasswordQualification(reissuePasswordRequest))
+            .isInstanceOf(InvalidReissueQualificationException.class)
+            .hasMessage("유효하지 않은 접근으로 인해 요청을 취하합니다.");
+    }
+
+    @Test
+    @DisplayName("이메일과 이름을 통해서 비밀번호 발급 자격을 확인합니다 : 이메일이 없어 실패")
+    void checkReissuePasswordQualificationCaseFailure2() throws NoSuchAlgorithmException {
+        given(sha512.encryptPlainText(anyString())).willReturn("a".repeat(10));
+        given(memberRepository.findByEncodedEmailForSearch(anyString()))
+            .willReturn(Optional.empty());
+
+        ReissuePasswordRequest reissuePasswordRequest =
+            new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
+
+
+        assertThatThrownBy(() ->
+            memberService.checkReissuePasswordQualification(reissuePasswordRequest))
+            .isInstanceOf(MemberNotFoundException.class)
+            .hasMessage("해당 멤버를 찾을 수 없습니다");
     }
 }

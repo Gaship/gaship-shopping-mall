@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.service.impl;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Objects;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
-import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
+import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
@@ -22,6 +21,7 @@ import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
+import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
@@ -31,6 +31,7 @@ import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeReposito
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
 
 /**
  * MemberService를 구현하는 클래스입니다.
@@ -69,10 +70,10 @@ public class MemberServiceImpl implements MemberService {
         Member recommendMember = memberRepository
             .findById(memberCreationRequest.getRecommendMemberNo())
             .orElse(null);
-        StatusCode defaultStatus = statusCodeRepository.findById(MEMBER_STATUS_ID)
-            .orElseThrow(StatusCodeNotFoundException::new);
-        MemberGrade defaultGrade = memberGradeRepository.findById(MEMBER_GRADE_ID)
-            .orElseThrow(MemberGradeNotFoundException::new);
+        StatusCode defaultStatus =
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
+                .orElseThrow(StatusCodeNotFoundException::new);
+        MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
 
         Member savedMember = creationRequestToMemberEntity(
             encodePrivacyUserInformation(memberCreationRequest),
@@ -111,12 +112,12 @@ public class MemberServiceImpl implements MemberService {
     private MemberCreationRequest encodePrivacyUserInformation(
         MemberCreationRequest memberCreationRequest) throws NoSuchAlgorithmException {
         String email = memberCreationRequest.getEmail();
-        memberCreationRequest.setEmail(aes.aesECBEncode(memberCreationRequest.getEmail()));
-        memberCreationRequest.setName(aes.aesECBEncode(memberCreationRequest.getName()));
+        memberCreationRequest.setEmail(aes.aesEcbEncode(memberCreationRequest.getEmail()));
+        memberCreationRequest.setName(aes.aesEcbEncode(memberCreationRequest.getName()));
         memberCreationRequest.setPhoneNumber(
-            aes.aesECBEncode(memberCreationRequest.getPhoneNumber()));
+            aes.aesEcbEncode(memberCreationRequest.getPhoneNumber()));
         memberCreationRequest.setPassword(memberCreationRequest.getPassword());
-        memberCreationRequest.setEncodedEmailForSearch(sha512.encrypt(email));
+        memberCreationRequest.setEncodedEmailForSearch(sha512.encryptPlainText(email));
 
         return memberCreationRequest;
     }
@@ -131,13 +132,13 @@ public class MemberServiceImpl implements MemberService {
     private MemberCreationRequestOauth encodePrivacyUserInformation(
         MemberCreationRequestOauth memberCreationRequestOauth) throws NoSuchAlgorithmException {
         String email = memberCreationRequestOauth.getEmail();
-        memberCreationRequestOauth.setEmail(aes.aesECBEncode(email));
-        memberCreationRequestOauth.setName(aes.aesECBEncode(memberCreationRequestOauth.getName()));
-        memberCreationRequestOauth.setEncodedEmailForSearch(sha512.encrypt(email));
+        memberCreationRequestOauth.setEmail(aes.aesEcbEncode(email));
+        memberCreationRequestOauth.setName(aes.aesEcbEncode(memberCreationRequestOauth.getName()));
+        memberCreationRequestOauth.setEncodedEmailForSearch(sha512.encryptPlainText(email));
 
         if (!Objects.isNull(memberCreationRequestOauth.getPhoneNumber())) {
             memberCreationRequestOauth.setPhoneNumber(
-                aes.aesECBEncode(memberCreationRequestOauth.getPhoneNumber()));
+                aes.aesEcbEncode(memberCreationRequestOauth.getPhoneNumber()));
         }
 
         memberCreationRequestOauth.setPassword(memberCreationRequestOauth.getPassword());
@@ -160,7 +161,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto findMemberFromEmail(String email) throws NoSuchAlgorithmException {
 
-        Member member = memberRepository.findByEncodedEmailForSearch(sha512.encrypt(email))
+        Member member = memberRepository.findByEncodedEmailForSearch(sha512.encryptPlainText(email))
             .orElseThrow(MemberNotFoundException::new);
         return entityToMemberResponseDto(member, aes);
     }
@@ -226,18 +227,21 @@ public class MemberServiceImpl implements MemberService {
 
         double idPartHalfLength = emailIdPart.length() / 2.0;
         String obscuredEmail =
-            emailIdPart.substring(0, (int) Math.ceil(idPartHalfLength)) +
-                "*".repeat((int) Math.floor(idPartHalfLength)) +
-                emailDomainPart;
+            emailIdPart.substring(0, (int) Math.ceil(idPartHalfLength))
+                + "*".repeat((int) Math.floor(idPartHalfLength))
+                + emailDomainPart;
 
         return new FindMemberEmailResponse(obscuredEmail);
     }
 
     @Override
     public ReissuePasswordQualificationResult checkReissuePasswordQualification(
-        ReissuePasswordRequest reissuePasswordRequest) {
-//        TODO : 엔티티 병합 후 진행예정
-        return null;
+        ReissuePasswordRequest reissuePasswordRequest) throws NoSuchAlgorithmException {
+        MemberResponseDto member = findMemberFromEmail(reissuePasswordRequest.getEmail());
+        if (Objects.equals(member.getName(), reissuePasswordRequest.getName())) {
+            return new ReissuePasswordQualificationResult(true);
+        }
+        throw new InvalidReissueQualificationException();
     }
 
     @Override

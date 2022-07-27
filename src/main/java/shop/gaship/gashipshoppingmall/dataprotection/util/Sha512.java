@@ -22,7 +22,7 @@ public class Sha512 {
      * @return
      * @throws NoSuchAlgorithmException
      */
-    public static String encrypt(String text) throws NoSuchAlgorithmException {
+    public String encryptPlainText(String text) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-512");
         md.update(text.getBytes());
 
@@ -35,7 +35,7 @@ public class Sha512 {
      * @param digest
      * @return
      */
-    private static String bytesToHex(byte[] digest) {
+    private String bytesToHex(byte[] digest) {
         StringBuilder builder = new StringBuilder();
 
         for (byte b : digest) {

@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
-import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
@@ -18,6 +18,7 @@ import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.MembersRole;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -113,7 +114,7 @@ public interface MemberService {
         return MemberResponseDto.builder()
             .memberNo(member.getMemberNo())
             .memberStatus(member.getMemberStatusCodes().toString())
-            .email(aes.aesECBDecode(member.getEmail()))
+            .email(aes.aesEcbDecode(member.getEmail()))
             .authorities(member.getRoleSet().stream()
                 .map(Enum::toString)
                 .collect(Collectors.toList()))
@@ -142,9 +143,9 @@ public interface MemberService {
      * @return 신규 회원가입된 회원 객체를 반환합니다.
      */
     default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest,
-        @Nullable Member recommendMember,
-        StatusCode defaultStatus,
-        MemberGrade defaultGrade) {
+                                                 @Nullable Member recommendMember,
+                                                 StatusCode defaultStatus,
+                                                 MemberGrade defaultGrade) {
 
         return Member.builder()
             .recommendMember(recommendMember)
@@ -176,7 +177,7 @@ public interface MemberService {
         StatusCode defaultStatus,
         MemberGrade defaultGrade) {
 
-        Member build = Member.builder()
+        return Member.builder()
             .memberStatusCodes(defaultStatus)
             .memberGrades(defaultGrade)
             .email(memberCreationRequestOauth.getEmail())
@@ -192,8 +193,6 @@ public interface MemberService {
             .roleSet(Set.of(MembersRole.ROLE_USER))
             .encodedEmailForSearch(memberCreationRequestOauth.getEncodedEmailForSearch())
             .build();
-
-        return build;
     }
 
     /**
@@ -222,5 +221,5 @@ public interface MemberService {
      * @return 재발급 자격 여부를 반환합니다.
      */
     ReissuePasswordQualificationResult checkReissuePasswordQualification(
-        ReissuePasswordRequest reissuePasswordRequest);
+        ReissuePasswordRequest reissuePasswordRequest) throws NoSuchAlgorithmException;
 }

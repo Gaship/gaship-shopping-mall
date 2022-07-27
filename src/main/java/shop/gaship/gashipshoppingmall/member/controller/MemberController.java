@@ -4,12 +4,18 @@ import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.member.dto.EmailPresence;
 import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailRequest;
 import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
@@ -19,14 +25,12 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberNumberPresence;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordQualificationResult;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * member 등록, 수정, 삭제, 회원등록과 관련된 요청을 수행하는 restController 입니다.
@@ -49,10 +53,10 @@ public class MemberController {
      */
     @PostMapping("/members")
     public ResponseEntity<Void> memberAdd(
-            @Valid @RequestBody MemberCreationRequest memberCreationRequest)
+        @Valid @RequestBody MemberCreationRequest memberCreationRequest)
         throws NoSuchAlgorithmException {
-        if (memberCreationRequest.getIsUniqueEmail() &&
-                memberCreationRequest.getIsVerifiedEmail()) {
+        if (memberCreationRequest.getIsUniqueEmail()
+            && memberCreationRequest.getIsVerifiedEmail()) {
             memberService.addMember(memberCreationRequest);
             return ResponseEntity.created(URI.create("/members")).body(null);
         }
@@ -66,8 +70,9 @@ public class MemberController {
      * @param memberCreationRequestOauth 소셜 회원가입의 양식 데이터 객체입니다.
      */
     @PostMapping(value = "/members", params = "isOauth")
-    public ResponseEntity<Void> memberAdd(@RequestBody MemberCreationRequestOauth memberCreationRequestOauth,
-            @RequestParam String isOauth) throws NoSuchAlgorithmException {
+    public ResponseEntity<Void> memberAdd(
+        @RequestBody MemberCreationRequestOauth memberCreationRequestOauth,
+        @RequestParam String isOauth) throws NoSuchAlgorithmException {
         if (Boolean.parseBoolean(isOauth)) {
             memberService.addMember(memberCreationRequestOauth);
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -94,9 +99,9 @@ public class MemberController {
      */
     @GetMapping(value = "/members/retrieve", params = "nickname")
     public ResponseEntity<MemberNumberPresence> retrieveFromNickname(
-            @RequestParam String nickname) {
+        @RequestParam String nickname) {
         return ResponseEntity.ok(new MemberNumberPresence(
-                memberService.findMemberFromNickname(nickname).getMemberNo()));
+            memberService.findMemberFromNickname(nickname).getMemberNo()));
     }
 
     // TODO : 자바독 작성필요
@@ -112,9 +117,8 @@ public class MemberController {
      */
     @GetMapping("/members/lastNo")
     public ResponseEntity<Integer> retrieveLastNo() {
-        ResponseEntity<Integer> body = ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
             .body(memberService.findLastNo());
-        return body;
     }
 
     /**
@@ -124,11 +128,12 @@ public class MemberController {
      * @return the response entity
      */
     @PutMapping("/members/{memberNo}")
-    public ResponseEntity<Void> memberModify(@Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
+    public ResponseEntity<Void> memberModify(
+        @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
         memberService.modifyMember(memberModifyRequestDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+            .contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     /**
@@ -141,8 +146,8 @@ public class MemberController {
     public ResponseEntity<Void> memberRemove(@PathVariable Integer memberNo) {
         memberService.removeMember(memberNo);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+            .contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     /**
@@ -155,8 +160,8 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable Integer memberNo) {
         MemberResponseDto memberResponseDto = memberService.findMember(memberNo);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(memberResponseDto);
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(memberResponseDto);
     }
 
     /**
@@ -170,8 +175,8 @@ public class MemberController {
         throws NoSuchAlgorithmException {
         MemberResponseDto memberResponseDto = memberService.findMemberFromEmail(email);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(memberResponseDto);
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(memberResponseDto);
     }
 
     /**
@@ -181,18 +186,19 @@ public class MemberController {
      * @return the response entity
      */
     @GetMapping("/members")
-    public ResponseEntity<MemberPageResponseDto<MemberResponseDto, Member>> memberList(Pageable pageable) {
+    public ResponseEntity<MemberPageResponseDto<MemberResponseDto, Member>> memberList(
+        Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(memberService.findMembers(pageable));
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(memberService.findMembers(pageable));
     }
 
     @PutMapping("/admins/{adminNo}/members")
     public ResponseEntity<Void> memberModifyByAdmin(MemberModifyRequestDto request) {
         memberService.modifyMember(request);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+            .contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     /**
@@ -207,5 +213,19 @@ public class MemberController {
 
         return ResponseEntity.ok(
             memberService.findMemberEmailFromNickname(findMemberEmailRequest.getNickname()));
+    }
+
+    /**
+     * 멤버의 비밀번호 재발급 자격의 여부를 체크하는 메서드입니다.
+     *
+     * @param reissuePasswordRequest 멤버의 개인정보의 일부입니다.
+     * @return 비밀번호 재발급 자격 결과가 담긴 객체입니다.
+     */
+    @PostMapping("/members/find-password")
+    public ResponseEntity<ReissuePasswordQualificationResult> reissuePasswordCheck(
+        @Valid @RequestBody ReissuePasswordRequest reissuePasswordRequest)
+        throws NoSuchAlgorithmException {
+        return ResponseEntity.ok(
+            memberService.checkReissuePasswordQualification(reissuePasswordRequest));
     }
 }

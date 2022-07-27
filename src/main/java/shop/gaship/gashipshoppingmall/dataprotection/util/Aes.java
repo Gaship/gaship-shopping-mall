@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import shop.gaship.gashipshoppingmall.dataprotection.exception.DecodeFailureException;
 import shop.gaship.gashipshoppingmall.dataprotection.exception.EncodeFailureException;
@@ -16,11 +17,17 @@ import shop.gaship.gashipshoppingmall.dataprotection.exception.EncodeFailureExce
  */
 @Component
 public class Aes {
-    private static final String TRANSFORMATION = "AES/ECB/PKCS5Padding";
     private static final String ENCODE_ERROR_MESSAGE = "정보 암호화에 실패했습니다.";
     private static final String DECODE_ERROR_MESSAGE = "정보 복호화에 실패했습니다.";
     private final SecretKeySpec secretKeySpec;
+    @Value("${aes.algorithm}")
+    private String transformation;
 
+    /**
+     * Aes 객체를 생성하기 위한 생성자입니다.
+     *
+     * @param userInformationProtectionValue salt를 위한 일반 텍스트 문자열입니다.
+     */
     public Aes(String userInformationProtectionValue) {
         this.secretKeySpec = new SecretKeySpec(
             userInformationProtectionValue.getBytes(StandardCharsets.UTF_8),
@@ -36,9 +43,9 @@ public class Aes {
      * @return 암호화된 문자열입니다.
      * @throws EncodeFailureException EncodeFailureException
      */
-    public String aesECBEncode(String plainText) {
+    public String aesEcbEncode(String plainText) {
         try {
-            Cipher c = Cipher.getInstance(TRANSFORMATION);
+            Cipher c = Cipher.getInstance(transformation);
             c.init(Cipher.ENCRYPT_MODE, this.secretKeySpec);
 
             byte[] encrpytionByte = c.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
@@ -56,9 +63,9 @@ public class Aes {
      * @return 복호화 된 평문입니다.
      * @throws DecodeFailureException DecodeFailureException
      */
-    public String aesECBDecode(String encodedText) {
+    public String aesEcbDecode(String encodedText) {
         try {
-            Cipher c = Cipher.getInstance(TRANSFORMATION);
+            Cipher c = Cipher.getInstance(transformation);
             c.init(Cipher.DECRYPT_MODE, this.secretKeySpec);
 
             byte[] decodedByte = Base64.decodeBase64(encodedText);
