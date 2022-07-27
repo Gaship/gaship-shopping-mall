@@ -73,7 +73,8 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
         return from(member)
                 .where(member.nextRenewalGradeDate.eq(nextRenewalGradeDate))
                 .select(Projections.bean(AdvancementTargetResponseDto.class,
-                                member.memberNo)
+                                member.memberNo,
+                                member.nextRenewalGradeDate)
                         )
                 .fetch();
     }

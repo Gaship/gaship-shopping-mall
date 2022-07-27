@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.membergrade.dto.response;
 
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,4 +14,5 @@ import lombok.Setter;
 @Setter
 public class AdvancementTargetResponseDto {
     private Integer memberNo;
+    private LocalDate nextRenewalGradeDate;
 }
