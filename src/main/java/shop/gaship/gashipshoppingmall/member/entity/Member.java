@@ -30,6 +30,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * 회원의 엔티티 클래스입니다.
  *
  * @author 김민수
+ * @author 김세미
  * @since 1.0
  */
 @Entity
@@ -131,5 +132,18 @@ public class Member extends BaseEntity {
         return Objects.hashCode(memberNo, recommendMember, memberStatusCodes, memberGrades,
             memberTags, userAuthorityNo, email, password, phoneNumber, name, birthDate, nickname,
             gender, accumulatePurchaseAmount, nextRenewalGradeDate, isSocial);
+    }
+
+    /**
+     * 회원의 등급 정보 수정.
+     *
+     * @param memberGrade 갱신할 회원등급 (MemberGrade)
+     * @param nextRenewalGradeDate 다음 등급 갱신 일자 (LocalDate)
+     * @author 김세미
+     */
+    public void modifyGrade(MemberGrade memberGrade, LocalDate nextRenewalGradeDate) {
+        this.memberGrades = memberGrade;
+        this.nextRenewalGradeDate = nextRenewalGradeDate;
+        this.accumulatePurchaseAmount = 0L;
     }
 }
