@@ -166,6 +166,7 @@ class MemberControllerTest {
             .andExpect(jsonPath("$.identifyNo").value(dummy.getIdentifyNo()))
             .andExpect(jsonPath("$.email").value(dummy.getEmail()))
             .andExpect(jsonPath("$.hashedPassword").value(dummy.getHashedPassword()))
+            .andExpect(jsonPath("$.isSocial").value(false))
             .andExpect(jsonPath("$.authorities[0]").value(dummy.getAuthorities().get(0)));
     }
 

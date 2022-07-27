@@ -56,6 +56,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         member.memberNo,
                         member.email,
                         member.password,
+                        member.isSocial,
                         Projections.list(member.userAuthorityNo.statusCodeName))
                 )
                 .fetchOne()

@@ -22,6 +22,7 @@ public class SignInUserDetailDummy {
                 .email(dummyMember.getEmail())
                 .identifyNo(dummyMember.getMemberNo())
                 .hashedPassword(dummyMember.getPassword())
+                .isSocial(false)
                 .build();
     }
 }

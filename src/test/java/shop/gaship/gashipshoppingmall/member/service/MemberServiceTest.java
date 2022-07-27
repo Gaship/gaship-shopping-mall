@@ -270,6 +270,7 @@ class MemberServiceTest {
         assertThat(userDetailsDto.getEmail()).isEqualTo(dummy.getEmail());
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(dummy.getPassword());
         assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(dummy.getMemberNo());
+        assertThat(userDetailsDto.getIsSocial()).isEqualTo(false);
         assertThat(userDetailsDto.getAuthorities()).isEqualTo(List.of(dummy.getMemberGrades().getName()));
         assertThat(userDetailsDto).isInstanceOf(SignInUserDetailsDto.class);
     }
