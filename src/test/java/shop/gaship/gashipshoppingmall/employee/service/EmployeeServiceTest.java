@@ -25,6 +25,7 @@ import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongStatusCodeException;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.employee.service.impl.EmployeeServiceImpl;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -245,6 +246,40 @@ class EmployeeServiceTest {
 
         assertThat(allEmployees.get(0).getEmail()).isEqualTo(getEmployee.getEmail());
         assertThat(allEmployees.get(1).getName()).isEqualTo(employee1.getName());
+
+    }
+
+    @Test
+    @DisplayName("로그인하는 직원의 계정 정보를 얻어온다. : 성공")
+    void findSignInEmployeeFromEmailCaseSuccess() {
+        SignInUserDetailsDto dto =
+            new SignInUserDetailsDto(employee.getEmployeeNo(),
+                employee.getEmail(),
+                employee.getPassword(),
+                List.of("ROLE_ADMIN")
+                );
+
+        given(repository.findSignInEmployeeUserDetail(anyString()))
+            .willReturn(Optional.of(dto));
+
+        SignInUserDetailsDto result =
+            service.findSignInEmployeeFromEmail("exam@nhn.com");
+
+
+        assertThat(result).isNotNull().isEqualTo(dto);
+    }
+
+    @Test
+    @DisplayName("로그인하는 직원의 계정 정보를 얻어온다. : 실패")
+    void findSignInEmployeeFromEmailCaseFailure() {
+        given(repository.findSignInEmployeeUserDetail(anyString()))
+            .willThrow(new EmployeeNotFoundException());
+
+
+        assertThatThrownBy(() -> repository.findSignInEmployeeUserDetail("exam@nhn.com"))
+            .isInstanceOf(EmployeeNotFoundException.class)
+            .hasMessage("직원이 존재하지 않습니다.");
+
 
     }
 }
