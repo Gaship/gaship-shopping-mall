@@ -70,4 +70,7 @@ public class MemberCreationRequest {
 
     @NotNull(message = "이메일 중복확인을 진행 후 회원가입해주세요.")
     private Boolean isUniqueEmail;
+
+    @NotNull
+    private String encodedEmailForSearch;
 }

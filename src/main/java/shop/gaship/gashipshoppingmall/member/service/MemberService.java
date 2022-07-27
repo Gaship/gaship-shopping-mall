@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.member.service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
@@ -12,6 +13,8 @@ import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+
+import java.util.stream.Collectors;
 
 /**
  * 회원가입, member crud를 위해서 구현체에 필요한 메서드들을 정의한 인터페이스입니다.
@@ -114,15 +117,26 @@ public interface MemberService {
      * @param member 멤버 엔티티 객체입니다.
      * @return 변환된 MemberResponseDto객체입니다.
      */
-    default MemberResponseDto entityToMemberResponseDto(Member member) {
-        return MemberResponseDto.builder().email(member.getEmail()).password(member.getPassword())
-            .phoneNumber(member.getPhoneNumber()).name(member.getName())
-            .birthDate(member.getBirthDate()).nickname(member.getNickname())
-            .gender(member.getGender())
-            .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
-            .birthDate(member.getNextRenewalGradeDate())
-            .registerDatetime(member.getRegisterDatetime())
-            .modifyDatetime(member.getModifiedDatetime()).build();
+    default MemberResponseDto entityToMemberResponseDto(Member member, Aes aes) {
+        return MemberResponseDto.builder()
+                .memberNo(member.getMemberNo())
+                .memberStatus(member.getMemberStatusCodes().toString())
+                .email(aes.aesECBDecode(member.getEmail()))
+                .authorities(member.getRoleSet().stream()
+                        .map(Enum::toString)
+                        .collect(Collectors.toList()))
+                .password(member.getPassword())
+                .nickname(member.getNickname())
+                .name(member.getName())
+                .gender(member.getGender())
+                .phoneNumber(member.getPhoneNumber())
+                .birthDate(member.getBirthDate())
+                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
+                .registerDatetime(member.getRegisterDatetime())
+                .modifyDatetime(member.getModifiedDatetime())
+                .social(member.isSocial())
+                .build();
     }
 
 
@@ -138,7 +152,6 @@ public interface MemberService {
     default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest,
                                                  @Nullable Member recommendMember,
                                                  StatusCode defaultStatus,
-                                                 StatusCode defaultAuthority,
                                                  MemberGrade defaultGrade) {
         return Member.builder().recommendMember(recommendMember).memberStatusCodes(defaultStatus)
             .memberGrades(defaultGrade).email(memberCreationRequest.getEmail())
@@ -147,7 +160,7 @@ public interface MemberService {
             .phoneNumber(memberCreationRequest.getPhoneNumber())
             .birthDate(memberCreationRequest.getBirthDate())
             .gender(memberCreationRequest.getGender()).accumulatePurchaseAmount(0L)
-            .userAuthorityNo(defaultAuthority).isSocial(false).build();
+            .isSocial(false).build();
     }
 
     /**
@@ -159,8 +172,7 @@ public interface MemberService {
      * @return 신규 회원가입된 회원 객체를 반환합니다.
      */
     default Member creationRequestToMemberEntity(
-        MemberCreationRequestOauth memberCreationRequestOauth, StatusCode defaultStatus,
-        StatusCode defaultAuthority, MemberGrade defaultGrade) {
+        MemberCreationRequestOauth memberCreationRequestOauth, StatusCode defaultStatus, MemberGrade defaultGrade) {
         return Member.builder().memberStatusCodes(defaultStatus).memberGrades(defaultGrade)
             .email(memberCreationRequestOauth.getEmail())
             .nickname(memberCreationRequestOauth.getNickName())
@@ -169,7 +181,8 @@ public interface MemberService {
             .phoneNumber(memberCreationRequestOauth.getPhoneNumber())
             .birthDate(memberCreationRequestOauth.getBirthDate())
             .gender(memberCreationRequestOauth.getGender()).accumulatePurchaseAmount(0L)
-            .userAuthorityNo(defaultAuthority).isSocial(true).build();
+            .isSocial(true)
+            .build();
     }
 
     /**

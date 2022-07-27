@@ -2,6 +2,8 @@ package shop.gaship.gashipshoppingmall.member.dto.response;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,16 +17,19 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MemberResponseDto {
-    private final String recommendMemberNickname;
-    private final String email;
-    private final String password;
-    private final String phoneNumber;
-    private final String name;
-    private final LocalDate birthDate;
-    private final String nickname;
-    private final String gender;
-    private final Long accumulatePurchaseAmount;
-    private final LocalDate nextRenewalGradeDate;
-    private final LocalDateTime registerDatetime;
-    private final LocalDateTime modifyDatetime;
+    private Integer memberNo;
+    private String memberStatus;
+    private String email;
+    private List<String> authorities;
+    private String password;
+    private String nickname;
+    private String name;
+    private String gender;
+    private String phoneNumber;
+    private LocalDate birthDate;
+    private Long accumulatePurchaseAmount;
+    private LocalDate nextRenewalGradeDate;
+    private LocalDateTime registerDatetime;
+    private LocalDateTime modifyDatetime;
+    private Boolean social;
 }

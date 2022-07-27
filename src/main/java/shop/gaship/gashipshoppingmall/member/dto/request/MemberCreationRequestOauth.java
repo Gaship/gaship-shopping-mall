@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.member.dto.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -54,4 +55,7 @@ public class MemberCreationRequestOauth {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-dd")
     private LocalDate birthDate;
+
+    @NotNull
+    private String encodedEmailForSearch;
 }
