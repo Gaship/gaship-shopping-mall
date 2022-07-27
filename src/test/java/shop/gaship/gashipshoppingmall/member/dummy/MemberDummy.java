@@ -1,26 +1,24 @@
 package shop.gaship.gashipshoppingmall.member.dummy;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Set;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.entity.MembersRole;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
-import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.member <br/>
- * fileName       : MemberDummy <br/>
- * author         : 김민수 <br/>
- * date           : 2022/07/10 <br/>
- * description    : <br/>
- * ===========================================================  <br/>
- * DATE              AUTHOR             NOTE                    <br/>
- * -----------------------------------------------------------  <br/>
- * 2022/07/10           김민수               최초 생성                         <br/>
+ * packageName    : shop.gaship.gashipshoppingmall.member <br/> fileName       : MemberDummy <br/>
+ * author         : 김민수 <br/> date           : 2022/07/10 <br/> description    : <br/>
+ * ===========================================================  <br/> DATE              AUTHOR
+ *       NOTE                    <br/> -----------------------------------------------------------
+ * <br/> 2022/07/10           김민수               최초 생성                         <br/>
  */
 public class MemberDummy extends Member {
-    private MemberDummy() {}
+
+    private MemberDummy() {
+    }
 
     public static Member dummy() {
         StatusCode status = StatusCode.builder()
@@ -34,15 +32,11 @@ public class MemberDummy extends Member {
             .recommendMember(null)
             .memberStatusCodes(status)
             .memberGrades(MemberGradeDummy.dummy(
-                MemberGradeDtoDummy.requestDummy("name",0L),
+                MemberGradeDtoDummy.requestDummy("name", 0L),
                 StatusCodeDummy.dummy())
             )
-            .userAuthorityNo(StatusCode.builder()
-                .statusCodeName("ROLE_USER")
-                .groupCodeName("ex")
-                .priority(1)
-                .build())
-            .email("example@nhn.com")
+            .roleSet(Set.of(MembersRole.ROLE_USER))
+            .email("example@nhn.com") // TODO : 해당 email을 AES로 encoding을 해야함
             .password("password")
             .name("example")
             .nickname("example nickname")
@@ -52,6 +46,7 @@ public class MemberDummy extends Member {
             .accumulatePurchaseAmount(100000L)
             .nextRenewalGradeDate(LocalDate.of(2022, 9, 16))
             .isSocial(false)
+            .encodedEmailForSearch("example@nhn.com") // TODO : 해당 email을 SHA-512로 encoding 해야함
             .build();
     }
 }

@@ -11,6 +11,7 @@ import shop.gaship.gashipshoppingmall.member.entity.QMember;
  * MemberRepositoryCustom 인터페이스에서 제작한 커스텀 쿼리를 구현하는 클래스입니다.
  *
  * @author 김민수
+ * @author 조재철
  * @since 1.0
  */
 public class MemberRepositoryImpl extends QuerydslRepositorySupport
@@ -20,12 +21,12 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Optional<Member> findByEmail(String email) {
+    public Optional<Member> findByEncodedEmailForSearch(String email) {
         QMember member = QMember.member;
 
         return Optional.ofNullable(
             from(member)
-                .where(member.email.eq(email))
+                .where(member.encodedEmailForSearch.eq(email))
                 .select(member)
                 .fetchOne()
         );
@@ -55,8 +56,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         member.memberNo,
                         member.email,
                         member.password,
-                        member.isSocial,
-                        Projections.list(member.userAuthorityNo.statusCodeName))
+                        member.roleSet)
                 )
                 .fetchOne()
             );

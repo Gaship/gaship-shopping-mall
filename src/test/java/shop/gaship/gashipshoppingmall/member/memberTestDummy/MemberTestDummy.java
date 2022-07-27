@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.memberTestDummy;
 
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -9,11 +10,10 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.entity.MembersRole;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
-import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,7 +70,6 @@ public class MemberTestDummy {
     public static MemberResponseDto memberResponseDto() {
 
         return MemberResponseDto.builder()
-                .recommendMemberNickname(recommendMemberNickname)
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -110,7 +109,6 @@ public class MemberTestDummy {
     public static MemberPageResponseDto<MemberResponseDto,Member> CreateTestMemberPageResponseDto(){
         Pageable pageable = PageRequest.of(0,10);
         Function<Member, MemberResponseDto> fn = (Member member)-> MemberResponseDto.builder()
-                .recommendMemberNickname(null)
                 .email(member.getEmail())
                 .password(member.getPassword())
                 .phoneNumber(member.getPhoneNumber())
@@ -138,7 +136,7 @@ public class MemberTestDummy {
                     MemberGradeDtoDummy.requestDummy("일반", 0L),
                     StatusCodeDummy.dummy()
                 ))
-                .userAuthorityNo(StatusCodeDummy.dummy())
+                .roleSet(Set.of(MembersRole.ROLE_USER))
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -161,7 +159,7 @@ public class MemberTestDummy {
                     MemberGradeDtoDummy.requestDummy("일반", 0L),
                     StatusCodeDummy.dummy()
                 ))
-                .userAuthorityNo(StatusCodeDummy.dummy())
+                .roleSet(Set.of(MembersRole.ROLE_USER))
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
@@ -71,6 +73,9 @@ class MemberServiceTest {
     @Autowired
     MemberService memberService;
 
+    @Autowired
+    Aes aes;
+
     @MockBean
     MemberRepository memberRepository;
 
@@ -80,12 +85,9 @@ class MemberServiceTest {
     @MockBean
     StatusCodeRepository statusCodeRepository;
 
-    @MockBean
-    Aes aes;
-
     @Test
     @DisplayName("새로운 회원 저장")
-    void registerMember() {
+    void registerMember() throws NoSuchAlgorithmException {
         MemberCreationRequest dummy = MemberCreationRequestDummy.dummy();
 
         String plainEmailDummy = dummy.getEmail();
@@ -111,10 +113,10 @@ class MemberServiceTest {
     @Test
     @DisplayName("이메일을 통해 현존하는 회원의 존재여부 확인 : 존재하는 경우")
     void isAvailableEmailCaseFounded() {
-        given(memberRepository.findByEmail(anyString())).willReturn(
+        given(memberRepository.findByEncodedEmailForSearch(anyString())).willReturn(
             Optional.of(MemberDummy.dummy()));
 
-        boolean isAvailableMember = memberService.isAvailableEmail("example@nhn.com");
+        boolean isAvailableMember = memberService.isAvailableEmail(aes.aesECBEncode("example@nhn.com"));
 
         assertThat(isAvailableMember).isTrue();
     }
@@ -122,7 +124,7 @@ class MemberServiceTest {
     @Test
     @DisplayName("이메일을 통해 현존하는 회원의 존재여부 확인 : 없는 경우")
     void isAvailableEmailCaseNotFounded() {
-        given(memberRepository.findByEmail(anyString()))
+        given(memberRepository.findByEncodedEmailForSearch(anyString()))
             .willReturn(Optional.empty());
 
         boolean isAvailableMember = memberService.isAvailableEmail("example@nhn.com");
@@ -132,8 +134,8 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하는 경우")
-    void findMemberFromEmailCaseFounded() {
-        given(memberRepository.findByEmail(anyString()))
+    void findMemberFromEmailCaseFounded() throws NoSuchAlgorithmException {
+        given(memberRepository.findByEncodedEmailForSearch(anyString()))
             .willReturn(Optional.of(MemberDummy.dummy()));
 
         MemberResponseDto member = memberService.findMemberFromEmail("example@nhn.com");
@@ -144,7 +146,7 @@ class MemberServiceTest {
     @Test
     @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하지 않는 경우")
     void findMemberFromEmailCaseNotFounded() {
-        given(memberRepository.findByEmail(anyString()))
+        given(memberRepository.findByEncodedEmailForSearch(anyString()))
             .willReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.findMemberFromEmail("example@nhn.com"))
