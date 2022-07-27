@@ -3,16 +3,15 @@ package shop.gaship.gashipshoppingmall.member.controller;
 import java.net.URI;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.member.dto.response.*;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.*;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
@@ -38,8 +37,7 @@ public class MemberController {
      */
     @PostMapping("/sign-up")
     public ResponseEntity<Void> memberAdd(@Valid @RequestBody MemberCreationRequest memberCreationRequest) {
-        if (memberCreationRequest.getIsUniqueEmail() &&
-                memberCreationRequest.getIsVerifiedEmail()) {
+        if (memberCreationRequest.getIsUniqueEmail() && memberCreationRequest.getIsVerifiedEmail()) {
             memberService.addMember(memberCreationRequest);
             return ResponseEntity.created(URI.create("/api/members")).build();
         }
@@ -78,7 +76,7 @@ public class MemberController {
     @GetMapping(value = "/check-nickname", params = "nickname")
     public ResponseEntity<NicknamePresence> checkDuplicateNickname(@RequestParam String nickname) {
         return ResponseEntity.ok(
-            new NicknamePresence(memberService.isAvailableNickname(nickname)));
+                new NicknamePresence(memberService.isAvailableNickname(nickname)));
     }
 
     /**
@@ -113,7 +111,7 @@ public class MemberController {
     @GetMapping("/members/last-no")
     public ResponseEntity<Integer> retrieveLastNo() {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-            .body(memberService.findLastNo());
+                .body(memberService.findLastNo());
     }
 
     /**
@@ -124,7 +122,7 @@ public class MemberController {
      */
     @PutMapping("/{memberNo}")
     public ResponseEntity<Void> memberModify(
-        @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
+            @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
         memberService.modifyMember(memberModifyRequestDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
