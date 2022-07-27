@@ -1,7 +1,8 @@
-package shop.gaship.gashipshoppingmall.member.dto;
+package shop.gaship.gashipshoppingmall.member.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

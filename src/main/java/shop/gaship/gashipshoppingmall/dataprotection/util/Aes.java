@@ -20,19 +20,19 @@ public class Aes {
     private static final String ENCODE_ERROR_MESSAGE = "정보 암호화에 실패했습니다.";
     private static final String DECODE_ERROR_MESSAGE = "정보 복호화에 실패했습니다.";
     private final SecretKeySpec secretKeySpec;
-    @Value("${aes.algorithm}")
-    private String transformation;
+    private final String transformation;
 
     /**
      * Aes 객체를 생성하기 위한 생성자입니다.
      *
      * @param userInformationProtectionValue salt를 위한 일반 텍스트 문자열입니다.
      */
-    public Aes(String userInformationProtectionValue) {
-        this.secretKeySpec = new SecretKeySpec(
-            userInformationProtectionValue.getBytes(StandardCharsets.UTF_8),
-            "AES"
-        );
+    public Aes(String userInformationProtectionValue,
+               @Value("${aes.algorithm}") String transformation) {
+        this.secretKeySpec =
+            new SecretKeySpec(userInformationProtectionValue.getBytes(StandardCharsets.UTF_8),
+                "AES");
+        this.transformation = transformation;
     }
 
 

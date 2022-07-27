@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.repository;
 
-import com.querydsl.core.types.Projections;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
@@ -48,17 +48,20 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     public Optional<SignInUserDetailsDto> findSignInUserDetail(String email) {
         QMember member = QMember.member;
 
-        return
-            Optional.ofNullable(from(member)
-                .where(member.email.eq(email))
-                .select(
-                    Projections.constructor(SignInUserDetailsDto.class,
-                        member.memberNo,
-                        member.email,
-                        member.password,
-                        member.roleSet)
-                )
-                .fetchOne()
+        Member result = from(member)
+            .where(member.email.eq(email))
+            .select(member)
+            .fetchOne();
+
+        return Optional.ofNullable(
+                SignInUserDetailsDto.builder()
+                    .memberNo(result.getMemberNo())
+                    .email(result.getEmail())
+                    .hashedPassword(result.getPassword())
+                    .authorities(result.getRoleSet().stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.toList()))
+                    .build()
             );
     }
 }

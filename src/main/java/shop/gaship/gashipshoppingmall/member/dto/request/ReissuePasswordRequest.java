@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.member.dto;
+package shop.gaship.gashipshoppingmall.member.dto.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

@@ -11,10 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.security.NoSuchAlgorithmException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,13 +23,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailRequest;
-import shop.gaship.gashipshoppingmall.member.dto.FindMemberEmailResponse;
-import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
-import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordQualificationResult;
-import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordRequest;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.request.FindMemberEmailRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
+import shop.gaship.gashipshoppingmall.member.dto.response.ReissuePasswordQualificationResult;
+import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
@@ -201,11 +197,12 @@ class MemberControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.identifyNo").value(dummy.getIdentifyNo()))
+            .andExpect(jsonPath("$.memberNo").value(dummy.getMemberNo()))
             .andExpect(jsonPath("$.email").value(dummy.getEmail()))
             .andExpect(jsonPath("$.hashedPassword").value(dummy.getHashedPassword()))
             .andExpect(jsonPath("$.isSocial").value(false))
-            .andExpect(jsonPath("$.authorities[0]").value(dummy.getAuthorities().get(0)));
+            .andExpect(jsonPath("$.authorities[0]")
+                .value(dummy.getAuthorities().toArray()[0]));
     }
 
     @Test
@@ -236,7 +233,7 @@ class MemberControllerTest {
         String content = new ObjectMapper().writeValueAsString(request);
 
         mockMvc.perform(
-                post("/members/find-email")
+                post("/api/members/find-email")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(content))
             .andExpect(status().isOk())
@@ -257,7 +254,7 @@ class MemberControllerTest {
 
 
         mockMvc.perform(
-                post("/members/find-email")
+                post("/api/members/find-email")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(content))
             .andDo(print()).andExpect(status().is4xxClientError())
@@ -272,7 +269,7 @@ class MemberControllerTest {
             .willReturn(new ReissuePasswordQualificationResult(true));
 
         ReissuePasswordRequest request = new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
-        mockMvc.perform(post("/members/find-password")
+        mockMvc.perform(post("/api/members/find-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON))
@@ -288,7 +285,7 @@ class MemberControllerTest {
             .willThrow(new InvalidReissueQualificationException());
 
         ReissuePasswordRequest request = new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
-        mockMvc.perform(post("/members/find-password")
+        mockMvc.perform(post("/api/members/find-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON))
@@ -306,7 +303,7 @@ class MemberControllerTest {
 
         ReissuePasswordRequest request = new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
 
-        mockMvc.perform(post("/members/find-password")
+        mockMvc.perform(post("/api/members/find-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON))

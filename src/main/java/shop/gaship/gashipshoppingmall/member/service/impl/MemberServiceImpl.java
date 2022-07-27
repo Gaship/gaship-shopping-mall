@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.service.impl;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,11 +13,15 @@ import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
+import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.ReissuePasswordQualificationResult;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
+import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
@@ -57,11 +62,11 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void addMember(MemberCreationRequest memberCreationRequest) {
         Member recommendMember =
-                memberRepository.findById(memberCreationRequest.getRecommendMemberNo())
-                    .orElse(null);
+            memberRepository.findById(memberCreationRequest.getRecommendMemberNo())
+                .orElse(null);
         StatusCode defaultStatus =
-                statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
-                        .orElseThrow(StatusCodeNotFoundException::new);
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
+                .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
 
         if (memberRepository.existsByNickname(memberCreationRequest.getNickName())) {
@@ -69,10 +74,10 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Member savedMember = creationRequestToMemberEntity(
-                encodePrivacyUserInformation(memberCreationRequest),
-                recommendMember,
-                defaultStatus,
-                defaultGrade
+            encodePrivacyUserInformation(memberCreationRequest),
+            recommendMember,
+            defaultStatus,
+            defaultGrade
         );
 
         memberRepository.saveAndFlush(savedMember);
@@ -88,14 +93,14 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void addMemberByOauth(MemberCreationRequestOauth memberCreationRequestOauth) {
         StatusCode defaultStatus =
-                statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
-                        .orElseThrow(StatusCodeNotFoundException::new);
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
+                .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
 
         Member savedMember = creationRequestToMemberEntity(
-                encodePrivacyUserInformation(memberCreationRequestOauth),
-                defaultStatus,
-                defaultGrade
+            encodePrivacyUserInformation(memberCreationRequestOauth),
+            defaultStatus,
+            defaultGrade
         );
 
         memberRepository.saveAndFlush(savedMember);
@@ -108,12 +113,12 @@ public class MemberServiceImpl implements MemberService {
      * @return 중요 정보가 암호화 된 회원정보 객체
      */
     private MemberCreationRequest encodePrivacyUserInformation(
-            MemberCreationRequest memberCreationRequest) {
+        MemberCreationRequest memberCreationRequest) {
         String email = memberCreationRequest.getEmail();
         memberCreationRequest.setEmail(aes.aesEcbEncode(memberCreationRequest.getEmail()));
         memberCreationRequest.setName(aes.aesEcbEncode(memberCreationRequest.getName()));
         memberCreationRequest.setPhoneNumber(
-                aes.aesEcbEncode(memberCreationRequest.getPhoneNumber()));
+            aes.aesEcbEncode(memberCreationRequest.getPhoneNumber()));
         memberCreationRequest.setPassword(memberCreationRequest.getPassword());
         memberCreationRequest.setEncodedEmailForSearch(sha512.encryptPlainText(email));
 
@@ -127,7 +132,7 @@ public class MemberServiceImpl implements MemberService {
      * @return 중요 정보가 암호화 된 회원정보 객체
      */
     private MemberCreationRequestOauth encodePrivacyUserInformation(
-            MemberCreationRequestOauth memberCreationRequestOauth) {
+        MemberCreationRequestOauth memberCreationRequestOauth) {
         String email = memberCreationRequestOauth.getEmail();
         memberCreationRequestOauth.setEmail(aes.aesEcbEncode(email));
         memberCreationRequestOauth.setName(aes.aesEcbEncode(memberCreationRequestOauth.getName()));
@@ -210,7 +215,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member findMemberFromNickname(String nickName) {
         return memberRepository.findByNickname(nickName)
-                .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
     }
 
     /**
@@ -226,7 +231,7 @@ public class MemberServiceImpl implements MemberService {
             throw new DuplicatedNicknameException();
         }
         Member member = memberRepository.findById(request.getMemberNo())
-                .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
         member.modifyMember(request);
     }
 
@@ -241,10 +246,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void modifyMemberByAdmin(MemberModifyByAdminDto memberModifyByAdminDto) {
         Member member = memberRepository.findById(memberModifyByAdminDto.getMemberNo())
-                .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
         StatusCode statusCode =
-                statusCodeRepository.findByGroupCodeName(memberModifyByAdminDto.getStatus())
-                        .orElseThrow(StatusCodeNotFoundException::new);
+            statusCodeRepository.findByGroupCodeName(memberModifyByAdminDto.getStatus())
+                .orElseThrow(StatusCodeNotFoundException::new);
 
         member.modifyMemberByAdmin(member.getNickname(), statusCode);
     }
@@ -270,7 +275,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto findMember(Integer memberNo) {
         return entityToMemberResponseDto(
-                memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new), aes);
+            memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new), aes);
     }
 
     /**
@@ -323,7 +328,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public ReissuePasswordQualificationResult checkReissuePasswordQualification(
-        ReissuePasswordRequest reissuePasswordRequest) throws NoSuchAlgorithmException {
+        ReissuePasswordRequest reissuePasswordRequest) {
         MemberResponseDto member = findMemberFromEmail(reissuePasswordRequest.getEmail());
         if (Objects.equals(member.getName(), reissuePasswordRequest.getName())) {
             return new ReissuePasswordQualificationResult(true);
@@ -341,6 +346,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public SignInUserDetailsDto findSignInUserDetailFromEmail(String email) {
         return memberRepository.findSignInUserDetail(email)
-                .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
     }
 }

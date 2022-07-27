@@ -24,7 +24,7 @@ public class Sha512 {
      * @return 암호화가 완료된 문자열을 반환합니다.
      * @throws NoSuchAlgorithmException 올바르지 않은 알고리즘을 설정 하였을 때 예외를 던집니다.
      */
-    public String encrypt(String text) {
+    public String encryptPlainText(String text) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(text.getBytes());

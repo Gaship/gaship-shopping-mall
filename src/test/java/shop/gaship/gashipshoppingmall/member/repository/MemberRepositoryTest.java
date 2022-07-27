@@ -107,7 +107,7 @@ class MemberRepositoryTest {
             .orElse(null);
 
         assertThat(userDetailsDto.getEmail()).isEqualTo(cachedMember.getEmail());
-        assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(cachedMember.getMemberNo());
+        assertThat(userDetailsDto.getMemberNo()).isEqualTo(cachedMember.getMemberNo());
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(cachedMember.getPassword());
     }
 }

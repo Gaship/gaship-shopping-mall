@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.member.dto;
+package shop.gaship.gashipshoppingmall.member.dto.request;
 
 import javax.validation.constraints.NotBlank;
 import lombok.Getter;
