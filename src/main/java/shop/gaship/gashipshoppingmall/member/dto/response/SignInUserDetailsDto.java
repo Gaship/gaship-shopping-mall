@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.member.dto;
+package shop.gaship.gashipshoppingmall.member.dto.response;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

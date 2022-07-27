@@ -38,6 +38,12 @@ import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordQualificationResult;
 import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
@@ -93,7 +99,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("새로운 회원 저장")
-    void registerMember() throws NoSuchAlgorithmException {
+    void registerMember() {
         MemberCreationRequest dummy = MemberCreationRequestDummy.dummy();
 
         String plainEmailDummy = dummy.getEmail();
@@ -141,7 +147,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("이메일을 통해 현존하는 회원 검색 : 존재하는 경우")
-    void findMemberFromEmailCaseFounded() throws NoSuchAlgorithmException {
+    void findMemberFromEmailCaseFounded() {
         given(sha512.encryptPlainText(anyString())).willReturn("a".repeat(10));
         given(memberRepository.findByEncodedEmailForSearch(anyString()))
             .willReturn(Optional.of(MemberDummy.dummy()));
@@ -286,9 +292,10 @@ class MemberServiceTest {
         assertThat(userDetailsDto.getEmail()).isEqualTo(dummy.getEmail());
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(dummy.getPassword());
         assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(dummy.getMemberNo());
-        assertThat(userDetailsDto.getIsSocial()).isEqualTo(false);
+        assertThat(userDetailsDto.getIsSocial()).isFalse();
         assertThat(userDetailsDto.getAuthorities()).isEqualTo(
             List.of(dummy.getMemberGrades().getName()));
+        assertThat(userDetailsDto.getAuthorities()).isEqualTo(List.of(dummy.getMemberGrades().getName()));
         assertThat(userDetailsDto).isInstanceOf(SignInUserDetailsDto.class);
     }
 

@@ -8,13 +8,6 @@ import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.member <br/> fileName       : MemberDummy <br/>
- * author         : 김민수 <br/> date           : 2022/07/10 <br/> description    : <br/>
- * ===========================================================  <br/> DATE              AUTHOR
- *       NOTE                    <br/> -----------------------------------------------------------
- * <br/> 2022/07/10           김민수               최초 생성                         <br/>
- */
 public class MemberDummy extends Member {
 
     private MemberDummy() {
