@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.member.repository.Impl;
+package shop.gaship.gashipshoppingmall.member.repository.impl;
 
 import java.util.Optional;
 import java.util.stream.Collectors;

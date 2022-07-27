@@ -4,7 +4,7 @@ import java.util.List;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 
 /**
  * 직원을 서비스레이어에서 사용하기위한 인터페이스 클래스입니다.

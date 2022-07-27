@@ -18,11 +18,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 import shop.gaship.gashipshoppingmall.dataprotection.dto.SecureKeyResponse;
@@ -70,14 +65,14 @@ public class DataProtectionConfig {
 
             return Objects.requireNonNull(new RestTemplate(requestFactory)
                     .getForEntity(url + "/keymanager/v1.0/appkey/{appkey}/secrets/{keyid}",
-                        SecureKeyResponse.class
-                        , appKey,
+                        SecureKeyResponse.class,
+                        appKey,
                         keyId)
                     .getBody())
                 .getBody()
                 .getSecret();
-        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException |
-            UnrecoverableKeyException | IOException | KeyManagementException e) {
+        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException
+                 | UnrecoverableKeyException | IOException | KeyManagementException e) {
             throw new NotFoundDataProtectionReposeData(errorMessage);
         }
     }

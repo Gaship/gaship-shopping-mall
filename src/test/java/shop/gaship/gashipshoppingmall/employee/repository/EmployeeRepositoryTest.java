@@ -15,7 +15,7 @@ import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -96,7 +96,7 @@ class EmployeeRepositoryTest {
         SignInUserDetailsDto loginEmployee =
             repository.findSignInEmployeeUserDetail("test@naver.com").orElse(null);
 
-        assertThat(Objects.requireNonNull(loginEmployee).getIdentifyNo()).isEqualTo(employee.getEmployeeNo());
+        assertThat(Objects.requireNonNull(loginEmployee).getMemberNo()).isEqualTo(employee.getEmployeeNo());
         assertThat(loginEmployee.getEmail()).isEqualTo("test@naver.com");
         assertThat(loginEmployee.getAuthorities()).isEqualTo(List.of(code.getStatusCodeName()));
         assertThat(loginEmployee.getHashedPassword()).isEqualTo(employee.getPassword());

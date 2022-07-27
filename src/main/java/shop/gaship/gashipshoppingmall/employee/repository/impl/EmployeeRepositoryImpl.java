@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.entity.QEmployee;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepositoryCustom;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 
 /**
  * 쿼리DSL을 통해 직원에 관한 커스텀 쿼리를 구현시 사용하는 클래스입니다.
