@@ -79,8 +79,6 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         }
 
         memberGrade.modifyDetails(requestDto);
-
-        memberGradeRepository.save(memberGrade);
     }
 
     /**

@@ -23,12 +23,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * 설명작성
+ * 승급 관련 서비스 테스트 코드.
  *
  * @author : 김세미
  * @since 1.0
@@ -84,7 +83,6 @@ class AdvancementServiceImplTest {
 
         verify(memberRepository).findById(any());
         verify(memberGradeRepository).findById(any());
-        verify(memberRepository).save(any());
         verify(gradeHistoryService).addGradeHistory(any());
     }
 
@@ -103,7 +101,6 @@ class AdvancementServiceImplTest {
 
         verify(memberRepository).findById(any());
         verify(memberGradeRepository, never()).findById(any());
-        verify(memberRepository, never()).save(any());
         verify(gradeHistoryService, never()).addGradeHistory(any());
     }
 
@@ -124,7 +121,6 @@ class AdvancementServiceImplTest {
 
         verify(memberRepository).findById(any());
         verify(memberGradeRepository).findById(any());
-        verify(memberRepository, never()).save(any());
         verify(gradeHistoryService, never()).addGradeHistory(any());
     }
 }

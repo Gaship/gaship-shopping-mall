@@ -203,7 +203,6 @@ class MemberGradeServiceImplTest {
 
         verify(memberGradeRepository).findById(any());
         verify(memberGradeRepository, never()).existsByAccumulateAmountEquals(any());
-        verify(memberGradeRepository).save(any());
     }
 
     @DisplayName("회원등급 수정시 " +
@@ -216,20 +215,15 @@ class MemberGradeServiceImplTest {
         StatusCode renewalPeriod = StatusCodeDummy.dummy();
         MemberGrade memberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
 
-        MemberGrade modifyMemberGrade = MemberGradeDummy.dummy(memberGradeAddRequestDto, renewalPeriod);
-
         when(memberGradeRepository.findById(any()))
                 .thenReturn(Optional.of(memberGrade));
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
                 .thenReturn(false);
-        when(memberGradeRepository.save(any()))
-                .thenReturn(modifyMemberGrade);
 
         memberGradeService.modifyMemberGrade(modifyRequestDummy);
 
         verify(memberGradeRepository).findById(any());
         verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
-        verify(memberGradeRepository).save(any());
     }
 
     @DisplayName("회원등급 수정시 " +
@@ -246,7 +240,6 @@ class MemberGradeServiceImplTest {
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
         verify(memberGradeRepository).findById(any());
-        verify(memberGradeRepository, never()).save(any());
     }
 
     @DisplayName("회원등급 삭제시" +

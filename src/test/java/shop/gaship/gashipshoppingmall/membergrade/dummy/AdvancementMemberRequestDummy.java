@@ -17,7 +17,7 @@ public class AdvancementMemberRequestDummy {
         AdvancementMemberRequestDto dummy = new AdvancementMemberRequestDto();
         dummy.setMemberNo(1);
         dummy.setMemberGradeNo(1);
-        dummy.setNextRenewalGradeDate("2022-07-27");
+        dummy.setNextRenewalGradeDate(LocalDate.of(2022,7,27));
 
         return dummy;
     }
