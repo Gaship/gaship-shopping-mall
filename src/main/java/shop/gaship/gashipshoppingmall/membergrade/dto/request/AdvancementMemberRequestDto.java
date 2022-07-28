@@ -1,8 +1,8 @@
 package shop.gaship.gashipshoppingmall.membergrade.dto.request;
 
+import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
