@@ -69,8 +69,6 @@ public class AdvancementServiceImpl implements AdvancementService {
         MemberGrade memberGrade = memberGradeRepository.findById(requestDto.getMemberGradeNo())
                 .orElseThrow(MemberGradeNotFoundException::new);
 
-        member.modifyGrade(memberGrade, LocalDate.parse(requestDto.getNextRenewalGradeDate()));
-
-        memberRepository.save(member);
+        member.modifyGrade(memberGrade, requestDto.getNextRenewalGradeDate());
     }
 }

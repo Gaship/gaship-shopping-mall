@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.AdvancementTargetResponseDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -109,5 +111,23 @@ class MemberRepositoryTest {
         assertThat(userDetailsDto.getEmail()).isEqualTo(cachedMember.getEmail());
         assertThat(userDetailsDto.getMemberNo()).isEqualTo(cachedMember.getMemberNo());
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(cachedMember.getPassword());
+    }
+
+    @Test
+    @DisplayName("custom query findMembersByNextRenewalGradeDate 테스트")
+    void findMembersByNextRenewalGradeDate() {
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
+        entityManager.persist(memberDummy.getMemberStatusCodes());
+        entityManager.persist(memberDummy.getMemberGrades());
+
+        Member member = memberRepository.save(memberDummy);
+        List<AdvancementTargetResponseDto> result =
+                memberRepository
+                        .findMembersByNextRenewalGradeDate(LocalDate
+                                .of(2022, 9, 16));
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getNextRenewalGradeDate())
+                .isEqualTo(LocalDate.of(2022, 9, 16));
     }
 }

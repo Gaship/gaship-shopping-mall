@@ -1,5 +1,8 @@
 package shop.gaship.gashipshoppingmall.membergrade.dto.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +17,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AdvancementMemberRequestDto {
+    @NotBlank(message = "memberNo 는 필수값 입니다.")
     private Integer memberNo;
+    @NotBlank(message = "memberGradeNo 는 필수값 입니다.")
     private Integer memberGradeNo;
-    private String nextRenewalGradeDate;
+    @NotNull(message = "nextRenewalGradeDate 는 필수값입니다.")
+    private LocalDate nextRenewalGradeDate;
 }
