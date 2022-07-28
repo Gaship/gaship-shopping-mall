@@ -1,4 +1,4 @@
-package shop.gaship.gashipfront.inquiry.dto.request;
+package shop.gaship.gashipshoppingmall.inquiry.dto.request;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
