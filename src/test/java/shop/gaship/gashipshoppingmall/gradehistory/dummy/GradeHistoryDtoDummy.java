@@ -18,7 +18,8 @@ public class GradeHistoryDtoDummy {
 
         return new GradeHistoryAddRequestDto(1,
                 1_000_000L,
-                "일반");
+                "일반",
+                LocalDate.parse("2022-07-27"));
     }
 
     public static GradeHistoryFindRequestDto findRequestDummy(){

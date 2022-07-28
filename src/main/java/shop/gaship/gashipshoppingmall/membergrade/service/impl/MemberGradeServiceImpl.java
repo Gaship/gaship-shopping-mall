@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.membergrade.service;
+package shop.gaship.gashipshoppingmall.membergrade.service.impl;
 
 import java.util.List;
 import javax.transaction.Transactional;
@@ -16,6 +16,7 @@ import shop.gaship.gashipshoppingmall.membergrade.exception.DefaultMemberGradeIs
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;

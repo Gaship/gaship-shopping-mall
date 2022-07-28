@@ -78,6 +78,7 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
         QMemberGrade memberGrade = QMemberGrade.memberGrade;
 
         return from(memberGrade)
+                .innerJoin(memberGrade.renewalPeriodStatusCode)
                 .select(Projections.bean(MemberGradeResponseDto.class,
                         memberGrade.no,
                         memberGrade.name,
