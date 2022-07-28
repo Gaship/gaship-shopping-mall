@@ -31,7 +31,7 @@ import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongStatusCodeException;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.employee.service.impl.EmployeeServiceImpl;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;

@@ -13,7 +13,7 @@ import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponse
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.entity.QEmployee;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepositoryCustom;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 

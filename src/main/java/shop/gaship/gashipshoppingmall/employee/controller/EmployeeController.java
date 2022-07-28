@@ -1,8 +1,8 @@
 package shop.gaship.gashipshoppingmall.employee.controller;
 
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequest
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
