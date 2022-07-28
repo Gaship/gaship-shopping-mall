@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,15 +24,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
+import shop.gaship.gashipshoppingmall.member.adapter.MemberAdapter;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordReceiveEmailDto;
+import shop.gaship.gashipshoppingmall.member.dto.SuccessReissueResponse;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
-import shop.gaship.gashipshoppingmall.member.dto.response.ReissuePasswordQualificationResult;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
@@ -91,6 +94,12 @@ class MemberServiceTest {
 
     @MockBean
     StatusCodeRepository statusCodeRepository;
+
+    @MockBean
+    MemberAdapter memberAdapter;
+
+    @MockBean
+    PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("새로운 회원 저장")
@@ -327,19 +336,24 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("이메일과 이름을 통해서 비밀번호 발급 자격을 확인합니다 : 성공")
-    void checkReissuePasswordQualificationCaseSuccess() throws NoSuchAlgorithmException {
-        given(sha512.encryptPlainText(anyString())).willReturn("a".repeat(10));
+    void checkReissuePasswordQualificationCaseSuccess() {
+        given(sha512.encryptPlainText(anyString()))
+            .willReturn("a".repeat(10));
         given(memberRepository.findByEncodedEmailForSearch(anyString()))
             .willReturn(Optional.of(MemberDummy.dummy()));
+        given(aes.aesEcbDecode(anyString()))
+            .willReturn("example");
+        given(memberAdapter.requestSendReissuePassword(any(ReissuePasswordReceiveEmailDto.class)))
+            .willReturn(ResponseEntity.ok(new SuccessReissueResponse("example@nhn.com", "password")));
+        given(passwordEncoder.encode(anyString()))
+            .willReturn("drowssap");
 
         ReissuePasswordRequest reissuePasswordRequest =
             new ReissuePasswordRequest("example@nhn.com", "example");
-//            new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
 
-        ReissuePasswordQualificationResult result =
-            memberService.checkReissuePasswordQualification(reissuePasswordRequest);
+        Boolean result = memberService.reissuePassword(reissuePasswordRequest);
 
-        assertThat(result.getQualified()).isTrue();
+        assertThat(result).isTrue();
     }
 
     @Test
@@ -348,13 +362,15 @@ class MemberServiceTest {
         given(sha512.encryptPlainText(anyString())).willReturn("a".repeat(10));
         given(memberRepository.findByEncodedEmailForSearch(anyString()))
             .willReturn(Optional.of(MemberDummy.dummy()));
+        given(aes.aesEcbDecode(anyString())).willReturn("홍홍힝");
+
 
         ReissuePasswordRequest reissuePasswordRequest =
             new ReissuePasswordRequest("example@nhn.com", "홍홍홍");
 
 
         assertThatThrownBy(() ->
-            memberService.checkReissuePasswordQualification(reissuePasswordRequest))
+            memberService.reissuePassword(reissuePasswordRequest))
             .isInstanceOf(InvalidReissueQualificationException.class)
             .hasMessage("유효하지 않은 접근으로 인해 요청을 취하합니다.");
     }
@@ -371,7 +387,7 @@ class MemberServiceTest {
 
 
         assertThatThrownBy(() ->
-            memberService.checkReissuePasswordQualification(reissuePasswordRequest))
+            memberService.reissuePassword(reissuePasswordRequest))
             .isInstanceOf(MemberNotFoundException.class)
             .hasMessage("해당 멤버를 찾을 수 없습니다");
     }
