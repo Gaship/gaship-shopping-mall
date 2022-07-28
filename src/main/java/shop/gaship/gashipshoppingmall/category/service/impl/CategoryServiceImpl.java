@@ -30,10 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final ProductRepository productRepository;
 
     /**
-     * root 카테고리 추가 메서드입니다.
-     *
-     * @param createRequest 카테고리 생성 요청
-     * @author 김보민
+     * {@inheritDoc}
      */
     @Transactional
     @Override
@@ -47,11 +44,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 하위 카테고리 추가 메서드입니다.
+     * {@inheritDoc}
      *
-     * @param createRequest 카테고리 생성 요청
      * @throws CategoryNotFoundException 카테고리를 못찾음
-     * @author 김보민
      */
     @Transactional
     @Override
@@ -68,11 +63,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 카테고리 수정 메서드입니다.
+     * {@inheritDoc}
      *
-     * @param modifyRequest 카테고리 수정 요청
      * @throws CategoryNotFoundException 카테고리를 못찾음
-     * @author 김보민
      */
     @Transactional
     @Override
@@ -86,12 +79,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 카테고리 단건 조회 메서드입니다.
+     * {@inheritDoc}
      *
-     * @param categoryNo 조회할 카테고리 번호
-     * @return CategoryResponseDto 카테고리 데이터
      * @throws CategoryNotFoundException 카테고리를 못찾음
-     * @author 김보민
      */
     @Override
     public CategoryResponseDto findCategory(Integer categoryNo) {
@@ -100,10 +90,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 카테고리 전체 조회 메서드입니다.
-     *
-     * @return list 카테고리 목록 데이터
-     * @author 김보민
+     * {@inheritDoc}
      */
     @Override
     public List<CategoryResponseDto> findCategories() {
@@ -111,13 +98,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 하위 카테고리 조회 메서드입니다.
+     * {@inheritDoc}
      *
-     * @param categoryNo 하위카테고리를 조회할 상위 카테고리 번호
      * @throws CategoryNotFoundException            카테고리를 못찾음
      * @throws CategoryRemainLowerCategoryException 하위 카테고리가 존재할 시 삭제 불가
      * @throws CategoryRemainProductException       해당 카테고리에 속한 상품이 있을 경우 삭제 불가
-     * @author 김보민
      */
     @Transactional
     @Override
@@ -143,12 +128,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 하위 카테고리 조회 메서드입니다.
+     * {@inheritDoc}
      *
-     * @param categoryNo 하위 카테고리를 조회할 상위 카테고리
-     * @return list 하위 카테고리 목록
      * @throws CategoryNotFoundException 카테고리를 못찾음
-     * @author 김보민
      */
     @Override
     public List<CategoryResponseDto> findLowerCategories(Integer categoryNo) {
