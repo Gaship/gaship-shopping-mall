@@ -43,8 +43,8 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport implements
                     employee.employeeNo,
                     employee.email,
                     employee.password.as("hashedPassword"),
-                    Projections.list(employee.statusCode.statusCodeName),
-                    Expressions.asBoolean(false))
+                    Expressions.asBoolean(false),
+                    Projections.list(employee.statusCode.statusCodeName))
             )
             .fetchOne()
         );

@@ -129,7 +129,7 @@ public class MemberTestDummy {
                         MemberGradeDtoDummy.requestDummy("일반", 0L),
                         StatusCodeDummy.dummy()
                 ))
-                .roleSet(Set.of(MembersRole.ROLE_USER))
+                .roleSet(List.of(MembersRole.ROLE_USER))
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
@@ -152,7 +152,7 @@ public class MemberTestDummy {
                         MemberGradeDtoDummy.requestDummy("일반", 0L),
                         StatusCodeDummy.dummy()
                 ))
-                .roleSet(Set.of(MembersRole.ROLE_USER))
+                .roleSet(List.of(MembersRole.ROLE_USER))
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)

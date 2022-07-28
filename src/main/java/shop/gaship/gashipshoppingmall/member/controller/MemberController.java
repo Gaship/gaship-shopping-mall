@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.member.controller;
 
 import java.net.URI;
-import java.security.NoSuchAlgorithmException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -234,9 +233,9 @@ public class MemberController {
      */
     @PostMapping("/find-password")
     public ResponseEntity<ReissuePasswordQualificationResult> reissuePasswordCheck(
-        @Valid @RequestBody ReissuePasswordRequest reissuePasswordRequest)
-        throws NoSuchAlgorithmException {
-        return ResponseEntity.ok(
-            memberService.checkReissuePasswordQualification(reissuePasswordRequest));
+        @Valid @RequestBody ReissuePasswordRequest reissuePasswordRequest) {
+        ReissuePasswordQualificationResult result =
+            memberService.checkReissuePasswordQualification(reissuePasswordRequest);
+        return ResponseEntity.ok(result);
     }
 }

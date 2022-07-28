@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.member.service;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
@@ -211,5 +210,5 @@ public interface MemberService {
      * @return 재발급 자격 여부를 반환합니다.
      */
     ReissuePasswordQualificationResult checkReissuePasswordQualification(
-        ReissuePasswordRequest reissuePasswordRequest) throws NoSuchAlgorithmException;
+        ReissuePasswordRequest reissuePasswordRequest);
 }

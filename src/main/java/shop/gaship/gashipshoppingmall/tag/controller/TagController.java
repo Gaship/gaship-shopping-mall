@@ -7,12 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
@@ -32,6 +32,7 @@ import shop.gaship.gashipshoppingmall.tag.service.TagService;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/api/tags")
 public class TagController {
 
     private final TagService tagService;
@@ -67,20 +68,6 @@ public class TagController {
     @PutMapping("/{tagNo}")
     public ResponseEntity<Void> tagModify(@Valid @RequestBody TagModifyRequestDto request) {
         tagService.modifyTag(request);
-
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
-    }
-
-    /**
-     * Tag remove response entity.
-     * description : 태그를 삭제하는 컨트롤러
-     *
-     * @param tagNo the tag no
-     * @return the response entity
-     */
-    @DeleteMapping("/admins/{adminNo}/tags/{tagNo}")
-    public ResponseEntity<Void> tagRemove(@PathVariable Integer tagNo) {
-//        tagService.removeTag(tagNo);
 
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
     }

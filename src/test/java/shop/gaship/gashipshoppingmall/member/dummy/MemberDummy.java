@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.dummy;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.MembersRole;
@@ -28,7 +29,7 @@ public class MemberDummy extends Member {
                 MemberGradeDtoDummy.requestDummy("name", 0L),
                 StatusCodeDummy.dummy())
             )
-            .roleSet(Set.of(MembersRole.ROLE_USER))
+            .roleSet(List.of(MembersRole.ROLE_USER))
             .email("example@nhn.com") // TODO : 해당 email을 AES로 encoding을 해야함
             .password("password")
             .name("example")

@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.member.service.impl;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,7 +30,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
-import shop.gaship.gashipshoppingmall.statuscode.status.UserAuthority;
 
 /**
  * MemberService를 구현하는 클래스입니다.
