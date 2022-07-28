@@ -4,10 +4,13 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
+import shop.gaship.gashipshoppingmall.member.adapter.MemberAdapter;
+import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordReceiveEmailDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
@@ -16,7 +19,6 @@ import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
-import shop.gaship.gashipshoppingmall.member.dto.response.ReissuePasswordQualificationResult;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
@@ -47,8 +49,10 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final StatusCodeRepository statusCodeRepository;
     private final MemberGradeRepository memberGradeRepository;
+    private final MemberAdapter memberAdapter;
     private final Aes aes;
     private final Sha512 sha512;
+    private final PasswordEncoder passwordEncoder;
 
 
     /**
@@ -61,8 +65,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void addMember(MemberCreationRequest memberCreationRequest) {
         Member recommendMember =
-            memberRepository.findById(memberCreationRequest.getRecommendMemberNo())
-                .orElse(null);
+            memberRepository.findById(memberCreationRequest.getRecommendMemberNo()).orElse(null);
         StatusCode defaultStatus =
             statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
                 .orElseThrow(StatusCodeNotFoundException::new);
@@ -72,12 +75,9 @@ public class MemberServiceImpl implements MemberService {
             throw new DuplicatedNicknameException();
         }
 
-        Member savedMember = creationRequestToMemberEntity(
-            encodePrivacyUserInformation(memberCreationRequest),
-            recommendMember,
-            defaultStatus,
-            defaultGrade
-        );
+        Member savedMember =
+            creationRequestToMemberEntity(encodePrivacyUserInformation(memberCreationRequest),
+                recommendMember, defaultStatus, defaultGrade);
 
         memberRepository.saveAndFlush(savedMember);
     }
@@ -96,11 +96,9 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
 
-        Member savedMember = creationRequestToMemberEntity(
-            encodePrivacyUserInformation(memberCreationRequestOauth),
-            defaultStatus,
-            defaultGrade
-        );
+        Member savedMember =
+            creationRequestToMemberEntity(encodePrivacyUserInformation(memberCreationRequestOauth),
+                defaultStatus, defaultGrade);
 
         memberRepository.saveAndFlush(savedMember);
     }
@@ -213,8 +211,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public Member findMemberFromNickname(String nickName) {
-        return memberRepository.findByNickname(nickName)
-            .orElseThrow(MemberNotFoundException::new);
+        return memberRepository.findByNickname(nickName).orElseThrow(MemberNotFoundException::new);
     }
 
     /**
@@ -311,31 +308,49 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public FindMemberEmailResponse findMemberEmailFromNickname(String nickname) {
-        String memberEmail = memberRepository.findByNickname(nickname)
-            .orElseThrow(MemberNotFoundException::new)
-            .getEmail();
+        String memberEmail =
+            memberRepository.findByNickname(nickname).orElseThrow(MemberNotFoundException::new)
+                .getEmail();
 
         String emailIdPart = memberEmail.substring(0, memberEmail.indexOf("@"));
-        String emailDomainPart = memberEmail.substring(
-            memberEmail.indexOf("@"));
+        String emailDomainPart = memberEmail.substring(memberEmail.indexOf("@"));
 
         double idPartHalfLength = emailIdPart.length() / 2.0;
-        String obscuredEmail =
-            emailIdPart.substring(0, (int) Math.ceil(idPartHalfLength))
-                + "*".repeat((int) Math.floor(idPartHalfLength))
-                + emailDomainPart;
+        String obscuredEmail = emailIdPart.substring(0, (int) Math.ceil(idPartHalfLength))
+            + "*".repeat((int) Math.floor(idPartHalfLength)) + emailDomainPart;
 
         return new FindMemberEmailResponse(obscuredEmail);
     }
 
+    /**
+     * {@inheritDoc}
+     * </p>
+     * 비밀번호가 정상적으로 변경되면 true를 리턴하고, 아니면 예외를 던집니다.
+     *
+     * @param reissuePasswordRequest 비밀번호를 재발급 받기 위해 이름, 이메일 정보가 담긴 객체입니다.
+     * @return 정상적으로 변경이 완료되었을 시 true를 반환합니다.
+     * @throws MemberNotFoundException              이메일을 통해서 조회시 멤버 정보가 없을 때 해당 예외를 던집니다.
+     * @throws InvalidReissueQualificationException 실명이 다를 때 예외를 발생기킵니다.
+     */
     @Override
-    public ReissuePasswordQualificationResult checkReissuePasswordQualification(
-        ReissuePasswordRequest reissuePasswordRequest) {
-        MemberResponseDto member = findMemberFromEmail(reissuePasswordRequest.getEmail());
-        if (Objects.equals(member.getName(), reissuePasswordRequest.getName())) {
-            return new ReissuePasswordQualificationResult(true);
+    @Transactional
+    public Boolean reissuePassword(ReissuePasswordRequest reissuePasswordRequest) {
+        String email = reissuePasswordRequest.getEmail();
+        Member member = memberRepository.findByEncodedEmailForSearch(sha512.encryptPlainText(email))
+            .orElseThrow(MemberNotFoundException::new);
+        String decodedMemberName = aes.aesEcbDecode(member.getName());
+        String requestMemberName = reissuePasswordRequest.getName();
+
+        if (!Objects.equals(decodedMemberName, requestMemberName)) {
+            throw new InvalidReissueQualificationException();
         }
-        throw new InvalidReissueQualificationException();
+
+        String renewalPassword = Objects.requireNonNull(memberAdapter.requestSendReissuePassword(
+            new ReissuePasswordReceiveEmailDto(member.getEmail())).getBody()).getReissuedPassword();
+        String hashedPassword = passwordEncoder.encode(renewalPassword);
+
+        member.modifyMemberPassword(hashedPassword);
+        return true;
     }
 
     /**

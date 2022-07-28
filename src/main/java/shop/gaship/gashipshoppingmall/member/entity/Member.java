@@ -126,6 +126,15 @@ public class Member extends BaseEntity {
     }
 
     /**
+     * 회원의 비밀번호 변경.
+     *
+     * @param hashedPassword 암호화된 비밀번호입니다.
+     */
+    public void modifyMemberPassword(String hashedPassword) {
+        this.password = hashedPassword;
+    }
+    
+    /**
      * 회원의 등급 정보 수정.
      *
      * @param memberGrade 갱신할 회원등급 (MemberGrade)
