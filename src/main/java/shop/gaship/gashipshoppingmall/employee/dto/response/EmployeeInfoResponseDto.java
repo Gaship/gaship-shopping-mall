@@ -1,7 +1,9 @@
 package shop.gaship.gashipshoppingmall.employee.dto.response;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
@@ -12,6 +14,7 @@ import org.hibernate.validator.constraints.Length;
  * @since 1.0
  */
 @Getter
+@AllArgsConstructor
 public class EmployeeInfoResponseDto {
 
     @NotNull
@@ -25,10 +28,6 @@ public class EmployeeInfoResponseDto {
     @NotNull
     private final String phoneNo;
 
-
-    public EmployeeInfoResponseDto(String name, String email, String phoneNo) {
-        this.name = name;
-        this.email = email;
-        this.phoneNo = phoneNo;
-    }
+    @NotBlank
+    private final String address;
 }

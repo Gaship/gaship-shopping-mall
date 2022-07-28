@@ -1,16 +1,5 @@
 package shop.gaship.gashipshoppingmall.member.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -19,22 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.TestPropertySource;
-import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.TestPropertySource;
+import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
-import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
@@ -47,6 +36,16 @@ import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeReposito
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
 import shop.gaship.gashipshoppingmall.statuscode.status.UserAuthority;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.service <br/>
@@ -205,7 +204,7 @@ class MemberServiceTest {
             .isInstanceOf(DuplicatedNicknameException.class)
             .hasMessage("중복된 닉네임입니다");
 
-        verify(memberRepository,times(1)).existsByNickname(any());
+        verify(memberRepository, times(1)).existsByNickname(any());
         verify(memberRepository, never())
             .findById(any());
     }
@@ -269,8 +268,8 @@ class MemberServiceTest {
 
         assertThat(userDetailsDto.getEmail()).isEqualTo(dummy.getEmail());
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(dummy.getPassword());
-        assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(dummy.getMemberNo());
-        assertThat(userDetailsDto.getIsSocial()).isEqualTo(false);
+        assertThat(userDetailsDto.getMemberNo()).isEqualTo(dummy.getMemberNo());
+        assertThat(userDetailsDto.getIsSocial()).isFalse();
         assertThat(userDetailsDto.getAuthorities()).isEqualTo(List.of(dummy.getMemberGrades().getName()));
         assertThat(userDetailsDto).isInstanceOf(SignInUserDetailsDto.class);
     }

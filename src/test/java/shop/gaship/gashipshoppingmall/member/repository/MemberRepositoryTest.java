@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.member.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.repository <br/>
@@ -111,7 +111,7 @@ class MemberRepositoryTest {
             .orElse(null);
 
         assertThat(userDetailsDto.getEmail()).isEqualTo(cachedMember.getEmail());
-        assertThat(userDetailsDto.getIdentifyNo()).isEqualTo(cachedMember.getMemberNo());
+        assertThat(userDetailsDto.getMemberNo()).isEqualTo(cachedMember.getMemberNo());
         assertThat(userDetailsDto.getHashedPassword()).isEqualTo(cachedMember.getPassword());
         assertThat(userDetailsDto.getAuthorities())
             .isEqualTo(List.of(cachedMember.getUserAuthorityNo().getStatusCodeName()));

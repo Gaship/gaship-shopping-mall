@@ -20,5 +20,4 @@ public class SignInUserDetailsDto {
     private String hashedPassword;
     private Boolean isSocial;
     private List<String> authorities;
-    private Boolean isSocial;
 }

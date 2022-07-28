@@ -96,7 +96,7 @@ class EmployeeRepositoryTest {
         SignInUserDetailsDto loginEmployee =
             repository.findSignInEmployeeUserDetail("test@naver.com").orElse(null);
 
-        assertThat(Objects.requireNonNull(loginEmployee).getIdentifyNo()).isEqualTo(employee.getEmployeeNo());
+        assertThat(Objects.requireNonNull(loginEmployee).getMemberNo()).isEqualTo(employee.getEmployeeNo());
         assertThat(loginEmployee.getEmail()).isEqualTo("test@naver.com");
         assertThat(loginEmployee.getAuthorities()).isEqualTo(List.of(code.getStatusCodeName()));
         assertThat(loginEmployee.getHashedPassword()).isEqualTo(employee.getPassword());

@@ -1,11 +1,6 @@
 package shop.gaship.gashipshoppingmall.aspact;
 
 
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +11,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.employee.controller.EmployeeController;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
+
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * 설명작성란
@@ -40,7 +40,7 @@ class AuthorityAspectTest {
 
         doNothing().when(employeeService).addEmployee(dto);
 
-        mockMvc.perform(post("/employees").header("X-AUTH-ROLE", "ROLE_ADMIN")
+        mockMvc.perform(post("/api/employees").header("X-AUTH-ROLE", "ROLE_ADMIN")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(body))
@@ -55,7 +55,7 @@ class AuthorityAspectTest {
 
         String body = new ObjectMapper().writeValueAsString(dto);
 
-        mockMvc.perform(post("/employees").header("X-AUTH-ROLE", "ROLE_MEMBER")
+        mockMvc.perform(post("/api/employees").header("X-AUTH-ROLE", "ROLE_MEMBER")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(body))
