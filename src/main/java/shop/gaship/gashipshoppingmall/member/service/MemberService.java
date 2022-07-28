@@ -12,7 +12,6 @@ import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
-import shop.gaship.gashipshoppingmall.member.dto.response.ReissuePasswordQualificationResult;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
@@ -204,11 +203,10 @@ public interface MemberService {
     FindMemberEmailResponse findMemberEmailFromNickname(String nickname);
 
     /**
-     * 비밀번호 재발급을 위해 멤버의 정보 일치한지 확인합니다.
+     * 비밀번호 재발급을 위해 멤버의 정보 일치한지 확인한 뒤 비밀번호를 임시 비밀번호로 변경합니다.
      *
      * @param reissuePasswordRequest 비밀번호를 재발급 받기 위해 이름, 이메일 정보가 담긴 객체입니다.
-     * @return 재발급 자격 여부를 반환합니다.
+     * @return 비밀번호 변경 결과를 반환합니다.
      */
-    ReissuePasswordQualificationResult checkReissuePasswordQualification(
-        ReissuePasswordRequest reissuePasswordRequest);
+    Boolean reissuePassword(ReissuePasswordRequest reissuePasswordRequest);
 }

@@ -123,4 +123,8 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
         this.memberStatusCodes = statusCode;
     }
+
+    public void modifyMemberPassword(String hashedPassword) {
+        this.password = hashedPassword;
+    }
 }

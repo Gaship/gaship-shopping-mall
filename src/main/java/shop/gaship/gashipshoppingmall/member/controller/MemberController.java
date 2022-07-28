@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.controller;
 
 import java.net.URI;
+import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,6 @@ import shop.gaship.gashipshoppingmall.member.dto.response.MemberNumberPresence;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.NicknamePresence;
-import shop.gaship.gashipshoppingmall.member.dto.response.ReissuePasswordQualificationResult;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
@@ -232,10 +232,9 @@ public class MemberController {
      * @return 비밀번호 재발급 자격 결과가 담긴 객체입니다.
      */
     @PostMapping("/find-password")
-    public ResponseEntity<ReissuePasswordQualificationResult> reissuePasswordCheck(
+    public ResponseEntity<Map<String, Boolean>> reissuePasswordCheck(
         @Valid @RequestBody ReissuePasswordRequest reissuePasswordRequest) {
-        ReissuePasswordQualificationResult result =
-            memberService.checkReissuePasswordQualification(reissuePasswordRequest);
-        return ResponseEntity.ok(result);
+        Boolean result = memberService.reissuePassword(reissuePasswordRequest);
+        return ResponseEntity.ok(Map.of("changed", result));
     }
 }
