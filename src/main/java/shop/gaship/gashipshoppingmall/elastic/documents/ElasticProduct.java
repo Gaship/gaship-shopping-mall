@@ -12,7 +12,8 @@ import javax.persistence.Id;
 /**
  * elastic 에있는 product 와 연동하기 위한 클래스입니다.
  *
- * @author : 유호철, 김보민
+ * @author : 유호철
+ * @author : 김보민
  * @since 1.0
  */
 @Getter
@@ -22,7 +23,7 @@ import javax.persistence.Id;
 @ToString
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Document(indexName = "gaship-product", writeTypeHint = WriteTypeHint.FALSE)
+@Document(indexName = "#{@environment.getProperty('elasticsearch.index')}", writeTypeHint = WriteTypeHint.FALSE)
 public class ElasticProduct {
     @Id
     @Column(name = "productNo")
