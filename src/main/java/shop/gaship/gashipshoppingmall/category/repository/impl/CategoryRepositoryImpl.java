@@ -9,16 +9,18 @@ import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
 import shop.gaship.gashipshoppingmall.category.repository.custom.CategoryRepositoryCustom;
 
+
 /**
  * 카테고리 레퍼지토리 구현체입니다.
  *
+ * @author : 김보민
  * @see org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
  * @see shop.gaship.gashipshoppingmall.category.repository.custom.CategoryRepositoryCustom
- * @author : 김보민
  * @since 1.0
  */
 public class CategoryRepositoryImpl
-        extends QuerydslRepositorySupport implements CategoryRepositoryCustom {
+    extends QuerydslRepositorySupport implements CategoryRepositoryCustom {
+
     public CategoryRepositoryImpl() {
         super(Category.class);
     }
@@ -35,15 +37,15 @@ public class CategoryRepositoryImpl
         QCategory category = QCategory.category;
 
         return Optional.ofNullable(from(category)
-                .where(category.no.eq(categoryNo))
-                .leftJoin(category.upperCategory)
-                .select(Projections.bean(CategoryResponseDto.class,
-                        category.no,
-                        category.name,
-                        category.level,
-                        category.upperCategory.no.as("upperCategoryNo"),
-                        category.upperCategory.name.as("upperCategoryName")))
-                .fetchOne()
+            .where(category.no.eq(categoryNo))
+            .leftJoin(category.upperCategory)
+            .select(Projections.bean(CategoryResponseDto.class,
+                category.no,
+                category.name,
+                category.level,
+                category.upperCategory.no.as("upperCategoryNo"),
+                category.upperCategory.name.as("upperCategoryName")))
+            .fetchOne()
         );
     }
 
@@ -58,14 +60,14 @@ public class CategoryRepositoryImpl
         QCategory category = QCategory.category;
 
         return from(category)
-                .leftJoin(category.upperCategory)
-                .select(Projections.bean(CategoryResponseDto.class,
-                        category.no,
-                        category.name,
-                        category.level,
-                        category.upperCategory.no.as("upperCategoryNo"),
-                        category.upperCategory.name.as("upperCategoryName")))
-                .fetch();
+            .leftJoin(category.upperCategory)
+            .select(Projections.bean(CategoryResponseDto.class,
+                category.no,
+                category.name,
+                category.level,
+                category.upperCategory.no.as("upperCategoryNo"),
+                category.upperCategory.name.as("upperCategoryName")))
+            .fetch();
     }
 
     /**
@@ -80,13 +82,13 @@ public class CategoryRepositoryImpl
         QCategory category = QCategory.category;
 
         return from(category)
-                .where(category.upperCategory.no.eq(categoryNo))
-                .select(Projections.bean(CategoryResponseDto.class,
-                        category.no,
-                        category.name,
-                        category.level,
-                        category.upperCategory.no.as("upperCategoryNo"),
-                        category.upperCategory.name.as("upperCategoryName")))
-                .fetch();
+            .where(category.upperCategory.no.eq(categoryNo))
+            .select(Projections.bean(CategoryResponseDto.class,
+                category.no,
+                category.name,
+                category.level,
+                category.upperCategory.no.as("upperCategoryNo"),
+                category.upperCategory.name.as("upperCategoryName")))
+            .fetch();
     }
 }

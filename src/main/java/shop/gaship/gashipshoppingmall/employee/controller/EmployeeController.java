@@ -19,7 +19,7 @@ import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequest
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 
 /**
  * 직원에대한 요청을 처리하기위한 컨트롤러 클래스입니다.

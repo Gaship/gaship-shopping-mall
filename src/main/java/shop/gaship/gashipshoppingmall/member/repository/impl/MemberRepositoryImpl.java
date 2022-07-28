@@ -1,9 +1,9 @@
-package shop.gaship.gashipshoppingmall.member.repository.Impl;
+package shop.gaship.gashipshoppingmall.member.repository.impl;
 
-import com.querydsl.core.types.Projections;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.QMember;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepositoryCustom;
@@ -12,6 +12,7 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepositoryCustom;
  * MemberRepositoryCustom 인터페이스에서 제작한 커스텀 쿼리를 구현하는 클래스입니다.
  *
  * @author 김민수
+ * @author 조재철
  * @since 1.0
  */
 public class MemberRepositoryImpl extends QuerydslRepositorySupport
@@ -21,12 +22,12 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Optional<Member> findByEmail(String email) {
+    public Optional<Member> findByEncodedEmailForSearch(String email) {
         QMember member = QMember.member;
 
         return Optional.ofNullable(
             from(member)
-                .where(member.email.eq(email))
+                .where(member.encodedEmailForSearch.eq(email))
                 .select(member)
                 .fetchOne()
         );
@@ -48,18 +49,20 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     public Optional<SignInUserDetailsDto> findSignInUserDetail(String email) {
         QMember member = QMember.member;
 
-        return
-            Optional.ofNullable(from(member)
-                .where(member.email.eq(email))
-                .select(
-                    Projections.constructor(SignInUserDetailsDto.class,
-                        member.memberNo,
-                        member.email,
-                        member.password,
-                        member.isSocial,
-                        Projections.list(member.userAuthorityNo.statusCodeName))
-                )
-                .fetchOne()
+        Member result = from(member)
+            .where(member.email.eq(email))
+            .select(member)
+            .fetchOne();
+
+        return Optional.ofNullable(
+                SignInUserDetailsDto.builder()
+                    .memberNo(result.getMemberNo())
+                    .email(result.getEmail())
+                    .hashedPassword(result.getPassword())
+                    .authorities(result.getRoleSet().stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.toList()))
+                    .build()
             );
     }
 }

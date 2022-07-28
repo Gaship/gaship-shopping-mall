@@ -57,7 +57,7 @@ class EmployeeControllerTest {
         //when
         doNothing().when(service).addEmployee(dto);
 
-        mvc.perform(post("/employees")
+        mvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .content(objectMapper.writeValueAsString(dto))
@@ -77,7 +77,7 @@ class EmployeeControllerTest {
         //when
         doNothing().when(service).addEmployee(dto);
 
-        mvc.perform(post("/employees")
+        mvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .content(objectMapper.writeValueAsString(dto))
@@ -96,7 +96,7 @@ class EmployeeControllerTest {
         //when & then
         doNothing().when(service).modifyEmployee(dto);
 
-        mvc.perform(put("/employees")
+        mvc.perform(put("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .content(objectMapper.writeValueAsString(dto))
@@ -116,7 +116,7 @@ class EmployeeControllerTest {
         //when & then
         doNothing().when(service).modifyEmployee(dto);
 
-        mvc.perform(put("/employees")
+        mvc.perform(put("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .content(objectMapper.writeValueAsString(dto))
@@ -135,7 +135,7 @@ class EmployeeControllerTest {
         //when
         when(service.findEmployee(1)).thenReturn(e1);
 
-        MvcResult mvcResult = mvc.perform(get("/employees/" + 1)
+        MvcResult mvcResult = mvc.perform(get("/api/employees/" + 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk())
@@ -163,7 +163,7 @@ class EmployeeControllerTest {
         //when
         when(service.findEmployees()).thenReturn(list);
 
-        MvcResult mvcResult = mvc.perform(get("/employees")
+        MvcResult mvcResult = mvc.perform(get("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().is2xxSuccessful())

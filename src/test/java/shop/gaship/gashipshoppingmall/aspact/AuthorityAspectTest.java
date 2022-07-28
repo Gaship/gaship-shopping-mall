@@ -40,7 +40,7 @@ class AuthorityAspectTest {
 
         doNothing().when(employeeService).addEmployee(dto);
 
-        mockMvc.perform(post("/employees").header("X-AUTH-ROLE", "ROLE_ADMIN")
+        mockMvc.perform(post("/api/employees").header("X-AUTH-ROLE", "ROLE_ADMIN")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(body))
@@ -55,7 +55,7 @@ class AuthorityAspectTest {
 
         String body = new ObjectMapper().writeValueAsString(dto);
 
-        mockMvc.perform(post("/employees").header("X-AUTH-ROLE", "ROLE_MEMBER")
+        mockMvc.perform(post("/api/employees").header("X-AUTH-ROLE", "ROLE_MEMBER")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(body))
