@@ -85,8 +85,10 @@ public class ProductServiceImpl implements ProductService {
 
         applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks));
 
-        repository.save(product);
+        Product savedProduct = repository.save(product);
         addProductTags(product, createRequest.getTagNos());
+        elasticRepository.save(new ElasticProduct(
+                savedProduct.getNo(), savedProduct.getName(), savedProduct.getCode()));
     }
 
     /**
@@ -135,6 +137,8 @@ public class ProductServiceImpl implements ProductService {
 
         productTagRepository.deleteAllByPkProductNo(product.getNo());
         addProductTags(product, modifyRequest.getTagNos());
+        elasticRepository.save(
+                new ElasticProduct(product.getNo(), product.getName(), product.getCode()));
     }
 
     /**
