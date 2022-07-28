@@ -98,12 +98,12 @@ class EmployeeControllerTest {
     @Test
     void putEmployee() throws Exception {
         //given
-        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, "aa", "test@mail.com", "000000");
+        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto("aa", "test@mail.com", "000000");
 
         //when & then
         doNothing().when(service).modifyEmployee(dto);
 
-        mvc.perform(put("/api/employees")
+        mvc.perform(put("/api/employees/" + 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .content(objectMapper.writeValueAsString(dto))
@@ -118,18 +118,18 @@ class EmployeeControllerTest {
     @Test
     void putEmployeeFail() throws Exception {
         //given
-        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(null, "aa", "test@mail.com", "000000");
+        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(null, "test@mail.com", "000000");
 
         //when & then
         doNothing().when(service).modifyEmployee(dto);
 
-        mvc.perform(put("/api/employees")
+        mvc.perform(put("/api/employees/" + 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .content(objectMapper.writeValueAsString(dto))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().is4xxClientError())
-            .andExpect(jsonPath("$.message").value("직원번호를 입력해주세요"))
+            .andExpect(jsonPath("$.message").value("이름을 입력해주세요"))
             .andDo(print());
     }
 

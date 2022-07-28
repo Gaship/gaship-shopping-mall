@@ -57,8 +57,10 @@ public class EmployeeController {
      * @param dto 직원을 수정하기위한 기본정보들이 포함되어있습니다.
      * @author 유호철
      */
-    @PutMapping
-    public ResponseEntity<Void> modifyEmployee(@Valid @RequestBody ModifyEmployeeRequestDto dto) {
+    @PutMapping("/{employeeNo}")
+    public ResponseEntity<Void> modifyEmployee(
+        @PathVariable("employeeNo") Integer employeeNo,
+        @Valid @RequestBody ModifyEmployeeRequestDto dto) {
 
         employeeService.modifyEmployee(dto);
         return ResponseEntity

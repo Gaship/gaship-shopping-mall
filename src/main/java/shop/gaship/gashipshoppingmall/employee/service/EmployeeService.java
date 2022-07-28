@@ -52,6 +52,7 @@ public interface EmployeeService {
      * 직원이 로그인을 시도했을 시 해당 계정에 맞는 직원 상세정보를 전달합니다.
      *
      * @return 로그인 할 직원의 계정 상세정보를 반환합니다.
+     * @author 김민수
      */
     SignInUserDetailsDto findSignInEmployeeFromEmail(String email);
 }
