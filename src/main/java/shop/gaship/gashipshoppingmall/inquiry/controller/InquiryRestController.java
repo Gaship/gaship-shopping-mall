@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
@@ -99,8 +98,6 @@ public class InquiryRestController {
     /**
      * 문의상태를 통해서 문의들을 조회하는 기능입니다.
      *
-     * @param memberNo 회원의 번호입니다.
-     * @param status   문의의 상태로서 답변대기, 답변완료 두가지 값이 올 수 있습니다.
      * @return response entity
      * @author 최겸준
      */

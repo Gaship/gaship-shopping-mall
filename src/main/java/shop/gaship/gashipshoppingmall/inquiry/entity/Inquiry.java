@@ -43,7 +43,6 @@ public class Inquiry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "inquiry_no")
-    @NotNull
     private Integer inquiryNo;
 
     @ManyToOne

@@ -8,7 +8,7 @@ package shop.gaship.gashipshoppingmall.inquiry.exception;
  */
 public class InquiryNotFoundException extends RuntimeException {
 
-    private static final String MESSAGE = "문의를 찾을 수 없습니다.";
+    public static final String MESSAGE = "문의를 찾을 수 없습니다.";
 
     public InquiryNotFoundException() {
         super(MESSAGE);

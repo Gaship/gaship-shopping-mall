@@ -101,8 +101,9 @@ public class Member extends BaseEntity {
 
     private String encodedEmailForSearch;
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    List<Inquiry> inquiries = new ArrayList<>();
+    private List<Inquiry> inquiries = new ArrayList<>();
 
     /**
      * 멤버의 정보를 변경하는 메서드입니다.
