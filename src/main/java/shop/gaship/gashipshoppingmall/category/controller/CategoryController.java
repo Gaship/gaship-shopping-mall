@@ -27,7 +27,7 @@ import shop.gaship.gashipshoppingmall.category.service.CategoryService;
  * @since 1.0
  */
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/api/categories")
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
@@ -61,9 +61,10 @@ public class CategoryController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-    @PutMapping
+    @PutMapping("/{categoryNo}")
     public ResponseEntity<Void> categoryModify(
-            @Valid @RequestBody CategoryModifyRequestDto modifyRequest) {
+            @Valid @RequestBody CategoryModifyRequestDto modifyRequest,
+            @PathVariable String categoryNo) {
         categoryService.modifyCategory(modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
