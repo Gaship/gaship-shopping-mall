@@ -36,7 +36,7 @@ public class Employee {
     private Integer employeeNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_authority_no")
+    @JoinColumn(name = "user_authority_no")
     private StatusCode statusCode;
 
     @ManyToOne(fetch = FetchType.LAZY)

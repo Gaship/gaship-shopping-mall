@@ -1,13 +1,15 @@
 package shop.gaship.gashipshoppingmall.error;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
+import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 
@@ -20,7 +22,18 @@ import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 @Slf4j
 @RestControllerAdvice
 public class ExceptionAdviceController {
-    private static final String CAUSE_GUIDE  = " & cause : ";
+    /**
+     * gaship 개발자들이 선언하고, 예상되는 예외들을 핸들링하기 위해서 제작한 에러 핸들 메서드입니다.
+     *
+     * @param exception 개발자들이 예상하는 예외 객체입니다.
+     * @return 예상되는 예외들의 각 메세지를 담아 응답 객체를 반환합니다.
+     */
+    @ExceptionHandler(value = {SignUpDenyException.class, MemberNotFoundException.class,
+        InvalidReissueQualificationException.class, DuplicatedNicknameException.class})
+    public ResponseEntity<ErrorResponse> declaredExceptionAdvice(RuntimeException exception) {
+        return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON)
+            .body(new ErrorResponse(exception.getMessage()));
+    }
 
     /**
      * 컨트롤러에서 발생한 유효성문제를 잡기위한 클래스입니다.
@@ -36,41 +49,21 @@ public class ExceptionAdviceController {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .reduce("", (accumulateMsg, nextMessage)  -> accumulateMsg + "\n" + nextMessage)
                 .trim();
-        log.error(message + CAUSE_GUIDE + ex.getCause());
+
         return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
 
     /**
-     * Exception.class 예외처리 담당 ExceptionHandler.
+     * 예상치 못한 예외가 발생시 핸들링해주는 에러핸들 메서드입니다.
      *
-     * @param e Exception
-     * @return responseEntity
-     * @author 김세미
+     * @param exception 예기치 못한 예외 객체입니다.
+     * @return 예기치 못한 예외의 내용을 응답합니다.
      */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {
-        log.error(e.getMessage() + CAUSE_GUIDE + e.getCause());
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<ErrorResponse> otherExceptionAdvice(Exception exception) {
+        log.error("error : {}", ExceptionUtils.getStackTrace(exception));
 
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorResponse(e.getMessage()));
-    }
-
-    /**
-     * MemberNotFoundException, SignUpDenyException 예외처리 담당 ExceptionHandler.
-     *
-     * @param e Exception
-     * @return responseEntity
-     * @author 김세미
-     */
-    @ExceptionHandler({MemberNotFoundException.class, SignUpDenyException.class})
-    public ResponseEntity<ErrorResponse> memberNotFoundExceptionHandler(Exception e) {
-        log.error(e.getMessage() + CAUSE_GUIDE + e.getCause());
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorResponse(e.getMessage()));
+        return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)
+            .body(new ErrorResponse(exception.getMessage()));
     }
 }

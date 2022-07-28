@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
  */
 @Getter
 public class PageResponse<T> {
-    private final List<T> dtoList;
+    private final List<T> content;
     //총 페이지 번호
     private final int totalPage;
     //현재 페이지 번호
@@ -41,7 +41,7 @@ public class PageResponse<T> {
      */
     public PageResponse(Page<T> result) {
 
-        dtoList = result.toList();
+        content = result.toList();
 
         totalPage = result.getTotalPages();
 

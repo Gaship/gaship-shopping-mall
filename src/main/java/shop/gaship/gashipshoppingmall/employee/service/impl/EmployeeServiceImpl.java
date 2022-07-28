@@ -1,9 +1,8 @@
 package shop.gaship.gashipshoppingmall.employee.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
@@ -16,6 +15,8 @@ import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongStatusCodeException;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
@@ -36,9 +37,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final AddressLocalRepository localRepository;
 
-
     /**
-     * 직원을 생성하기위한 메서드입니다.
+     * {@inheritDoc}
      *
      * @param dto 직원을 생성하기위한 정보들이 담겨있습니다.
      * @throws WrongStatusCodeException 잘못된코드가들어갈경우.
@@ -63,7 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /**
-     * 직원에대한 정보를 수정하기위한 메서드입니다.
+     * {@inheritDoc}
      *
      * @param dto 수정할 직원의 정보들이 담겨져있습니다.
      * @throws EmployeeNotFoundException 직원이없을경우.
@@ -72,13 +72,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void modifyEmployee(ModifyEmployeeRequestDto dto) {
-        Employee employee = repository.findById(dto.getEmployeeNo())
+        Employee employee = repository.findById(1)
             .orElseThrow(EmployeeNotFoundException::new);
         employee.modifyEmployee(dto);
     }
 
     /**
-     * 직원번호로 하나의 직원에대한 정보를 반환받기위한 메서드입니다.
+     * {@inheritDoc}
      *
      * @param employeeNo 조회하기위한 직원번호입니다.
      * @return employeeInfoResponseDto 반환받게되는 직원정보들이 담겨있습니다.
@@ -90,22 +90,29 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = repository.findById(employeeNo)
             .orElseThrow(EmployeeNotFoundException::new);
 
-        return new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(),
-            employee.getPhoneNo());
+        return new EmployeeInfoResponseDto(employee);
     }
 
     /**
-     * 전체직원에대한 정보를 조회하기위한 메서드입니다.
+     * {@inheritDoc}
      *
      * @return list 직원의 정보들이 반환됩니다.
      * @author 유호철
      */
     @Override
-    public List<EmployeeInfoResponseDto> findEmployees() {
-        return repository.findAll()
-            .stream()
-            .map(employee -> new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(),
-                employee.getPhoneNo()))
-            .collect(Collectors.toList());
+    public PageResponse<EmployeeInfoResponseDto> findEmployees(Pageable pageable) {
+        return repository.findAllEmployees(pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return 로그인 할 직원의 계정 상세정보를 반환합니다.
+     * @author 김민수
+     */
+    @Override
+    public SignInUserDetailsDto findSignInEmployeeFromEmail(String email) {
+        return repository.findSignInEmployeeUserDetail(email)
+            .orElseThrow(EmployeeNotFoundException::new);
     }
 }

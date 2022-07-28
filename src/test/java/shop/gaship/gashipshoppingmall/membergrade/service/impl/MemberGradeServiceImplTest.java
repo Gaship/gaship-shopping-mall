@@ -375,7 +375,7 @@ class MemberGradeServiceImplTest {
 
         assertThat(result.getPage()).isEqualTo(page);
         assertThat(result.getSize()).isEqualTo(size);
-        assertThat(result.getDtoList()).hasSize(1);
+        assertThat(result.getContent()).hasSize(1);
 
         verify(memberGradeRepository).getMemberGrades(any());
     }

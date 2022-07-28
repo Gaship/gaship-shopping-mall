@@ -92,7 +92,7 @@ class StatusCodeRestControllerTest {
                         .param("period", period)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is5xxServerError())
+                .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.message", equalTo(errorMessage)))
                 .andDo(print());
 

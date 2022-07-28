@@ -2,15 +2,15 @@ package shop.gaship.gashipshoppingmall.member.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -21,23 +21,23 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dummy.MemberModifyByAdminDtoDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
 /**
- * 설명작성란
+ * 회원 기본 crud 레스트 컨트롤러 테스트입니다.
  *
  * @author 최정우
  * @since 1.0
  */
-
 @WebMvcTest(MemberController.class)
 public class MemberControllerBaseFunctionTest {
     @Autowired
@@ -55,11 +55,8 @@ public class MemberControllerBaseFunctionTest {
         String body = objectMapper.writeValueAsString(MemberTestDummy.memberModifyRequestDto());
         doNothing().when(memberService).modifyMember(MemberTestDummy.memberModifyRequestDto());
 
-        mockMvc.perform(put("/members/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+        mockMvc.perform(put("/api/members/1").accept(MediaType.APPLICATION_JSON).content(body)
+            .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
         verify(memberService).modifyMember(any());
     }
@@ -68,10 +65,8 @@ public class MemberControllerBaseFunctionTest {
     @Test
     void deleteMemberTest() throws Exception {
         doNothing().when(memberService).removeMember(any(Integer.class));
-        mockMvc.perform(delete("/members/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+        mockMvc.perform(delete("/api/members/1").accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
         verify(memberService).removeMember(any());
     }
@@ -79,13 +74,12 @@ public class MemberControllerBaseFunctionTest {
     @DisplayName("회원 단건 조회 테스트")
     @Test
     void getMemberTest() throws Exception {
-        when(memberService.findMember(anyInt()))
-            .thenReturn(
-            MemberTestDummy.memberResponseDto());
+        when(memberService.findMember(anyInt())).thenReturn(MemberTestDummy.memberResponseDto());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/members/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/members/1")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
@@ -98,7 +92,7 @@ public class MemberControllerBaseFunctionTest {
         MemberPageResponseDto<MemberResponseDto, Member> memberResponseDto =
             MemberTestDummy.CreateTestMemberPageResponseDto();
         when(memberService.findMembers(any(Pageable.class))).thenReturn(memberResponseDto);
-        mockMvc.perform(get("/members")
+        mockMvc.perform(get("/api/members")
                 .queryParam("page", "0")
                 .queryParam("size", "10")
                 .queryParam("sort", "title")
@@ -113,15 +107,17 @@ public class MemberControllerBaseFunctionTest {
     @DisplayName("관리자의 회원 정보 수정 테스트")
     @Test
     void modifyMemberByAdminTest() throws Exception {
-        String body = objectMapper.writeValueAsString(MemberTestDummy.memberModifyRequestDto());
-        doNothing().when(memberService).modifyMember(MemberTestDummy.memberModifyRequestDto());
+        doNothing().when(memberService).modifyMemberByAdmin(any(MemberModifyByAdminDto.class));
 
-        mockMvc.perform(put("/admins/1/members")
+        String body = objectMapper.writeValueAsString(MemberModifyByAdminDtoDummy.dummy());
+
+        mockMvc.perform(
+            put("/api/members/{memberNo}/role", 1)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
 
-        verify(memberService).modifyMember(any());
+        then(memberService).should().modifyMemberByAdmin(any(MemberModifyByAdminDto.class));
     }
 }

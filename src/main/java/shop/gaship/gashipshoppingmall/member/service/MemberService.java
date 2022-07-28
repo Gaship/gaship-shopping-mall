@@ -1,15 +1,20 @@
 package shop.gaship.gashipshoppingmall.member.service;
 
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
-import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequest;
-import shop.gaship.gashipshoppingmall.member.dto.MemberCreationRequestOauth;
-import shop.gaship.gashipshoppingmall.member.dto.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberPageResponseDto;
-import shop.gaship.gashipshoppingmall.member.dto.MemberResponseDto;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
+import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
+import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.ReissuePasswordQualificationResult;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -18,6 +23,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  *
  * @author 최정우
  * @author 최겸준
+ * @author 조재철
  * @since 1.0
  */
 public interface MemberService {
@@ -34,37 +40,44 @@ public interface MemberService {
      *
      * @param memberCreationRequestOauth 회원가입을 위한 정보 객체입니다.
      */
-    void addMember(MemberCreationRequestOauth memberCreationRequestOauth);
+    void addMemberByOauth(MemberCreationRequestOauth memberCreationRequestOauth);
 
 
     /**
      * 멤버의 정보를 변경하는 메서드 입니다.
      *
-     * @param memberModifyRequestDto the member modify request dto
+     * @param memberModifyRequestDto 회원이 수정하려는 회원정보가 담긴 객체입니다.
      */
     void modifyMember(MemberModifyRequestDto memberModifyRequestDto);
+
+
+    /**
+     * 멤버의 상태정보를 변경하는 매서드입니다.
+     *
+     * @param memberModifyByAdminDto 관리자가 수정하려는 멤버의 정보가 담긴 객체입니다.
+     */
+    void modifyMemberByAdmin(MemberModifyByAdminDto memberModifyByAdminDto);
 
     /**
      * 멤버를 삭제하는 메서드 입니다.
      *
-     * @param memberNo the member no
+     * @param memberNo 멤버 고유정보
      */
     void removeMember(Integer memberNo);
 
     /**
      * 멤버를 단건조회하는 메서드입니다.
      *
-     * @param memberNo the member no
-     * @return the member response dto
-     * @throws MemberNotFoundException the member not found exception
+     * @param memberNo 멤버고유정보
+     * @return 멤버의 상세정보가 담긴 객체를 반환합니다.
      */
     MemberResponseDto findMember(Integer memberNo);
 
     /**
      * 멤버를 다건조회하는 메서드입니다.
      *
-     * @param pageable the pageable
-     * @return the list
+     * @param pageable 조회하고자 하는 멤버정보들의 페이지와 사이즈를 가지고있는 객체입니다.
+     * @return 멤버들을 정보를 페이징 단위로 가지고있는 객체입니다.
      */
     MemberPageResponseDto<MemberResponseDto, Member> findMembers(Pageable pageable);
 
@@ -75,6 +88,14 @@ public interface MemberService {
      * @return 이메일 존재여부를 반환합니다.
      */
     boolean isAvailableEmail(String email);
+
+    /**
+     * 닉네임이 존재하는가에 대한 확인을 하는 메서드입니다.
+     *
+     * @param nickname 닉네임 문자열
+     * @return 닉네임 존재여부를 반환합니다.
+     */
+    boolean isAvailableNickname(String nickname);
 
     /**
      * 이메일을 통해서 회원을 찾는 메서드입니다.
@@ -93,20 +114,23 @@ public interface MemberService {
     Member findMemberFromNickname(String nickName);
 
     /**
-     * Entity to dto member response dto.
+     * 멤버 엔티티 객체를 MemberResponseDto로 변환해주는 메서드입니다.
      *
-     * @param member the member
-     * @return the member response dto
+     * @param member 멤버 엔티티 객체입니다.
+     * @return 변환된 MemberResponseDto객체입니다.
      */
-    default MemberResponseDto entityToMemberResponseDto(Member member) {
-        return MemberResponseDto.builder().email(member.getEmail()).password(member.getPassword())
-            .phoneNumber(member.getPhoneNumber()).name(member.getName())
-            .birthDate(member.getBirthDate()).nickname(member.getNickname())
-            .gender(member.getGender())
+    default MemberResponseDto entityToMemberResponseDto(Member member, Aes aes) {
+        return MemberResponseDto.builder().memberNo(member.getMemberNo())
+            .memberStatus(member.getMemberStatusCodes().toString())
+            .email(aes.aesEcbDecode(member.getEmail())).authorities(
+                member.getRoleSet().stream().map(Enum::toString).collect(Collectors.toList()))
+            .password(member.getPassword()).nickname(member.getNickname()).name(member.getName())
+            .gender(member.getGender()).phoneNumber(member.getPhoneNumber())
+            .birthDate(member.getBirthDate())
             .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
-            .birthDate(member.getNextRenewalGradeDate())
+            .nextRenewalGradeDate(member.getNextRenewalGradeDate())
             .registerDatetime(member.getRegisterDatetime())
-            .modifyDatetime(member.getModifiedDatetime()).build();
+            .modifyDatetime(member.getModifiedDatetime()).social(member.isSocial()).build();
     }
 
 
@@ -122,7 +146,6 @@ public interface MemberService {
     default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest,
                                                  @Nullable Member recommendMember,
                                                  StatusCode defaultStatus,
-                                                 StatusCode defaultAuthority,
                                                  MemberGrade defaultGrade) {
         return Member.builder().recommendMember(recommendMember).memberStatusCodes(defaultStatus)
             .memberGrades(defaultGrade).email(memberCreationRequest.getEmail())
@@ -130,8 +153,8 @@ public interface MemberService {
             .password(memberCreationRequest.getPassword())
             .phoneNumber(memberCreationRequest.getPhoneNumber())
             .birthDate(memberCreationRequest.getBirthDate())
-            .gender(memberCreationRequest.getGender()).accumulatePurchaseAmount(0L)
-            .userAuthorityNo(defaultAuthority).isSocial(false).build();
+            .gender(memberCreationRequest.getGender()).accumulatePurchaseAmount(0L).isSocial(false)
+            .build();
     }
 
     /**
@@ -144,7 +167,7 @@ public interface MemberService {
      */
     default Member creationRequestToMemberEntity(
         MemberCreationRequestOauth memberCreationRequestOauth, StatusCode defaultStatus,
-        StatusCode defaultAuthority, MemberGrade defaultGrade) {
+        MemberGrade defaultGrade) {
         return Member.builder().memberStatusCodes(defaultStatus).memberGrades(defaultGrade)
             .email(memberCreationRequestOauth.getEmail())
             .nickname(memberCreationRequestOauth.getNickName())
@@ -153,7 +176,7 @@ public interface MemberService {
             .phoneNumber(memberCreationRequestOauth.getPhoneNumber())
             .birthDate(memberCreationRequestOauth.getBirthDate())
             .gender(memberCreationRequestOauth.getGender()).accumulatePurchaseAmount(0L)
-            .userAuthorityNo(defaultAuthority).isSocial(true).build();
+            .isSocial(true).build();
     }
 
     /**
@@ -164,5 +187,28 @@ public interface MemberService {
      */
     SignInUserDetailsDto findSignInUserDetailFromEmail(String email);
 
+    /**
+     * 마지막 회원의 마지막 번호를 조회하는 메서드입니다.
+     *
+     * @return 마지막 회원번호입니다.
+     */
     Integer findLastNo();
+
+
+    /**
+     * 닉네임을 통해서 데이터의 일부가 가려진 이메일을 얻어옵니다.
+     *
+     * @param nickname 멤버의 닉네임 입니다.
+     * @return 이메일 데이터 일부가 가려진 결과를 가진 객체를 반환합니다.
+     */
+    FindMemberEmailResponse findMemberEmailFromNickname(String nickname);
+
+    /**
+     * 비밀번호 재발급을 위해 멤버의 정보 일치한지 확인합니다.
+     *
+     * @param reissuePasswordRequest 비밀번호를 재발급 받기 위해 이름, 이메일 정보가 담긴 객체입니다.
+     * @return 재발급 자격 여부를 반환합니다.
+     */
+    ReissuePasswordQualificationResult checkReissuePasswordQualification(
+        ReissuePasswordRequest reissuePasswordRequest);
 }

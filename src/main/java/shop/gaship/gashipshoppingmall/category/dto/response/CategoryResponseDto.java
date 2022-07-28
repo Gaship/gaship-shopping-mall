@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.dto.response;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
 public class CategoryResponseDto {
     private Integer no;
     private String name;
