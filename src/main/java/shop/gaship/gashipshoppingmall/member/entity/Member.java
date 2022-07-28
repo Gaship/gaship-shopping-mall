@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membertag.entity.MemberTag;
@@ -99,6 +100,9 @@ public class Member extends BaseEntity {
     private List<MembersRole> roleSet = new ArrayList<>();
 
     private String encodedEmailForSearch;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    List<Inquiry> inquiries = new ArrayList<>();
 
     /**
      * 멤버의 정보를 변경하는 메서드입니다.

@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
+import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
@@ -132,6 +133,9 @@ public class Product {
     @NotNull
     @Column(name = "product_code", unique = true)
     private String code;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    List<Inquiry> inquiries = new ArrayList<>();
 
     @Builder
     public Product(Category category, StatusCode deliveryType, String name,
