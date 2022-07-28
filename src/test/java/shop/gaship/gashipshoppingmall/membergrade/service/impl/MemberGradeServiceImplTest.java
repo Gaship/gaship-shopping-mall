@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.membergrade.service;
+package shop.gaship.gashipshoppingmall.membergrade.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +23,8 @@ import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.*;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
+import shop.gaship.gashipshoppingmall.membergrade.service.impl.MemberGradeServiceImpl;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;

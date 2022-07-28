@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.gradehistory.dto.request;
 
+import java.time.LocalDate;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,4 +27,7 @@ public class GradeHistoryAddRequestDto {
     @NotNull(message = "등록하려는 등급 이력의 gradeName 은 필수값입니다.")
     @Length(min = 1, max = 10, message = "gradeName 의 길이는 최소 1 이상 최대 10 이하 입니다.")
     private final String gradeName;
+
+    @NotNull(message = "등록하려는 등급 이력의 승급일자는 필수값입니다.")
+    private final LocalDate at;
 }
