@@ -1,6 +1,6 @@
-package shop.gaship.gashipshoppingmall.member.dto;
+package shop.gaship.gashipshoppingmall.member.dto.response;
 
-import java.util.List;
+import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,5 +19,5 @@ public class SignInUserDetailsDto {
     private String email;
     private String hashedPassword;
     private Boolean isSocial;
-    private List<String> authorities;
+    private Collection<String> authorities;
 }

@@ -46,7 +46,6 @@ class MemberTagRepositoryTest {
         entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
         entityManager.persist(memberDummy.getMemberStatusCodes());
         entityManager.persist(memberDummy.getMemberGrades());
-        entityManager.persist(memberDummy.getUserAuthorityNo());
 
         Member member = memberRepository.save(memberDummy);
         List<Tag> tags = tagRepository.saveAll(TagDummy.TagDummyListUnPersist());
@@ -67,7 +66,7 @@ class MemberTagRepositoryTest {
         entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
         entityManager.persist(memberDummy.getMemberStatusCodes());
         entityManager.persist(memberDummy.getMemberGrades());
-        entityManager.persist(memberDummy.getUserAuthorityNo());
+
         Member member = memberRepository.save(memberDummy);
 
         List<Tag> tags = tagRepository.saveAll(TagDummy.TagDummyListUnPersist());

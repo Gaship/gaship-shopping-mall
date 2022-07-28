@@ -17,7 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 
-
 /**
  * 데이터베이스에 있는 주소지와 연동하기위한 클래스입니다.
  *

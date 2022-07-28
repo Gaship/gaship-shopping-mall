@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +19,6 @@ import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequest
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
-import shop.gaship.gashipshoppingmall.message.ErrorResponse;
 
 /**
  * 카테고리 컨트롤러 입니다.
@@ -133,19 +131,5 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
-    }
-
-    /**
-     * 예외 처리 메서드입니다.
-     *
-     * @param ex 처리할 예외
-     * @return responseEntity 에러 객체를 포함하고 있습니다.
-     * @author 김보민
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorResponse(ex.getMessage()));
     }
 }

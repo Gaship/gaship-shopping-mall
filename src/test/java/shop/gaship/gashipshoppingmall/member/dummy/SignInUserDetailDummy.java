@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.dummy;
 
 import java.util.List;
-import shop.gaship.gashipshoppingmall.member.dto.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 
 /**
@@ -18,11 +18,11 @@ public class SignInUserDetailDummy {
         Member dummyMember = MemberDummy.dummy();
 
         return SignInUserDetailsDto.builder()
-            .authorities(List.of(dummyMember.getMemberGrades().getName()))
-            .email(dummyMember.getEmail())
-            .memberNo(dummyMember.getMemberNo())
-            .hashedPassword(dummyMember.getPassword())
-            .isSocial(false)
-            .build();
+                .authorities(List.of(dummyMember.getMemberGrades().getName()))
+                .email(dummyMember.getEmail())
+                .memberNo(dummyMember.getMemberNo())
+                .hashedPassword(dummyMember.getPassword())
+                .isSocial(false)
+                .build();
     }
 }

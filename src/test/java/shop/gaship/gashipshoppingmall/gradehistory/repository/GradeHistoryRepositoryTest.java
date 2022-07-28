@@ -80,7 +80,6 @@ class GradeHistoryRepositoryTest {
         testEntityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
         testEntityManager.persist(memberDummy.getMemberStatusCodes());
         testEntityManager.persist(memberDummy.getMemberGrades());
-        testEntityManager.persist(memberDummy.getUserAuthorityNo());
 
         return testEntityManager.persist(memberDummy);
     }

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication
 @EnableAspectJAutoProxy
 public class GashipShoppingMallApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(GashipShoppingMallApplication.class, args);
     }
