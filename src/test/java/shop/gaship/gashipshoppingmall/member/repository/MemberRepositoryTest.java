@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.member.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.repository <br/>

@@ -14,10 +14,10 @@ public class GetEmployeeDummy {
     }
 
     public static EmployeeInfoResponseDto dummy() {
-        return new EmployeeInfoResponseDto("a", "a@naver.com", "01");
+        return new EmployeeInfoResponseDto("a", "a@naver.com", "01", "부산");
     }
 
     public static EmployeeInfoResponseDto dummy2() {
-        return new EmployeeInfoResponseDto("b", "b@naver.com", "01");
+        return new EmployeeInfoResponseDto("b", "b@naver.com", "01", "부산");
     }
 }
