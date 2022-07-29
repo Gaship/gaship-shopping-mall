@@ -17,6 +17,7 @@ import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.product.dummy.InquiryDummy;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -59,17 +60,8 @@ class InquiryRepositoryTest {
     }
 
     private void setStatusCode() {
-        statusCodeHolder = StatusCode.builder()
-            .statusCodeName("답변대기")
-            .priority(1)
-            .groupCodeName("처리상태")
-            .build();
-
-        statusCodeComplete = StatusCode.builder()
-            .statusCodeName("답변완료")
-            .priority(2)
-            .groupCodeName("처리상태")
-            .build();
+        statusCodeHolder = InquiryDummy.statusCodeHolderDummy();
+        statusCodeComplete = InquiryDummy.statusCodeCompleteDummy();
 
         testEntityManager.persist(statusCodeHolder);
         testEntityManager.persist(statusCodeComplete);
@@ -94,21 +86,8 @@ class InquiryRepositoryTest {
     }
 
     private void setInquiry() {
-        customerInquiry = Inquiry.builder()
-            .title("1번째 고객문의제목")
-            .inquiryContent("1번째 고객문의내용")
-            .processStatusCode(statusCodeHolder)
-            .isProduct(false)
-            .registerDatetime(LocalDateTime.now())
-            .build();
-
-        productInquiry = Inquiry.builder()
-            .title("2번째 상품문의제목")
-            .inquiryContent("2번째 상품문의내용")
-            .processStatusCode(statusCodeHolder)
-            .isProduct(true)
-            .registerDatetime(LocalDateTime.now())
-            .build();
+        customerInquiry = InquiryDummy.customerDummy(statusCodeHolder);
+        productInquiry = InquiryDummy.productDummy(statusCodeHolder);
 
         customerInquiry.addMember(member);
         productInquiry.addMember(member);
