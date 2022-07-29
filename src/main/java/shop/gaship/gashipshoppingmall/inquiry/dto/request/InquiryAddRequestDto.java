@@ -13,7 +13,6 @@ import lombok.Setter;
  * @since 1.0
  */
 @Getter
-@Setter
 public class InquiryAddRequestDto {
 
     @Min(1)
