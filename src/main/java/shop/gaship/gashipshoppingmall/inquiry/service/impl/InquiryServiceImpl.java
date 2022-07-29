@@ -49,8 +49,8 @@ public class InquiryServiceImpl implements InquiryService {
                 StatusCodeNotFoundException::new);
         Inquiry inquiry = Inquiry.dtoToEntityWhenCreation(inquiryAddRequestDto, statusCode);
 
-        setMemberAndSaveWhenNoProductInquiry(inquiryAddRequestDto, inquiry);
-        setProductAndSave(inquiryAddRequestDto, inquiry);
+        setMember(inquiryAddRequestDto, inquiry);
+        saveOrSetProduct(inquiryAddRequestDto, inquiry);
     }
 
     /**
@@ -61,15 +61,11 @@ public class InquiryServiceImpl implements InquiryService {
      * @param inquiry              아직 영속화 되기 전의 상태인 Inquiry entity 입니다.
      * @author 최겸준
      */
-    private void setMemberAndSaveWhenNoProductInquiry(InquiryAddRequestDto inquiryAddRequestDto,
-                                                      Inquiry inquiry) {
+    private void setMember(InquiryAddRequestDto inquiryAddRequestDto,
+                           Inquiry inquiry) {
         Member member = memberRepository.findById(inquiryAddRequestDto.getMemberNo())
             .orElseThrow(MemberNotFoundException::new);
         inquiry.addMember(member);
-
-        if (!inquiryAddRequestDto.getIsProduct()) {
-            inquiryRepository.save(inquiry);
-        }
     }
 
     /**
@@ -79,7 +75,12 @@ public class InquiryServiceImpl implements InquiryService {
      * @param inquiry              아직 영속화 되기 전의 상태인 Inquiry entity 입니다.
      * @author 최겸준
      */
-    private void setProductAndSave(InquiryAddRequestDto inquiryAddRequestDto, Inquiry inquiry) {
+    private void saveOrSetProduct(InquiryAddRequestDto inquiryAddRequestDto, Inquiry inquiry) {
+        if (!inquiryAddRequestDto.getIsProduct()) {
+            inquiryRepository.save(inquiry);
+            return;
+        }
+
         Product product = productRepository.findById(inquiryAddRequestDto.getProductNo())
             .orElseThrow(ProductNotFoundException::new);
         inquiry.addProduct(product);
