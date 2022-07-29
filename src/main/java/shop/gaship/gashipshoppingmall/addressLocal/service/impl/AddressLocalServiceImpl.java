@@ -1,8 +1,8 @@
 package shop.gaship.gashipshoppingmall.addressLocal.service.impl;
 
-import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
@@ -10,6 +10,7 @@ import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.exception.NotExistAddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 주소를 서비스레이어에서 사용할수있게하는 구현 클래스입니다.
@@ -48,7 +49,8 @@ public class AddressLocalServiceImpl implements AddressLocalService {
      * @author 유호철
      */
     @Override
-    public List<GetAddressLocalResponseDto> findAddressLocals(String address) {
-        return repository.findAllAddress(address);
+    public PageResponse<GetAddressLocalResponseDto> findAddressLocals(
+        String address, Pageable pageable) {
+        return repository.findAllAddress(address, pageable);
     }
 }
