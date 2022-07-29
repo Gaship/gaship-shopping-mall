@@ -26,29 +26,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ElasticProductRepositoryTest {
-
     @Autowired
     ElasticRepository repository;
-
-    @Autowired
-    ElasticsearchClient client;
 
     private final Integer productNo = 100;
     private ElasticProduct elasticProduct;
 
-    @BeforeEach
-    void setUp() {
-        elasticProduct = ElasticProduct
-            .builder()
-            .id(productNo)
-            .name("뚫뛕띫딹")
-            .code("ZZ0001")
-            .build();
-    }
-
     @Order(1)
     @Test
     void productSaveTest() {
+        elasticProduct = ElasticProduct
+                .builder()
+                .id(productNo)
+                .name("뚫뛕띫딹")
+                .code("ZZ0001")
+                .build();
+
         repository.save(elasticProduct);
 
         assertThat(repository.findById(productNo)).isPresent();
