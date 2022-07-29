@@ -1,5 +1,8 @@
 package shop.gaship.gashipshoppingmall.addressLocal.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +11,8 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
@@ -18,15 +23,14 @@ import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.exception.NotExistAddressLocal;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.addressLocal.service.impl.AddressLocalServiceImpl;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.addressLocal.service
@@ -55,7 +59,7 @@ class AddressLocalServiceTest {
 
     @BeforeEach
     void setUp() {
-        requestDto = new String("마산턱별시");
+        requestDto = "마산턱별시";
         responseDto = GetAddressLocalResponseDtoDummy.dummy();
         captor = ArgumentCaptor.forClass(AddressLocal.class);
         addressLocal = AddressLocalDummy.dummy1();
@@ -67,11 +71,11 @@ class AddressLocalServiceTest {
     void modifyAddressLocal_delivery_Fail() {
         //given & when
         given(addressLocalRepository.findById(any()))
-                .willReturn(Optional.empty());
+            .willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> service.modifyLocalDelivery(modifyDto))
-                .isInstanceOf(NotExistAddressLocal.class);
+            .isInstanceOf(NotExistAddressLocal.class);
     }
 
     @DisplayName("배송여부 수정을 위한 테스트 성공한 경우 테스트")
@@ -79,28 +83,34 @@ class AddressLocalServiceTest {
     void modifyAddressLocal_delivery_Success() {
         //given
         given(addressLocalRepository.findById(any()))
-                .willReturn(Optional.of(addressLocal));
+            .willReturn(Optional.of(addressLocal));
 
         //when
         service.modifyLocalDelivery(modifyDto);
 
         //then
         verify(addressLocalRepository, timeout(1))
-                .findById(any());
+            .findById(any());
     }
 
     @DisplayName("배송지 검색테스트")
     @Test
     void searchAddressLocal() {
         //given
-        given(addressLocalRepository.findAllAddress(any()))
-                .willReturn(List.of(responseDto));
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        List<GetAddressLocalResponseDto> list = new ArrayList<>();
+        list.add(responseDto);
+
+        PageImpl<GetAddressLocalResponseDto> page = new PageImpl<>(list, pageRequest, pageRequest.getOffset());
+        PageResponse<GetAddressLocalResponseDto> pages = new PageResponse<>(page);
+        given(addressLocalRepository.findAllAddress(requestDto, pageRequest))
+            .willReturn(pages);
 
         //when & then
-        service.findAddressLocals(requestDto);
+        service.findAddressLocals(requestDto, pageRequest);
         //then
         verify(addressLocalRepository, times(1))
-                .findAllAddress(any());
+            .findAllAddress(requestDto, pageRequest);
     }
 
 }
