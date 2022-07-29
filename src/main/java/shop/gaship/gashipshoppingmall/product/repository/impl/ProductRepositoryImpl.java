@@ -5,10 +5,8 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.JPAExpressions;
-import java.util.List;
-
 import com.querydsl.jpa.JPQLQuery;
-import org.springframework.data.domain.Page;
+import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
@@ -29,7 +27,7 @@ import shop.gaship.gashipshoppingmall.tag.entity.QTag;
  * @since 1.0
  */
 public class ProductRepositoryImpl extends QuerydslRepositorySupport
-        implements ProductRepositoryCustom {
+    implements ProductRepositoryCustom {
     QProduct product = QProduct.product;
     QCategory category = QCategory.category;
     QTag tag = QTag.tag;
@@ -47,60 +45,66 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
 
 
         List<ProductAllInfoResponseDto> content = productQuery(requestDto)
-                .select(Projections.constructor(ProductAllInfoResponseDto.class,
-                        product.no.as("productNo"),
-                        product.name.as("productName"),
-                        product.code.as("productCode"),
-                        category.name.as("categoryName"),
-                        product.amount,
-                        product.registerDatetime.as("dateTime"),
-                        product.manufacturer,
-                        product.manufacturerCountry.as("country"),
-                        product.seller,
-                        product.importer,
-                        product.shippingInstallationCost.as("installationCost"),
-                        product.qualityAssuranceStandard.as("quality"),
-                        product.color,
-                        product.stockQuantity.as("quantity"),
-                        product.imageLink1.as("img1"),
-                        product.imageLink2.as("img2"),
-                        product.imageLink3.as("img3"),
-                        product.imageLink4.as("img4"),
-                        product.imageLink5.as("img5"),
-                        product.explanation,
-                        category.level,
-                        JPAExpressions.select(upper.name.concat("-").concat(
-                                        JPAExpressions.select(top.name)
-                                                .where(top.no.eq(upper.upperCategory.no))
-                                                .from(top)
-                                ).as("upperName"))
-                                .where(upper.no.eq(category.upperCategory.no))
-                                .from(upper)))
-                .distinct()
-                .limit(requestDto.getPageable().getPageSize())
-                .offset(requestDto.getPageable().getOffset())
-                .fetch();
+            .select(Projections.constructor(ProductAllInfoResponseDto.class,
+                product.no.as("productNo"),
+                product.name.as("productName"),
+                product.code.as("productCode"),
+                category.name.as("categoryName"),
+                product.amount,
+                product.registerDatetime.as("dateTime"),
+                product.manufacturer,
+                product.manufacturerCountry.as("country"),
+                product.seller,
+                product.importer,
+                product.shippingInstallationCost.as("installationCost"),
+                product.qualityAssuranceStandard.as("quality"),
+                product.color,
+                product.stockQuantity.as("quantity"),
+                product.imageLink1.as("img1"),
+                product.imageLink2.as("img2"),
+                product.imageLink3.as("img3"),
+                product.imageLink4.as("img4"),
+                product.imageLink5.as("img5"),
+                product.explanation,
+                category.level,
+                JPAExpressions.select(upper.name.concat("-").concat(
+                        JPAExpressions.select(top.name)
+                            .where(top.no.eq(upper.upperCategory.no))
+                            .from(top)
+                    ).as("upperName"))
+                    .where(upper.no.eq(category.upperCategory.no))
+                    .from(upper)))
+            .distinct()
+            .limit(requestDto.getPageable().getPageSize())
+            .offset(requestDto.getPageable().getOffset())
+            .fetch();
 
-        return new PageResponse<>(PageableExecutionUtils.getPage(content,  requestDto.getPageable(),
-                () -> productQuery(requestDto)
-                        .fetch()
-                        .size()));
+        return new PageResponse<>(PageableExecutionUtils.getPage(content, requestDto.getPageable(),
+            () -> productQuery(requestDto)
+                .fetch()
+                .size()));
     }
 
     private JPQLQuery<Product> productQuery(ProductRequestDto requestDto) {
         return from(product)
-                .innerJoin(category)
-                .on(product.category.no.eq(category.no))
-                .innerJoin(productTag)
-                .on(product.productTags.contains(productTag))
-                .innerJoin(productTag.tag, tag)
-                .where(eqProductName(requestDto.getProductName()),
-                        eqProductCode(requestDto.getCode()),
-                        eqCategory(requestDto.getCategoryNo()),
-                        eqPrice(requestDto.getMinAmount(), requestDto.getMaxAmount()),
-                        eqTagNo(requestDto.getTagNo()),
-                        eqProductNo(requestDto.getProductNo()),
-                        eqStatus(requestDto.getStatusName()));
+            .innerJoin(category)
+            .on(product.category.no.eq(category.no))
+            .innerJoin(productTag)
+            .on(product.productTags.contains(productTag))
+            .innerJoin(productTag.tag, tag)
+            .where(eqCategory(requestDto.getCategoryNo()),
+                eqPrice(requestDto.getMinAmount(), requestDto.getMaxAmount()),
+                eqTagNo(requestDto.getTagNo()),
+                eqProductNo(requestDto.getProductNo()),
+                eqStatus(requestDto.getStatusName()),
+                eqProductNos(requestDto.getProductNoList()));
+    }
+
+    private BooleanExpression eqProductNos(List<Integer> productNo) {
+        if (productNo.isEmpty()) {
+            return null;
+        }
+        return product.no.in(productNo);
     }
 
     private BooleanExpression eqProductNo(Integer productNo) {
@@ -108,21 +112,6 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
             return null;
         }
         return product.no.eq(productNo);
-    }
-
-    private BooleanExpression eqProductName(String name) {
-        if (StringUtils.isNullOrEmpty(name)) {
-            return null;
-        }
-        return product.name.contains(name);
-    }
-
-
-    private BooleanExpression eqProductCode(String code) {
-        if (StringUtils.isNullOrEmpty(code)) {
-            return null;
-        }
-        return product.code.contains(code);
     }
 
     private BooleanExpression eqCategory(Integer categoryNo) {

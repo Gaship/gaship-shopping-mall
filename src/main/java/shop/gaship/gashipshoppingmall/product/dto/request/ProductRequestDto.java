@@ -1,5 +1,7 @@
 package shop.gaship.gashipshoppingmall.product.dto.request;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
 
 
 /**
@@ -25,12 +26,6 @@ import org.springframework.data.domain.Pageable;
 public class ProductRequestDto {
     @Builder.Default
     private Integer productNo = 0;
-
-    @Builder.Default
-    private String productName = null;
-
-    @Builder.Default
-    private String code = null;
 
     @Builder.Default
     private Integer categoryNo = 0;
@@ -51,6 +46,10 @@ public class ProductRequestDto {
     @Builder.Default
     private String statusName = null;
 
+    @Builder.Default
+    private List<Integer> productNoList = new ArrayList<>();
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -61,19 +60,17 @@ public class ProductRequestDto {
         }
         ProductRequestDto that = (ProductRequestDto) o;
         return Objects.equals(productNo, that.productNo)
-                && Objects.equals(productName, that.productName)
-                && Objects.equals(code, that.code)
-                && Objects.equals(categoryNo, that.categoryNo)
-                && Objects.equals(minAmount, that.minAmount)
-                && Objects.equals(maxAmount, that.maxAmount)
-                && Objects.equals(tagNo, that.tagNo)
-                && Objects.equals(pageable, that.pageable);
+            && Objects.equals(categoryNo, that.categoryNo)
+            && Objects.equals(minAmount, that.minAmount)
+            && Objects.equals(maxAmount, that.maxAmount)
+            && Objects.equals(tagNo, that.tagNo)
+            && Objects.equals(pageable, that.pageable);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productNo, productName,
-                code, categoryNo, minAmount, maxAmount,
-                tagNo, pageable);
+        return Objects.hash(productNo,
+            categoryNo, minAmount, maxAmount,
+            tagNo, pageable);
     }
 }
