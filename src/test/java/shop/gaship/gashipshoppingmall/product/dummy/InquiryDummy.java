@@ -9,21 +9,21 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * @since 1.0
  */
 public class InquiryDummy {
-    public static Inquiry customerDummy(StatusCode statusCodeHolder) {
+    public static Inquiry customerDummy(StatusCode statusCode) {
         return Inquiry.builder()
             .title("1번째 고객문의제목")
             .inquiryContent("1번째 고객문의내용")
-            .processStatusCode(statusCodeHolder)
+            .processStatusCode(statusCode)
             .isProduct(false)
             .registerDatetime(LocalDateTime.now())
             .build();
     }
 
-    public static Inquiry productDummy(StatusCode statusCodeHolder) {
+    public static Inquiry productDummy(StatusCode statusCode) {
         return Inquiry.builder()
             .title("2번째 상품문의제목")
             .inquiryContent("2번째 상품문의내용")
-            .processStatusCode(statusCodeHolder)
+            .processStatusCode(statusCode)
             .isProduct(true)
             .registerDatetime(LocalDateTime.now())
             .build();
