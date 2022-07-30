@@ -20,13 +20,20 @@ public interface InquiryService {
     void addInquiry(InquiryAddRequestDto inquiryAddRequestDto);
 
     /**
-     * 상품문의의 답변을 등록 또는 수정하기위해서 entity에 정보를 업데이트하는 작업을 처리합니다.
+     * 상품문의의 답변을 등록하기위해서 entity에 정보를 업데이트하는 작업을 처리합니다.
      *
      * @param inquiryAnswerRequestDto 상품문의 답변 등록에 필요한 정보를 담고 있는 DTO 객체입니다.
      * @author 최겸준
      */
-    void addOrModifyInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto,
-                                  Boolean isAddAnswer);
+    void addInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto);
+
+    /**
+     * 상품문의의 답변을 수정하기위해서 entity에 정보를 업데이트하는 작업을 처리합니다.
+     *
+     * @param inquiryAnswerRequestDto 상품문의 답변 수정에 필요한 정보를 담고 있는 DTO 객체입니다.
+     * @author 최겸준
+     */
+    void modifyInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto);
 
     /**
      * 문의를 실삭제하도록 repository에 요청하는 기능입니다.
@@ -42,5 +49,5 @@ public interface InquiryService {
      * @param inquiryNo 삭제대상 문의번호입니다.
      * @author 최겸준
      */
-    void deleteAnswerInquiry(Integer inquiryNo);
+    void deleteInquiryAnswer(Integer inquiryNo);
 }

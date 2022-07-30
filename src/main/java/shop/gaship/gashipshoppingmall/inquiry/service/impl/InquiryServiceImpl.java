@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.inquiry.service.impl;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
@@ -8,6 +9,7 @@ import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
+import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentEmployeeWriterAboutInquiryAnswerException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
 import shop.gaship.gashipshoppingmall.inquiry.repository.InquiryRepository;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
@@ -92,30 +94,11 @@ public class InquiryServiceImpl implements InquiryService {
      * {@inheritDoc}
      */
     @Override
-    public void addOrModifyInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto,
-                                         Boolean isAddAnswer) {
+    public void addInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto) {
         Inquiry inquiry =
             inquiryRepository.findById(inquiryAnswerRequestDto.getInquiryNo()).orElseThrow(
                 InquiryNotFoundException::new);
 
-        if (Boolean.FALSE.equals(isAddAnswer)) {
-            inquiry.modifyAnswer(inquiryAnswerRequestDto);
-            return;
-        }
-
-        addInquiryAnswer(inquiryAnswerRequestDto, inquiry);
-    }
-
-    /**
-     * 상품문의답변을 처음으로 등록할때 사용되는 기능입니다.
-     * 등록되면 상품의 처리상태가 답변완료로 변경됩니다.
-     *
-     * @param inquiryAnswerRequestDto 상품문의 답변 등록에 필요한 정보를 담고 있는 DTO 객체입니다.
-     * @param inquiry                 아직 영속화 되기 전의 상태인 Inquiry entity 입니다.
-     * @author 최겸준
-     */
-    private void addInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto,
-                                  Inquiry inquiry) {
         Integer employeeNo = inquiryAnswerRequestDto.getEmployeeNo();
         Employee employee =
             employeeRepository.findById(employeeNo).orElseThrow(EmployeeNotFoundException::new);
@@ -131,6 +114,21 @@ public class InquiryServiceImpl implements InquiryService {
     /**
      * {@inheritDoc}
      */
+    public void modifyInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto) {
+        Inquiry inquiry =
+            inquiryRepository.findById(inquiryAnswerRequestDto.getInquiryNo()).orElseThrow(
+                InquiryNotFoundException::new);
+
+        if (!Objects.equals(inquiryAnswerRequestDto.getEmployeeNo(), inquiry.getEmployee().getEmployeeNo())) {
+            throw new DifferentEmployeeWriterAboutInquiryAnswerException();
+        }
+
+        inquiry.modifyAnswer(inquiryAnswerRequestDto);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteInquiry(Integer inquiryNo) {
         inquiryRepository.deleteById(inquiryNo);
@@ -140,7 +138,7 @@ public class InquiryServiceImpl implements InquiryService {
      * {@inheritDoc}
      */
     @Override
-    public void deleteAnswerInquiry(Integer inquiryNo) {
+    public void deleteInquiryAnswer(Integer inquiryNo) {
         Inquiry inquiry =
             inquiryRepository.findById(inquiryNo).orElseThrow(InquiryNotFoundException::new);
 
