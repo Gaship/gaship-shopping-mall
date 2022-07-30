@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.inquiry.controller;
 
-import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -47,21 +46,30 @@ public class InquiryRestController {
     }
 
     /**
-     * 문의의 답변을 추가 또는 수정하기 위한 요청을 처리합니다.
+     * 문의의 답변을 추가하기 위한 요청을 처리합니다.
      *
      * @param inquiryAnswerAddRequestDto 문의답변에 들어가야할 정보들을 가지는 DTO 객체입니다.
      * @return 성공시 201인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
-    @PutMapping("/{inquiryNo}")
-    public ResponseEntity<Void> inquiryAnswerAddOrModify(
+    @PostMapping("/inquiry-answer")
+    public ResponseEntity<Void> inquiryAnswerAdd(
         @Valid @RequestBody InquiryAnswerRequestDto inquiryAnswerAddRequestDto) {
-        if (!Objects.equals(inquiryAnswerAddRequestDto.getEmployeeNo(), MODIFY_NO)) {
-            inquiryService.addOrModifyInquiryAnswer(inquiryAnswerAddRequestDto, INQUIRY_ANSWER_ADD);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        }
+        inquiryService.addInquiryAnswer(inquiryAnswerAddRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
-        inquiryService.addOrModifyInquiryAnswer(inquiryAnswerAddRequestDto, INQUIRY_ANSWER_MODIFY);
+    /**
+     * 문의의 답변을 수정하기 위한 요청을 처리합니다.
+     *
+     * @param inquiryAnswerAddRequestDto 문의답변에 들어가야할 정보들을 가지는 DTO 객체입니다.
+     * @return 성공시 201인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
+     * @author 최겸준
+     */
+    @PutMapping("/{inquiryNo}/inquiry-answer")
+    public ResponseEntity<Void> inquiryAnswerModify(
+        @Valid @RequestBody InquiryAnswerRequestDto inquiryAnswerAddRequestDto) {
+        inquiryService.addInquiryAnswer(inquiryAnswerAddRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -89,9 +97,9 @@ public class InquiryRestController {
      * @return 성공시 201인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
-    @DeleteMapping("/{inquiryNo}/answer")
+    @DeleteMapping("/{inquiryNo}/inquiry-answer")
     public ResponseEntity<Void> inquiryAnswerDelete(@PathVariable Integer inquiryNo) {
-        inquiryService.deleteAnswerInquiry(inquiryNo);
+        inquiryService.deleteInquiryAnswer(inquiryNo);
         return ResponseEntity.ok().build();
     }
 
