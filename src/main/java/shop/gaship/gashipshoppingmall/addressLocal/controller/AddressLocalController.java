@@ -1,8 +1,8 @@
 package shop.gaship.gashipshoppingmall.addressLocal.controller;
 
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addressLocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 주소지정보를 위한 요청을 다루기 위한 컨트롤러입니다.
@@ -25,7 +26,7 @@ import shop.gaship.gashipshoppingmall.addressLocal.service.AddressLocalService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/addressLocals")
+@RequestMapping("/api/addressLocals")
 public class AddressLocalController {
 
     private final AddressLocalService service;
@@ -55,10 +56,11 @@ public class AddressLocalController {
      * @author 유호철
      */
     @GetMapping
-    public ResponseEntity<List<GetAddressLocalResponseDto>> addressLocalList(
-        @RequestParam("address") String address) {
+    public ResponseEntity<PageResponse<GetAddressLocalResponseDto>> addressLocalList(
+        @RequestParam("address") String address,
+        Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(service.findAddressLocals(address));
+            .body(service.findAddressLocals(address, pageable));
     }
 }
