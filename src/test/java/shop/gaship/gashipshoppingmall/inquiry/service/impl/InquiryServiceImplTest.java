@@ -9,7 +9,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static reactor.core.publisher.Mono.when;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,9 +20,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
+import shop.gaship.gashipshoppingmall.employee.entity.Employee;
+import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
+import shop.gaship.gashipshoppingmall.inquiry.exception.AlreadyCompleteInquiryAnswerException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentEmployeeWriterAboutInquiryAnswerException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.NoRegisteredAnswerException;
 import shop.gaship.gashipshoppingmall.inquiry.repository.InquiryRepository;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
@@ -33,6 +40,7 @@ import shop.gaship.gashipshoppingmall.product.dummy.InquiryDummy;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
+import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 /**
@@ -65,6 +73,8 @@ class InquiryServiceImplTest {
 
     private InquiryAddRequestDto inquiryAddRequestDtoWhenProduct;
 
+    private InquiryAnswerRequestDto inquiryAnswerRequestDto;
+
     @BeforeEach
     void setUp() {
         inquiryAddRequestDtoWhenCustomer
@@ -83,9 +93,16 @@ class InquiryServiceImplTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "title", "두번재 상품문의 제목");
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "inquiryContent","두번째 고객문의 내용");
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "isProduct", Boolean.TRUE);
+
+        inquiryAnswerRequestDto
+            = new InquiryAnswerRequestDto();
+
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo", 1);
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "employeeNo", 1);
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "answerContent", "첫번째 답변입니다.");
     }
 
-    @DisplayName("고객문의를 정해진 로직대로 저장요청한다. 상품문의이기때문에 ProductNotFoundException이 안난다.")
+    @DisplayName("고객문의를 정해진 로직대로 저장요청한다.")
     @Test
     void addInquiry_customer() {
         // given
@@ -154,25 +171,168 @@ class InquiryServiceImplTest {
             .hasMessageContaining(ProductNotFoundException.MESSAGE);
     }
 
-    @DisplayName("추가하는 경우에 isAddAnswer가 true이고 실제 답변이 등록되어 있지않을시(답변대기)에 답변을 추가하는 요청이 잘 이루어진다.")
+    @DisplayName("답변을 등록하는 경우에 실제 답변이 등록되어 있지않았고(답변대기) 다른 전제조건들이 문제없이 주어졌을때 답변을 추가하는 요청이 잘 이루어진다.")
     @Test
-    void addOrModifyInquiryAnswer_add_success() {
+    void addInquiryAnswer_success() {
+        // given
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
 
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(inquiry));
+
+        given(employeeRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(EmployeeDummy.dummy()));
+
+        given(statusCodeRepository.findByStatusCodeName(anyString()))
+            .willReturn(Optional.ofNullable(InquiryDummy.statusCodeHolderDummy()));
+
+        // when then
+        assertThatNoException().isThrownBy(() -> inquiryService.addInquiryAnswer(inquiryAnswerRequestDto));
     }
-    @DisplayName("추가하는 경우에 isAddAnswer가 true이지만 실제 답변이 등록되어 있을시에(답변완료) AlreadyCompleteInquiryAnswerException이 발생한다.")
-    @Test
-    void addOrModifyInquiryAnswer_add_fail() {
 
+    @DisplayName("답변을 등록하고 실제 답변이 등록되어 있지않았지만(답변대기) 문의번호가 잘못온경우 InquiryNotFoundException이 발생한다.")
+    @Test
+    void addInquiryAnswer_fail_InquiryNotFoundException() {
+        // given
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.empty());
+
+        // when then
+        assertThatThrownBy(() -> inquiryService.addInquiryAnswer(inquiryAnswerRequestDto))
+            .isInstanceOf(InquiryNotFoundException.class)
+            .hasMessageContaining(InquiryNotFoundException.MESSAGE);
     }
-    @DisplayName("수정하는 경우에 isAddAnswer가 false이고 실제 답변이 등록되어 있을시에(답변완료) 답변을 수정하는 요청이 잘 이루어진다.")
-    @Test
-    void addOrModifyInquiryAnswer_modify_success() {
 
+    @DisplayName("답변을 등록하는 경우지만 실제 답변이 등록되어 있을시(답변완료)에 AlreadyCompleteInquiryAnswerException이 발생한다.")
+    @Test
+    void addInquiryAnswer_fail_AlreadyCompleteInquiryAnswerException() {
+        // given
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeCompleteDummy());
+
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(inquiry));
+
+        given(employeeRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(EmployeeDummy.dummy()));
+
+        given(statusCodeRepository.findByStatusCodeName(anyString()))
+            .willReturn(Optional.ofNullable(InquiryDummy.statusCodeHolderDummy()));
+
+        // when then
+        assertThatThrownBy(() -> inquiryService.addInquiryAnswer(inquiryAnswerRequestDto))
+            .isInstanceOf(AlreadyCompleteInquiryAnswerException.class)
+            .hasMessageContaining(AlreadyCompleteInquiryAnswerException.MESSAGE);
     }
-    @DisplayName("수정하는 경우에 isAddAnswer가 false이지만 실제 답변이 등록되어 있지않을시에(답변대기) NoRegisteredAnswerException이 발생한다.")
-    @Test
-    void addOrModifyInquiryAnswer_modify_fail() {
 
+    @DisplayName("답변을 등록하고 실제 답변이 등록되어 있지않았지만(답변대기) 직원번호가 잘못온경우 EmployeeNotFoundException이 발생한다.")
+    @Test
+    void addInquiryAnswer_fail_EmployeeNotFoundException이() {
+        // given
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
+
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(inquiry));
+
+        given(employeeRepository.findById(anyInt()))
+            .willReturn(Optional.empty());
+
+        // when then
+        assertThatThrownBy(() -> inquiryService.addInquiryAnswer(inquiryAnswerRequestDto))
+            .isInstanceOf(EmployeeNotFoundException.class)
+            .hasMessageContaining(EmployeeNotFoundException.MESSAGE);
+    }
+
+    @DisplayName("답변을 등록하고 실제 답변이 등록되어 있고(답변대기) 직원번호가 잘왔지만 상태코드를 못찾은 경우 StatusCodeNotFoundException이 발생한다.")
+    @Test
+    void addInquiryAnswer_fail_StatusCodeNotFoundException이() {
+        // given
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
+
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(inquiry));
+
+        given(employeeRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(EmployeeDummy.dummy()));
+
+        given(statusCodeRepository.findByStatusCodeName(anyString()))
+            .willReturn(Optional.empty());
+
+        // when then
+        assertThatThrownBy(() -> inquiryService.addInquiryAnswer(inquiryAnswerRequestDto))
+            .isInstanceOf(StatusCodeNotFoundException.class)
+            .hasMessageContaining(StatusCodeNotFoundException.MESSAGE);
+    }
+
+    @DisplayName("답변을 수정할때 실제 답변이 등록되어 있고(답변완료) 다른 조건들도 다 충족되었을시에 답변 수정이 잘 된다.")
+    @Test
+    void modifyInquiryAnswer_success() {
+        // given
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeCompleteDummy());
+
+        Employee employee = EmployeeDummy.dummy();
+        ReflectionTestUtils.setField(employee, "employeeNo", 1);
+        inquiry.setEmployee(employee);
+
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(inquiry));
+
+        // when then
+        assertThat(inquiry.getAnswerContent())
+            .isNull();
+
+        assertThatNoException().isThrownBy(() -> inquiryService.modifyInquiryAnswer(inquiryAnswerRequestDto));
+
+        assertThat(inquiry.getAnswerContent())
+            .isEqualTo("첫번째 답변입니다.");
+    }
+
+    @DisplayName("답변을 수정하는 경우에 요청값으로 문의번호가 존재하지 않는 문의번호를 보냈을때 InquiryNotFoundException이 발생한다.")
+    @Test
+    void modifyInquiryAnswer_fail_InquiryNotFoundException() {
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> inquiryService.modifyInquiryAnswer(inquiryAnswerRequestDto))
+            .isInstanceOf(InquiryNotFoundException.class)
+            .hasMessageContaining(InquiryNotFoundException.MESSAGE);
+    }
+
+    @DisplayName("답변을 수정하는 경우에 실제 답변이 등록되어 있지않을시에(답변대기) NoRegisteredAnswerException이 발생한다.")
+    @Test
+    void modifyInquiryAnswer_fail_NoRegisteredAnswerException() {
+        // given
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
+
+        Employee employee = EmployeeDummy.dummy();
+        ReflectionTestUtils.setField(employee, "employeeNo", 1);
+        inquiry.setEmployee(employee);
+
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(inquiry));
+
+        // when then
+        assertThatThrownBy(() -> inquiryService.modifyInquiryAnswer(inquiryAnswerRequestDto))
+            .isInstanceOf(NoRegisteredAnswerException.class)
+                .hasMessageContaining(NoRegisteredAnswerException.MESSAGE);
+    }
+
+    @DisplayName("답변을 수정하는 경우에 실제 답변이 등록되어 있지만(답변완료) 실제 직원 작성자와 번호가 다른 직원으로 요청이 왔다면 보안방어를 위해 DifferentEmployeeWriterAboutInquiryAnswerException이 발생한다.")
+    @Test
+    void modifyInquiryAnswer_fail_DifferentEmployeeWriterAboutInquiryAnswerException() {
+        // given
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
+
+        Employee employee = EmployeeDummy.dummy();
+        ReflectionTestUtils.setField(employee, "employeeNo", 252123);
+        inquiry.setEmployee(employee);
+
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(inquiry));
+
+        // when then
+        assertThatThrownBy(() -> inquiryService.modifyInquiryAnswer(inquiryAnswerRequestDto))
+            .isInstanceOf(DifferentEmployeeWriterAboutInquiryAnswerException.class)
+            .hasMessageContaining(DifferentEmployeeWriterAboutInquiryAnswerException.MESSAGE);
     }
 
     @DisplayName("문의삭제 요청이 잘 이루어진다.")
@@ -181,16 +341,75 @@ class InquiryServiceImplTest {
         assertThatNoException().isThrownBy(() -> inquiryService.deleteInquiry(1));
     }
 
-
     @DisplayName("답변삭제시 답변이 등록되어 있을시에(답변완료) 답변삭제 요청이 잘 이루어진다.")
     @Test
     void deleteAnswerInquiry_success() {
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeCompleteDummy());
 
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(inquiry));
+
+        given(statusCodeRepository.findByStatusCodeName(anyString()))
+            .willReturn(Optional.ofNullable(InquiryDummy.statusCodeHolderDummy()));
+
+        assertThat(inquiry.getProcessStatusCode())
+            .isEqualTo(InquiryDummy.statusCodeCompleteDummy());
+
+        assertThatNoException().isThrownBy(() -> inquiryService.deleteInquiryAnswer(1));
+
+        assertThat(inquiry.getProcessStatusCode())
+            .isEqualTo(InquiryDummy.statusCodeHolderDummy());
+
+        assertThat(inquiry.getAnswerContent())
+            .isEmpty();
+        assertThat(inquiry.getEmployee())
+            .isNull();
+        assertThat(inquiry.getAnswerModifyDatetime())
+            .isNull();
+        assertThat(inquiry.getAnswerRegisterDatetime())
+            .isNull();
     }
 
     @DisplayName("답변삭제시 답변이 등록되되어 있지않을시에(답변대기) NoRegisteredAnswerException이 발생한다.")
     @Test
-    void deleteAnswerInquiry_fail() {
+    void deleteAnswerInquiry_fail_NoRegisteredAnswerException() {
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
 
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(inquiry));
+
+        given(statusCodeRepository.findByStatusCodeName(anyString()))
+            .willReturn(Optional.ofNullable(InquiryDummy.statusCodeHolderDummy()));
+
+        assertThatThrownBy(() -> inquiryService.deleteInquiryAnswer(1))
+            .isInstanceOf(NoRegisteredAnswerException.class)
+            .hasMessageContaining(NoRegisteredAnswerException.MESSAGE);
+    }
+
+    @DisplayName("답변삭제시 잘못된 문의 번호가 요청되었을시에 InquiryNotFoundException이 발생한다.")
+    @Test
+    void deleteAnswerInquiry_fail_InquiryNotFoundException() {
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> inquiryService.deleteInquiryAnswer(1))
+            .isInstanceOf(InquiryNotFoundException.class)
+            .hasMessageContaining(InquiryNotFoundException.MESSAGE);
+    }
+
+    @DisplayName("답변삭제시 잘못된 상태코드가 요청되었을시에 StatusCodeNotFoundException이 발생한다.")
+    @Test
+    void deleteAnswerInquiry_fail_StatusCodeNotFoundException() {
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
+
+        given(inquiryRepository.findById(anyInt()))
+            .willReturn(Optional.ofNullable(inquiry));
+
+        given(statusCodeRepository.findByStatusCodeName(anyString()))
+            .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> inquiryService.deleteInquiryAnswer(1))
+            .isInstanceOf(StatusCodeNotFoundException.class)
+            .hasMessageContaining(StatusCodeNotFoundException.MESSAGE);
     }
 }
