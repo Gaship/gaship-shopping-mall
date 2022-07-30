@@ -36,7 +36,7 @@ import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.product.dummy.InquiryDummy;
+import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;

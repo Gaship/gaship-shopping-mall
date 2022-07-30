@@ -28,9 +28,6 @@ import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 @RequiredArgsConstructor
 public class InquiryRestController {
     private final InquiryService inquiryService;
-    public static final Integer MODIFY_NO = 0;
-    public static final Boolean INQUIRY_ANSWER_ADD = Boolean.TRUE;
-    public static final Boolean INQUIRY_ANSWER_MODIFY = Boolean.FALSE;
 
     /**
      * 문의를 추가하기 위한 요청을 처리합니다.
