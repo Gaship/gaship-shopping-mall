@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.dayLabor.service.impl;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
@@ -13,6 +13,7 @@ import shop.gaship.gashipshoppingmall.dayLabor.exception.NotExistDayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.dayLabor.service.DayLaborService;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 서비스레이어에서 지역별물량을 사용하기위한 구현체입니다.
@@ -68,7 +69,7 @@ public class DayLaborServiceImpl implements DayLaborService {
      * @author 유호철
      */
     @Override
-    public List<GetDayLaborResponseDto> findDayLabors() {
-        return repository.findAllDayLabor();
+    public PageResponse<GetDayLaborResponseDto> findDayLabors(Pageable pageable) {
+        return repository.findAllDayLabor(pageable);
     }
 }

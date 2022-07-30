@@ -1,11 +1,16 @@
 package shop.gaship.gashipshoppingmall.dayLabor.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
@@ -15,14 +20,16 @@ import shop.gaship.gashipshoppingmall.dayLabor.dummy.CreateDayLaborRequestDtoDum
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.FixDayLaborRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.dummy.GetDayLaborResponseDtoDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.service.DayLaborService;
-
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,13 +61,13 @@ class DayLaborControllerTest {
         //when
         doNothing().when(service).addDayLabor(dto);
 
-        mvc.perform(post("/dayLabors")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .content(objectMapper.writeValueAsString(dto))
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print());
+        mvc.perform(post("/api/dayLabors")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .content(objectMapper.writeValueAsString(dto))
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andDo(print());
 
         //then
         verify(service, times(1)).addDayLabor(any());
@@ -71,18 +78,18 @@ class DayLaborControllerTest {
     void postDayLaborFail() throws Exception {
         //given
         CreateDayLaborRequestDto dto =
-                new CreateDayLaborRequestDto(null,10);
+            new CreateDayLaborRequestDto(null, 10);
         //when & then
         doNothing().when(service).addDayLabor(dto);
 
-        mvc.perform(post("/dayLabors")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .content(objectMapper.writeValueAsString(dto))
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("지역번호를 입력하세요"))
-                .andDo(print());
+        mvc.perform(post("/api/dayLabors")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .content(objectMapper.writeValueAsString(dto))
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$.message").value("지역번호를 입력하세요"))
+            .andDo(print());
 
     }
 
@@ -96,13 +103,13 @@ class DayLaborControllerTest {
         //when
         doNothing().when(service).modifyDayLabor(dto);
 
-        mvc.perform(put("/dayLabors")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isOk())
-                .andDo(print());
+        mvc.perform(put("/api/dayLabors")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isOk())
+            .andDo(print());
 
         //then
         verify(service, times(1)).modifyDayLabor(any());
@@ -113,19 +120,19 @@ class DayLaborControllerTest {
     void modifyDayLaborFail() throws Exception {
         //given
         FixDayLaborRequestDto dto =
-               new FixDayLaborRequestDto(1,null);
+            new FixDayLaborRequestDto(1, null);
 
         //when & then
         doNothing().when(service).modifyDayLabor(dto);
 
-        mvc.perform(put("/dayLabors")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("최대물량을 입력하세요"))
-                .andDo(print());
+        mvc.perform(put("/api/dayLabors")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$.message").value("최대물량을 입력하세요"))
+            .andDo(print());
 
     }
 
@@ -138,20 +145,24 @@ class DayLaborControllerTest {
         List<GetDayLaborResponseDto> list = new ArrayList<>();
         list.add(d1);
         list.add(d2);
-
+        PageRequest pageRequest = PageRequest.of(1, 10);
+        PageImpl<GetDayLaborResponseDto> pages = new PageImpl<>(list, pageRequest, pageRequest.getPageSize());
+        PageResponse<GetDayLaborResponseDto> result = new PageResponse<>(pages);
         //when
-        when(service.findDayLabors()).thenReturn(list);
+        when(service.findDayLabors(pageRequest)).thenReturn(result);
 
-        mvc.perform(get("/dayLabors")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].local").value(d1.getLocal()))
-                .andExpect(jsonPath("$[0].maxLabor").value(d1.getMaxLabor()))
-                .andExpect(jsonPath("$[1].local").value(d2.getLocal()))
-                .andExpect(jsonPath("$[1].maxLabor").value(d2.getMaxLabor()));
+        mvc.perform(get("/api/dayLabors")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .accept(MediaType.APPLICATION_JSON)
+                .queryParam("size", objectMapper.writeValueAsString(pageRequest.getPageSize()))
+                .queryParam("page", objectMapper.writeValueAsString(pageRequest.getPageNumber())))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content.[0].local").value(d1.getLocal()))
+            .andExpect(jsonPath("$.content.[0].maxLabor").value(d1.getMaxLabor()))
+            .andExpect(jsonPath("$.content.[1].local").value(d2.getLocal()))
+            .andExpect(jsonPath("$.content.[1].maxLabor").value(d2.getMaxLabor()));
 
-        verify(service, times(1)).findDayLabors();
+        verify(service, times(1)).findDayLabors(pageRequest);
     }
 }
