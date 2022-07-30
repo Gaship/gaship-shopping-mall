@@ -1,10 +1,12 @@
-package shop.gaship.gashipshoppingmall.product.dummy;
+package shop.gaship.gashipshoppingmall.inquiry.dummy;
 
 import java.time.LocalDateTime;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
+ * test 진행을 위한 문의 관련 dummy입니다.
+ *
  * @author : 최겸준
  * @since 1.0
  */
