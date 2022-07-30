@@ -25,7 +25,7 @@ public class InquiryAddRequestDto {
     @NotBlank(message = "title 은 필수 입력값입니다.")
     private String title;
 
-    @NotNull(message = "memberNo 는 필수 입력값입니다.")
+    @NotNull(message = "inquiryContent 는 필수 입력값입니다.")
     private String inquiryContent;
 
     @NotNull(message = "isProduct 는 필수 입력값입니다.")
