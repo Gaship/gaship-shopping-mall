@@ -1,5 +1,8 @@
 package shop.gaship.gashipshoppingmall.dayLabor.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +11,8 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
@@ -24,16 +29,15 @@ import shop.gaship.gashipshoppingmall.dayLabor.exception.NotExistDayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.dayLabor.service.impl.DayLaborServiceImpl;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.dayLabor.service
@@ -92,10 +96,10 @@ class DayLaborServiceTest {
     void wrongAddressException_createDayLaborTest() {
         //given & when
         given(localRepository.findById(dto.getLocalNo()))
-                .willReturn(Optional.empty());
+            .willReturn(Optional.empty());
         //then
         assertThatThrownBy(() -> service.addDayLabor(dto))
-                .isInstanceOf(WrongAddressException.class);
+            .isInstanceOf(WrongAddressException.class);
     }
 
     @DisplayName("지역이 있어서 지역물량을 추가할 경우")
@@ -103,16 +107,16 @@ class DayLaborServiceTest {
     void success_createDayLaborTest() {
         //given
         given(localRepository.findById(dto.getLocalNo()))
-                .willReturn(Optional.of(addressLocal));
+            .willReturn(Optional.of(addressLocal));
         given(dayLaborRepository.save(any()))
-                .willReturn(dayLabor);
+            .willReturn(dayLabor);
 
         //when
         service.addDayLabor(dto);
 
         //then
         verify(dayLaborRepository, timeout(1))
-                .save(captor.capture());
+            .save(captor.capture());
 
         //then
         DayLabor test = captor.getValue();
@@ -126,11 +130,11 @@ class DayLaborServiceTest {
     void modifyDayLabor_exception() {
         //given
         given(dayLaborRepository.findById(any()))
-                .willReturn(Optional.empty());
+            .willReturn(Optional.empty());
 
         //when & then
         assertThatThrownBy(() -> service.modifyDayLabor(fixDto))
-                .isInstanceOf(NotExistDayLabor.class);
+            .isInstanceOf(NotExistDayLabor.class);
     }
 
     @DisplayName("지역별 물량 수정 성공하는경우")
@@ -138,13 +142,13 @@ class DayLaborServiceTest {
     void success_modifyDayLabor() {
         //given
         given(dayLaborRepository.findById(any()))
-                .willReturn(Optional.of(dayLabor));
+            .willReturn(Optional.of(dayLabor));
         //when
         service.modifyDayLabor(fixDto);
 
         //then
         verify(dayLaborRepository, times(1))
-                .findById(any());
+            .findById(any());
     }
 
     @DisplayName("지역별 물량 전체조회하기")
@@ -152,30 +156,27 @@ class DayLaborServiceTest {
     void findAll() {
         //given
         DayLabor laborDummy = DayLaboyDummy.dummy1();
-        List<DayLabor> list = new ArrayList<>();
         List<GetDayLaborResponseDto> getlist = new ArrayList<>();
-
+        PageRequest pageRequest = PageRequest.of(1, 10);
         getlist.add(response1);
         getlist.add(response2);
 
-        list.add(dayLabor);
-        list.add(laborDummy);
+        PageImpl<GetDayLaborResponseDto> dayLabors = new PageImpl<>(getlist, pageRequest, pageRequest.getPageSize());
+        PageResponse<GetDayLaborResponseDto> getList = new PageResponse<>(dayLabors);
 
-        given(dayLaborRepository.findAll())
-                .willReturn(list);
-        given(dayLaborRepository.findAllDayLabor())
-                .willReturn(getlist);
+        given(dayLaborRepository.findAllDayLabor(pageRequest))
+            .willReturn(getList);
 
         //when
-        List<GetDayLaborResponseDto> allDayLabors = service.findDayLabors();
+        PageResponse<GetDayLaborResponseDto> result = service.findDayLabors(pageRequest);
 
         //then
         verify(dayLaborRepository, times(1))
-                .findAllDayLabor();
+            .findAllDayLabor(pageRequest);
 
-        assertThat(allDayLabors.get(0).getMaxLabor()).isEqualTo(response1.getMaxLabor());
-        assertThat(allDayLabors.get(0).getLocal()).isEqualTo(response1.getLocal());
-        assertThat(allDayLabors.get(1).getMaxLabor()).isEqualTo(response2.getMaxLabor());
-        assertThat(allDayLabors.get(1).getMaxLabor()).isEqualTo(response2.getMaxLabor());
+        assertThat(result.getContent().get(0).getMaxLabor()).isEqualTo(response1.getMaxLabor());
+        assertThat(result.getContent().get(0).getLocal()).isEqualTo(response1.getLocal());
+        assertThat(result.getContent().get(1).getMaxLabor()).isEqualTo(response2.getMaxLabor());
+        assertThat(result.getContent().get(1).getMaxLabor()).isEqualTo(response2.getMaxLabor());
     }
 }

@@ -1,8 +1,8 @@
 package shop.gaship.gashipshoppingmall.dayLabor.controller;
 
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +16,7 @@ import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequest
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
 import shop.gaship.gashipshoppingmall.dayLabor.service.DayLaborService;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 지역별물량에대한 요청을 다루는 컨틀롤러입니다.
@@ -24,7 +25,7 @@ import shop.gaship.gashipshoppingmall.dayLabor.service.DayLaborService;
  * @since 1.0
  */
 @RestController
-@RequestMapping("/dayLabors")
+@RequestMapping("/api/dayLabors")
 @RequiredArgsConstructor
 public class DayLaborController {
     private final DayLaborService service;
@@ -63,8 +64,8 @@ public class DayLaborController {
      * @author 유호철
      */
     @GetMapping
-    public ResponseEntity<List<GetDayLaborResponseDto>> dayLaborList() {
+    public ResponseEntity<PageResponse<GetDayLaborResponseDto>> dayLaborList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-            .body(service.findDayLabors());
+            .body(service.findDayLabors(pageable));
     }
 }

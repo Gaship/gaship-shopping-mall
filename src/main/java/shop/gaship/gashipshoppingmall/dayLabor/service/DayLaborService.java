@@ -1,9 +1,10 @@
 package shop.gaship.gashipshoppingmall.dayLabor.service;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.CreateDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.request.FixDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 
 /**
@@ -17,7 +18,7 @@ public interface DayLaborService {
     /**
      * 지역별 물량을 생성하기위한 메서드입니다.
      *
-     * @param dto  지역별물량을 생성하기위한 지역번호와 최대물량이 담겨져있습니다.
+     * @param dto 지역별물량을 생성하기위한 지역번호와 최대물량이 담겨져있습니다.
      * @author 유호철
      */
     void addDayLabor(CreateDayLaborRequestDto dto);
@@ -36,5 +37,5 @@ public interface DayLaborService {
      * @return list 조회한 지역별물량에대한 정보들이 담겨있습니다.
      * @author 유호철
      */
-    List<GetDayLaborResponseDto> findDayLabors();
+    PageResponse<GetDayLaborResponseDto> findDayLabors(Pageable pageable);
 }
