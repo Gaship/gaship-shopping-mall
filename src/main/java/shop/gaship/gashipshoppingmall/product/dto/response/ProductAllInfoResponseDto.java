@@ -1,11 +1,10 @@
 package shop.gaship.gashipshoppingmall.product.dto.response;
 
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 상품을 가져올 정보들이 담겨있습니다.
@@ -15,62 +14,29 @@ import lombok.Getter;
  */
 
 @Getter
+@RequiredArgsConstructor
 public class ProductAllInfoResponseDto {
-    private Integer productNo;
-    private String productName;
-    private String productCode;
-    private String categoryName;
-    private Long amount;
-    private LocalDateTime dateTime;
-    private String manufacturer;
-    private String country;
-    private String seller;
-    private String importer;
-    private Long installationCost;
-    private String quality;
-    private String color;
-    private Integer quantity;
-    private String img1;
-    private String img2;
-    private String img3;
-    private String img4;
-    private String img5;
-    private String explanation;
-    private Integer level;
-    private String upperName;
-
-    private List<String> tags = new ArrayList<>();
-
-
-    public ProductAllInfoResponseDto(Integer productNo, String productName, String productCode,
-                                     String categoryName, Long amount, LocalDateTime dateTime,
-                                     String manufacturer, String country, String seller,
-                                     String importer, Long installationCost, String quality,
-                                     String color, Integer quantity, String img1,
-                                     String img2, String img3, String img4,
-                                     String img5, String explanation, Integer level,
-                                     String upperName) {
-        this.productNo = productNo;
-        this.productName = productName;
-        this.productCode = productCode;
-        this.categoryName = categoryName;
-        this.amount = amount;
-        this.dateTime = dateTime;
-        this.manufacturer = manufacturer;
-        this.country = country;
-        this.seller = seller;
-        this.importer = importer;
-        this.installationCost = installationCost;
-        this.quality = quality;
-        this.color = color;
-        this.quantity = quantity;
-        this.img1 = img1;
-        this.img2 = img2;
-        this.img3 = img3;
-        this.img4 = img4;
-        this.img5 = img5;
-        this.explanation = explanation;
-        this.level = level;
-        this.upperName = upperName;
-    }
+    private final Integer productNo;
+    private final String productName;
+    private final String productCode;
+    private final String categoryName;
+    private final Long amount;
+    private final LocalDateTime dateTime;
+    private final String manufacturer;
+    private final String country;
+    private final String seller;
+    private final String importer;
+    private final Long installationCost;
+    private final String quality;
+    private final String color;
+    private final Integer quantity;
+    private final String img1;
+    private final String img2;
+    private final String img3;
+    private final String img4;
+    private final String img5;
+    private final String explanation;
+    private final Integer level;
+    private final String upperName;
+    private final List<String> tags = new ArrayList<>();
 }

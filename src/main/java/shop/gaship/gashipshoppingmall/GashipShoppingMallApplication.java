@@ -4,6 +4,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+/**
+ * 가십쇼핑몰 api를 실행하는 실행부입니다.
+ *
+ * @author 조재철
+ * @author 최겸준
+ * @author 유호철
+ * @author 최정우
+ * @author 김세미
+ * @author 김보민
+ * @author 김민수
+ */
 @SpringBootApplication
 @EnableAspectJAutoProxy
 public class GashipShoppingMallApplication {

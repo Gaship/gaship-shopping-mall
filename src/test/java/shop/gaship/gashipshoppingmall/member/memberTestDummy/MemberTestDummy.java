@@ -1,17 +1,16 @@
 package shop.gaship.gashipshoppingmall.member.memberTestDummy;
 
-import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.MembersRole;
-import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 
@@ -49,15 +48,15 @@ public class MemberTestDummy {
     private static final LocalDateTime modifyDatetime = LocalDateTime.now();
 
     public static MemberModifyRequestDto memberModifyRequestDto() {
+        MemberModifyRequestDto dummy = new MemberModifyRequestDto();
+        ReflectionTestUtils.setField(dummy, "memberNo", memberNo);
+        ReflectionTestUtils.setField(dummy, "password", password);
+        ReflectionTestUtils.setField(dummy, "phoneNumber", phoneNumber);
+        ReflectionTestUtils.setField(dummy, "name", name);
+        ReflectionTestUtils.setField(dummy, "nickname", nickname);
+        ReflectionTestUtils.setField(dummy, "gender", gender);
 
-        return MemberModifyRequestDto.builder()
-                .memberNo(memberNo)
-                .password(password)
-                .phoneNumber(phoneNumber)
-                .name(name)
-                .nickname(nickname)
-                .gender(gender)
-                .build();
+        return dummy;
     }
 
     public static MemberResponseDto memberResponseDto() {

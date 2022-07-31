@@ -16,8 +16,9 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
 /**
+ * 멤버태그 테이블에 객체를 담을 엔티티입니다.
+ *
  * @author 최정우
- * @description 멤버태그 테이블에 객체를 담을 엔티티입니다.
  * @since 1.0
  */
 @Entity

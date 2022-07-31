@@ -15,7 +15,7 @@ import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoRespons
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
-import shop.gaship.gashipshoppingmall.productTag.entity.QProductTag;
+import shop.gaship.gashipshoppingmall.producttag.entity.QProductTag;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 

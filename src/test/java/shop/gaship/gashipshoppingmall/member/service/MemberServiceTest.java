@@ -10,7 +10,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -36,9 +35,9 @@ import shop.gaship.gashipshoppingmall.member.adapter.MemberAdapter;
 import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordReceiveEmailDto;
 import shop.gaship.gashipshoppingmall.member.dto.SuccessReissueResponse;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
-import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;

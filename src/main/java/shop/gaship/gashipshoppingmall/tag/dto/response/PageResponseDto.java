@@ -1,18 +1,18 @@
 package shop.gaship.gashipshoppingmall.tag.dto.response;
 
-import lombok.Getter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import lombok.Getter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * 목록 조회 반환 타입으로 사용되는 page 정보와 data 를 담은 Data Transfer Object.
+ * </p>
+ * D = DTO, E = Entity
  *
- * @param <D,E> D = Dto,  E = Entity
  * @author : 최정우
  * @since 1.0
  */

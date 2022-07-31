@@ -54,15 +54,6 @@ public class AddressLocal {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "upperLocal")
     private List<AddressLocal> subLocal = new ArrayList<>();
 
-    public AddressLocal(String addressName, Integer level, boolean allowDelivery, DayLabor dayLabor,
-                        AddressLocal upperLocal) {
-        this.addressName = addressName;
-        this.level = level;
-        this.allowDelivery = allowDelivery;
-        this.dayLabor = dayLabor;
-        this.upperLocal = upperLocal;
-    }
-
     /**
      * 지역별물량을 수정/등록하기위한 메서드입니다.
      *

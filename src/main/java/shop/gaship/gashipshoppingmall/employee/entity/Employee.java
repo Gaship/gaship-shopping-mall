@@ -29,7 +29,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 @Table(name = "employees")
 @Entity
 public class Employee {
-
     @Id
     @Column(name = "employee_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,17 +53,6 @@ public class Employee {
 
     @Column(name = "phone_number", unique = true)
     private String phoneNo;
-
-    public Employee(StatusCode statusCode, AddressLocal addressLocal,
-                    String name,
-                    String email, String password, String phoneNo) {
-        this.statusCode = statusCode;
-        this.addressLocal = addressLocal;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.phoneNo = phoneNo;
-    }
 
     /**
      * 직원에대한 지역을 수정하기위한 메서드입니다.

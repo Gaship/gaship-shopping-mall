@@ -118,5 +118,6 @@ public interface ProductService {
      * @param pageable   페이징 정보
      * @return the page response
      */
-    PageResponse<ProductAllInfoResponseDto> findProductStatusCode(String statusName, Pageable pageable);
+    PageResponse<ProductAllInfoResponseDto> findProductStatusCode(String statusName,
+                                                                  Pageable pageable);
 }

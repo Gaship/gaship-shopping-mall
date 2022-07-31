@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.category.dto.response;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,17 +19,4 @@ public class CategoryResponseDto {
     private Integer level;
     private Integer upperCategoryNo;
     private String upperCategoryName;
-
-    @Builder
-    public CategoryResponseDto(Integer no,
-                               String name,
-                               Integer level,
-                               Integer upperCategoryNo,
-                               String upperCategoryName) {
-        this.no = no;
-        this.name = name;
-        this.level = level;
-        this.upperCategoryNo = upperCategoryNo;
-        this.upperCategoryName = upperCategoryName;
-    }
 }

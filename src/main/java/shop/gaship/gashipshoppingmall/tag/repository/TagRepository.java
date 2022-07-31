@@ -1,10 +1,8 @@
 package shop.gaship.gashipshoppingmall.tag.repository;
 
-
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
-
-import java.util.List;
 
 /**
  * 배송지목록의 db 에 접근하기 위한 repository 입니다.
@@ -22,7 +20,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer>, TagRepositor
     boolean existsByTitle(String title);
 
     /**
-     * 회원이 선택한 태그들을 리스트형태로 가져올때 쓰이는 메서드
+     * 회원이 선택한 태그들을 리스트형태로 가져올때 쓰이는 메서드입니다.
      *
      * @param tagIds 아이디 목록
      * @return 아이디 값에 대응되는 태그리스트
