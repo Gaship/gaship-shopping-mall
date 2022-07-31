@@ -5,9 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.addressLocal.exception.NotExistAddressLocal;
-import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListAddRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListModifyRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListPageResponseDto;
@@ -16,6 +13,9 @@ import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
 import shop.gaship.gashipshoppingmall.addresslist.exception.NotFoundAddressListException;
 import shop.gaship.gashipshoppingmall.addresslist.repository.AddressListRepository;
 import shop.gaship.gashipshoppingmall.addresslist.service.AddressListService;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.exception.NotExistAddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
@@ -23,8 +23,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.AddressStatus;
-
-import java.util.function.Function;
 
 /**
  * 배송지 목록의 service interface 의 구현체입니다.
@@ -42,10 +40,10 @@ public class AddressListServiceImpl implements AddressListService {
 
     /**
      * {@inheritDoc}
-     * 
-     * @throws  NotExistAddressLocal  주소지역 id 값으로 주소지역 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @throws  MemberNotFoundException 회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @throws  StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     *
+     * @throws NotExistAddressLocal        주소지역 id 값으로 주소지역 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws MemberNotFoundException     회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
     @Transactional
     @Override
@@ -58,10 +56,10 @@ public class AddressListServiceImpl implements AddressListService {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param request 등록에 필요한 정보를 담는 dto 입니다.
-     * @throws NotExistAddressLocal  주소지역 id 값으로 주소지역 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @throws MemberNotFoundException 회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws NotExistAddressLocal        주소지역 id 값으로 주소지역 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws MemberNotFoundException     회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      * @throws StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
     @Transactional
@@ -78,7 +76,7 @@ public class AddressListServiceImpl implements AddressListService {
      *
      * @param request 수정에 필요한 정보를 담는 dto 입니다.
      * @throws NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @throws StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws StatusCodeNotFoundException  상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
     @Transactional
     @Override
@@ -94,7 +92,7 @@ public class AddressListServiceImpl implements AddressListService {
      *
      * @param addressListId 조회에 필요한 정보를 담는 값입니다.
      * @throws NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
-     * @throws StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
+     * @throws StatusCodeNotFoundException  상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
     @Transactional
     @Override

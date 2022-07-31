@@ -1,5 +1,7 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.repository;
 
+import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,19 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
-import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
-import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
-import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
+import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
+import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
+import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dummy.RepairScheduleDummy;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.RepairSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.pk.RepairSchedulePk;
-
-import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -166,7 +165,7 @@ class RepairScheduleRepositoryTest {
 
         //then
         RepairSchedule result = repository.findByPk(
-                r1.pk.getAddressNo(), r1.pk.getDate()).get();
+            r1.pk.getAddressNo(), r1.pk.getDate()).get();
 
         assertThat(result.getDayLabor()).isEqualTo(d1);
 

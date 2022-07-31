@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.QAddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.entity.QEmployee;
