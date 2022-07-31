@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.dayLabor.dto.response.GetDayLaborResponseDto;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.QDayLabor;
@@ -39,13 +38,11 @@ public class DayLaborRepositoryImpl extends QuerydslRepositorySupport implements
     public PageResponse<GetDayLaborResponseDto> findAllDayLabor(Pageable pageable) {
 
         QDayLabor dayLabor = QDayLabor.dayLabor;
-        QAddressLocal addressLocal = QAddressLocal.addressLocal;
 
         JPQLQuery<GetDayLaborResponseDto> query = from(dayLabor)
-            .leftJoin(dayLabor, addressLocal.dayLabor)
             .select(
                 Projections.bean(GetDayLaborResponseDto.class,
-                    addressLocal.addressName.as("local"),
+                    dayLabor.addressLocal.addressName.as("local"),
                     dayLabor.maxLabor));
 
         List<GetDayLaborResponseDto> content =

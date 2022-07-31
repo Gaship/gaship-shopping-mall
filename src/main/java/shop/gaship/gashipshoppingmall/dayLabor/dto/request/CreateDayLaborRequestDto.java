@@ -18,7 +18,7 @@ public class CreateDayLaborRequestDto {
     @Min(1)
     @NotNull(message = "지역번호를 입력하세요")
     private Integer localNo;
-    @NotNull(message = "최대물량을 기입하세요")
+    @NotNull(message = "최대물량을 기입하세 요")
     private Integer maxLabor;
 
     public CreateDayLaborRequestDto(Integer localNo, Integer maxLabor) {
