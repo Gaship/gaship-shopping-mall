@@ -1,14 +1,23 @@
 package shop.gaship.gashipshoppingmall.addresslist.entity;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
-
-import javax.persistence.*;
 
 /**
  * The type Address list.
@@ -20,7 +29,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Builder
-@Table(name = "Address_lists",indexes = @Index(columnList = "addressListNo"))
+@Table(name = "Address_lists", indexes = @Index(columnList = "addressListNo"))
 @ToString
 public class AddressList {
     @Id
@@ -32,11 +41,11 @@ public class AddressList {
     @JoinColumn(name = "address_local_no", nullable = false)
     private AddressLocal addressLocal;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "status_code_no", nullable = false)
     private StatusCode statusCode;
 

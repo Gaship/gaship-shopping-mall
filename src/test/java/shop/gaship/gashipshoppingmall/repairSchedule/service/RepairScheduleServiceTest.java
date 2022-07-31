@@ -1,5 +1,9 @@
 package shop.gaship.gashipshoppingmall.repairSchedule.service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,10 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
-import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
-import shop.gaship.gashipshoppingmall.dayLabor.exception.NotExistDayLabor;
-import shop.gaship.gashipshoppingmall.dayLabor.repository.DayLaborRepository;
+import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
+import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
+import shop.gaship.gashipshoppingmall.daylabor.exception.NotExistDayLabor;
+import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.request.ModifyScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairSchedule.dto.response.GetRepairScheduleResponseDto;
@@ -29,16 +33,13 @@ import shop.gaship.gashipshoppingmall.repairSchedule.exception.NotExistSchedule;
 import shop.gaship.gashipshoppingmall.repairSchedule.repository.RepairScheduleRepository;
 import shop.gaship.gashipshoppingmall.repairSchedule.service.impl.RepairScheduleServiceImpl;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.repairSchedule.service
@@ -91,11 +92,11 @@ class RepairScheduleServiceTest {
     void wrongAddressException_ScheduleTest() {
         //given
         given(repository.findByPk(dto.getLocalNo(), dto.getDate()))
-                .willReturn(Optional.of(schedule));
+            .willReturn(Optional.of(schedule));
 
         //when & then
         assertThatThrownBy(() -> service.addRepairSchedule(dto))
-                .isInstanceOf(AlreadyExistSchedule.class);
+            .isInstanceOf(AlreadyExistSchedule.class);
     }
 
     @DisplayName("이미 존재하는 스케줄은 없는데 관련 지역물량이없을경우")
@@ -103,13 +104,13 @@ class RepairScheduleServiceTest {
     void wrongDayLaborException_ScheduleTest() {
         //given
         given(repository.findByPk(dto.getLocalNo(), dto.getDate()))
-                .willReturn(Optional.empty());
+            .willReturn(Optional.empty());
 
         given(dayLaborRepository.findById(dto.getLocalNo()))
-                .willReturn(Optional.empty());
+            .willReturn(Optional.empty());
         //when & then
         assertThatThrownBy(() -> service.addRepairSchedule(dto))
-                .isInstanceOf(NotExistDayLabor.class);
+            .isInstanceOf(NotExistDayLabor.class);
     }
 
     @DisplayName("스케줄을 생성하는 테스트")
@@ -117,16 +118,16 @@ class RepairScheduleServiceTest {
     void success_ScheduleTest() {
         //given
         given(repository.findByPk(dto.getLocalNo(), dto.getDate()))
-                .willReturn(Optional.empty());
+            .willReturn(Optional.empty());
         given(dayLaborRepository.findById(dto.getLabor()))
-                .willReturn(Optional.of(dayLabor));
+            .willReturn(Optional.of(dayLabor));
 
         //when
         service.addRepairSchedule(dto);
 
         //then
         verify(repository, timeout(1))
-                .save(captor.capture());
+            .save(captor.capture());
 
         RepairSchedule test = captor.getValue();
         assertThat(test.pk.getDate()).isEqualTo(dto.getDate());
@@ -140,10 +141,10 @@ class RepairScheduleServiceTest {
     void modify_ScheduleFail() {
         //given
         given(repository.findByPk(modify.getLocalNo(), modify.getDate()))
-                .willReturn(Optional.empty());
+            .willReturn(Optional.empty());
         //when & then
         assertThatThrownBy(() -> service.modifyRepairSchedule(modify))
-                .isInstanceOf(NotExistSchedule.class);
+            .isInstanceOf(NotExistSchedule.class);
     }
 
     @DisplayName("스케줄을 수정 성공 테스트")
@@ -151,13 +152,13 @@ class RepairScheduleServiceTest {
     void modify_ScheduleSuccess() {
         //given
         given(repository.findByPk(modify.getLocalNo(), modify.getDate()))
-                .willReturn(Optional.of(schedule));
+            .willReturn(Optional.of(schedule));
         //when
         service.modifyRepairSchedule(modify);
 
         //then
         verify(repository, times(1))
-                .findByPk(any(),any());
+            .findByPk(any(), any());
     }
 
     @DisplayName("스케줄 일자별 조회 테스트")
@@ -167,14 +168,14 @@ class RepairScheduleServiceTest {
         LocalDate now = LocalDate.now();
 
         given(repository.findAllByDate(now))
-                .willReturn(list);
+            .willReturn(list);
 
         //when
         List<GetRepairScheduleResponseDto> test = service.findSchedulesByDate(now);
 
         //then
         verify(repository, times(1))
-                .findAllByDate(now);
+            .findAllByDate(now);
 
         assertThat(test.get(0)).isEqualTo(responseDto1);
         assertThat(test.get(1)).isEqualTo(responseDto2);
@@ -186,13 +187,13 @@ class RepairScheduleServiceTest {
         //give
         PageRequest req = PageRequest.of(1, 10);
         Page<GetRepairScheduleResponseDto> pages = new PageImpl<>(list, req,
-                list.size());
+            list.size());
 
         given(repository.findAllSortDate(any()))
-                .willReturn(pages);
+            .willReturn(pages);
 
         //when
-        Page<GetRepairScheduleResponseDto> test = service.findRepairSchedules(req.getPageNumber(),req.getPageSize());
+        Page<GetRepairScheduleResponseDto> test = service.findRepairSchedules(req.getPageNumber(), req.getPageSize());
 
         //then
         assertThat(test.getSize()).isEqualTo(pages.getSize());

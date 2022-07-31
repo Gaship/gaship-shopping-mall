@@ -1,5 +1,7 @@
 package shop.gaship.gashipshoppingmall.addresslist.service;
 
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,10 +14,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.addressLocal.exception.NotExistAddressLocal;
-import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListPageResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.dummy.AddressListDummy;
@@ -23,6 +21,10 @@ import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
 import shop.gaship.gashipshoppingmall.addresslist.exception.NotFoundAddressListException;
 import shop.gaship.gashipshoppingmall.addresslist.repository.AddressListRepository;
 import shop.gaship.gashipshoppingmall.addresslist.service.Impl.AddressListServiceImpl;
+import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.exception.NotExistAddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -30,13 +32,13 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
-import java.util.List;
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author 최정우
@@ -75,10 +77,10 @@ class AddressListServiceImplTest {
 
         addressListService.addAddressList(AddressListDummy.addressListAddRequestDtoDummy());
 
-        verify(addressLocalRepository,times(1)).findById(any());
-        verify(memberRepository,times(1)).findById(any());
-        verify(statusCodeRepository,times(1)).findByStatusCodeName(any());
-        verify(addressListRepository,times(1)).save(any());
+        verify(addressLocalRepository, times(1)).findById(any());
+        verify(memberRepository, times(1)).findById(any());
+        verify(statusCodeRepository, times(1)).findByStatusCodeName(any());
+        verify(addressListRepository, times(1)).save(any());
     }
 
     @DisplayName("AddAddressList Fail 테스트(주소지역 조회값 = null)")
@@ -86,13 +88,13 @@ class AddressListServiceImplTest {
     void AddAddressListFailTest1() {
         when(addressLocalRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(()->addressListService.addAddressList(AddressListDummy.addressListAddRequestDtoDummy()))
-                .isInstanceOf(NotExistAddressLocal.class);
+        assertThatThrownBy(() -> addressListService.addAddressList(AddressListDummy.addressListAddRequestDtoDummy()))
+            .isInstanceOf(NotExistAddressLocal.class);
 
-        verify(addressLocalRepository,times(1)).findById(any());
-        verify(memberRepository,never()).findById(any());
-        verify(statusCodeRepository,never()).findByStatusCodeName(any());
-        verify(addressListRepository,never()).save(any());
+        verify(addressLocalRepository, times(1)).findById(any());
+        verify(memberRepository, never()).findById(any());
+        verify(statusCodeRepository, never()).findByStatusCodeName(any());
+        verify(addressListRepository, never()).save(any());
     }
 
     @DisplayName("AddAddressList Fail 테스트(배송목록 조회값 = null)")
@@ -102,13 +104,13 @@ class AddressListServiceImplTest {
         when(addressLocalRepository.findById(any())).thenReturn(Optional.of(addressLocal));
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(()->addressListService.addAddressList(AddressListDummy.addressListAddRequestDtoDummy()))
-                .isInstanceOf(MemberNotFoundException.class);
+        assertThatThrownBy(() -> addressListService.addAddressList(AddressListDummy.addressListAddRequestDtoDummy()))
+            .isInstanceOf(MemberNotFoundException.class);
 
-        verify(addressLocalRepository,times(1)).findById(any());
-        verify(memberRepository,times(1)).findById(any());
-        verify(statusCodeRepository,never()).findByStatusCodeName(any());
-        verify(addressListRepository,never()).save(any());
+        verify(addressLocalRepository, times(1)).findById(any());
+        verify(memberRepository, times(1)).findById(any());
+        verify(statusCodeRepository, never()).findByStatusCodeName(any());
+        verify(addressListRepository, never()).save(any());
     }
 
     @DisplayName("AddAddressList Fail 테스트(상태값 조회값 = null)")
@@ -119,13 +121,13 @@ class AddressListServiceImplTest {
         when(memberRepository.findById(any())).thenReturn(Optional.of(MemberDummy.dummy()));
         when(statusCodeRepository.findByStatusCodeName(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(()->addressListService.addAddressList(AddressListDummy.addressListAddRequestDtoDummy()))
-                .isInstanceOf(StatusCodeNotFoundException.class);
+        assertThatThrownBy(() -> addressListService.addAddressList(AddressListDummy.addressListAddRequestDtoDummy()))
+            .isInstanceOf(StatusCodeNotFoundException.class);
 
-        verify(addressLocalRepository,times(1)).findById(any());
-        verify(memberRepository,times(1)).findById(any());
-        verify(statusCodeRepository,times(1)).findByStatusCodeName(any());
-        verify(addressListRepository,never()).save(any());
+        verify(addressLocalRepository, times(1)).findById(any());
+        verify(memberRepository, times(1)).findById(any());
+        verify(statusCodeRepository, times(1)).findByStatusCodeName(any());
+        verify(addressListRepository, never()).save(any());
     }
 
     @DisplayName("AddressListService 매개변수가 AddressListModifyRequest 인 addAddressList 테스트")
@@ -139,10 +141,10 @@ class AddressListServiceImplTest {
 
         addressListService.addAddressList(AddressListDummy.addressListModifyRequestDtoDummy());
 
-        verify(addressLocalRepository,times(1)).findById(any());
-        verify(memberRepository,times(1)).findById(any());
-        verify(statusCodeRepository,times(1)).findByStatusCodeName(any());
-        verify(addressListRepository,times(1)).save(any());
+        verify(addressLocalRepository, times(1)).findById(any());
+        verify(memberRepository, times(1)).findById(any());
+        verify(statusCodeRepository, times(1)).findByStatusCodeName(any());
+        verify(addressListRepository, times(1)).save(any());
     }
 
     @DisplayName("AddressListService modifyAddressList 테스트")
@@ -154,9 +156,9 @@ class AddressListServiceImplTest {
 
         addressListService.modifyAddressList(AddressListDummy.addressListModifyRequestDtoDummy());
 
-        verify(addressListRepository,times(1)).findById(any());
-        verify(statusCodeRepository,times(1)).findByStatusCodeName(any());
-        verify(addressListRepository,times(1)).save(any());
+        verify(addressListRepository, times(1)).findById(any());
+        verify(statusCodeRepository, times(1)).findByStatusCodeName(any());
+        verify(addressListRepository, times(1)).save(any());
     }
 
     @DisplayName("removeAddressList Success 테스트")
@@ -168,9 +170,9 @@ class AddressListServiceImplTest {
 
         addressListService.removeAddressList(1);
 
-        verify(addressListRepository,times(1)).findById(any());
-        verify(statusCodeRepository,times(1)).findByStatusCodeName(any());
-        verify(addressListRepository,times(1)).save(any());
+        verify(addressListRepository, times(1)).findById(any());
+        verify(statusCodeRepository, times(1)).findByStatusCodeName(any());
+        verify(addressListRepository, times(1)).save(any());
     }
 
     @DisplayName("removeAddressList Fail 테스트(배송지목록 조회값 = null)")
@@ -178,12 +180,12 @@ class AddressListServiceImplTest {
     void removeAddressListFailTest1() {
         when(addressListRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(()->addressListService.removeAddressList(1))
-                .isInstanceOf(NotFoundAddressListException.class);
+        assertThatThrownBy(() -> addressListService.removeAddressList(1))
+            .isInstanceOf(NotFoundAddressListException.class);
 
-        verify(addressListRepository,times(1)).findById(1);
-        verify(statusCodeRepository,never()).findByStatusCodeName(any());
-        verify(addressListRepository,never()).save(any());
+        verify(addressListRepository, times(1)).findById(1);
+        verify(statusCodeRepository, never()).findByStatusCodeName(any());
+        verify(addressListRepository, never()).save(any());
     }
 
     @DisplayName("removeAddressList Fail 테스트(배송지목록 조회값 = null)")
@@ -192,12 +194,12 @@ class AddressListServiceImplTest {
         when(addressListRepository.findById(any())).thenReturn(Optional.of(AddressListDummy.addressListEntity()));
         when(statusCodeRepository.findByStatusCodeName(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(()->addressListService.removeAddressList(1))
-                .isInstanceOf(StatusCodeNotFoundException.class);
+        assertThatThrownBy(() -> addressListService.removeAddressList(1))
+            .isInstanceOf(StatusCodeNotFoundException.class);
 
-        verify(addressListRepository,times(1)).findById(any());
-        verify(statusCodeRepository,times(1)).findByStatusCodeName(any());
-        verify(addressListRepository,never()).save(any());
+        verify(addressListRepository, times(1)).findById(any());
+        verify(statusCodeRepository, times(1)).findByStatusCodeName(any());
+        verify(addressListRepository, never()).save(any());
     }
 
     @DisplayName("AddressListService findAddressList 테스트")
@@ -207,7 +209,7 @@ class AddressListServiceImplTest {
 
         addressListService.findAddressList(1);
 
-        verify(addressListRepository,times(1)).findById(any());
+        verify(addressListRepository, times(1)).findById(any());
 
     }
 
@@ -216,17 +218,17 @@ class AddressListServiceImplTest {
     void findAddressLists() {
         int page = 1;
         int size = 10;
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page, size);
         List<AddressList> list = AddressListDummy.addressListEntityList();
-        Page<AddressList> resultPage = new PageImpl<>(list,pageable,103);
-        when(addressListRepository.findByMember_MemberNoAndStatusCode_StatusCodeName(any(),any(),any()))
-                .thenReturn(resultPage);
+        Page<AddressList> resultPage = new PageImpl<>(list, pageable, 103);
+        when(addressListRepository.findByMember_MemberNoAndStatusCode_StatusCodeName(any(), any(), any()))
+            .thenReturn(resultPage);
 
-        AddressListPageResponseDto<AddressListResponseDto, AddressList> result = addressListService.findAddressLists(1,pageable);
+        AddressListPageResponseDto<AddressListResponseDto, AddressList> result = addressListService.findAddressLists(1, pageable);
 
         assertThat(result.getPage()).isEqualTo(page + 1);
         assertThat(result.getSize()).isEqualTo(size);
         assertThat(result.getDtoList()).hasSize(103);
-        verify(addressListRepository,times(1)).findByMember_MemberNoAndStatusCode_StatusCodeName(any(),any(),any(Pageable.class));
+        verify(addressListRepository, times(1)).findByMember_MemberNoAndStatusCode_StatusCodeName(any(), any(), any(Pageable.class));
     }
 }

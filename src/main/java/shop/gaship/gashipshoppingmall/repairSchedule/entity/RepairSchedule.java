@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
+import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.repairSchedule.entity.pk.RepairSchedulePk;
 
 /**

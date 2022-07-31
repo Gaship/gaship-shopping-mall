@@ -1,32 +1,26 @@
 package shop.gaship.gashipshoppingmall.addresslist.repository;
 
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.*;
-import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.addressLocal.repository.AddressLocalRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.addresslist.dummy.NotNullDummy;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
-import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.AddressStatus;
-import shop.gaship.gashipshoppingmall.tag.entity.Tag;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author 최정우
@@ -60,37 +54,37 @@ class AddressListRepositoryTest {
         AddressLocal addressLocal1 = addressLocalRepository.save(NotNullDummy.notNullAddressUpperLocalDummy());
         AddressLocal addressLocal2 = addressLocalRepository.save(NotNullDummy.notNullAddressLocalDummy(addressLocal1));
         MemberGrade memberGrade1 = memberGradeRepository.save(NotNullDummy.notNullMemberGradeDummy(statusCode1));
-        Member member1 = memberRepository.save(NotNullDummy.notNullRecommendedMemberDummy(statusCode2,memberGrade1));
-        Member member2 = memberRepository.save(NotNullDummy.notNullMemberDummy1(member1,statusCode2,memberGrade1));
+        Member member1 = memberRepository.save(NotNullDummy.notNullRecommendedMemberDummy(statusCode2, memberGrade1));
+        Member member2 = memberRepository.save(NotNullDummy.notNullMemberDummy1(member1, statusCode2, memberGrade1));
 
         System.out.println("=============================");
-        IntStream.rangeClosed(1,5).forEach(i ->
-                addressListRepository
-                        .save(AddressList.builder()
-                                .addressListNo(i)
-                                .addressLocal(addressLocal2)
-                                .member(member2)
-                                .statusCode(statusCode3)
-                                .address("경기도 안양시 비산동")
-                                .addressDetail("현대아파트 65층 화장실")
-                                .zipCode("12344")
-                                .build()));
-        IntStream.rangeClosed(1,8).forEach(i ->
-                addressListRepository
-                        .save(AddressList.builder()
-                                .addressListNo(i + 15)
-                                .addressLocal(addressLocal2)
-                                .member(member2)
-                                .statusCode(statusCode4)
-                                .address("경기도 안양시 비산동")
-                                .addressDetail("현대아파트 65층 화장실")
-                                .zipCode("12344")
-                                .build()));
+        IntStream.rangeClosed(1, 5).forEach(i ->
+            addressListRepository
+                .save(AddressList.builder()
+                    .addressListNo(i)
+                    .addressLocal(addressLocal2)
+                    .member(member2)
+                    .statusCode(statusCode3)
+                    .address("경기도 안양시 비산동")
+                    .addressDetail("현대아파트 65층 화장실")
+                    .zipCode("12344")
+                    .build()));
+        IntStream.rangeClosed(1, 8).forEach(i ->
+            addressListRepository
+                .save(AddressList.builder()
+                    .addressListNo(i + 15)
+                    .addressLocal(addressLocal2)
+                    .member(member2)
+                    .statusCode(statusCode4)
+                    .address("경기도 안양시 비산동")
+                    .addressDetail("현대아파트 65층 화장실")
+                    .zipCode("12344")
+                    .build()));
         Pageable pageable = PageRequest.of(1, 3);
 
         System.out.println("-----------------------------");
-        Page<AddressList> pageList = addressListRepository.findByMember_MemberNoAndStatusCode_StatusCodeName(member2.getMemberNo(),AddressStatus.USE.getValue(), pageable);
-        pageList.stream().forEach(i-> System.out.println(i.getStatusCode().getStatusCodeName()));
+        Page<AddressList> pageList = addressListRepository.findByMember_MemberNoAndStatusCode_StatusCodeName(member2.getMemberNo(), AddressStatus.USE.getValue(), pageable);
+        pageList.stream().forEach(i -> System.out.println(i.getStatusCode().getStatusCodeName()));
         assertThat(pageList.getTotalPages()).isEqualTo(2);
         assertThat(pageList.getTotalElements()).isEqualTo(5);
     }

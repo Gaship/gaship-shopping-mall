@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -90,7 +90,6 @@ public class Employee {
 
     /**
      * 직원에 있는 공통코드의 권한을 변경하기위한 메서드입니다.
-     *
      *
      * @param code 변경되어야할 권한이 들어옵니다.
      * @author 유호철

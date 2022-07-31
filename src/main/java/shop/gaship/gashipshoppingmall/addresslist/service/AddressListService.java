@@ -1,12 +1,12 @@
 package shop.gaship.gashipshoppingmall.addresslist.service;
 
 import org.springframework.data.domain.Pageable;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListAddRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListModifyRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListPageResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -80,13 +80,13 @@ public interface AddressListService {
      */
     default AddressList dtoToEntity(AddressListAddRequestDto request, AddressLocal addressLocal, Member member, StatusCode defaultStatus) {
         return AddressList.builder()
-                .addressLocal(addressLocal)
-                .member(member)
-                .statusCode(defaultStatus)
-                .address(request.getAddress())
-                .addressDetail(request.getAddressDetail())
-                .zipCode(request.getZipCode())
-                .build();
+            .addressLocal(addressLocal)
+            .member(member)
+            .statusCode(defaultStatus)
+            .address(request.getAddress())
+            .addressDetail(request.getAddressDetail())
+            .zipCode(request.getZipCode())
+            .build();
     }
 
     /**
@@ -101,13 +101,13 @@ public interface AddressListService {
      */
     default AddressList dtoToEntity(AddressListModifyRequestDto request, AddressLocal addressLocal, Member member, StatusCode defaultStatus) {
         return AddressList.builder()
-                .addressLocal(addressLocal)
-                .member(member)
-                .statusCode(defaultStatus)
-                .address(request.getAddress())
-                .addressDetail(request.getAddressDetail())
-                .zipCode(request.getZipCode())
-                .build();
+            .addressLocal(addressLocal)
+            .member(member)
+            .statusCode(defaultStatus)
+            .address(request.getAddress())
+            .addressDetail(request.getAddressDetail())
+            .zipCode(request.getZipCode())
+            .build();
     }
 
     /**
@@ -119,11 +119,11 @@ public interface AddressListService {
      */
     default AddressListResponseDto entityToDto(AddressList addressList) {
         return AddressListResponseDto.builder()
-                .addressListNo(addressList.getAddressListNo())
-                .addressLocal(addressList.getAddressLocal())
-                .address(addressList.getAddress())
-                .addressDetail(addressList.getAddressDetail())
-                .zipCode(addressList.getZipCode())
-                .build();
+            .addressListNo(addressList.getAddressListNo())
+            .addressLocal(addressList.getAddressLocal())
+            .address(addressList.getAddress())
+            .addressDetail(addressList.getAddressDetail())
+            .zipCode(addressList.getZipCode())
+            .build();
     }
 }
