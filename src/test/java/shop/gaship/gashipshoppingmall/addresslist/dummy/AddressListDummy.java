@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.addresslist.dummy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListAddRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListModifyRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListPageResponseDto;
@@ -18,13 +19,14 @@ import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
  */
 public class AddressListDummy {
     public static AddressListAddRequestDto addressListAddRequestDtoDummy() {
-        return AddressListAddRequestDto.builder()
-            .addressLocalNo(1)
-            .memberNo(1)
-            .address("경기도 안양시 비산동")
-            .addressDetail("현대아파트 65층 화장실")
-            .zipCode("12344")
-            .build();
+        AddressListAddRequestDto dummy = new AddressListAddRequestDto();
+        ReflectionTestUtils.setField(dummy, "addressLocalNo", 1);
+        ReflectionTestUtils.setField(dummy, "memberNo", 1);
+        ReflectionTestUtils.setField(dummy, "address", "경기도 안양시 비산동");
+        ReflectionTestUtils.setField(dummy, "addressDetail", "현대아파트 65층 화장실");
+        ReflectionTestUtils.setField(dummy, "zipCode", "12344");
+
+        return dummy;
     }
 
     public static AddressListModifyRequestDto addressListModifyRequestDtoDummy() {

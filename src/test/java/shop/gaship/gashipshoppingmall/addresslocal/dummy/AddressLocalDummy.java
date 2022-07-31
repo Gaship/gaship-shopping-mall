@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.addresslocal.dummy;
 
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.addressLocal.dummy
@@ -19,18 +19,32 @@ public class AddressLocalDummy {
     }
 
     public static AddressLocal dummy1() {
-        return new AddressLocal("부산광역시", 1, true, null, null);
+        AddressLocal dummy = new AddressLocal();
+        ReflectionTestUtils.setField(dummy, "addressName", "부산광역시");
+        ReflectionTestUtils.setField(dummy, "level", 1);
+        ReflectionTestUtils.setField(dummy, "allowDelivery", true);
+        ReflectionTestUtils.setField(dummy, "dayLabor", null);
+        ReflectionTestUtils.setField(dummy, "upperLocal", null);
+        return dummy;
     }
 
     public static AddressLocal dummy2() {
-        return new AddressLocal("마산턱별시", 2, true, null, null);
+        AddressLocal dummy = new AddressLocal();
+        ReflectionTestUtils.setField(dummy, "addressName", "마산턱별시");
+        ReflectionTestUtils.setField(dummy, "level", 2);
+        ReflectionTestUtils.setField(dummy, "allowDelivery", true);
+        ReflectionTestUtils.setField(dummy, "dayLabor", null);
+        ReflectionTestUtils.setField(dummy, "upperLocal", null);
+        return dummy;
     }
 
     public static AddressLocal dummy3() {
-        return new AddressLocal("그냥시", 2, true, null, null);
-    }
-
-    public static AddressLocal dummy4() {
-        return new AddressLocal("그냥시", 2, true, DayLaboyDummy.dummy1(), null);
+        AddressLocal dummy = new AddressLocal();
+        ReflectionTestUtils.setField(dummy, "addressName", "그냥시");
+        ReflectionTestUtils.setField(dummy, "level", 2);
+        ReflectionTestUtils.setField(dummy, "allowDelivery", true);
+        ReflectionTestUtils.setField(dummy, "dayLabor", null);
+        ReflectionTestUtils.setField(dummy, "upperLocal", null);
+        return dummy;
     }
 }

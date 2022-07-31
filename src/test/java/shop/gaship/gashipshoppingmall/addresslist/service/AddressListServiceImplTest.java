@@ -14,13 +14,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListAddRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListPageResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.dummy.AddressListDummy;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
 import shop.gaship.gashipshoppingmall.addresslist.exception.NotFoundAddressListException;
 import shop.gaship.gashipshoppingmall.addresslist.repository.AddressListRepository;
-import shop.gaship.gashipshoppingmall.addresslist.service.Impl.AddressListServiceImpl;
+import shop.gaship.gashipshoppingmall.addresslist.service.impl.AddressListServiceImpl;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.exception.NotExistAddressLocal;
@@ -87,8 +88,8 @@ class AddressListServiceImplTest {
     @Test
     void AddAddressListFailTest1() {
         when(addressLocalRepository.findById(any())).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> addressListService.addAddressList(AddressListDummy.addressListAddRequestDtoDummy()))
+        AddressListAddRequestDto dummy = AddressListDummy.addressListAddRequestDtoDummy();
+        assertThatThrownBy(() -> addressListService.addAddressList(dummy))
             .isInstanceOf(NotExistAddressLocal.class);
 
         verify(addressLocalRepository, times(1)).findById(any());
@@ -104,7 +105,8 @@ class AddressListServiceImplTest {
         when(addressLocalRepository.findById(any())).thenReturn(Optional.of(addressLocal));
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> addressListService.addAddressList(AddressListDummy.addressListAddRequestDtoDummy()))
+        AddressListAddRequestDto dummy = AddressListDummy.addressListAddRequestDtoDummy();
+        assertThatThrownBy(() -> addressListService.addAddressList(dummy))
             .isInstanceOf(MemberNotFoundException.class);
 
         verify(addressLocalRepository, times(1)).findById(any());
@@ -120,8 +122,9 @@ class AddressListServiceImplTest {
         when(addressLocalRepository.findById(any())).thenReturn(Optional.of(addressLocal));
         when(memberRepository.findById(any())).thenReturn(Optional.of(MemberDummy.dummy()));
         when(statusCodeRepository.findByStatusCodeName(any())).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> addressListService.addAddressList(AddressListDummy.addressListAddRequestDtoDummy()))
+        
+        AddressListAddRequestDto dummy = AddressListDummy.addressListAddRequestDtoDummy();
+        assertThatThrownBy(() -> addressListService.addAddressList(dummy))
             .isInstanceOf(StatusCodeNotFoundException.class);
 
         verify(addressLocalRepository, times(1)).findById(any());

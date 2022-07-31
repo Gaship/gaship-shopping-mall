@@ -10,8 +10,8 @@ import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
  * @author 최정우
  * @since 1.0
  */
-
 @Getter
+@Builder
 public class AddressListResponseDto {
     private final Integer addressListNo;
 
@@ -22,13 +22,4 @@ public class AddressListResponseDto {
     private final String addressDetail;
 
     private final String zipCode;
-
-    @Builder
-    public AddressListResponseDto(Integer addressListNo, AddressLocal addressLocal, String address, String addressDetail, String zipCode) {
-        this.addressListNo = addressListNo;
-        this.addressLocal = addressLocal;
-        this.address = address;
-        this.addressDetail = addressDetail;
-        this.zipCode = zipCode;
-    }
 }

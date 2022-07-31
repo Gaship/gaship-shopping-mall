@@ -58,8 +58,21 @@ public class AddressList {
     @Column(nullable = false)
     private String zipCode;
 
+    /**
+     * AddressList(배송지주소) 엔티티를 생성하는 생성자입니다.
+     *
+     * @param addressListNo 배송지주소 목록의 고유 번호입니다.
+     * @param addressLocal 주소지역 엔티티입니다.
+     * @param member 멤버 엔티티입니다.
+     * @param statusCode 배송상태를 뜻하는 상태코드 엔티티입니다.
+     * @param address 도로명 주소입니다.
+     * @param addressDetail 상세 주소입니다.
+     * @param zipCode 주소번호입니다.
+     */
     @Builder
-    public AddressList(Integer addressListNo, AddressLocal addressLocal, Member member, StatusCode statusCode, String address, String addressDetail, String zipCode) {
+    public AddressList(Integer addressListNo, AddressLocal addressLocal, Member member,
+                       StatusCode statusCode, String address, String addressDetail,
+                       String zipCode) {
         this.addressListNo = addressListNo;
         this.addressLocal = addressLocal;
         this.member = member;

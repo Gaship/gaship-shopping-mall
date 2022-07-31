@@ -1,14 +1,13 @@
 package shop.gaship.gashipshoppingmall.addresslist.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import lombok.Builder;
+import lombok.Getter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * 페이징한 객체의 정보들이 담겨있는 dto 입니다.
@@ -42,18 +41,24 @@ public class AddressListPageResponseDto<D, E> {
     //페이지 번호  목록
     private List<Integer> pageList;
 
+    /**
+     * 페이지 네이션 결과를 통해서 배송지 목록 페이지네이션 Dto를 생성하는 생성자입니다.
+     *
+     * @param result 페이지네이션 결과입니다.
+     * @param fn AddressList Entity에서 AddressListPageResponseDto로 변환시키는 함수형 파라미터입니다.
+     */
     public AddressListPageResponseDto(Page<E> result, Function<E, D> fn) {
 
-        dtoList = result.stream().map(fn).collect(Collectors.toList());
+        this.dtoList = result.stream().map(fn).collect(Collectors.toList());
 
-        totalPage = result.getTotalPages();
+        this.totalPage = result.getTotalPages();
 
         makePageList(result.getPageable());
     }
 
-
     @Builder
-    public AddressListPageResponseDto(List<D> dtoList, int totalPage, int page, int size, int start, int end, boolean prev, boolean next, List<Integer> pageList) {
+    public AddressListPageResponseDto(List<D> dtoList, int totalPage, int page, int size, int start,
+                                      int end, boolean prev, boolean next, List<Integer> pageList) {
         this.dtoList = dtoList;
         this.totalPage = totalPage;
         this.page = page;

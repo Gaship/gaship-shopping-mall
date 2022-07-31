@@ -19,6 +19,8 @@ import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 
 /**
+ * MemberTagService를 구현하는 클래스입니다.
+ *
  * @author 최정우
  * @since 1.0
  */

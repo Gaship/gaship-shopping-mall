@@ -27,7 +27,7 @@ import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
-import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
+import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**

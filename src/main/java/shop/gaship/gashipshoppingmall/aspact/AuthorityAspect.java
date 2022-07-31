@@ -93,12 +93,11 @@ public class AuthorityAspect {
         HttpServletRequest request = requestAttributes.getRequest();
         String authority = request.getHeader("X-AUTH-ROLE");
 
-        if(qualifyAuthority.test(authority)) {
-            try{
+        if (qualifyAuthority.test(authority)) {
+            try {
                 return pjp.proceed(pjp.getArgs());
-            } catch (Throwable e){
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+            } catch (Throwable e) {
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
 

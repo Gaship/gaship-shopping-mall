@@ -18,7 +18,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  */
 public interface AddressListService {
     /**
-     * 배송지목록의 등록을 하기 위한 메서드
+     * 배송지목록의 등록을 하기 위한 메서드입니다.
      *
      * @param request 등록에 필요한 정보를 담는 dto 입니다.
      * @author 최정우
@@ -26,7 +26,7 @@ public interface AddressListService {
     void addAddressList(AddressListAddRequestDto request);
 
     /**
-     * 배송지목록의 등록을 하기 위한 메서드
+     * 배송지목록의 등록을 하기 위한 메서드입니다.
      *
      * @param request 등록에 필요한 정보를 담는 dto 입니다.
      * @author 최정우
@@ -34,7 +34,7 @@ public interface AddressListService {
     void addAddressList(AddressListModifyRequestDto request);
 
     /**
-     * 배송지목록의 등록을 하기 위한 메서드
+     * 배송지목록의 등록을 하기 위한 메서드입니다.
      *
      * @param request 등록에 필요한 정보를 담는 dto 입니다. 타입은 modifyRequestDto 입니다.
      * @author 최정우
@@ -43,7 +43,7 @@ public interface AddressListService {
 
 
     /**
-     * 배송지목록의 삭제를 하기 위한 메서드
+     * 배송지목록의 삭제를 하기 위한 메서드입니다.
      *
      * @param addressListId 삭제하길 원하는 배송지 목록의 id 값을 담고 있습니다.
      * @author 최정우
@@ -51,7 +51,7 @@ public interface AddressListService {
     void removeAddressList(Integer addressListId);
 
     /**
-     * 배송지목록의 단건조회 하기 위한 메서드 (배송지 정보 수정과 배송지목록 상세 보기에 사용됨)
+     * 배송지목록의 단건조회 하기 위한 메서드입니다. (배송지 정보 수정과 배송지목록 상세 보기에 사용됨)
      *
      * @param addressListId 조회하길 원하는 배송지목록의 id 값을 담고있습니다.
      * @return 조회하길 원하는 배송지목록의 정보를 담고있습니다.
@@ -60,13 +60,14 @@ public interface AddressListService {
     AddressListResponseDto findAddressList(Integer addressListId);
 
     /**
-     * 배송지목록의 다건조회 하기 위한 메서드 (배송지 정보 수정과 배송지목록 상세 보기에 사용됨)
+     * 배송지목록의 다건조회 하기 위한 메서드입니다. (배송지 정보 수정과 배송지목록 상세 보기에 사용됨)
      *
      * @param pageable 조회하길 원하는 배송지목록 페이지의 페이지 번호,사이즈,정렬조건 값을 담고있습니다.
      * @return 조회하길 원하는 배송지목록 페이지의 정보들을 담고있습니다.
      * @author 최정우
      */
-    AddressListPageResponseDto<AddressListResponseDto, AddressList> findAddressLists(Integer memberId, Pageable pageable);
+    AddressListPageResponseDto<AddressListResponseDto, AddressList> findAddressLists(
+        Integer memberId, Pageable pageable);
 
     /**
      * 새로운 테이블을 등록시 필요한 정보로 데이터를 변환해주는 메서드입니다.
@@ -78,15 +79,11 @@ public interface AddressListService {
      * @return 등록에 필요한 entity 를 반환해줍니다.(id 값은 등록이 되면 설정되므로 따로 설정하지 않습니다.)
      * @author 최정우
      */
-    default AddressList dtoToEntity(AddressListAddRequestDto request, AddressLocal addressLocal, Member member, StatusCode defaultStatus) {
-        return AddressList.builder()
-            .addressLocal(addressLocal)
-            .member(member)
-            .statusCode(defaultStatus)
-            .address(request.getAddress())
-            .addressDetail(request.getAddressDetail())
-            .zipCode(request.getZipCode())
-            .build();
+    default AddressList dtoToEntity(AddressListAddRequestDto request, AddressLocal addressLocal,
+                                    Member member, StatusCode defaultStatus) {
+        return AddressList.builder().addressLocal(addressLocal).member(member)
+            .statusCode(defaultStatus).address(request.getAddress())
+            .addressDetail(request.getAddressDetail()).zipCode(request.getZipCode()).build();
     }
 
     /**
@@ -99,15 +96,11 @@ public interface AddressListService {
      * @return 등록에 필요한 entity 를 반환해줍니다.(id 값은 등록이 되면 설정되므로 따로 설정하지 않습니다.)
      * @author 최정우
      */
-    default AddressList dtoToEntity(AddressListModifyRequestDto request, AddressLocal addressLocal, Member member, StatusCode defaultStatus) {
-        return AddressList.builder()
-            .addressLocal(addressLocal)
-            .member(member)
-            .statusCode(defaultStatus)
-            .address(request.getAddress())
-            .addressDetail(request.getAddressDetail())
-            .zipCode(request.getZipCode())
-            .build();
+    default AddressList dtoToEntity(AddressListModifyRequestDto request, AddressLocal addressLocal,
+                                    Member member, StatusCode defaultStatus) {
+        return AddressList.builder().addressLocal(addressLocal).member(member)
+            .statusCode(defaultStatus).address(request.getAddress())
+            .addressDetail(request.getAddressDetail()).zipCode(request.getZipCode()).build();
     }
 
     /**
@@ -118,12 +111,9 @@ public interface AddressListService {
      * @author 최정우
      */
     default AddressListResponseDto entityToDto(AddressList addressList) {
-        return AddressListResponseDto.builder()
-            .addressListNo(addressList.getAddressListNo())
-            .addressLocal(addressList.getAddressLocal())
-            .address(addressList.getAddress())
-            .addressDetail(addressList.getAddressDetail())
-            .zipCode(addressList.getZipCode())
+        return AddressListResponseDto.builder().addressListNo(addressList.getAddressListNo())
+            .addressLocal(addressList.getAddressLocal()).address(addressList.getAddress())
+            .addressDetail(addressList.getAddressDetail()).zipCode(addressList.getZipCode())
             .build();
     }
 }

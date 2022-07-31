@@ -39,7 +39,7 @@ import shop.gaship.gashipshoppingmall.member.service.MemberService;
  * @since 1.0
  */
 @WebMvcTest(MemberController.class)
-public class MemberControllerBaseFunctionTest {
+class MemberControllerBaseFunctionTest {
     @Autowired
     MockMvc mockMvc;
 

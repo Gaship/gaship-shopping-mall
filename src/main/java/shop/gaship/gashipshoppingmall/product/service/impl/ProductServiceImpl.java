@@ -26,8 +26,8 @@ import shop.gaship.gashipshoppingmall.product.event.ProductSaveUpdateEvent;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
-import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
-import shop.gaship.gashipshoppingmall.productTag.repository.ProductTagRepository;
+import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
+import shop.gaship.gashipshoppingmall.producttag.repository.ProductTagRepository;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
@@ -122,12 +122,13 @@ public class ProductServiceImpl implements ProductService {
         throws IOException {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
+
+        fileUploadUtil.deleteFiles(product.getImageLinkList());
+
         Category category = categoryRepository.findById(modifyRequest.getCategoryNo())
             .orElseThrow(CategoryNotFoundException::new);
         StatusCode deliveryType = statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo())
             .orElseThrow(StatusCodeNotFoundException::new);
-
-        fileUploadUtil.deleteFiles(product.getImageLinkList());
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
 
         applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks));
@@ -297,7 +298,8 @@ public class ProductServiceImpl implements ProductService {
      */
     private void findProductTagInfo(PageResponse<ProductAllInfoResponseDto> products) {
         products.getContent().forEach(product -> {
-            List<String> tagNameList = productTagRepository.findTagsByProductNo(product.getProductNo());
+            List<String> tagNameList =
+                productTagRepository.findTagsByProductNo(product.getProductNo());
             product.getTags().addAll(tagNameList);
         });
     }
