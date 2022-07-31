@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.error;
 
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -8,6 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import shop.gaship.gashipshoppingmall.inquiry.exception.AlreadyCompleteInquiryAnswerException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentEmployeeWriterAboutInquiryAnswerException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.NoRegisteredAnswerException;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -29,7 +34,10 @@ public class ExceptionAdviceController {
      * @return 예상되는 예외들의 각 메세지를 담아 응답 객체를 반환합니다.
      */
     @ExceptionHandler(value = {SignUpDenyException.class, MemberNotFoundException.class,
-        InvalidReissueQualificationException.class, DuplicatedNicknameException.class})
+        InvalidReissueQualificationException.class, DuplicatedNicknameException.class,
+        AlreadyCompleteInquiryAnswerException.class,
+        DifferentEmployeeWriterAboutInquiryAnswerException.class,
+        InquiryNotFoundException.class, NoRegisteredAnswerException.class})
     public ResponseEntity<ErrorResponse> declaredExceptionAdvice(RuntimeException exception) {
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON)
             .body(new ErrorResponse(exception.getMessage()));
