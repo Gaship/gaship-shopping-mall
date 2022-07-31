@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.member.entity.BaseEntity;
@@ -39,4 +40,26 @@ public class ProductReview extends BaseEntity {
     private String imagePath;
 
     private Integer starScore;
+
+    @Builder
+    public ProductReview(Integer orderProductNo,
+                         OrderProduct orderProduct, String title, String content,
+                         String imagePath, Integer starScore) {
+        this.orderProductNo = orderProductNo;
+        this.orderProduct = orderProduct;
+        this.title = title;
+        this.content = content;
+        this.imagePath = imagePath;
+        this.starScore = starScore;
+    }
+
+    public void updateProductReview(String title, String content, Integer starScore) {
+        this.title = title;
+        this.content = content;
+        this.starScore = starScore;
+    }
+
+    public void updateImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 }
