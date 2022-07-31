@@ -59,15 +59,15 @@ public class InquiryRestController {
     /**
      * 문의의 답변을 수정하기 위한 요청을 처리합니다.
      *
-     * @param inquiryAnswerAddRequestDto 문의답변에 들어가야할 정보들을 가지는 DTO 객체입니다.
+     * @param inquiryAnswerModifyRequestDto 문의답변에 들어가야할 정보들을 가지는 DTO 객체입니다.
      * @return 성공시 201인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
     @PutMapping("/{inquiryNo}/inquiry-answer")
     public ResponseEntity<Void> inquiryAnswerModify(
-        @Valid @RequestBody InquiryAnswerRequestDto inquiryAnswerAddRequestDto) {
-        inquiryService.addInquiryAnswer(inquiryAnswerAddRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        @Valid @RequestBody InquiryAnswerRequestDto inquiryAnswerModifyRequestDto) {
+        inquiryService.modifyInquiryAnswer(inquiryAnswerModifyRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
