@@ -15,14 +15,14 @@ import lombok.Setter;
 @Getter
 public class InquiryAddRequestDto {
 
-    @Min(1)
+    @Min(value = 1, message = "memberNo 는 최소값이 1입니다.")
     @NotNull(message = "memberNo 는 필수 입력값입니다.")
     private Integer memberNo;
 
-    @Min(1)
+    @Min(value = 1, message = "productNo 는 최소값이 1입니다.")
     private Integer productNo;
 
-    @NotBlank(message = "title 은 필수 입력값입니다.")
+    @NotBlank(message = "title 은 필수 입력값이며 공백이나 빈문자열이면 안됩니다.")
     private String title;
 
     @NotNull(message = "inquiryContent 는 필수 입력값입니다.")
