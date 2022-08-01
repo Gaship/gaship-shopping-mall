@@ -122,7 +122,7 @@ class ProductServiceTest {
 
     @DisplayName("상품 등록 성공")
     @Test
-    void addProduct() throws IOException {
+    void addProduct() {
         ProductCreateRequestDto createRequest = ProductDummy.createRequestDummy();
         List<MultipartFile> files = List.of(multipartFile);
         String uploadDir = File.separator + "products";
@@ -151,7 +151,7 @@ class ProductServiceTest {
 
     @DisplayName("상품 수정 성공")
     @Test
-    void modifyProduct() throws IOException {
+    void modifyProduct() {
         ProductModifyRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
         Product product = ProductDummy.dummy();
         ReflectionTestUtils.setField(product, "no", modifyRequest.getNo());

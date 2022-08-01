@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.productreview.dummy;
 
+import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
 import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 
 /**
@@ -16,6 +17,24 @@ public class ProductReviewDummy {
                 .content("상품평 내용")
                 .imagePath("이미지 경로")
                 .starScore(5)
+                .build();
+    }
+
+    public static ProductReviewRequestDto createRequestDummy() {
+        return ProductReviewRequestDto.builder()
+                .orderProductNo(1)
+                .title("상품평 제목")
+                .content("상품평 내용")
+                .starScore(5)
+                .build();
+    }
+
+    public static ProductReviewRequestDto modifyRequestDummy() {
+        return ProductReviewRequestDto.builder()
+                .orderProductNo(1)
+                .title("수정 상품평 제목")
+                .content("수정 상품평 내용")
+                .starScore(3)
                 .build();
     }
 }
