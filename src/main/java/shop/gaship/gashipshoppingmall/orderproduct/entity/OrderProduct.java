@@ -70,6 +70,8 @@ public class OrderProduct {
 
     private String employeeName;
 
+    private Integer trackingNo;
+
     /**
      * Instantiates a new Order product.
      *
