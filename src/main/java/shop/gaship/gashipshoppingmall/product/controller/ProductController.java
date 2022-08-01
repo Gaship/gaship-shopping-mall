@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.product.controller;
 
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -43,13 +42,11 @@ public class ProductController {
      * @param files         리스트 형태의 다중 이미지 파일
      * @param createRequest 상품 등록 요청 dto
      * @return responseEntity 응답 바디는 없습니다.
-     * @throws IOException 파일 업로드 시 IOException 이 발생할 수 있습니다.
      * @author 김보민
      */
     @PostMapping
     public ResponseEntity<Void> productAdd(@RequestPart("image") List<MultipartFile> files,
-                                           @RequestPart ProductCreateRequestDto createRequest)
-            throws IOException {
+                                           @RequestPart ProductCreateRequestDto createRequest) {
         service.addProduct(files, createRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -63,13 +60,11 @@ public class ProductController {
      * @param files         리스트 형태의 다중 이미지 파일
      * @param modifyRequest 상품 수정 요청 dto
      * @return responseEntity 응답 바디는 없습니다.
-     * @throws IOException 파일 업로드 시 IOException 이 발생할 수 있습니다.
      * @author 김보민
      */
     @PutMapping
     public ResponseEntity<Void> productModify(@RequestPart("image") List<MultipartFile> files,
-                                              @RequestPart ProductModifyRequestDto modifyRequest)
-            throws IOException {
+                                              @RequestPart ProductModifyRequestDto modifyRequest) {
         service.modifyProduct(files, modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)

@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.product.service;
 
-import java.io.IOException;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,22 +22,18 @@ public interface ProductService {
      *
      * @param files         리스트 형태의 다중 이미지 파일
      * @param createRequest 상품 생성 요청 dto
-     * @throws IOException 파일 업로드 시 IOException 이 발생할 수 있습니다.
      * @author 김보민
      */
-    void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest)
-            throws IOException;
+    void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest);
 
     /**
      * 상품 수정 메서드입니다.
      *
      * @param files         리스트 형태의 다중 이미지 파일
      * @param modifyRequest 상품 수정 요청 dto
-     * @throws IOException 파일 업로드 시 IOException 이 발생할 수 있습니다.
      * @author 김보민
      */
-    void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest)
-            throws IOException;
+    void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest);
 
     /**
      * 상품 판매상태를 수정하는 메서드입니다.
