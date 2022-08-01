@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import shop.gaship.gashipshoppingmall.error.FileDeleteException;
-import shop.gaship.gashipshoppingmall.error.FileUploadException;
+import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
+import shop.gaship.gashipshoppingmall.error.FileUploadFailureException;
 
 /**
  * 파일을 업로드하기 위한 유틸클래스 입니다.
@@ -34,7 +34,7 @@ public class FileUploadUtil {
      * @param uploadDir      업로드 할 디렉터리입니다.
      * @param multipartFiles 업로드할 파일 자료구조의 집합입니다.
      * @return 저장된 파일 path들의 집합입니다.
-     * @throws FileUploadException 파일 저장에 오류가 발생하였을 때 에외를 던집니다.
+     * @throws FileUploadFailureException 파일 저장에 오류가 발생하였을 때 에외를 던집니다.
      */
     public List<String> uploadFile(String uploadDir, List<MultipartFile> multipartFiles) {
         String date = File.separator + LocalDate.now();
@@ -57,7 +57,7 @@ public class FileUploadUtil {
      * String으로 전달받은 경로들의 파일을 모두 삭제하는 메서드입니다.
      *
      * @param fileLinks 삭제할 파일의 경로들입니다.
-     * @throws FileDeleteException 파일 삭제에 오류가 발생하였을 때 에외를 던집니다.
+     * @throws FileDeleteFailureException 파일 삭제에 오류가 발생하였을 때 에외를 던집니다.
      */
     public void cleanUpFiles(List<String> fileLinks) {
         fileLinks.stream()
@@ -74,7 +74,7 @@ public class FileUploadUtil {
         try {
             Files.createDirectories(uploadPath);
         } catch (IOException e) {
-            throw new FileUploadException();
+            throw new FileUploadFailureException();
         }
     }
 
@@ -88,7 +88,7 @@ public class FileUploadUtil {
         try {
             multipartFile.transferTo(new File(fileLink));
         } catch (IOException e) {
-            throw new FileUploadException();
+            throw new FileUploadFailureException();
         }
     }
 
@@ -101,7 +101,7 @@ public class FileUploadUtil {
         try {
             Files.deleteIfExists(path);
         } catch (IOException e) {
-            throw new FileDeleteException();
+            throw new FileDeleteFailureException();
         }
     }
 

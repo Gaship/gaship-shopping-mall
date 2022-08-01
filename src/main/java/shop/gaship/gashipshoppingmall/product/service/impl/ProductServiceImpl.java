@@ -15,8 +15,8 @@ import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundExcepti
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticRepository;
-import shop.gaship.gashipshoppingmall.error.FileDeleteException;
-import shop.gaship.gashipshoppingmall.error.FileUploadException;
+import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
+import shop.gaship.gashipshoppingmall.error.FileUploadFailureException;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
      *
      * @throws CategoryNotFoundException   카테고리가 존재하지않을경우 발생합니다.
      * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
-     * @throws FileUploadException 파일 저장에 오류가 발생하였을 때 에외를 던집니다.
+     * @throws FileUploadFailureException 파일 저장에 오류가 발생하였을 때 에외를 던집니다.
      */
     @Transactional
     @Override
@@ -116,8 +116,8 @@ public class ProductServiceImpl implements ProductService {
      * @throws ProductNotFoundException    제품이 존재하지않을경우 발생합니다.
      * @throws CategoryNotFoundException   카테고리가 존재하지않을경우 발생합니다.
      * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
-     * @throws FileUploadException 파일 저장에 오류가 발생하였을 때 에외를 던집니다.
-     * @throws FileDeleteException 파일 삭제에 오류가 발생하였을 때 에외를 던집니다.
+     * @throws FileUploadFailureException 파일 저장에 오류가 발생하였을 때 에외를 던집니다.
+     * @throws FileDeleteFailureException 파일 삭제에 오류가 발생하였을 때 에외를 던집니다.
      */
     @Transactional
     @Override

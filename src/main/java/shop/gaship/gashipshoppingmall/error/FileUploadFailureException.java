@@ -6,10 +6,10 @@ package shop.gaship.gashipshoppingmall.error;
  * @author : 김보민
  * @since 1.0
  */
-public class FileUploadException extends RuntimeException{
+public class FileUploadFailureException extends RuntimeException{
     public static final String MESSAGE = "파일 업로드에 실패하였습니다.";
 
-    public FileUploadException() {
+    public FileUploadFailureException() {
         super(MESSAGE);
     }
 }
