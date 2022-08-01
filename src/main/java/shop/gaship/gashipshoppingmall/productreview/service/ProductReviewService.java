@@ -11,11 +11,9 @@ import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewReq
  * @since 1.0
  */
 public interface ProductReviewService {
-    void addProductReview(MultipartFile file, ProductReviewRequestDto createRequest)
-            throws IOException;
+    void addProductReview(MultipartFile file, ProductReviewRequestDto createRequest);
 
-    void modifyProductReview(MultipartFile file, ProductReviewRequestDto modifyRequest)
-            throws IOException;
+    void modifyProductReview(MultipartFile file, ProductReviewRequestDto modifyRequest);
 
     void removeProductReview(Integer orderProductNo);
 }

@@ -9,7 +9,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 /**
- * 상품평 save 이벤트 핸들러입니다.
+ * 상품평 이벤트 핸들러입니다.
  *
  * @author : 김보민
  * @since 1.0
@@ -22,12 +22,12 @@ public class ProductReviewEventHandler {
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
     public void handleSaveEvent(ProductReviewSaveEvent event) {
-        fileUploadUtil.deleteFiles(List.of(event.getImagePath()));
+        fileUploadUtil.cleanUpFiles(List.of(event.getImagePath()));
     }
 
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleDeleteEvent(ProductReviewDeleteEvent event) {
-        fileUploadUtil.deleteFiles(List.of(event.getImagePath()));
+        fileUploadUtil.cleanUpFiles(List.of(event.getImagePath()));
     }
 }

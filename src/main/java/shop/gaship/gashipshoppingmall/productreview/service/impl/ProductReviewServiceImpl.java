@@ -38,8 +38,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
     @Transactional
     @Override
-    public void addProductReview(MultipartFile file, ProductReviewRequestDto createRequest)
-            throws IOException {
+    public void addProductReview(MultipartFile file, ProductReviewRequestDto createRequest) {
         if (orderProductRepository.findById(createRequest.getOrderProductNo()).isEmpty()) {
             throw new OrderProductNotFoundException();
         }
@@ -52,13 +51,12 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
     @Transactional
     @Override
-    public void modifyProductReview(MultipartFile file, ProductReviewRequestDto modifyRequest)
-            throws IOException {
+    public void modifyProductReview(MultipartFile file, ProductReviewRequestDto modifyRequest) {
         ProductReview review = productReviewRepository.findById(modifyRequest.getOrderProductNo())
                 .orElseThrow(ProductReviewNotFoundException::new);
 
         if (!Objects.isNull(review.getImagePath())) {
-            fileUploadUtil.deleteFiles(List.of(review.getImagePath()));
+            fileUploadUtil.cleanUpFiles(List.of(review.getImagePath()));
         }
 
         uploadProductReviewImage(review, file);
@@ -87,8 +85,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .build();
     }
 
-    private void uploadProductReviewImage(ProductReview review, MultipartFile file)
-            throws IOException {
+    private void uploadProductReviewImage(ProductReview review, MultipartFile file) {
         if (!Objects.isNull(file)) {
             String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);
             review.updateImagePath(imagePath);

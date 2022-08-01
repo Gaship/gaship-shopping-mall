@@ -32,7 +32,7 @@ public class ProductReviewController {
     @PostMapping
     public ResponseEntity<Void> productReviewAdd(
             @RequestPart(value = "image", required = false) MultipartFile file,
-            @Valid @RequestPart ProductReviewRequestDto createRequest) throws IOException {
+            @Valid @RequestPart ProductReviewRequestDto createRequest) {
         productReviewService.addProductReview(file, createRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -44,8 +44,7 @@ public class ProductReviewController {
     public ResponseEntity<Void> productReviewModify(
             @RequestPart(value = "image", required = false) MultipartFile file,
             @Valid @RequestPart ProductReviewRequestDto modifyRequest,
-            @PathVariable Integer orderProductNo) throws IOException {
-
+            @PathVariable Integer orderProductNo) {
         productReviewService.modifyProductReview(file, modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
