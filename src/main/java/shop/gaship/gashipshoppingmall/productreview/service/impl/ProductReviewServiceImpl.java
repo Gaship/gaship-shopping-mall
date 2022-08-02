@@ -6,12 +6,20 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
+import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
+import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
+import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewViewRequestDto;
+import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 import shop.gaship.gashipshoppingmall.productreview.event.ProductReviewDeleteEvent;
 import shop.gaship.gashipshoppingmall.productreview.event.ProductReviewSaveEvent;
@@ -33,6 +41,8 @@ public class ProductReviewServiceImpl implements ProductReviewService {
     private static final String REVIEW_DIR = File.separator + "reviews";
     private final ProductReviewRepository productReviewRepository;
     private final OrderProductRepository orderProductRepository;
+    private final ProductRepository productRepository;
+    private final MemberRepository memberRepository;
     private final FileUploadUtil fileUploadUtil;
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -74,6 +84,51 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         productReviewRepository.deleteById(orderProductNo);
 
         applicationEventPublisher.publishEvent(new ProductReviewDeleteEvent(review.getImagePath()));
+    }
+
+    @Override
+    public ProductReviewResponseDto findReview(Integer orderProductNo) {
+        if (orderProductRepository.findById(orderProductNo).isEmpty()) {
+            throw new OrderProductNotFoundException();
+        }
+
+        return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
+                        .orderProductNo(orderProductNo)
+                        .build()
+                ).getContent().get(0);
+    }
+
+    @Override
+    public Page<ProductReviewResponseDto> findReviews(Pageable pageable) {
+        return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
+                        .pageable(pageable)
+                .build());
+    }
+
+    @Override
+    public Page<ProductReviewResponseDto> findReviewsByProductNo(Integer productNo,
+                                                                 Pageable pageable) {
+        if (productRepository.findById(productNo).isEmpty()) {
+            throw new ProductNotFoundException();
+        }
+
+        return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
+                        .productNo(productNo)
+                        .pageable(pageable)
+                .build());
+    }
+
+    @Override
+    public Page<ProductReviewResponseDto> findReviewsByMemberNo(Integer memberNo,
+                                                                Pageable pageable) {
+        if (memberRepository.findById(memberNo).isEmpty()) {
+            throw new MemberNotFoundException();
+        }
+
+        return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
+                        .memberNo(memberNo)
+                        .pageable(pageable)
+                .build());
     }
 
     private ProductReview createProductReview(ProductReviewRequestDto createRequest) {

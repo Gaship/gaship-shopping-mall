@@ -12,11 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
-import shop.gaship.gashipshoppingmall.addresslist.dummy.AddressListDummy;
-import shop.gaship.gashipshoppingmall.addresslist.dummy.NotNullDummy;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
 import shop.gaship.gashipshoppingmall.addresslist.repository.AddressListRepository;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
@@ -30,6 +26,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewViewRequestDto;
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.dummy.ProductReviewDummy;
 import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
@@ -98,14 +95,14 @@ class ProductReviewRepositoryTest {
         );
 
         orderProduct = orderProductRepository.save(
-                OrderProduct.builder()
-                        .product(product)
-                        .order(order)
-                        .orderStatusCode(statusCode)
-                        .warrantyExpirationDate(LocalDate.now())
-                        .amount(10000L)
-                        .build()
-        );
+                    OrderProduct.builder()
+                            .product(product)
+                            .order(order)
+                            .orderStatusCode(statusCode)
+                            .warrantyExpirationDate(LocalDate.now())
+                            .amount(10000L)
+                            .build()
+            );
 
         review = ProductReviewDummy.dummy();
         ReflectionTestUtils.setField(review, "orderProduct", orderProduct);
@@ -153,13 +150,41 @@ class ProductReviewRepositoryTest {
         assertThat(found.get().getStarScore()).isEqualTo(savedReview.getStarScore());
     }
 
+    @DisplayName("상품평 단건조회")
+    @Test
+    void findProductReview() {
+        ProductReview savedReview = productReviewRepository.save(review);
+        ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
+                .productNo(savedReview.getOrderProductNo()).build();
+
+        Page<ProductReviewResponseDto> result =
+                productReviewRepository.findProductReviews(viewRequest);
+
+        assertThat(result).hasSize(1);
+    }
+
     @DisplayName("상품번호로 상품평 다건 조회 테스트")
     @Test
-    void findAllByProductNo() {
+    void findProductReviewsByProductNo() {
         ProductReview savedReview = productReviewRepository.save(review);
+        ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
+                .productNo(savedReview.getOrderProduct().getProduct().getNo()).build();
 
-        Page<ProductReviewResponseDto> result = productReviewRepository.findAllByProductNo(
-                savedReview.getOrderProduct().getProduct().getNo(), PageRequest.of(0, 10));
+        Page<ProductReviewResponseDto> result =
+                productReviewRepository.findProductReviews(viewRequest);
+
+        assertThat(result).hasSize(1);
+    }
+
+    @DisplayName("회원번호로 상품평 다건 조회 테스트")
+    @Test
+    void findProductReviewsByMemberNo() {
+        ProductReview savedReview = productReviewRepository.save(review);
+        ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
+                .productNo(savedReview.getOrderProduct().getOrder().getMember().getMemberNo()).build();
+
+        Page<ProductReviewResponseDto> result =
+                productReviewRepository.findProductReviews(viewRequest);
 
         assertThat(result).hasSize(1);
     }

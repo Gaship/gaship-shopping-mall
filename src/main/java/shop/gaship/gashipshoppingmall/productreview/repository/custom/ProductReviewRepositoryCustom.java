@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.productreview.repository.custom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewViewRequestDto;
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 
 /**
@@ -13,5 +14,5 @@ import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewRe
  */
 @NoRepositoryBean
 public interface ProductReviewRepositoryCustom {
-    Page<ProductReviewResponseDto> findAllByProductNo(Integer productNo, Pageable pageable);
+    Page<ProductReviewResponseDto> findProductReviews(ProductReviewViewRequestDto viewRequest);
 }
