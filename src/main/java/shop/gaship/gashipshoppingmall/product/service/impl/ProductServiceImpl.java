@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.product.service.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +15,8 @@ import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundExcepti
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticRepository;
+import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
+import shop.gaship.gashipshoppingmall.error.FileUploadFailureException;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
@@ -64,11 +65,11 @@ public class ProductServiceImpl implements ProductService {
      *
      * @throws CategoryNotFoundException   카테고리가 존재하지않을경우 발생합니다.
      * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
+     * @throws FileUploadFailureException 파일 저장에 오류가 발생하였을 때 에외를 던집니다.
      */
     @Transactional
     @Override
-    public void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest)
-        throws IOException {
+    public void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest) {
         Category category = categoryRepository.findById(createRequest.getCategoryNo())
             .orElseThrow(CategoryNotFoundException::new);
         StatusCode deliveryType = statusCodeRepository.findById(createRequest.getDeliveryTypeNo())
@@ -115,15 +116,16 @@ public class ProductServiceImpl implements ProductService {
      * @throws ProductNotFoundException    제품이 존재하지않을경우 발생합니다.
      * @throws CategoryNotFoundException   카테고리가 존재하지않을경우 발생합니다.
      * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
+     * @throws FileUploadFailureException 파일 저장에 오류가 발생하였을 때 에외를 던집니다.
+     * @throws FileDeleteFailureException 파일 삭제에 오류가 발생하였을 때 에외를 던집니다.
      */
     @Transactional
     @Override
-    public void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest)
-        throws IOException {
+    public void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest) {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
 
-        fileUploadUtil.deleteFiles(product.getImageLinkList());
+        fileUploadUtil.cleanUpFiles(product.getImageLinkList());
 
         Category category = categoryRepository.findById(modifyRequest.getCategoryNo())
             .orElseThrow(CategoryNotFoundException::new);
