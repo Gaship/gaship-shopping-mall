@@ -8,8 +8,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +21,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
@@ -26,6 +33,8 @@ import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundExcepti
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.AlreadyCompleteInquiryAnswerException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentEmployeeWriterAboutInquiryAnswerException;
@@ -40,10 +49,14 @@ import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
 
 /**
+ * InquiryServiceImpl test
+ *
  * @author : 최겸준
  * @since 1.0
  */
@@ -419,5 +432,127 @@ class InquiryServiceImplTest {
         assertThatThrownBy(() -> inquiryService.deleteInquiryAnswer(1))
             .isInstanceOf(StatusCodeNotFoundException.class)
             .hasMessageContaining(StatusCodeNotFoundException.MESSAGE);
+    }
+
+    @DisplayName("아무조건없는 문의 리스트를 repository에 요청하고 Page 객체를 반환한다.")
+    @Test
+    void findCustomerInquiries() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+        Page<InquiryListResponseDto> page = new PageImpl<>(Collections.EMPTY_LIST, pageRequest, 10);
+        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class), any(InquirySearchRequestDto.class)))
+            .willReturn(page);
+
+        // when then
+        assertThat(inquiryService.findInquiries(pageRequest, Boolean.TRUE))
+            .isEqualTo(page);
+    }
+
+    @DisplayName("요청되는 상태명에 맞게 고객문의 및 상품문의 리스트를 repository에 요청하고 Page 객체를 반환한다.")
+    @Test
+    void findCustomerInquiriesByStatusCodeNo() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+        Page<InquiryListResponseDto> page = new PageImpl<>(Collections.EMPTY_LIST, pageRequest, 10);
+
+        StatusCode statusCode = mock(StatusCode.class);
+        when(statusCode.getStatusCodeNo())
+            .thenReturn(1);
+
+        given(statusCodeRepository.findByStatusCodeName(ProcessStatus.WAITING.getValue()))
+            .willReturn(Optional.ofNullable(statusCode));
+        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class), any(InquirySearchRequestDto.class)))
+            .willReturn(page);
+
+        // when then
+        assertThat(inquiryService.findInquiriesByStatusCodeNo(pageRequest, Boolean.TRUE, ProcessStatus.WAITING.getValue()))
+            .isEqualTo(page);
+    }
+
+    @DisplayName("요청되는 상태명이 잘못들어온경우 StatusCodeNotFoundException 을 발생시킨다.")
+    @Test
+    void findCustomerInquiriesByStatusCodeNo_fail() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+        Page<InquiryListResponseDto> page = new PageImpl<>(Collections.EMPTY_LIST, pageRequest, 10);
+
+        String value = ProcessStatus.WAITING.getValue();
+        given(statusCodeRepository.findByStatusCodeName(value))
+            .willReturn(Optional.empty());
+
+        // when then
+        assertThatThrownBy(
+            () -> inquiryService.findInquiriesByStatusCodeNo(
+                pageRequest, Boolean.TRUE, value))
+            .isInstanceOf(StatusCodeNotFoundException.class)
+                .hasMessageContaining(StatusCodeNotFoundException.MESSAGE);
+    }
+
+    @DisplayName("존재하는 특정 회원번호를 받아서 상품 또는 고객문의 리스트를 repository에 요청하고 Page 객체를 반환한다.")
+    @Test
+    void findCustomerInquiriesByMemberNo() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+        Page<InquiryListResponseDto> page = new PageImpl<>(Collections.EMPTY_LIST, pageRequest, 10);
+
+        given(memberRepository.existsById(anyInt()))
+            .willReturn(Boolean.TRUE);
+        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class), any(InquirySearchRequestDto.class)))
+            .willReturn(page);
+
+        // when then
+        assertThat(inquiryService.findInquiriesByMemberNo(pageRequest, Boolean.TRUE, 1))
+            .isEqualTo(page);
+    }
+
+    @DisplayName("존재하지 않는 특정 회원번호를 받으면 MemberNotFoundException 를 발생시킨다.")
+    @Test
+    void findCustomerInquiriesByMemberNo_fail() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+        Page<InquiryListResponseDto> page = new PageImpl<>(Collections.EMPTY_LIST, pageRequest, 10);
+
+        given(memberRepository.existsById(anyInt()))
+            .willReturn(Boolean.FALSE);
+
+        // when then
+        assertThatThrownBy(
+            () -> inquiryService.findInquiriesByMemberNo(pageRequest, Boolean.TRUE, 1))
+            .isInstanceOf(MemberNotFoundException.class)
+            .hasMessageContaining(MemberNotFoundException.MESSAGE);
+    }
+
+    @DisplayName("존재하는 특정 상품번호를 받아서 상품문의 리스트를 repository에 요청하고 Page 객체를 반환한다.")
+    @Test
+    void findCustomerInquiriesByProductNo() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+        Page<InquiryListResponseDto> page = new PageImpl<>(Collections.EMPTY_LIST, pageRequest, 10);
+
+        given(productRepository.existsById(anyInt()))
+            .willReturn(Boolean.TRUE);
+        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class), any(InquirySearchRequestDto.class)))
+            .willReturn(page);
+
+        // when then
+        assertThat(inquiryService.findInquiriesByProductNo(pageRequest, 1))
+            .isEqualTo(page);
+    }
+
+    @DisplayName("존재하지 않는 상품번호로 요청을 할시에는 ProductNotFoundException 을 발생시킨다.")
+    @Test
+    void findCustomerInquiriesByProductNo_fail() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+        Page<InquiryListResponseDto> page = new PageImpl<>(Collections.EMPTY_LIST, pageRequest, 10);
+
+        given(productRepository.existsById(anyInt()))
+            .willReturn(Boolean.FALSE);
+
+        // when then
+        assertThatThrownBy(
+            () -> inquiryService.findInquiriesByProductNo(pageRequest, 1))
+            .isInstanceOf(ProductNotFoundException.class)
+            .hasMessageContaining(ProductNotFoundException.MESSAGE);
     }
 }
