@@ -302,7 +302,7 @@ class InquiryRepositoryTest {
         inquiry2.addAnswer(inquiryAnswerRequestDto, employee, statusCodeComplete);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -320,8 +320,7 @@ class InquiryRepositoryTest {
         assertThat(pageSize)
             .isEqualTo(pageable.getPageSize());
 
-        assertThat(content.size())
-            .isEqualTo(3);
+        assertThat(content).hasSize(3);
         assertThat(content.get(0).getMemberNickname())
             .isEqualTo("example nickname");
         assertThat(content.get(0).getProcessStatus())
@@ -387,7 +386,7 @@ class InquiryRepositoryTest {
             getInquirySearchRequestDto(false, statusCodeComplete.getStatusCodeNo(), null, null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, inquirySearchRequestDto);
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -405,8 +404,8 @@ class InquiryRepositoryTest {
         assertThat(pageSize)
             .isEqualTo(pageable.getPageSize());
 
-        assertThat(content.size())
-            .isEqualTo(2);
+        assertThat(content)
+            .hasSize(2);
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
@@ -436,7 +435,7 @@ class InquiryRepositoryTest {
             getInquirySearchRequestDto(false, statusCodeHolder.getStatusCodeNo(), null, null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -454,8 +453,8 @@ class InquiryRepositoryTest {
         assertThat(pageSize)
             .isEqualTo(pageable.getPageSize());
 
-        assertThat(content.size())
-            .isEqualTo(3);
+        assertThat(content)
+            .hasSize(3);
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
@@ -483,7 +482,7 @@ class InquiryRepositoryTest {
                 null, member.getMemberNo(), null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -501,8 +500,8 @@ class InquiryRepositoryTest {
         assertThat(pageSize)
             .isEqualTo(pageable.getPageSize());
 
-        assertThat(content.size())
-            .isEqualTo(2);
+        assertThat(content)
+            .hasSize(2);
 
 
         assertThat(content.get(0).getProcessStatus())
@@ -564,7 +563,7 @@ class InquiryRepositoryTest {
         inquiry2.addAnswer(inquiryAnswerRequestDto, employee, statusCodeComplete);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -582,8 +581,8 @@ class InquiryRepositoryTest {
         assertThat(pageSize)
             .isEqualTo(pageable.getPageSize());
 
-        assertThat(content.size())
-            .isEqualTo(3);
+        assertThat(content)
+            .hasSize(3);
         assertThat(content.get(0).getMemberNickname())
             .isEqualTo("example nickname");
         assertThat(content.get(0).getProcessStatus())
@@ -648,7 +647,7 @@ class InquiryRepositoryTest {
             getInquirySearchRequestDto(true, statusCodeComplete.getStatusCodeNo(), null, null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, inquirySearchRequestDto);
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -666,8 +665,8 @@ class InquiryRepositoryTest {
         assertThat(pageSize)
             .isEqualTo(pageable.getPageSize());
 
-        assertThat(content.size())
-            .isEqualTo(2);
+        assertThat(content)
+            .hasSize(2);
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
@@ -697,7 +696,7 @@ class InquiryRepositoryTest {
             getInquirySearchRequestDto(true, statusCodeHolder.getStatusCodeNo(), null, null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -715,8 +714,8 @@ class InquiryRepositoryTest {
         assertThat(pageSize)
             .isEqualTo(pageable.getPageSize());
 
-        assertThat(content.size())
-            .isEqualTo(3);
+        assertThat(content)
+            .hasSize(3);
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
@@ -744,7 +743,7 @@ class InquiryRepositoryTest {
                 null, member.getMemberNo(), null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -762,8 +761,8 @@ class InquiryRepositoryTest {
         assertThat(pageSize)
             .isEqualTo(pageable.getPageSize());
 
-        assertThat(content.size())
-            .isEqualTo(2);
+        assertThat(content)
+            .hasSize(2);
 
 
         assertThat(content.get(0).getProcessStatus())
@@ -795,7 +794,7 @@ class InquiryRepositoryTest {
                 null, null, product.getNo());
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -813,8 +812,8 @@ class InquiryRepositoryTest {
         assertThat(pageSize)
             .isEqualTo(pageable.getPageSize());
 
-        assertThat(content.size())
-            .isEqualTo(2);
+        assertThat(content)
+            .hasSize(2);
 
 
         assertThat(content.get(0).getProcessStatus())
@@ -841,17 +840,13 @@ class InquiryRepositoryTest {
                 null, null, product.getNo());
 
         // when then
-        assertThatThrownBy(() -> inquiryRepository.findAllThroughSearch(pageable, dto))
+        assertThatThrownBy(() -> inquiryRepository.findAllThroughSearchDto(pageable, dto))
             .isInstanceOf(InquirySearchBadRequestException.class)
             .hasMessageContaining(InquirySearchBadRequestException.MESSAGE);
     }
 
     private InquirySearchRequestDto getInquirySearchRequestDto(boolean isProduct, Integer statusCodeNo, Integer memberNo, Integer productNo) {
-        InquirySearchRequestDto dto = new InquirySearchRequestDto();
-        ReflectionTestUtils.setField(dto, "isProduct", isProduct);
-        ReflectionTestUtils.setField(dto, "statusCodeNo", statusCodeNo);
-        ReflectionTestUtils.setField(dto, "memberNo", memberNo);
-        ReflectionTestUtils.setField(dto, "productNo", productNo);
+        InquirySearchRequestDto dto = new InquirySearchRequestDto(isProduct, statusCodeNo, memberNo, productNo);
         return dto;
     }
 }
