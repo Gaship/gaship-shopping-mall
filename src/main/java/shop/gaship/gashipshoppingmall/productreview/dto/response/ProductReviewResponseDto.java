@@ -16,12 +16,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductReviewResponseDto {
     private Integer orderProductNo;
-    private String writerNickName;
+    private String writerNickname;
     private String productName;
     private String title;
     private String content;
     private String imagePath;
-    private byte[] image;
     private Integer starScore;
     private LocalDateTime registerDateTime;
     private LocalDateTime modifyDateTime;

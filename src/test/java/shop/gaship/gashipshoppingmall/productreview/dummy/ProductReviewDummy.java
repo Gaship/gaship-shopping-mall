@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.productreview.dummy;
 
 import java.time.LocalDateTime;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
+import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 
 /**
@@ -38,5 +39,19 @@ public class ProductReviewDummy {
                 .content("수정 상품평 내용")
                 .starScore(3)
                 .build();
+    }
+
+    public static ProductReviewResponseDto responseDummy() {
+        ProductReviewResponseDto responseDto =  new ProductReviewResponseDto();
+        responseDto.setOrderProductNo(1);
+        responseDto.setWriterNickname("닉네임");
+        responseDto.setProductName("상품");
+        responseDto.setTitle("상품평 제목");
+        responseDto.setContent("상품평 내용");
+        responseDto.setImagePath("이미지 경로");
+        responseDto.setStarScore(3);
+        responseDto.setRegisterDateTime(LocalDateTime.now());
+        responseDto.setModifyDateTime(LocalDateTime.now());
+        return responseDto;
     }
 }

@@ -150,17 +150,32 @@ class ProductReviewRepositoryTest {
         assertThat(found.get().getStarScore()).isEqualTo(savedReview.getStarScore());
     }
 
-    @DisplayName("상품평 단건조회")
+    @DisplayName("상품평 단건 조회 테스트")
     @Test
     void findProductReview() {
         ProductReview savedReview = productReviewRepository.save(review);
         ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
-                .productNo(savedReview.getOrderProductNo()).build();
+                .orderProductNo(savedReview.getOrderProductNo()).build();
 
         Page<ProductReviewResponseDto> result =
                 productReviewRepository.findProductReviews(viewRequest);
 
         assertThat(result).hasSize(1);
+        assertProductReviewResponse(result.getContent().get(0));
+    }
+
+    @DisplayName("상품평 전체 조회 테스트")
+    @Test
+    void findProductReviews() {
+        productReviewRepository.save(review);
+        ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
+                .build();
+
+        Page<ProductReviewResponseDto> result =
+                productReviewRepository.findProductReviews(viewRequest);
+
+        assertThat(result).hasSize(1);
+        assertProductReviewResponse(result.getContent().get(0));
     }
 
     @DisplayName("상품번호로 상품평 다건 조회 테스트")
@@ -174,6 +189,7 @@ class ProductReviewRepositoryTest {
                 productReviewRepository.findProductReviews(viewRequest);
 
         assertThat(result).hasSize(1);
+        assertProductReviewResponse(result.getContent().get(0));
     }
 
     @DisplayName("회원번호로 상품평 다건 조회 테스트")
@@ -181,11 +197,24 @@ class ProductReviewRepositoryTest {
     void findProductReviewsByMemberNo() {
         ProductReview savedReview = productReviewRepository.save(review);
         ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
-                .productNo(savedReview.getOrderProduct().getOrder().getMember().getMemberNo()).build();
+                .memberNo(savedReview.getOrderProduct().getOrder().getMember().getMemberNo()).build();
 
         Page<ProductReviewResponseDto> result =
                 productReviewRepository.findProductReviews(viewRequest);
 
         assertThat(result).hasSize(1);
+        assertProductReviewResponse(result.getContent().get(0));
+    }
+
+    private void assertProductReviewResponse(ProductReviewResponseDto responseDto) {
+        assertThat(responseDto.getOrderProductNo()).isEqualTo(orderProduct.getNo());
+        assertThat(responseDto.getWriterNickname()).isEqualTo(orderProduct.getOrder().getMember().getNickname());
+        assertThat(responseDto.getProductName()).isEqualTo(orderProduct.getProduct().getName());
+        assertThat(responseDto.getTitle()).isEqualTo(review.getTitle());
+        assertThat(responseDto.getContent()).isEqualTo(review.getContent());
+        assertThat(responseDto.getStarScore()).isEqualTo(review.getStarScore());
+        assertThat(responseDto.getImagePath()).isEqualTo(review.getImagePath());
+        assertThat(responseDto.getRegisterDateTime()).isNotNull();
+        assertThat(responseDto.getModifyDateTime()).isEqualTo(review.getModifyDatetime());
     }
 }

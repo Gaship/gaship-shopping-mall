@@ -5,7 +5,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.member.entity.QMember;
@@ -45,15 +44,15 @@ public class ProductReviewRepositoryImpl extends QuerydslRepositorySupport
 
         List<ProductReviewResponseDto> content = productReviewQuery(viewRequest)
                 .select(Projections.bean(ProductReviewResponseDto.class,
-                        orderProduct.no,
-                        order.member.nickname,
-                        orderProduct.product.name,
+                        orderProduct.no.as("orderProductNo"),
+                        order.member.nickname.as("writerNickname"),
+                        orderProduct.product.name.as("productName"),
                         review.title,
                         review.content,
                         review.imagePath,
                         review.starScore,
-                        review.registerDatetime,
-                        review.modifyDatetime
+                        review.registerDatetime.as("registerDateTime"),
+                        review.modifyDatetime.as("modifyDateTime")
                 ))
                 .limit(viewRequest.getPageable().getPageSize())
                 .offset(viewRequest.getPageable().getOffset())
@@ -78,10 +77,10 @@ public class ProductReviewRepositoryImpl extends QuerydslRepositorySupport
     }
 
     private BooleanExpression eqProductNo(Integer productNo) {
-        return (productNo != 0) ? review.orderProduct.product.no.eq(productNo) : null;
+        return (productNo != 0) ? product.no.eq(productNo) : null;
     }
 
     private BooleanExpression eqMemberNo(Integer memberNo) {
-        return (memberNo != 0) ? review.orderProduct.order.member.memberNo.eq(memberNo) : null;
+        return (memberNo != 0) ? member.memberNo.eq(memberNo) : null;
     }
 }
