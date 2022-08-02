@@ -15,5 +15,5 @@ import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDt
 @NoRepositoryBean
 public interface InquiryRepositoryCustom {
 
-    Page<InquiryListResponseDto> findAllThroughSearch(Pageable pageable, InquirySearchRequestDto inquirySearchRequestDto);
+    Page<InquiryListResponseDto> findAllThroughSearchDto(Pageable pageable, InquirySearchRequestDto inquirySearchRequestDto);
 }

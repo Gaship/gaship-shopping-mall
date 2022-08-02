@@ -48,7 +48,6 @@ public class PageResponse<T> {
         makePageList(result.getPageable());
     }
 
-
     private void makePageList(Pageable pageable) {
 
         // 0부터 시작하므로 1을 추가
