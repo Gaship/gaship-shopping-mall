@@ -6,16 +6,16 @@ import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.employee.entity.QEmployee;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
-import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryResponseDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.entity.QInquiry;
+import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.InquirySearchBadRequestException;
 import shop.gaship.gashipshoppingmall.inquiry.repository.custom.InquiryRepositoryCustom;
 import shop.gaship.gashipshoppingmall.member.entity.QMember;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
@@ -35,8 +35,8 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport implements 
     }
 
     @Override
-    public Page<InquiryResponseDto> findAllThroughSearch(Pageable pageable,
-                                                         InquirySearchRequestDto dto) {
+    public Page<InquiryListResponseDto> findAllThroughSearch(Pageable pageable,
+                                                             InquirySearchRequestDto dto) {
         QInquiry qInquiry = QInquiry.inquiry;
         QMember qMember = QMember.member;
         QEmployee qEmployee = QEmployee.employee;
@@ -50,40 +50,46 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport implements 
         setBuilder(dto, qInquiry, builder);
 
         query
-            .offset(pageable.getPageNumber())
+            .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .orderBy(qInquiry.inquiryNo.desc())
             .where(builder);
 
-        List<InquiryResponseDto> content = query.fetch();
+        List<InquiryListResponseDto> content = query.fetch();
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> getQueryFrom(qInquiry, qMember, qEmployee, qStatusCode, qProduct)
-            .where(builder).fetch().size());
+        Page<InquiryListResponseDto> page = PageableExecutionUtils.getPage(
+            content, pageable, () -> from(qInquiry).where(builder).fetch().size());
+        return page;
     }
 
     private JPQLQuery<Inquiry> getQueryFrom(QInquiry qInquiry, QMember qMember, QEmployee qEmployee,
                                         QStatusCode qStatusCode, QProduct qProduct) {
         return from(qInquiry)
             .innerJoin(qInquiry.member, qMember)
-            .innerJoin(qInquiry.processStatusCode, qStatusCode)
-            .leftJoin(qInquiry.employee, qEmployee)
-            .leftJoin(qInquiry.product, qProduct);
+            .innerJoin(qInquiry.processStatusCode, qStatusCode);
+//            .leftJoin(qInquiry.employee, qEmployee)
+//            .leftJoin(qInquiry.product, qProduct);
     }
 
     private void setQuerySelect(QInquiry qInquiry, QMember qMember, QEmployee qEmployee,
                                 QStatusCode qStatusCode, QProduct qProduct, JPQLQuery query) {
-        query.select(Projections.fields(InquiryResponseDto.class,
+        // 관리자페이지 고객문의, 상품상세페이지 상품문의
+        // 제목                   답변상태        작성자     작성시간
+        // 비밀번호를까먹었어요       답변대기        강한남자    2022-04-20T20:30:21.39
+        // 침대가 고장난거같아요      답변완료        침대남     2022-04-20T20:30:21.39
+        query.select(Projections.fields(InquiryListResponseDto.class,
                     qInquiry.inquiryNo,
                     qMember.nickname.as("memberNickname"),
-                    qEmployee.name.as("employeeName"),
                     qStatusCode.statusCodeName.as("processStatus"),
-                    qProduct.name.as("productName"),
                     qInquiry.title,
-                    qInquiry.inquiryContent,
-                    qInquiry.registerDatetime,
-                    qInquiry.answerContent,
-                    qInquiry.answerRegisterDatetime,
-                    qInquiry.answerModifyDatetime));
+                    qInquiry.registerDatetime));
+
+//                    qEmployee.name.as("employeeName"),
+//                    qInquiry.inquiryContent,
+//                    qProduct.name.as("productName"),
+//                    qInquiry.answerContent,
+//                    qInquiry.answerRegisterDatetime,
+//                    qInquiry.answerModifyDatetime
     }
 
     private void setBuilder(InquirySearchRequestDto dto,
@@ -92,14 +98,28 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport implements 
             builder.and(qInquiry.member.memberNo.eq(dto.getMemberNo()));
         }
 
-        if (Objects.nonNull(dto.getStatus())) {
-            builder.and(qInquiry.processStatusCode.statusCodeName.eq(dto.getStatus()));
+        if (Objects.nonNull(dto.getStatusCodeNo())) {
+            builder.and(qInquiry.processStatusCode.statusCodeNo.eq(dto.getStatusCodeNo()));
         }
 
-        if (Objects.nonNull(dto.getProductNo())) {
+        if (isProductFalseAndProductNoExists(dto)) {
+            throw new InquirySearchBadRequestException();
+        }
+
+        if (isSearchByProductNo(dto)) {
             builder.and(qInquiry.product.no.eq(dto.getProductNo()));
         }
 
         builder.and(qInquiry.isProduct.eq(dto.getIsProduct()));
+    }
+
+    private boolean isProductFalseAndProductNoExists(InquirySearchRequestDto dto) {
+        return Boolean.FALSE.equals(dto.getIsProduct())
+            && Objects.nonNull(dto.getProductNo());
+    }
+
+    private boolean isSearchByProductNo(InquirySearchRequestDto dto) {
+        return Boolean.TRUE.equals(dto.getIsProduct())
+            && Objects.nonNull(dto.getProductNo());
     }
 }
