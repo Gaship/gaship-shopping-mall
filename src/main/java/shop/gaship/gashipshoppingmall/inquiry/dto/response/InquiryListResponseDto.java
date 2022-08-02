@@ -10,18 +10,18 @@ import lombok.Getter;
  * @since 1.0
  */
 @Getter
-public class InquiryResponseDto {
+public class InquiryListResponseDto {
 
     private Integer inquiryNo;
     private String memberNickname;
-    private String employeeName;
     private String processStatus;
-    private String productName;
-
     private String title;
-    private String inquiryContent;
     private LocalDateTime registerDatetime;
-    private String answerContent;
-    private LocalDateTime answerRegisterDatetime;
-    private LocalDateTime answerModifyDatetime;
+
+//    private String productName;
+//    private String employeeName;
+//    private String inquiryContent;
+//    private String answerContent;
+//    private LocalDateTime answerRegisterDatetime;
+//    private LocalDateTime answerModifyDatetime;
 }

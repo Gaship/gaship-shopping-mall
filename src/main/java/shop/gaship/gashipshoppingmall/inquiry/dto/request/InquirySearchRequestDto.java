@@ -14,7 +14,7 @@ public class InquirySearchRequestDto {
 
     @NotNull
     private Boolean isProduct;
-    private String status;
+    private Integer statusCodeNo;
     private Integer memberNo;
     private Integer productNo;
 }
