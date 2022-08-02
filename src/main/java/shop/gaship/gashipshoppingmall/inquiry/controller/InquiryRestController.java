@@ -113,6 +113,14 @@ public class InquiryRestController {
     @GetMapping(value = "/customer-inquiries")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryList(Pageable pageable) {
         PageResponse<InquiryListResponseDto> pageResponse =
+            new PageResponse<>(inquiryService.findInquiries(pageable, Boolean.FALSE));
+
+        return ResponseEntity.ok(pageResponse);
+    }
+
+    @GetMapping(value = "/product-inquiries")
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryList(Pageable pageable) {
+        PageResponse<InquiryListResponseDto> pageResponse =
             new PageResponse<>(inquiryService.findInquiries(pageable, Boolean.TRUE));
 
         return ResponseEntity.ok(pageResponse);
