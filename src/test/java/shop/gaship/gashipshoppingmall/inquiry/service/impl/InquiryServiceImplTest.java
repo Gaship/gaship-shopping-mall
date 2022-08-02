@@ -176,6 +176,7 @@ class InquiryServiceImplTest {
     void addInquiryAnswer_success() {
         // given
         Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
+        ReflectionTestUtils.setField(inquiry, "inquiryNo", 1);
 
         given(inquiryRepository.findById(anyInt()))
             .willReturn(Optional.ofNullable(inquiry));
@@ -208,6 +209,7 @@ class InquiryServiceImplTest {
     void addInquiryAnswer_fail_AlreadyCompleteInquiryAnswerException() {
         // given
         Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeCompleteDummy());
+        ReflectionTestUtils.setField(inquiry, "inquiryNo", 1);
 
         given(inquiryRepository.findById(anyInt()))
             .willReturn(Optional.ofNullable(inquiry));
@@ -218,6 +220,7 @@ class InquiryServiceImplTest {
         given(statusCodeRepository.findByStatusCodeName(anyString()))
             .willReturn(Optional.ofNullable(InquiryDummy.statusCodeHolderDummy()));
 
+
         // when then
         assertThatThrownBy(() -> inquiryService.addInquiryAnswer(inquiryAnswerRequestDto))
             .isInstanceOf(AlreadyCompleteInquiryAnswerException.class)
@@ -226,7 +229,7 @@ class InquiryServiceImplTest {
 
     @DisplayName("답변을 등록하고 실제 답변이 등록되어 있지않았지만(답변대기) 직원번호가 잘못온경우 EmployeeNotFoundException이 발생한다.")
     @Test
-    void addInquiryAnswer_fail_EmployeeNotFoundException이() {
+    void addInquiryAnswer_fail_EmployeeNotFoundException() {
         // given
         Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
 
@@ -268,6 +271,7 @@ class InquiryServiceImplTest {
     void modifyInquiryAnswer_success() {
         // given
         Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeCompleteDummy());
+        ReflectionTestUtils.setField(inquiry, "inquiryNo", 1);
 
         Employee employee = EmployeeDummy.dummy();
         ReflectionTestUtils.setField(employee, "employeeNo", 1);
@@ -302,6 +306,7 @@ class InquiryServiceImplTest {
     void modifyInquiryAnswer_fail_NoRegisteredAnswerException() {
         // given
         Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
+        ReflectionTestUtils.setField(inquiry, "inquiryNo", 1);
 
         Employee employee = EmployeeDummy.dummy();
         ReflectionTestUtils.setField(employee, "employeeNo", 1);
@@ -321,6 +326,7 @@ class InquiryServiceImplTest {
     void modifyInquiryAnswer_fail_DifferentEmployeeWriterAboutInquiryAnswerException() {
         // given
         Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
+        ReflectionTestUtils.setField(inquiry, "inquiryNo", 1);
 
         Employee employee = EmployeeDummy.dummy();
         ReflectionTestUtils.setField(employee, "employeeNo", 252123);
@@ -345,6 +351,7 @@ class InquiryServiceImplTest {
     @Test
     void deleteAnswerInquiry_success() {
         Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeCompleteDummy());
+        ReflectionTestUtils.setField(inquiry, "inquiryNo", 1);
 
         given(inquiryRepository.findById(anyInt()))
             .willReturn(Optional.ofNullable(inquiry));
@@ -374,6 +381,7 @@ class InquiryServiceImplTest {
     @Test
     void deleteAnswerInquiry_fail_NoRegisteredAnswerException() {
         Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
+        ReflectionTestUtils.setField(inquiry, "inquiryNo", 1);
 
         given(inquiryRepository.findById(anyInt()))
             .willReturn(Optional.ofNullable(inquiry));
