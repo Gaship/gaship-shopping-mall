@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.data.redis.connection.ReactiveStreamCommands.AddStreamRecord.body;
@@ -556,10 +557,12 @@ class InquiryRestControllerTest {
         list.add(customerInquiryBeautiful);
 
         Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
-        given(inquiryService.findInquiries(any(), any()))
+        given(inquiryService.findInquiries(any(Pageable.class), anyBoolean()))
             .willReturn(page);
 
-        mvc.perform(get("/api/inquiries/customer-inquiries?page=0&size=5")
+        mvc.perform(get("/api/inquiries/customer-inquiries")
+                .queryParam("page", "0")
+                .queryParam("size", "5")
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content[0].inquiryNo").value(customerInquiryPasswordDto.getInquiryNo()))
@@ -573,6 +576,50 @@ class InquiryRestControllerTest {
             .andExpect(jsonPath("$.page").value(0))
             .andExpect(jsonPath("$.size").value(5));
 
-        verify(inquiryService).findInquiries(any(Pageable.class), anyBoolean());
+        verify(inquiryService).findInquiries(any(Pageable.class), eq(false));
+    }
+
+    @DisplayName("상품문의 목록을 요청받았을시에 PageResponse 객체를 body에 담아서 ResponseEntity를 반환한다. status : 200")
+    @Test
+    void productInquiryList() throws Exception {
+        List<InquiryListResponseDto> list = new ArrayList<>();
+        InquiryListResponseDto customerInquiryPasswordDto = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "inquiryNo", 1);
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "memberNickname", "홍길동");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "processStatus", "답변대기");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "title", "비밀번호를 까먹었어요..");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "registerDatetime", LocalDateTime.now());
+
+        InquiryListResponseDto customerInquiryBeautiful = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "inquiryNo", 2);
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "memberNickname", "이순신");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "processStatus", "답변완료");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "title", "이 사이트는 왜이렇게 이쁘나요?");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "registerDatetime", LocalDateTime.now());
+
+        list.add(customerInquiryPasswordDto);
+        list.add(customerInquiryBeautiful);
+
+        Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
+        given(inquiryService.findInquiries(any(Pageable.class), anyBoolean()))
+            .willReturn(page);
+
+        mvc.perform(get("/api/inquiries/product-inquiries")
+                .queryParam("page", "0")
+                .queryParam("size", "5")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].inquiryNo").value(customerInquiryPasswordDto.getInquiryNo()))
+            .andExpect(jsonPath("$.content[0].memberNickname").value(customerInquiryPasswordDto.getMemberNickname()))
+            .andExpect(jsonPath("$.content[0].processStatus").value(customerInquiryPasswordDto.getProcessStatus()))
+            .andExpect(jsonPath("$.content[0].title").value(customerInquiryPasswordDto.getTitle()))
+            .andExpect(jsonPath("$.content[1].inquiryNo").value(customerInquiryBeautiful.getInquiryNo()))
+            .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
+            .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
+            .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
+            .andExpect(jsonPath("$.page").value(0))
+            .andExpect(jsonPath("$.size").value(5));
+
+        verify(inquiryService).findInquiries(any(Pageable.class), eq(true));
     }
 }
