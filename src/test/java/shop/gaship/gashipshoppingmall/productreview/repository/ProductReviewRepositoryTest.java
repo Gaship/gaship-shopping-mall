@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.productreview.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.addresslist.dummy.AddressListDummy;
 import shop.gaship.gashipshoppingmall.addresslist.dummy.NotNullDummy;
@@ -26,6 +30,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.dummy.ProductReviewDummy;
 import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -109,6 +114,8 @@ class ProductReviewRepositoryTest {
     @DisplayName("상품평 레퍼지토리 저장 테스트")
     @Test
     void saveTest() {
+        ReflectionTestUtils.setField(review, "modifyDatetime", LocalDateTime.now());
+
         ProductReview savedReview = productReviewRepository.save(review);
 
         assertThat(savedReview.getOrderProductNo()).isEqualTo(review.getOrderProductNo());
@@ -116,6 +123,8 @@ class ProductReviewRepositoryTest {
         assertThat(savedReview.getContent()).isEqualTo(review.getContent());
         assertThat(savedReview.getImagePath()).isEqualTo(review.getImagePath());
         assertThat(savedReview.getStarScore()).isEqualTo(review.getStarScore());
+        assertThat(savedReview.getRegisterDatetime()).isNotNull();
+        assertThat(savedReview.getModifyDatetime()).isNotNull();
     }
 
     @DisplayName("상품평 레퍼지토리 삭제 테스트")
@@ -142,5 +151,16 @@ class ProductReviewRepositoryTest {
         assertThat(found.get().getContent()).isEqualTo(savedReview.getContent());
         assertThat(found.get().getImagePath()).isEqualTo(savedReview.getImagePath());
         assertThat(found.get().getStarScore()).isEqualTo(savedReview.getStarScore());
+    }
+
+    @DisplayName("상품번호로 상품평 다건 조회 테스트")
+    @Test
+    void findAllByProductNo() {
+        ProductReview savedReview = productReviewRepository.save(review);
+
+        Page<ProductReviewResponseDto> result = productReviewRepository.findAllByProductNo(
+                savedReview.getOrderProduct().getProduct().getNo(), PageRequest.of(0, 10));
+
+        assertThat(result).hasSize(1);
     }
 }

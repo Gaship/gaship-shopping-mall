@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.productreview.dummy;
 
+import java.time.LocalDateTime;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
 import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 
@@ -17,6 +18,7 @@ public class ProductReviewDummy {
                 .content("상품평 내용")
                 .imagePath("이미지 경로")
                 .starScore(5)
+                .registerDatetime(LocalDateTime.now())
                 .build();
     }
 

@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.productreview.service.impl;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -81,6 +82,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .title(createRequest.getTitle())
                 .content(createRequest.getContent())
                 .starScore(createRequest.getStarScore())
+                .registerDatetime(LocalDateTime.now())
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.productreview.entity;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,7 +11,6 @@ import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.gaship.gashipshoppingmall.member.entity.BaseEntity;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 
 /**
@@ -23,9 +23,8 @@ import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 @NoArgsConstructor
 @Entity
 @Table(name = "product_reviews")
-public class ProductReview extends BaseEntity {
+public class ProductReview {
     @Id
-    @Column(name = "order_product_no")
     private Integer orderProductNo;
 
     @OneToOne
@@ -41,22 +40,28 @@ public class ProductReview extends BaseEntity {
 
     private Integer starScore;
 
+    private LocalDateTime registerDatetime;
+
+    private LocalDateTime modifyDatetime;
+
     @Builder
     public ProductReview(Integer orderProductNo,
                          OrderProduct orderProduct, String title, String content,
-                         String imagePath, Integer starScore) {
+                         String imagePath, Integer starScore, LocalDateTime registerDatetime) {
         this.orderProductNo = orderProductNo;
         this.orderProduct = orderProduct;
         this.title = title;
         this.content = content;
         this.imagePath = imagePath;
         this.starScore = starScore;
+        this.registerDatetime = registerDatetime;
     }
 
     public void updateProductReview(String title, String content, Integer starScore) {
         this.title = title;
         this.content = content;
         this.starScore = starScore;
+        this.modifyDatetime = LocalDateTime.now();
     }
 
     public void updateImagePath(String imagePath) {
