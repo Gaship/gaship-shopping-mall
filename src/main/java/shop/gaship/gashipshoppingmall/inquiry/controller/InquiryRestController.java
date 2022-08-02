@@ -4,6 +4,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 문의에 대한 요청을 담당하는 controller입니다.
@@ -101,14 +104,17 @@ public class InquiryRestController {
     }
 
     /**
-     * 문의상태를 통해서 문의들을 조회하는 기능입니다.
+     * 문의상태를 통해서 문의들을 조회하는 요청을 처리하는 기능입니다.
      *
+     * @return response entity
      * @return response entity
      * @author 최겸준
      */
-    @GetMapping(value = "/customer")
-    public ResponseEntity<InquiryAddRequestDto> customerInquiryList(Pageable pageable) {
+    @GetMapping(value = "/customer-inquiries")
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryList(Pageable pageable) {
+        PageResponse<InquiryListResponseDto> pageResponse =
+            new PageResponse<>(inquiryService.findInquiries(pageable, Boolean.TRUE));
 
-        return null;
+        return ResponseEntity.ok(pageResponse);
     }
 }
