@@ -119,10 +119,6 @@ public class InquiryServiceImpl implements InquiryService {
             inquiryRepository.findById(inquiryAnswerRequestDto.getInquiryNo()).orElseThrow(
                 InquiryNotFoundException::new);
 
-        if (!Objects.equals(inquiryAnswerRequestDto.getEmployeeNo(), inquiry.getEmployee().getEmployeeNo())) {
-            throw new DifferentEmployeeWriterAboutInquiryAnswerException();
-        }
-
         inquiry.modifyAnswer(inquiryAnswerRequestDto);
     }
 
@@ -146,6 +142,6 @@ public class InquiryServiceImpl implements InquiryService {
             statusCodeRepository.findByStatusCodeName(ProcessStatus.WAITING.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
 
-        inquiry.deleteAnswer(processStatusCode);
+        inquiry.deleteAnswer(processStatusCode, inquiryNo);
     }
 }
