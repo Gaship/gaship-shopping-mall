@@ -2,28 +2,42 @@ package shop.gaship.gashipshoppingmall.inquiry.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.data.redis.connection.ReactiveStreamCommands.AddStreamRecord.body;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 
 /**
@@ -518,5 +532,47 @@ class InquiryRestControllerTest {
             .andExpect(status().isOk());
 
         verify(inquiryService).deleteInquiryAnswer(anyInt());
+    }
+
+    @DisplayName("고객문의 목록을 요청받았을시에 PageResponse 객체를 body에 담아서 ResponseEntity를 반환한다. status : 200")
+    @Test
+    void customerInquiryList() throws Exception {
+        List<InquiryListResponseDto> list = new ArrayList<>();
+        InquiryListResponseDto customerInquiryPasswordDto = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "inquiryNo", 1);
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "memberNickname", "홍길동");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "processStatus", "답변대기");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "title", "비밀번호를 까먹었어요..");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "registerDatetime", LocalDateTime.now());
+
+        InquiryListResponseDto customerInquiryBeautiful = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "inquiryNo", 2);
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "memberNickname", "이순신");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "processStatus", "답변완료");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "title", "이 사이트는 왜이렇게 이쁘나요?");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "registerDatetime", LocalDateTime.now());
+
+        list.add(customerInquiryPasswordDto);
+        list.add(customerInquiryBeautiful);
+
+        Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
+        given(inquiryService.findInquiries(any(), any()))
+            .willReturn(page);
+
+        mvc.perform(get("/api/inquiries/customer-inquiries?page=0&size=5")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].inquiryNo").value(customerInquiryPasswordDto.getInquiryNo()))
+            .andExpect(jsonPath("$.content[0].memberNickname").value(customerInquiryPasswordDto.getMemberNickname()))
+            .andExpect(jsonPath("$.content[0].processStatus").value(customerInquiryPasswordDto.getProcessStatus()))
+            .andExpect(jsonPath("$.content[0].title").value(customerInquiryPasswordDto.getTitle()))
+            .andExpect(jsonPath("$.content[1].inquiryNo").value(customerInquiryBeautiful.getInquiryNo()))
+            .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
+            .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
+            .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
+            .andExpect(jsonPath("$.page").value(0))
+            .andExpect(jsonPath("$.size").value(5));
+
+        verify(inquiryService).findInquiries(any(Pageable.class), anyBoolean());
     }
 }
