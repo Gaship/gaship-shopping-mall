@@ -21,6 +21,8 @@ import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.exception.AlreadyCompleteInquiryAnswerException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentEmployeeWriterAboutInquiryAnswerException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentInquiryException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.NoRegisteredAnswerException;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
@@ -45,16 +47,16 @@ public class Inquiry {
     @Column(name = "inquiry_no")
     private Integer inquiryNo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no", nullable = false)
     @NotNull
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_no")
     private Employee employee;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "process_status_no", nullable = false)
     @NotNull
     private StatusCode processStatusCode;
@@ -159,20 +161,24 @@ public class Inquiry {
     /**
      * 문의 답변을 추가하는 기능입니다.
      *
-     * @param inquiryAnswerAddRequestDto 문의 답변 추가에 필요한 정보를 담고 있는 DTO 객체입니다.
+     * @param inquiryAnswerRequestDto 문의 답변 추가에 필요한 정보를 담고 있는 DTO 객체입니다.
      * @param employee                   답변을 등록하려는 사원의 영속화된 entity입니다.
      * @param processStatusCode 처리상태정보를 담고있는 상태코드객체입니다.
      * @author 최겸준
      */
-    public void addAnswer(InquiryAnswerRequestDto inquiryAnswerAddRequestDto, Employee employee,
+    public void addAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto, Employee employee,
                           StatusCode processStatusCode) {
+        if (!inquiryAnswerRequestDto.getInquiryNo().equals(this.inquiryNo)) {
+            throw new DifferentInquiryException();
+        }
+
         if (Objects.equals(this.processStatusCode.getStatusCodeName(),
             ProcessStatus.COMPLETE.getValue())) {
             throw new AlreadyCompleteInquiryAnswerException();
         }
 
         this.employee = employee;
-        this.answerContent = inquiryAnswerAddRequestDto.getAnswerContent();
+        this.answerContent = inquiryAnswerRequestDto.getAnswerContent();
         this.answerRegisterDatetime = LocalDateTime.now();
         this.processStatusCode = processStatusCode;
     }
@@ -180,16 +186,24 @@ public class Inquiry {
     /**
      * 문의 답변을 수정하는 기능입니다.
      *
-     * @param inquiryAnswerAddRequestDto 문의 답변 추가에 필요한 정보를 담고 있는 DTO 객체입니다.
+     * @param inquiryAnswerRequestDto 문의 답변 추가에 필요한 정보를 담고 있는 DTO 객체입니다.
      * @author 최겸준
      */
-    public void modifyAnswer(InquiryAnswerRequestDto inquiryAnswerAddRequestDto) {
+    public void modifyAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto) {
+        if (!inquiryAnswerRequestDto.getInquiryNo().equals(this.inquiryNo)) {
+            throw new DifferentInquiryException();
+        }
+
+        if (!Objects.equals(inquiryAnswerRequestDto.getEmployeeNo(), this.employee.getEmployeeNo())) {
+            throw new DifferentEmployeeWriterAboutInquiryAnswerException();
+        }
+
         if (Objects.equals(this.processStatusCode.getStatusCodeName(),
             ProcessStatus.WAITING.getValue())) {
             throw new NoRegisteredAnswerException();
         }
 
-        this.answerContent = inquiryAnswerAddRequestDto.getAnswerContent();
+        this.answerContent = inquiryAnswerRequestDto.getAnswerContent();
         this.answerModifyDatetime = LocalDateTime.now();
     }
 
@@ -198,10 +212,15 @@ public class Inquiry {
      * 정확하게는 테이블의 컬럼을 수정하는 용도입니다.
      *
      * @param processStatusCode 답변삭제시 답변완료상태에서 답변대기상태로 변경되어야하는데 해당 정보를 담고있는 상태코드입니다.
+     * @param inquiryNo
      * @author 최겸준
      */
     public void deleteAnswer(
-        StatusCode processStatusCode) {
+        StatusCode processStatusCode, Integer inquiryNo) {
+        if (!Objects.equals(inquiryNo, this.inquiryNo)) {
+            throw new DifferentInquiryException();
+        }
+
         if (Objects.equals(this.processStatusCode.getStatusCodeName(),
             ProcessStatus.WAITING.getValue())) {
             throw new NoRegisteredAnswerException();
