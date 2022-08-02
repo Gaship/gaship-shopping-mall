@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,15 +19,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.dayLabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
-import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryResponseDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.InquirySearchBadRequestException;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
@@ -36,7 +35,6 @@ import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
-import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
 
 /**
  * repository test
@@ -65,7 +63,6 @@ class InquiryRepositoryTest {
     private Member member;
 
     private Product product;
-
 
     @BeforeEach
     void setUp() {
@@ -305,8 +302,8 @@ class InquiryRepositoryTest {
         inquiry2.addAnswer(inquiryAnswerRequestDto, employee, statusCodeComplete);
 
         // when
-        Page<InquiryResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
-        List<InquiryResponseDto> content = page.getContent();
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
         int totalPages = page.getTotalPages();
@@ -327,40 +324,19 @@ class InquiryRepositoryTest {
             .isEqualTo(3);
         assertThat(content.get(0).getMemberNickname())
             .isEqualTo("example nickname");
-        assertThat(content.get(0).getEmployeeName())
-            .isEqualTo("잠온다");
         assertThat(content.get(0).getProcessStatus())
             .isEqualTo("답변완료");
-        assertThat(content.get(0).getProductName())
-            .isNull();
 
         assertThat(content.get(0).getTitle())
             .isEqualTo("1번째 고객문의제목");
-        assertThat(content.get(0).getInquiryContent())
-            .isEqualTo("1번째 고객문의내용");
-        assertThat(content.get(0).getAnswerContent())
-            .isEqualTo("4번문의 답변입니다.");
-        assertThat(content.get(0).getAnswerRegisterDatetime())
-            .isNotNull();
 
         for (int i = 1; i < 3; i++) {
             assertThat(content.get(i).getMemberNickname())
                 .isEqualTo("example nickname");
-            assertThat(content.get(i).getEmployeeName())
-                .isNull();
             assertThat(content.get(i).getProcessStatus())
                 .isEqualTo("답변대기");
-            assertThat(content.get(i).getProductName())
-                .isNull();
-
             assertThat(content.get(i).getTitle())
                 .isEqualTo("1번째 고객문의제목");
-            assertThat(content.get(i).getInquiryContent())
-                .isEqualTo("1번째 고객문의내용");
-            assertThat(content.get(i).getAnswerContent())
-                .isNull();
-            assertThat(content.get(i).getAnswerModifyDatetime())
-                .isNull();
         }
     }
 
@@ -408,11 +384,11 @@ class InquiryRepositoryTest {
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
         InquirySearchRequestDto inquirySearchRequestDto =
-            getInquirySearchRequestDto(false, ProcessStatus.COMPLETE.getValue(), null, null);
+            getInquirySearchRequestDto(false, statusCodeComplete.getStatusCodeNo(), null, null);
 
         // when
-        Page<InquiryResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, inquirySearchRequestDto);
-        List<InquiryResponseDto> content = page.getContent();
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, inquirySearchRequestDto);
+        List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
         int totalPages = page.getTotalPages();
@@ -435,21 +411,10 @@ class InquiryRepositoryTest {
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
                 .isEqualTo("example nickname");
-            assertThat(inquiryDto.getEmployeeName())
-                .isEqualTo("잠온다");
             assertThat(inquiryDto.getProcessStatus())
                 .isEqualTo("답변완료");
-            assertThat(inquiryDto.getProductName())
-                .isNull();
-
             assertThat(inquiryDto.getTitle())
                 .isEqualTo("1번째 고객문의제목");
-            assertThat(inquiryDto.getInquiryContent())
-                .isEqualTo("1번째 고객문의내용");
-            assertThat(inquiryDto.getAnswerContent())
-                .isEqualTo("1번문의 답변입니다.");
-            assertThat(inquiryDto.getAnswerRegisterDatetime())
-                .isNotNull();
         });
     }
 
@@ -468,11 +433,11 @@ class InquiryRepositoryTest {
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
         InquirySearchRequestDto dto =
-            getInquirySearchRequestDto(false, ProcessStatus.WAITING.getValue(), null, null);
+            getInquirySearchRequestDto(false, statusCodeHolder.getStatusCodeNo(), null, null);
 
         // when
-        Page<InquiryResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
-        List<InquiryResponseDto> content = page.getContent();
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
         int totalPages = page.getTotalPages();
@@ -495,21 +460,11 @@ class InquiryRepositoryTest {
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
                 .isEqualTo("example nickname");
-            assertThat(inquiryDto.getEmployeeName())
-                .isNull();
             assertThat(inquiryDto.getProcessStatus())
                 .isEqualTo("답변대기");
-            assertThat(inquiryDto.getProductName())
-                .isNull();
 
             assertThat(inquiryDto.getTitle())
                 .isEqualTo("1번째 고객문의제목");
-            assertThat(inquiryDto.getInquiryContent())
-                .isEqualTo("1번째 고객문의내용");
-            assertThat(inquiryDto.getAnswerContent())
-                .isNull();
-            assertThat(inquiryDto.getAnswerModifyDatetime())
-                .isNull();
         });
     }
 
@@ -528,8 +483,8 @@ class InquiryRepositoryTest {
                 null, member.getMemberNo(), null);
 
         // when
-        Page<InquiryResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
-        List<InquiryResponseDto> content = page.getContent();
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
         int totalPages = page.getTotalPages();
@@ -558,19 +513,8 @@ class InquiryRepositoryTest {
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
                 .isEqualTo("example nickname");
-            assertThat(inquiryDto.getEmployeeName())
-                .isNull();
-            assertThat(inquiryDto.getProductName())
-                .isNull();
-
             assertThat(inquiryDto.getTitle())
                 .isEqualTo("1번째 고객문의제목");
-            assertThat(inquiryDto.getInquiryContent())
-                .isEqualTo("1번째 고객문의내용");
-            assertThat(inquiryDto.getAnswerContent())
-                .isNull();
-            assertThat(inquiryDto.getAnswerModifyDatetime())
-                .isNull();
         });
     }
 
@@ -620,8 +564,8 @@ class InquiryRepositoryTest {
         inquiry2.addAnswer(inquiryAnswerRequestDto, employee, statusCodeComplete);
 
         // when
-        Page<InquiryResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
-        List<InquiryResponseDto> content = page.getContent();
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
         int totalPages = page.getTotalPages();
@@ -642,53 +586,270 @@ class InquiryRepositoryTest {
             .isEqualTo(3);
         assertThat(content.get(0).getMemberNickname())
             .isEqualTo("example nickname");
-        assertThat(content.get(0).getEmployeeName())
-            .isEqualTo("잠온다");
         assertThat(content.get(0).getProcessStatus())
             .isEqualTo("답변완료");
-        assertThat(content.get(0).getProductName())
-            .isEqualTo("상품");
-
         assertThat(content.get(0).getTitle())
             .isEqualTo("2번째 상품문의제목");
-        assertThat(content.get(0).getInquiryContent())
-            .isEqualTo("2번째 상품문의내용");
-        assertThat(content.get(0).getAnswerContent())
-            .isEqualTo("4번문의 답변입니다.");
-        assertThat(content.get(0).getAnswerRegisterDatetime())
-            .isNotNull();
 
         for (int i = 1; i < 3; i++) {
             assertThat(content.get(i).getMemberNickname())
                 .isEqualTo("example nickname");
-            assertThat(content.get(i).getEmployeeName())
-                .isNull();
             assertThat(content.get(i).getProcessStatus())
                 .isEqualTo("답변대기");
-            assertThat(content.get(i).getProductName())
-                .isEqualTo("상품");
-
             assertThat(content.get(i).getTitle())
                 .isEqualTo("2번째 상품문의제목");
-            assertThat(content.get(i).getInquiryContent())
-                .isEqualTo("2번째 상품문의내용");
-            assertThat(content.get(i).getAnswerContent())
-                .isNull();
-            assertThat(content.get(i).getAnswerModifyDatetime())
-                .isNull();
         }
     }
 
-//    @DisplayName("상품문의리스트 답변완료조회에 대해서 List<InquiryResponseDto>를(내부값 2개) content로 가지는 PageImpl 객체가 잘 넘어온다.(limit 3, offset 0, 최신순)")
-//    @DisplayName("상품문의리스트 답변대기조회에 대해서 List<InquiryResponseDto>를(내부값 2개) content로 가지는 PageImpl 객체가 잘 넘어온다.(limit 3, offset 0, 최신순)")
-//    @DisplayName("상품문의리스트 특정회원에 대해서 List<InquiryResponseDto>를(내부값 2개) content로 가지는 PageImpl 객체가 잘 넘어온다.(limit 3, offset 0, 최신순)")
-//    @DisplayName("상품문의리스트 특정상품에 대해서 List<InquiryResponseDto>를(내부값 2개) content로 가지는 PageImpl 객체가 잘 넘어온다.(limit 3, offset 0, 최신순)")
+    @DisplayName("상품문의리스트 답변완료조회에 대해서 List<InquiryResponseDto>를(내부값 2개) content로 가지는 PageImpl 객체가 잘 넘어온다.(limit 3, offset 0, 최신순)")
+    @Test
+    void findAllThroughSearch_product_complete() {
+        // given
+        Inquiry inquiry = InquiryDummy.productDummy(statusCodeHolder);
+        inquiry.addMember(member);
+        inquiryRepository.save(inquiry);
+
+        InquiryAnswerRequestDto inquiryAnswerRequestDto = new InquiryAnswerRequestDto();
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo", productInquiry.getInquiryNo());
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "employeeNo", 1);
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "answerContent", "1번문의 답변입니다.");
+
+        InquiryAnswerRequestDto inquiryAnswerRequestDto2 = new InquiryAnswerRequestDto();
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto2, "inquiryNo", inquiry.getInquiryNo());
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto2, "employeeNo", 1);
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto2, "answerContent", "1번문의 답변입니다.");
+
+        Employee employee = EmployeeDummy.dummy();
+
+        AddressLocal addressLocal = AddressLocalDummy.dummy1();
+
+        StatusCode code = StatusCodeDummy.dummy();
+
+        DayLabor labor = new DayLabor(1, 10);
+
+        addressLocal.registerDayLabor(labor);
+
+        labor.fixLocation(addressLocal);
+
+        employee.fixCode(code);
+        employee.fixLocation(addressLocal);
+        testEntityManager.persist(labor);
+        testEntityManager.persist(addressLocal);
+        testEntityManager.persist(code);
+        testEntityManager.persist(employee);
+
+        productInquiry = inquiryRepository.findById(productInquiry.getInquiryNo()).orElseThrow();
+        productInquiry.addAnswer(inquiryAnswerRequestDto, employee, statusCodeComplete);
+        inquiry.addAnswer(inquiryAnswerRequestDto2, employee, statusCodeComplete);
+
+        Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+
+        InquirySearchRequestDto inquirySearchRequestDto =
+            getInquirySearchRequestDto(true, statusCodeComplete.getStatusCodeNo(), null, null);
+
+        // when
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, inquirySearchRequestDto);
+        List<InquiryListResponseDto> content = page.getContent();
+
+        long totalElement = page.getTotalElements();
+        int totalPages = page.getTotalPages();
+        int pageNumber = page.getNumber();
+        int pageSize = page.getSize();
+
+        // then
+        assertThat(totalElement)
+            .isEqualTo(2);
+        assertThat(totalPages)
+            .isEqualTo(1);
+        assertThat(pageNumber)
+            .isEqualTo(pageable.getPageNumber());
+        assertThat(pageSize)
+            .isEqualTo(pageable.getPageSize());
+
+        assertThat(content.size())
+            .isEqualTo(2);
+
+        content.stream().forEach(inquiryDto -> {
+            assertThat(inquiryDto.getMemberNickname())
+                .isEqualTo("example nickname");
+            assertThat(inquiryDto.getProcessStatus())
+                .isEqualTo("답변완료");
+            assertThat(inquiryDto.getTitle())
+                .isEqualTo("2번째 상품문의제목");
+        });
+    }
+
+    @DisplayName("상품문의리스트 답변대기조회에 대해서 List<InquiryResponseDto>를(내부값 3개) content로 가지는 PageImpl 객체가 잘 넘어온다.(limit 3, offset 0, 최신순)")
+    @Test
+    void findAllThroughSearch_product_holder() {
+        // given
+        Inquiry inquiry = InquiryDummy.productDummy(statusCodeHolder);
+        inquiry.addMember(member);
+        inquiryRepository.save(inquiry);
+
+        Inquiry inquiry2 = InquiryDummy.productDummy(statusCodeHolder);
+        inquiry2.addMember(member);
+        inquiryRepository.save(inquiry2);
+
+        Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+
+        InquirySearchRequestDto dto =
+            getInquirySearchRequestDto(true, statusCodeHolder.getStatusCodeNo(), null, null);
+
+        // when
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        List<InquiryListResponseDto> content = page.getContent();
+
+        long totalElement = page.getTotalElements();
+        int totalPages = page.getTotalPages();
+        int pageNumber = page.getNumber();
+        int pageSize = page.getSize();
+
+        // then
+        assertThat(totalElement)
+            .isEqualTo(3);
+        assertThat(totalPages)
+            .isEqualTo(1);
+        assertThat(pageNumber)
+            .isEqualTo(pageable.getPageNumber());
+        assertThat(pageSize)
+            .isEqualTo(pageable.getPageSize());
+
+        assertThat(content.size())
+            .isEqualTo(3);
+
+        content.stream().forEach(inquiryDto -> {
+            assertThat(inquiryDto.getMemberNickname())
+                .isEqualTo("example nickname");
+            assertThat(inquiryDto.getProcessStatus())
+                .isEqualTo("답변대기");
+
+            assertThat(inquiryDto.getTitle())
+                .isEqualTo("2번째 상품문의제목");
+        });
+    }
+
+    @DisplayName("상품문의리스트 특정회원에 대해서 List<InquiryResponseDto>를(내부값 2개, 답변대기, 답변완료) content로 가지는 PageImpl 객체가 잘 넘어온다.(limit 2, offset 0, 최신순)")
+    @Test
+    void findAllThroughSearch_product_member() {
+        // given
+        Inquiry inquiry = InquiryDummy.productDummy(statusCodeComplete);
+        inquiry.addMember(member);
+        inquiryRepository.save(inquiry);
+
+        Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+
+        InquirySearchRequestDto dto =
+            getInquirySearchRequestDto(true,
+                null, member.getMemberNo(), null);
+
+        // when
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        List<InquiryListResponseDto> content = page.getContent();
+
+        long totalElement = page.getTotalElements();
+        int totalPages = page.getTotalPages();
+        int pageNumber = page.getNumber();
+        int pageSize = page.getSize();
+
+        // then
+        assertThat(totalElement)
+            .isEqualTo(2);
+        assertThat(totalPages)
+            .isEqualTo(1);
+        assertThat(pageNumber)
+            .isEqualTo(pageable.getPageNumber());
+        assertThat(pageSize)
+            .isEqualTo(pageable.getPageSize());
+
+        assertThat(content.size())
+            .isEqualTo(2);
 
 
-    private InquirySearchRequestDto getInquirySearchRequestDto(boolean isProduct, String status, Integer memberNo, Integer productNo) {
+        assertThat(content.get(0).getProcessStatus())
+            .isEqualTo("답변완료");
+        assertThat(content.get(1).getProcessStatus())
+            .isEqualTo("답변대기");
+
+        content.stream().forEach(inquiryDto -> {
+            assertThat(inquiryDto.getMemberNickname())
+                .isEqualTo("example nickname");
+            assertThat(inquiryDto.getTitle())
+                .isEqualTo("2번째 상품문의제목");
+        });
+    }
+
+    @DisplayName("상품문의리스트 특정상품에 대해서 List<InquiryResponseDto>를(내부값 2개) content로 가지는 PageImpl 객체가 잘 넘어온다.(limit 3, offset 0, 최신순)")
+    @Test
+    void findAllThroughSearch_product_specificProduct() {
+        // given
+        Inquiry inquiry = InquiryDummy.productDummy(statusCodeComplete);
+        inquiry.addMember(member);
+        inquiry.addProduct(product);
+        inquiryRepository.save(inquiry);
+
+        Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+
+        InquirySearchRequestDto dto =
+            getInquirySearchRequestDto(true,
+                null, null, product.getNo());
+
+        // when
+        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearch(pageable, dto);
+        List<InquiryListResponseDto> content = page.getContent();
+
+        long totalElement = page.getTotalElements();
+        int totalPages = page.getTotalPages();
+        int pageNumber = page.getNumber();
+        int pageSize = page.getSize();
+
+        // then
+        assertThat(totalElement)
+            .isEqualTo(2);
+        assertThat(totalPages)
+            .isEqualTo(1);
+        assertThat(pageNumber)
+            .isEqualTo(pageable.getPageNumber());
+        assertThat(pageSize)
+            .isEqualTo(pageable.getPageSize());
+
+        assertThat(content.size())
+            .isEqualTo(2);
+
+
+        assertThat(content.get(0).getProcessStatus())
+            .isEqualTo("답변완료");
+        assertThat(content.get(1).getProcessStatus())
+            .isEqualTo("답변대기");
+
+        content.stream().forEach(inquiryDto -> {
+            assertThat(inquiryDto.getMemberNickname())
+                .isEqualTo("example nickname");
+            assertThat(inquiryDto.getTitle())
+                .isEqualTo("2번째 상품문의제목");
+        });
+    }
+
+    @DisplayName("고객문의이면서 상품번호가 있도록 dto가 메서드에 전달된경우 InquiryNotFoundException() 예외를 발생시킨다.")
+    @Test
+    void findAllThroughSearch_customerAndProduct_fail() {
+        // given
+        Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
+
+        InquirySearchRequestDto dto =
+            getInquirySearchRequestDto(false,
+                null, null, product.getNo());
+
+        // when then
+        assertThatThrownBy(() -> inquiryRepository.findAllThroughSearch(pageable, dto))
+            .isInstanceOf(InquirySearchBadRequestException.class)
+            .hasMessageContaining(InquirySearchBadRequestException.MESSAGE);
+    }
+
+    private InquirySearchRequestDto getInquirySearchRequestDto(boolean isProduct, Integer statusCodeNo, Integer memberNo, Integer productNo) {
         InquirySearchRequestDto dto = new InquirySearchRequestDto();
         ReflectionTestUtils.setField(dto, "isProduct", isProduct);
-        ReflectionTestUtils.setField(dto, "status", status);
+        ReflectionTestUtils.setField(dto, "statusCodeNo", statusCodeNo);
         ReflectionTestUtils.setField(dto, "memberNo", memberNo);
         ReflectionTestUtils.setField(dto, "productNo", productNo);
         return dto;
