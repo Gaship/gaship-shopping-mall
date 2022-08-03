@@ -225,9 +225,9 @@ public class ProductController {
      * @return productNos 가 들어온 상품들이 조회됩니다.
      * @author 유호철
      */
-    @GetMapping("/many-product/{productNos}")
+    @GetMapping(params = "productNos")
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productNosList(
-        @PathVariable("productNos") List<Integer> productNos,
+        @RequestParam("productNos") List<Integer> productNos,
         Pageable pageable) {
 
         return ResponseEntity

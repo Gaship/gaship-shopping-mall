@@ -465,12 +465,12 @@ class ProductControllerTest {
         when(service.findProductByProductNos(List.of(response.getProductNo(), dto.getProductNo()), pageRequest))
             .thenReturn(new PageResponse<>(list));
 
-        mvc.perform(get("/api/products/many-product/{productNos}", "1,2")
+        mvc.perform(get("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .accept(MediaType.APPLICATION_JSON)
-//                .queryParam("productNos", objectMapper.writeValueAsString(response.getProductNo()))
-//                .queryParam("productNos", objectMapper.writeValueAsString(dto.getProductNo()))
+                .queryParam("productNos", objectMapper.writeValueAsString(response.getProductNo()))
+                .queryParam("productNos", objectMapper.writeValueAsString(dto.getProductNo()))
                 .queryParam("page", objectMapper.writeValueAsString(pageRequest.getPageNumber()))
                 .queryParam("size", objectMapper.writeValueAsString(pageRequest.getPageSize())))
             .andExpect(jsonPath("$.content[0].productName").value(response.getProductName()))

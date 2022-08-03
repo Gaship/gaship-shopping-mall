@@ -127,7 +127,6 @@ class ProductServiceTest {
         List<MultipartFile> files = List.of(multipartFile);
         String uploadDir = File.separator + "products";
         ReflectionTestUtils.setField(product, "no", 1);
-
         when(repository.save(any(Product.class))).thenReturn(product);
         when(categoryRepository.findById(createRequest.getCategoryNo()))
             .thenReturn(Optional.of(CategoryDummy.dummy()));
