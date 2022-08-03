@@ -84,14 +84,14 @@ class ProductReviewServiceTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        review = ProductReviewDummy.dummy();
-        responseDummy = ProductReviewDummy.responseDummy();
-        createRequest = ProductReviewDummy.createRequestDummy();
-        modifyRequest = ProductReviewDummy.modifyRequestDummy();
         orderProduct = OrderProduct.builder()
                 .warrantyExpirationDate(LocalDate.now())
                 .amount(10000L)
                 .build();
+        review = ProductReviewDummy.dummy(orderProduct);
+        responseDummy = ProductReviewDummy.responseDummy();
+        createRequest = ProductReviewDummy.createRequestDummy();
+        modifyRequest = ProductReviewDummy.modifyRequestDummy();
 
         File file = new File("src/test/resources/sample.jpg");
         multipartFile = new MockMultipartFile(

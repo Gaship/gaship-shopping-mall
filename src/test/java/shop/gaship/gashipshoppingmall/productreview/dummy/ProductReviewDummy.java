@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.productreview.dummy;
 
 import java.time.LocalDateTime;
+import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
@@ -13,8 +14,9 @@ import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
  */
 public class ProductReviewDummy {
 
-    public static ProductReview dummy() {
+    public static ProductReview dummy(OrderProduct orderProduct) {
         return ProductReview.builder()
+                .orderProduct(orderProduct)
                 .title("상품평 제목")
                 .content("상품평 내용")
                 .imagePath("이미지 경로")
