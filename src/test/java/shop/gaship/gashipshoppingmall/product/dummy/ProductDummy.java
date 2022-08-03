@@ -70,4 +70,8 @@ public class ProductDummy {
                 "A001"
         );
     }
+
+    public static void productDummyStockMakeZero(Product product){
+        product.updateStockQuantity(0);
+    }
 }
