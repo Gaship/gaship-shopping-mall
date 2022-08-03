@@ -20,6 +20,7 @@ import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.membercoupon.entity.MemberCoupon;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
@@ -69,6 +70,9 @@ public class OrderProduct {
     private LocalDateTime cancellationDatetime;
 
     private String employeeName;
+
+    @OneToOne(mappedBy = "orderProduct", fetch = FetchType.LAZY)
+    private ProductReview review;
 
     /**
      * Instantiates a new Order product.

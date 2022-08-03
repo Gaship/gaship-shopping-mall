@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.productreview.entity;
 
 import java.time.LocalDateTime;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -45,10 +44,8 @@ public class ProductReview {
     private LocalDateTime modifyDatetime;
 
     @Builder
-    public ProductReview(Integer orderProductNo,
-                         OrderProduct orderProduct, String title, String content,
+    public ProductReview(OrderProduct orderProduct, String title, String content,
                          String imagePath, Integer starScore, LocalDateTime registerDatetime) {
-        this.orderProductNo = orderProductNo;
         this.orderProduct = orderProduct;
         this.title = title;
         this.content = content;

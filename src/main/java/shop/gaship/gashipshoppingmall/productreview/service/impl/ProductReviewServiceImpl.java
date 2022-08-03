@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
@@ -49,11 +50,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
     @Transactional
     @Override
     public void addProductReview(MultipartFile file, ProductReviewRequestDto createRequest) {
-        if (orderProductRepository.findById(createRequest.getOrderProductNo()).isEmpty()) {
-            throw new OrderProductNotFoundException();
-        }
+        OrderProduct orderProduct = orderProductRepository
+                .findById(createRequest.getOrderProductNo())
+                .orElseThrow(OrderProductNotFoundException::new);
 
-        ProductReview review = createProductReview(createRequest);
+        ProductReview review = createProductReview(createRequest, orderProduct);
         uploadProductReviewImage(review, file);
 
         productReviewRepository.save(review);
@@ -131,9 +132,10 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .build());
     }
 
-    private ProductReview createProductReview(ProductReviewRequestDto createRequest) {
+    private ProductReview createProductReview(ProductReviewRequestDto createRequest,
+                                              OrderProduct orderProduct) {
         return ProductReview.builder()
-                .orderProductNo(createRequest.getOrderProductNo())
+                .orderProduct(orderProduct)
                 .title(createRequest.getTitle())
                 .content(createRequest.getContent())
                 .starScore(createRequest.getStarScore())

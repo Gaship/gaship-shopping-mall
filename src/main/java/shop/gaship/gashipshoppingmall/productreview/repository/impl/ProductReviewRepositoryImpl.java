@@ -63,8 +63,8 @@ public class ProductReviewRepositoryImpl extends QuerydslRepositorySupport
 
     private JPQLQuery<ProductReview> productReviewQuery(ProductReviewViewRequestDto viewRequest) {
         return from(review)
-                .innerJoin(orderProduct).on(review.orderProduct.no.eq(orderProduct.no))
-                .innerJoin(order).on(orderProduct.order.no.eq(order.no))
+                .innerJoin(review.orderProduct, orderProduct)
+                .innerJoin(orderProduct.order, order)
                 .innerJoin(order.member, member)
                 .innerJoin(orderProduct.product, product)
                 .where(eqOrderProductNo(viewRequest.getOrderProductNo()),
