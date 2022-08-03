@@ -2,9 +2,9 @@ package shop.gaship.gashipshoppingmall.inquiry.controller;
 
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +19,7 @@ import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDt
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
 
 /**
  * 문의에 대한 요청을 담당하는 controller입니다.
@@ -63,7 +64,7 @@ public class InquiryRestController {
      * 문의의 답변을 수정하기 위한 요청을 처리합니다.
      *
      * @param inquiryAnswerModifyRequestDto 문의답변에 들어가야할 정보들을 가지는 DTO 객체입니다.
-     * @return 성공시 201인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
+     * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
     @PutMapping("/{inquiryNo}/inquiry-answer")
@@ -78,7 +79,7 @@ public class InquiryRestController {
      * 이때 삭제는 실삭제를 뜻합니다.
      *
      * @param inquiryNo 삭제할 문의의 번호입니다.
-     * @return 성공시 201인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
+     * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
     @DeleteMapping("/{inquiryNo}")
@@ -94,7 +95,7 @@ public class InquiryRestController {
      * 답변변경 외에도 상태와 여러가지 정보를 변경합니다.
      *
      * @param inquiryNo 답변을 삭제할 문의의 번호입니다.
-     * @return 성공시 201인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
+     * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
     @DeleteMapping("/{inquiryNo}/inquiry-answer")
@@ -104,25 +105,179 @@ public class InquiryRestController {
     }
 
     /**
-     * 문의상태를 통해서 문의들을 조회하는 요청을 처리하는 기능입니다.
+     * 고객문의 목록을 조회하는 요청을 처리하는 기능입니다.
      *
-     * @return response entity
-     * @return response entity
+     * @param pageable 페이지네이션에 맞게 조회하기 위한 정보를 담고있는 객체입니다.
+     * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-    @GetMapping(value = "/customer-inquiries")
-    public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryList(Pageable pageable) {
-        PageResponse<InquiryListResponseDto> pageResponse =
-            new PageResponse<>(inquiryService.findInquiries(pageable, Boolean.FALSE));
+    @GetMapping(value = "/customer-inquiries", params = {"page", "size"})
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryList(
+        Pageable pageable) {
+        Page<InquiryListResponseDto> inquiriesPage =
+            inquiryService.findInquiries(pageable, Boolean.FALSE);
+
+        PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
 
         return ResponseEntity.ok(pageResponse);
     }
 
-    @GetMapping(value = "/product-inquiries")
-    public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryList(Pageable pageable) {
-        PageResponse<InquiryListResponseDto> pageResponse =
-            new PageResponse<>(inquiryService.findInquiries(pageable, Boolean.TRUE));
+    /**
+     * 상품문의 목록을 조회하는 요청을 처리하는 기능입니다.
+     *
+     * @param pageable 페이지네이션에 맞게 조회하기 위한 정보를 담고있는 객체입니다.
+     * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
+     * @author 최겸준
+     */
+    @GetMapping(value = "/product-inquiries", params = {"page", "size"})
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryList(
+        Pageable pageable) {
+        Page<InquiryListResponseDto> inquiriesPage =
+            inquiryService.findInquiries(pageable, Boolean.TRUE);
+
+        PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
 
         return ResponseEntity.ok(pageResponse);
     }
+
+    /**
+     * 답변대기 상태인 고객문의목록 조회요청을 처리하는 기능입니다.
+     *
+     * @param pageable 페이지네이션에 맞게 조회하기 위한 정보를 담고있는 객체입니다.
+     * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
+     * @author 최겸준
+     */
+    @GetMapping(value = "/customer-inquiries/status-hold", params = {"page", "size"})
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusHoldList(
+        Pageable pageable) {
+        Page<InquiryListResponseDto> inquiriesPage =
+            inquiryService.findInquiriesByStatusCodeNo(pageable, Boolean.FALSE,
+                ProcessStatus.WAITING.getValue());
+
+        PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
+
+        return ResponseEntity.ok(pageResponse);
+    }
+
+    /**
+     * 답변완료 상태인 고객문의목록 조회요청을 처리하는 기능입니다.
+     *
+     * @param pageable 페이지네이션에 맞게 조회하기 위한 정보를 담고있는 객체입니다.
+     * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
+     * @author 최겸준
+     */
+    @GetMapping(value = "/customer-inquiries/status-complete", params = {"page", "size"})
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusCompleteList(
+        Pageable pageable) {
+        Page<InquiryListResponseDto> inquiriesPage =
+            inquiryService.findInquiriesByStatusCodeNo(pageable, Boolean.FALSE,
+                ProcessStatus.COMPLETE.getValue());
+
+        PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
+
+        return ResponseEntity.ok(pageResponse);
+    }
+
+    /**
+     * 답변대기 상태인 상품문의목록 조회요청을 처리하는 기능입니다.
+     *
+     * @param pageable 페이지네이션에 맞게 조회하기 위한 정보를 담고있는 객체입니다.
+     * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
+     * @author 최겸준
+     */
+    @GetMapping(value = "/product-inquiries/status-hold", params = {"page", "size"})
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryStatusHoldList(
+        Pageable pageable) {
+        Page<InquiryListResponseDto> inquiriesPage =
+            inquiryService.findInquiriesByStatusCodeNo(pageable, Boolean.TRUE,
+                ProcessStatus.WAITING.getValue());
+
+        PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
+
+        return ResponseEntity.ok(pageResponse);
+    }
+
+    /**
+     * 답변완료 상태인 상품문의목록 조회요청을 처리하는 기능입니다.
+     *
+     * @param pageable 페이지네이션에 맞게 조회하기 위한 정보를 담고있는 객체입니다.
+     * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
+     * @author 최겸준
+     */
+    @GetMapping(value = "/product-inquiries/status-complete", params = {"page", "size"})
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryStatusCompleteList(
+        Pageable pageable) {
+        Page<InquiryListResponseDto> inquiriesPage =
+            inquiryService.findInquiriesByStatusCodeNo(pageable, Boolean.TRUE,
+                ProcessStatus.COMPLETE.getValue());
+
+        PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
+
+        return ResponseEntity.ok(pageResponse);
+    }
+
+    /**
+     * 특정회원에 대한 고객문의목록 조회요청을 처리하는 기능입니다.
+     *
+     * @param memberNo 기준이 되는 회원의 식별번호입니다.
+     * @param pageable 페이지네이션에 맞게 조회하기 위한 정보를 담고있는 객체입니다.
+     * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
+     * @author 최겸준
+     */
+    @GetMapping(value = "/member/{memberNo}/customer-inquiries", params = {"page", "size"})
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryMemberList(
+        Pageable pageable, @PathVariable Integer memberNo) {
+        Page<InquiryListResponseDto> inquiriesPage =
+            inquiryService.findInquiriesByMemberNo(pageable, Boolean.FALSE,
+                memberNo);
+
+        PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
+
+        return ResponseEntity.ok(pageResponse);
+    }
+
+    /**
+     * 특정회원에 대한 상품문의목록 조회요청을 처리하는 기능입니다.
+     *
+     * @param memberNo 기준이 되는 회원의 식별번호입니다.
+     * @param pageable 페이지네이션에 맞게 조회하기 위한 정보를 담고있는 객체입니다.
+     * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
+     * @author 최겸준
+     */
+    // TODO 위에거랑합치고 if로 보낼 true false를 정하면 어떨까, member순서가 uri가 restful한가
+    @GetMapping(value = "/member/{memberNo}/product-inquiries", params = {"page", "size"})
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryMemberList(
+        Pageable pageable, @PathVariable Integer memberNo) {
+
+        Page<InquiryListResponseDto> inquiriesPage =
+            inquiryService.findInquiriesByMemberNo(pageable, Boolean.TRUE,
+                memberNo);
+
+        PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
+
+        return ResponseEntity.ok(pageResponse);
+    }
+
+    /**
+     * 특정상품에 대한 상품문의목록 조회요청을 처리하는 기능입니다.
+     *
+     * @param productNo 기준이 되는 상품의 식별번호입니다.
+     * @param pageable 페이지네이션에 맞게 조회하기 위한 정보를 담고있는 객체입니다.
+     * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
+     * @author 최겸준
+     */
+    // TODO 이거 단건으로 끝나는거 같아보이지 않는가? 뒤에 inquiries를 붙여야하나, params라고 명시하는 이유
+    @GetMapping(value = "/product/{productNo}", params = {"page", "size"})
+    public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryProductList(
+        Pageable pageable, @PathVariable Integer productNo) {
+
+        Page<InquiryListResponseDto> inquiriesPage =
+            inquiryService.findInquiriesByMemberNo(pageable, Boolean.TRUE,
+                productNo);
+
+        PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
+
+        return ResponseEntity.ok(pageResponse);
+    }
+
 }
