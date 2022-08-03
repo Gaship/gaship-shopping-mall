@@ -50,8 +50,8 @@ public class ProductController {
         service.addProduct(files, createRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+            .contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     /**
@@ -68,8 +68,8 @@ public class ProductController {
         service.modifyProduct(files, modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+            .contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     /**
@@ -81,12 +81,12 @@ public class ProductController {
      */
     @PutMapping("/salesStatus")
     public ResponseEntity<Void> salesStatusModify(
-            @RequestBody SalesStatusModifyRequestDto salesStatusModifyRequest) {
+        @RequestBody SalesStatusModifyRequestDto salesStatusModifyRequest) {
         service.modifyProductSalesStatus(salesStatusModifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
+            .contentType(MediaType.APPLICATION_JSON)
+            .build();
     }
 
 
@@ -100,11 +100,11 @@ public class ProductController {
      */
     @GetMapping("/code")
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListSearchCode(
-            @RequestParam("code") String productCode,
-            Pageable pageable) {
+        @RequestParam("code") String productCode,
+        Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductByCode(productCode, pageable));
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(service.findProductByCode(productCode, pageable));
     }
 
     /**
@@ -116,11 +116,11 @@ public class ProductController {
      */
     @GetMapping("/{productNo}")
     public ResponseEntity<ProductAllInfoResponseDto> productDetails(
-            @PathVariable("productNo") Integer productNo) {
+        @PathVariable("productNo") Integer productNo) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProduct(productNo));
+            .status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(service.findProduct(productNo));
     }
 
 
@@ -134,14 +134,15 @@ public class ProductController {
      */
     @GetMapping("/statusCode")
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListSearchStatusCode(
-            @RequestParam("statusName") String statusName,
-            Pageable pageable) {
+        @RequestParam("statusName") String statusName,
+        Pageable pageable) {
 
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductStatusCode(statusName, pageable));
+            .status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(service.findProductStatusCode(statusName, pageable));
     }
+
     /**
      * get 요청을 받아서 금액으로 제품들을 정렬하기위한 메서드입니다.
      *
@@ -154,13 +155,13 @@ public class ProductController {
 
     @GetMapping("/price")
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productAmountList(
-            @RequestParam("min") Long minAmount,
-            @RequestParam("max") Long maxAmount,
-            Pageable pageable) {
+        @RequestParam("min") Long minAmount,
+        @RequestParam("max") Long maxAmount,
+        Pageable pageable) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductByPrice(minAmount, maxAmount, pageable));
+            .status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(service.findProductByPrice(minAmount, maxAmount, pageable));
     }
 
     /**
@@ -173,12 +174,12 @@ public class ProductController {
      */
     @GetMapping("/category/{categoryNo}")
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productCategoryList(
-            @PathVariable("categoryNo") Integer categoryNo,
-            Pageable pageable) {
+        @PathVariable("categoryNo") Integer categoryNo,
+        Pageable pageable) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductByCategory(categoryNo, pageable));
+            .status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(service.findProductByCategory(categoryNo, pageable));
 
     }
 
@@ -192,12 +193,12 @@ public class ProductController {
      */
     @GetMapping("/name")
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productNameList(
-            @RequestParam("name") String name,
-            Pageable pageable) {
+        @RequestParam("name") String name,
+        Pageable pageable) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductByName(name, pageable));
+            .status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(service.findProductByName(name, pageable));
     }
 
     /**
@@ -208,11 +209,31 @@ public class ProductController {
      * @author 유호철
      */
     @GetMapping()
-    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>>
-        productListAll(Pageable pageable) {
+    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListAll(
+        Pageable pageable) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.findProductsInfo(pageable));
+            .status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(service.findProductsInfo(pageable));
     }
+
+    /**
+     * 상품 번호들로 전체상품을 조회하는 메서드입니다.
+     *
+     * @param productNos 조회할 상품번호들이 들어옵니다.
+     * @param pageable   페이징을 하기위한 값이들어갑니다.
+     * @return productNos 가 들어온 상품들이 조회됩니다.
+     * @author 유호철
+     */
+    @GetMapping("/many-product/{productNos}")
+    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productNosList(
+        @PathVariable("productNos") List<Integer> productNos,
+        Pageable pageable) {
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(service.findProductByProductNos(productNos, pageable));
+    }
+
 }
