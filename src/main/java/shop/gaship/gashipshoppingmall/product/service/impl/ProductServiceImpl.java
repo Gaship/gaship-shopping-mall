@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
      *
      * @throws CategoryNotFoundException   카테고리가 존재하지않을경우 발생합니다.
      * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
-     * @throws FileUploadFailureException 파일 저장에 오류가 발생하였을 때 에외를 던집니다.
+     * @throws FileUploadFailureException  파일 저장에 오류가 발생하였을 때 에외를 던집니다.
      */
     @Transactional
     @Override
@@ -89,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = repository.save(product);
         addProductTags(product, createRequest.getTagNos());
         elasticRepository.save(new ElasticProduct(
-                savedProduct.getNo(), savedProduct.getName(), savedProduct.getCode()));
+            savedProduct.getNo(), savedProduct.getName(), savedProduct.getCode()));
     }
 
     /**
@@ -116,8 +116,8 @@ public class ProductServiceImpl implements ProductService {
      * @throws ProductNotFoundException    제품이 존재하지않을경우 발생합니다.
      * @throws CategoryNotFoundException   카테고리가 존재하지않을경우 발생합니다.
      * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
-     * @throws FileUploadFailureException 파일 저장에 오류가 발생하였을 때 에외를 던집니다.
-     * @throws FileDeleteFailureException 파일 삭제에 오류가 발생하였을 때 에외를 던집니다.
+     * @throws FileUploadFailureException  파일 저장에 오류가 발생하였을 때 에외를 던집니다.
+     * @throws FileDeleteFailureException  파일 삭제에 오류가 발생하였을 때 에외를 던집니다.
      */
     @Transactional
     @Override
@@ -141,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
         productTagRepository.deleteAllByPkProductNo(product.getNo());
         addProductTags(product, modifyRequest.getTagNos());
         elasticRepository.save(
-                new ElasticProduct(product.getNo(), product.getName(), product.getCode()));
+            new ElasticProduct(product.getNo(), product.getName(), product.getCode()));
     }
 
     /**
@@ -267,6 +267,22 @@ public class ProductServiceImpl implements ProductService {
             .statusName(statusName)
             .pageable(pageable)
             .build();
+        PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        findProductTagInfo(products);
+        return products;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PageResponse<ProductAllInfoResponseDto> findProductByProductNos(List<Integer> productNos,
+                                                                           Pageable pageable) {
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+            .productNoList(productNos)
+            .pageable(pageable)
+            .build();
+
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
         return products;

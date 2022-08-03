@@ -115,4 +115,14 @@ public interface ProductService {
      */
     PageResponse<ProductAllInfoResponseDto> findProductStatusCode(String statusName,
                                                                   Pageable pageable);
+
+
+    /**
+     * 상품의 번호들을 통해 알맞는 상품 정보들을 반환합니다.
+     *
+     * @param productNos 조회할 productNos 가 들어갑니다.
+     * @return 조회된 상품들의 정보가 list 로 반환됩니다.
+     */
+    PageResponse<ProductAllInfoResponseDto> findProductByProductNos(List<Integer> productNos,
+                                                                    Pageable pageable);
 }
