@@ -47,6 +47,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
     private final FileUploadUtil fileUploadUtil;
     private final ApplicationEventPublisher applicationEventPublisher;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws OrderProductNotFoundException 주문 상품이 없을 때 던질 예외
+     */
     @Transactional
     @Override
     public void addProductReview(MultipartFile file, ProductReviewRequestDto createRequest) {
@@ -60,6 +65,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         productReviewRepository.save(review);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws ProductReviewNotFoundException 상품평이 없을 때 던질 예외
+     */
     @Transactional
     @Override
     public void modifyProductReview(MultipartFile file, ProductReviewRequestDto modifyRequest) {
@@ -76,6 +86,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 modifyRequest.getStarScore());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws ProductReviewNotFoundException 상품평이 없을 때 던질 예외
+     */
     @Transactional
     @Override
     public void removeProductReview(Integer orderProductNo) {
@@ -87,6 +102,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         applicationEventPublisher.publishEvent(new ProductReviewDeleteEvent(review.getImagePath()));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws OrderProductNotFoundException 주문 상품이 없을 때 던질 예외
+     */
     @Override
     public ProductReviewResponseDto findReview(Integer orderProductNo) {
         if (orderProductRepository.findById(orderProductNo).isEmpty()) {
@@ -106,6 +126,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .build());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws ProductNotFoundException 상품이 없을 때 던질 예외
+     */
     @Override
     public Page<ProductReviewResponseDto> findReviewsByProductNo(Integer productNo,
                                                                  Pageable pageable) {
@@ -119,6 +144,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .build());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberNotFoundException 회원이 없을 때 던질 예외
+     */
     @Override
     public Page<ProductReviewResponseDto> findReviewsByMemberNo(Integer memberNo,
                                                                 Pageable pageable) {
@@ -132,6 +162,13 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .build());
     }
 
+    /**
+     * 생성 요청 dto를 엔티티로 반환합니다.
+     *
+     * @param createRequest 상품평 생성 요청 dto
+     * @param orderProduct 상품평의 주문상품
+     * @return productReview 상품평
+     */
     private ProductReview createProductReview(ProductReviewRequestDto createRequest,
                                               OrderProduct orderProduct) {
         return ProductReview.builder()
@@ -143,6 +180,12 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .build();
     }
 
+    /**
+     * 상품평 이미지가 있을 경우 해당 이미지를 업로드하는 메서드입니다.
+     *
+     * @param review 상품평
+     * @param file 이미지 파일
+     */
     private void uploadProductReviewImage(ProductReview review, MultipartFile file) {
         if (!Objects.isNull(file)) {
             String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);

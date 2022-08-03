@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.productreview.dto.request;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,6 +16,7 @@ import lombok.Getter;
 @Builder
 public class ProductReviewRequestDto {
     @Min(1)
+    @NotNull
     private Integer orderProductNo;
 
     private String title;
@@ -23,5 +25,6 @@ public class ProductReviewRequestDto {
 
     @Min(1)
     @Max(5)
+    @NotNull
     private Integer starScore;
 }

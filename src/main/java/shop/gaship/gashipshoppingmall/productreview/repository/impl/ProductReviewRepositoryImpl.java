@@ -37,11 +37,12 @@ public class ProductReviewRepositoryImpl extends QuerydslRepositorySupport
         super(ProductReview.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<ProductReviewResponseDto> findProductReviews(
             ProductReviewViewRequestDto viewRequest) {
-
-
         List<ProductReviewResponseDto> content = productReviewQuery(viewRequest)
                 .select(Projections.bean(ProductReviewResponseDto.class,
                         orderProduct.no.as("orderProductNo"),

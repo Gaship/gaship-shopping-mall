@@ -7,6 +7,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,12 +40,26 @@ public class ProductReview {
 
     private String imagePath;
 
+    @NotNull
+    @Min(1)
+    @Max(5)
     private Integer starScore;
 
+    @NotNull
     private LocalDateTime registerDatetime;
 
     private LocalDateTime modifyDatetime;
 
+    /**
+     * 상품평 생성자입니다.
+     *
+     * @param orderProduct     주문상품
+     * @param title            상품평 제목
+     * @param content          상품평 내용
+     * @param imagePath        상품평 이미지 경로
+     * @param starScore        별점
+     * @param registerDatetime 상품평 등록 일시
+     */
     @Builder
     public ProductReview(OrderProduct orderProduct, String title, String content,
                          String imagePath, Integer starScore, LocalDateTime registerDatetime) {
@@ -54,6 +71,13 @@ public class ProductReview {
         this.registerDatetime = registerDatetime;
     }
 
+    /**
+     * 상품평 수정 메서드입니다.
+     *
+     * @param title     상품평 제목
+     * @param content   상품평 내용
+     * @param starScore 별점
+     */
     public void updateProductReview(String title, String content, Integer starScore) {
         this.title = title;
         this.content = content;
@@ -61,6 +85,11 @@ public class ProductReview {
         this.modifyDatetime = LocalDateTime.now();
     }
 
+    /**
+     * 상품평 이미지 경로 수정 메서드입니다.
+     *
+     * @param imagePath 이미지 경로
+     */
     public void updateImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
