@@ -73,21 +73,33 @@ public class OrderProduct {
     private Integer trackingNo;
 
     /**
-     * Instantiates a new Order product.
+     * 쿠폰이 적용되지않은 경우에 생성하는 생성자입니다.
      *
-     * @param product                the product
-     * @param order                  the order
-     * @param orderStatusCode        the order status code
-     * @param warrantyExpirationDate the warranty expiration date
-     * @param amount                 the amount
+     * @param product                제품 엔티티
+     * @param order                  주문 엔티티
+     * @param orderStatusCode        주문 상태 엔티티
+     * @param warrantyExpirationDate 제품 보증 만료기간
+     * @param amount                 가격
      */
     @Builder
     public OrderProduct(Product product, Order order, StatusCode orderStatusCode,
-                        LocalDate warrantyExpirationDate, Long amount) {
+                        LocalDate warrantyExpirationDate, Long amount, LocalDate hopeDate) {
         this.product = product;
         this.order = order;
         this.orderStatusCode = orderStatusCode;
         this.warrantyExpirationDate = warrantyExpirationDate;
         this.amount = amount;
+        this.hopeDate = hopeDate;
+    }
+
+    /**
+     * 멤버의 쿠폰을 주문 상품에 적용하는 메서드입니다.
+     *
+     * @param memberCoupon 멤버가 보유 중이며, 적용할 쿠폰엔티티 객체입니다.
+     */
+    public void applyMemberCoupon(MemberCoupon memberCoupon) {
+        this.memberCoupon = memberCoupon;
+        this.warrantyExpirationDate =
+            this.warrantyExpirationDate.plusMonths(memberCoupon.getCoupon().getExpirationPeriod());
     }
 }

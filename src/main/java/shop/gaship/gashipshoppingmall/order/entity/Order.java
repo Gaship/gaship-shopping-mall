@@ -1,6 +1,9 @@
 package shop.gaship.gashipshoppingmall.order.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,13 +11,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 
 /**
  * 주문 entity class.
@@ -40,6 +46,10 @@ public class Order {
     @JoinColumn(name = "address_lists_no", nullable = false)
     private AddressList addressList;
 
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY,
+        orphanRemoval = true, cascade = CascadeType.REMOVE)
+    private List<OrderProduct> orderProducts = new ArrayList<>();
+
     @NotNull
     private LocalDateTime orderDateTime;
 
@@ -54,20 +64,27 @@ public class Order {
     private String deliveryRequest;
 
     /**
-     * Instantiates a new Order.
+     * 주문을 생성하는 생성자입니다.
      *
-     * @param member             the member
-     * @param addressList        the address list
-     * @param receiptName        the receipt name
-     * @param receiptPhoneNumber the receipt phone number
+     * @param member 누가 주문했는가에 대한 멤버 엔티티 객체입니다.
+     * @param addressList 어디로 배송을 원하는지에 대한 배송지 목록 엔티티 객체입니다.
+     * @param receiptName 실제 수령자 이름입니다.
+     * @param receiptPhoneNumber 실제 수령자의 전화번호입니다.
+     * @param receiptSubPhoneNumber 실제 수령자의 부 전화번호입니다. (선택)
+     * @param deliveryRequest 배송요청 사항입니다. (선택)
      */
     @Builder
     public Order(Member member, AddressList addressList,
-                 String receiptName, String receiptPhoneNumber) {
+                 String receiptName, String receiptPhoneNumber,
+                 @Nullable String receiptSubPhoneNumber,
+                 @Nullable String deliveryRequest
+                 ) {
         this.member = member;
         this.addressList = addressList;
         this.orderDateTime = LocalDateTime.now();
         this.receiptName = receiptName;
         this.receiptPhoneNumber = receiptPhoneNumber;
+        this.receiptSubPhoneNumber = receiptSubPhoneNumber;
+        this.deliveryRequest = deliveryRequest;
     }
 }

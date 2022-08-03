@@ -51,6 +51,14 @@ public class MemberCoupon {
     @NotNull
     private LocalDateTime expirationDatetime;
 
+    /**
+     * 멤버의 보유 쿠폰을 생성합니다.
+     *
+     * @param member 쿠폰을 줄 멤버 엔티티 객체입니다.
+     * @param couponStatusCode 해당 쿠폰의 상태입니다.
+     * @param coupon 어떤 쿠폰인지에 대한 쿠폰 엔티티 객체입니다/
+     * @param expirationDatetime 쿠폰의 만료시간입니다.
+     */
     @Builder
     public MemberCoupon(Member member,
                         StatusCode couponStatusCode,
@@ -59,5 +67,15 @@ public class MemberCoupon {
         this.couponStatusCode = couponStatusCode;
         this.coupon = coupon;
         this.expirationDatetime = expirationDatetime;
+    }
+
+    /**
+     * 멤버의 보유중인 쿠폰이 시용되거나 만료 등에 대한 상태의 변경을 위한 메서드입니다.
+     *
+     * @param couponStatusCode 쿠폰의 상태 엔티티 객체입니다.
+     */
+    public void updateMemberCouponStatus(
+        StatusCode couponStatusCode) {
+        this.couponStatusCode = couponStatusCode;
     }
 }

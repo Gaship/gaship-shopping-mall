@@ -14,7 +14,7 @@ import shop.gaship.gashipshoppingmall.product.exception.NoMoreProductException;
  * @author 김민수
  * @since 1.0
  */
-@Component
+@Component("orderProductBaseDecorator")
 @RequiredArgsConstructor
 public class OrderProductRegistrationBaseDecorator implements OrderProductRegistrationDecorator {
     private final OrderProductRepository orderProductRepository;

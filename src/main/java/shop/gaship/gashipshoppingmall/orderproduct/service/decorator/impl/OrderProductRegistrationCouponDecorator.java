@@ -19,7 +19,7 @@ import shop.gaship.gashipshoppingmall.statuscode.status.CouponStatus;
  * @author 김민수
  * @since 1.0
  */
-@Component
+@Component("orderProductCouponDecorator")
 public class OrderProductRegistrationCouponDecorator
     extends OrderProductRegistrationBaseDecorator {
     private static final ThreadLocal<MemberCoupon> MEMBER_COUPON_THREAD_LOCAL;
