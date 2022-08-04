@@ -4,17 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
 import shop.gaship.gashipshoppingmall.inquiry.repository.InquiryRepository;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
+import shop.gaship.gashipshoppingmall.inquiry.util.InquiryType;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
@@ -46,6 +49,7 @@ public class InquiryServiceImpl implements InquiryService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void addInquiry(InquiryAddRequestDto inquiryAddRequestDto) {
         StatusCode statusCode =
@@ -94,6 +98,7 @@ public class InquiryServiceImpl implements InquiryService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void addInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto) {
         Inquiry inquiry = inquiryRepository.findById(inquiryAnswerRequestDto.getInquiryNo())
@@ -113,6 +118,8 @@ public class InquiryServiceImpl implements InquiryService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
+    @Override
     public void modifyInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto) {
         Inquiry inquiry = inquiryRepository.findById(inquiryAnswerRequestDto.getInquiryNo())
             .orElseThrow(InquiryNotFoundException::new);
@@ -123,6 +130,7 @@ public class InquiryServiceImpl implements InquiryService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void deleteInquiry(Integer inquiryNo) {
         inquiryRepository.deleteById(inquiryNo);
@@ -131,6 +139,7 @@ public class InquiryServiceImpl implements InquiryService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void deleteInquiryAnswer(Integer inquiryNo) {
         Inquiry inquiry =
@@ -158,7 +167,8 @@ public class InquiryServiceImpl implements InquiryService {
      * {@inheritDoc}
      */
     @Override
-    public Page<InquiryListResponseDto> findInquiriesByStatusCodeNo(Pageable pageable, Boolean isProduct,
+    public Page<InquiryListResponseDto> findInquiriesByStatusCodeNo(Pageable pageable,
+                                                                    Boolean isProduct,
                                                                     String statusCodeName) {
         StatusCode statusCode = statusCodeRepository.findByStatusCodeName(statusCodeName)
             .orElseThrow(StatusCodeNotFoundException::new);
@@ -173,14 +183,16 @@ public class InquiryServiceImpl implements InquiryService {
      * {@inheritDoc}
      */
     @Override
-    public Page<InquiryListResponseDto> findInquiriesByMemberNo(Pageable pageable, Boolean isProduct, Integer memberNo) {
+    public Page<InquiryListResponseDto> findInquiriesByMemberNo(Pageable pageable,
+                                                                Boolean isProduct,
+                                                                Integer memberNo) {
         if (Boolean.FALSE.equals(memberRepository.existsById(memberNo))) {
             throw new MemberNotFoundException();
         }
-        
+
         InquirySearchRequestDto inquirySearchRequestDto =
             new InquirySearchRequestDto(isProduct, null, memberNo, null);
-        
+
         return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
     }
 
@@ -195,8 +207,19 @@ public class InquiryServiceImpl implements InquiryService {
         }
 
         InquirySearchRequestDto inquirySearchRequestDto =
-            new InquirySearchRequestDto(Boolean.FALSE, null, null, productNo);
+            new InquirySearchRequestDto(InquiryType.PRODUCT_INQUIRIES.getValue(), null, null,
+                productNo);
 
         return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InquiryDetailsResponseDto findInquiry(int inquiryNo) {
+
+        return inquiryRepository.findDetailsById(inquiryNo)
+            .orElseThrow(InquiryNotFoundException::new);
     }
 }
