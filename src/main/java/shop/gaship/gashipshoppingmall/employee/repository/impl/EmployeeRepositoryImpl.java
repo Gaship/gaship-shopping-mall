@@ -8,13 +8,24 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
+import shop.gaship.gashipshoppingmall.addresslist.entity.QAddressList;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.entity.QEmployee;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepositoryCustom;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.order.entity.Order;
+import shop.gaship.gashipshoppingmall.order.entity.QOrder;
+import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
+import shop.gaship.gashipshoppingmall.orderproduct.entity.QOrderProduct;
+import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
+import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 
 
 /**
@@ -88,5 +99,49 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
         return new PageResponse<>(PageableExecutionUtils.getPage(content, pageable,
             () -> query.fetch()
                 .size()));
+    }
+
+    @Override
+    public PageResponse<Order> findOrderBasedOnMyLocation(Pageable pageable, Integer employeeNo) {
+        QEmployee employee = QEmployee.employee;
+        QOrder order = QOrder.order;
+        QStatusCode statusCode = QStatusCode.statusCode;
+        QAddressLocal addressLocal = QAddressLocal.addressLocal;
+        QAddressList addressList = QAddressList.addressList;
+        QOrderProduct orderProduct = QOrderProduct.orderProduct;
+        QProduct product = QProduct.product;
+
+        JPQLQuery<AddressLocal> retrieveDeliverLocalPoint = from(employee)
+            .innerJoin(employee.addressLocal, addressLocal)
+            .where(employee.employeeNo.eq(employeeNo))
+            .select(addressLocal.upperLocal);
+
+        JPQLQuery<StatusCode> installStatusCode = from(statusCode)
+            .where(statusCode.statusCodeName.eq(DeliveryType.CONSTRUCTION.getValue()))
+            .select(statusCode);
+
+        JPQLQuery<OrderProduct> installWorkResult = from(orderProduct)
+            .innerJoin(orderProduct.order, order)
+            .innerJoin(orderProduct.product, product)
+            .innerJoin(order.addressList, addressList)
+            .innerJoin(addressList.addressLocal, addressLocal)
+            .innerJoin(orderProduct.orderStatusCode, statusCode)
+            .where(addressLocal.upperLocal.eq(retrieveDeliverLocalPoint),
+                product.deliveryType.eq(installStatusCode),
+                statusCode.statusCodeName
+                    .eq(OrderStatus.DELIVERY_PREPARING.getValue()));
+
+        JPQLQuery<Order> employeeInstallWorkResult =
+            installWorkResult.select(order)
+            .orderBy(order.orderDatetime.asc())
+            .distinct()
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize());
+
+        return new PageResponse<>(PageableExecutionUtils.getPage(
+                employeeInstallWorkResult.fetch(),
+                pageable,
+                installWorkResult::fetchCount)
+        );
     }
 }

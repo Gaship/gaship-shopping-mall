@@ -111,7 +111,7 @@ public interface AddressListService {
      * @author 최정우
      */
     default AddressListResponseDto entityToDto(AddressList addressList) {
-        return AddressListResponseDto.builder().addressListNo(addressList.getAddressListNo())
+        return AddressListResponseDto.builder().addressListNo(addressList.getAddressListsNo())
             .addressLocal(addressList.getAddressLocal()).address(addressList.getAddress())
             .addressDetail(addressList.getAddressDetail()).zipCode(addressList.getZipCode())
             .build();

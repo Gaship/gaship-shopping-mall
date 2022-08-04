@@ -7,15 +7,38 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.addresslist.dummy.AddressListDummy;
+import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
+import shop.gaship.gashipshoppingmall.addresslist.repository.AddressListRepository;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
+import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
+import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
+import shop.gaship.gashipshoppingmall.order.entity.Order;
+import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
+import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
+import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
+import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
+import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
+import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -34,6 +57,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @DataJpaTest
 class EmployeeRepositoryTest {
+    @Autowired
+    private TestEntityManager entityManager;
 
     @Autowired
     EmployeeRepository repository;
@@ -110,4 +135,78 @@ class EmployeeRepositoryTest {
 
         assertThat(loginEmployee).isNull();
     }
+
+    @Test
+    @DisplayName("직원이 자신의 지역에서 설치해야 할 주문들을 조회합니다.")
+    void findOrderBasedOnMyLocationTest(@Autowired AddressListRepository addressListRepository,
+                                        @Autowired MemberRepository memberRepository,
+                                        @Autowired OrderRepository orderRepository,
+                                        @Autowired OrderProductRepository orderProductRepository){
+        // 주문 등록
+        Member memberDummy = MemberDummy.dummy();
+        entityManager.persist(memberDummy.getMemberStatusCodes());
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
+        entityManager.persist(memberDummy.getMemberGrades());
+        Member savedMember = memberRepository.save(memberDummy);
+
+        AddressLocal addressLocalLevel2 = AddressListDummy.addressListEntity().getAddressLocal();
+        AddressLocal addressLocalLevel1 = AddressLocalDummy.dummy1();
+        addressLocalLevel2.registerUpperLocal(addressLocalLevel1);
+        entityManager.persist(addressLocalLevel1);
+        AddressLocal savedLocalLevel2 = entityManager.persist(addressLocalLevel2);
+
+        AddressList addressListDummy = AddressListDummy.addressListEntity();
+        ReflectionTestUtils.setField(addressListDummy, "addressLocal", savedLocalLevel2);
+        ReflectionTestUtils.setField(addressListDummy, "member", savedMember);
+        entityManager.persist(addressListDummy.getAddressLocal());
+        addressListRepository.save(addressListDummy);
+
+        Order orderDummy = orderRepository.save(OrderDummy.createOrderDummy());
+
+        // 주문 상품 저장
+        Product productDummy = ProductDummy.dummy();
+        entityManager.persist(productDummy.getCategory());
+        entityManager.persist(productDummy.getSalesStatus());
+        entityManager.persist(productDummy.getDeliveryType());
+        entityManager.persist(productDummy);
+
+        OrderProduct orderProduct1 = OrderProductDummy.dummy();
+        OrderProduct orderProduct2 = OrderProductDummy.dummy();
+        OrderProduct orderProduct3 = OrderProductDummy.dummy();
+        StatusCode orderStatus = entityManager.persist(orderProduct1.getOrderStatusCode());
+        ReflectionTestUtils.setField(orderProduct1, "orderStatusCode", orderStatus);
+        ReflectionTestUtils.setField(orderProduct1, "product", productDummy);
+        ReflectionTestUtils.setField(orderProduct1, "order", orderDummy);
+        ReflectionTestUtils.setField(orderProduct2, "orderStatusCode", orderStatus);
+        ReflectionTestUtils.setField(orderProduct2, "product", productDummy);
+        ReflectionTestUtils.setField(orderProduct2, "order", orderDummy);
+        ReflectionTestUtils.setField(orderProduct2, "no", 2);
+        ReflectionTestUtils.setField(orderProduct3, "orderStatusCode", orderStatus);
+        ReflectionTestUtils.setField(orderProduct3, "product", productDummy);
+        ReflectionTestUtils.setField(orderProduct3, "order", orderDummy);
+        ReflectionTestUtils.setField(orderProduct3, "no", 3);
+
+        orderProductRepository.save(orderProduct1);
+        orderProductRepository.save(orderProduct2);
+        orderProductRepository.save(orderProduct3);
+
+
+        //직원 저장
+        employee.fixLocation(savedLocalLevel2);
+        int id = (Integer) entityManager.persistAndGetId(employee);
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        PageResponse<?> result =
+            repository.findOrderBasedOnMyLocation(pageable, id);
+
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.getPage()).isZero();
+        assertThat(result.isNext()).isTrue();
+        assertThat(result.isPrev()).isFalse();
+        assertThat(result.getContent()).hasSize(1);
+        System.out.println(result.getContent());
+    }
 }
+
+

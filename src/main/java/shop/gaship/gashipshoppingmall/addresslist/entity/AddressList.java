@@ -29,13 +29,13 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 @Getter
 @NoArgsConstructor
 @Builder
-@Table(name = "Address_lists", indexes = @Index(columnList = "addressListNo"))
+@Table(name = "Address_lists", indexes = @Index(columnList = "addressListsNo"))
 @ToString
 public class AddressList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private Integer addressListNo;
+    private Integer addressListsNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_local_no", nullable = false)
@@ -46,7 +46,7 @@ public class AddressList {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "status_code_no", nullable = false)
+    @JoinColumn(name = "address_status_no", nullable = false)
     private StatusCode statusCode;
 
     @Column(nullable = false)
@@ -61,7 +61,7 @@ public class AddressList {
     /**
      * AddressList(배송지주소) 엔티티를 생성하는 생성자입니다.
      *
-     * @param addressListNo 배송지주소 목록의 고유 번호입니다.
+     * @param addressListsNo 배송지주소 목록의 고유 번호입니다.
      * @param addressLocal 주소지역 엔티티입니다.
      * @param member 멤버 엔티티입니다.
      * @param statusCode 배송상태를 뜻하는 상태코드 엔티티입니다.
@@ -70,10 +70,10 @@ public class AddressList {
      * @param zipCode 주소번호입니다.
      */
     @Builder
-    public AddressList(Integer addressListNo, AddressLocal addressLocal, Member member,
+    public AddressList(Integer addressListsNo, AddressLocal addressLocal, Member member,
                        StatusCode statusCode, String address, String addressDetail,
                        String zipCode) {
-        this.addressListNo = addressListNo;
+        this.addressListsNo = addressListsNo;
         this.addressLocal = addressLocal;
         this.member = member;
         this.statusCode = statusCode;

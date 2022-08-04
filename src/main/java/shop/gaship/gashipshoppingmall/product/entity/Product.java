@@ -73,7 +73,7 @@ public class Product {
 
     @Min(value = 0, message = "금액은 0보다 커야 합니다.")
     @NotNull
-    Long amount;
+    private Long amount;
 
     @NotNull
     private LocalDateTime registerDatetime;
@@ -133,6 +133,26 @@ public class Product {
     @Column(name = "product_code", unique = true)
     private String code;
 
+    /**
+     * 상품을 생성하는 생성자입니다.
+     *
+     * @param category 상품의 카테고리입니다.
+     * @param deliveryType 상품의 배송타입입니다.
+     * @param name 상품명입니다.
+     * @param amount 상품의 가격입니다.
+     * @param registerDatetime 상품의 등록 시간입니다.
+     * @param manufacturer 제조사입니다.
+     * @param manufacturerCountry 제조국입니다.
+     * @param seller 판매자
+     * @param importer 수입자
+     * @param shippingInstallationCost 설치비용
+     * @param qualityAssuranceStandard 품질보증기준
+     * @param color 색상
+     * @param stockQuantity 재고수량
+     * @param explanation 설명
+     * @param code 상품코드
+     */
+    @SuppressWarnings("java:S107") // 빌더 패턴 제작시 필요하기 때문
     @Builder
     public Product(Category category, StatusCode deliveryType, String name,
                    Long amount, LocalDateTime registerDatetime, String manufacturer,
@@ -256,5 +276,9 @@ public class Product {
         imageLinks.removeAll(Collections.singletonList(null));
 
         return imageLinks;
+    }
+
+    public void updateStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 }

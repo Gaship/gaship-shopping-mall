@@ -22,7 +22,7 @@ public class OrderDummy {
         ReflectionTestUtils.setField(order, "member", MemberDummy.dummy());
         ReflectionTestUtils.setField(order, "addressList", AddressListDummy.addressListEntity());
         ReflectionTestUtils.setField(order, "orderProducts", Collections.emptyList());
-        ReflectionTestUtils.setField(order, "orderDateTime", LocalDateTime.now());
+        ReflectionTestUtils.setField(order, "orderDatetime", LocalDateTime.now());
         ReflectionTestUtils.setField(order, "receiptName", "홍홍홍");
         ReflectionTestUtils.setField(order, "receiptPhoneNumber", "01012345678");
         ReflectionTestUtils.setField(order, "receiptSubPhoneNumber", null);

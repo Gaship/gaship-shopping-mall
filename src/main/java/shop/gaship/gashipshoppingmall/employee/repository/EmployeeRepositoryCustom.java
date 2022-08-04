@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 
@@ -28,4 +29,6 @@ public interface EmployeeRepositoryCustom {
      * @return 직원의 정보가 담긴 리스트가 반환됩니다.
      */
     PageResponse<EmployeeInfoResponseDto> findAllEmployees(Pageable pageable);
+
+    PageResponse<Order> findOrderBasedOnMyLocation(Pageable pageable, Integer employeeNo);
 }

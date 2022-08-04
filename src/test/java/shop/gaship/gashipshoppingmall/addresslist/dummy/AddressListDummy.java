@@ -74,8 +74,8 @@ public class AddressListDummy {
 
     public static AddressList addressListEntity() {
         return AddressList.builder()
-            .addressListNo(1)
-            .addressLocal(AddressLocalDummy.dummy1())
+            .addressListsNo(1)
+            .addressLocal(AddressLocalDummy.dummy2())
             .member(MemberDummy.dummy())
             .statusCode(StatusCodeDummy.dummy())
             .address("경기도 안양시 비산동")
@@ -88,7 +88,7 @@ public class AddressListDummy {
         List<AddressList> list = new ArrayList<>();
 
         IntStream.rangeClosed(1, 103).forEach(i -> list.add(AddressList.builder()
-            .addressListNo(i)
+            .addressListsNo(i)
             .addressLocal(AddressLocalDummy.dummy1())
             .member(MemberDummy.dummy())
             .statusCode(StatusCodeDummy.dummy())

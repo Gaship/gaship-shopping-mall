@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "order_no")
+    @Column(name = "order_no")
     private Integer no;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,7 +52,7 @@ public class Order {
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
     @NotNull
-    private LocalDateTime orderDateTime;
+    private LocalDateTime orderDatetime;
 
     @NotNull
     private String receiptName;
@@ -81,7 +82,7 @@ public class Order {
                  ) {
         this.member = member;
         this.addressList = addressList;
-        this.orderDateTime = LocalDateTime.now();
+        this.orderDatetime = LocalDateTime.now();
         this.receiptName = receiptName;
         this.receiptPhoneNumber = receiptPhoneNumber;
         this.receiptSubPhoneNumber = receiptSubPhoneNumber;

@@ -61,7 +61,7 @@ class AddressListRepositoryTest {
         IntStream.rangeClosed(1, 5).forEach(i ->
             addressListRepository
                 .save(AddressList.builder()
-                    .addressListNo(i)
+                    .addressListsNo(i)
                     .addressLocal(addressLocal2)
                     .member(member2)
                     .statusCode(statusCode3)
@@ -72,7 +72,7 @@ class AddressListRepositoryTest {
         IntStream.rangeClosed(1, 8).forEach(i ->
             addressListRepository
                 .save(AddressList.builder()
-                    .addressListNo(i + 15)
+                    .addressListsNo(i + 15)
                     .addressLocal(addressLocal2)
                     .member(member2)
                     .statusCode(statusCode4)
