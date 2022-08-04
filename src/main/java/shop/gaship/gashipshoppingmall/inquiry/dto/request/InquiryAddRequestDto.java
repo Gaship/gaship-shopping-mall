@@ -4,12 +4,11 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 문의와 관련된 요청이나 반환시 정보를 담는 dto입니다.
  *
- * @author : 최겸준
+ * @author 최겸준
  * @since 1.0
  */
 @Getter

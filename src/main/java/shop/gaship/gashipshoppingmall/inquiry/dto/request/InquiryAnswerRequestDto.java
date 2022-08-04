@@ -8,7 +8,7 @@ import lombok.Getter;
 /**
  * 문의에 대한 답변을 등록하기위해 사용하는 DTO 클래스입니다.
  *
- * @author : 최겸준
+ * @author 최겸준
  * @since 1.0
  */
 @Getter
