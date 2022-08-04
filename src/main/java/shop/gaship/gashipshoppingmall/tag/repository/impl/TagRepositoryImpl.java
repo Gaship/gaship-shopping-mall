@@ -1,10 +1,12 @@
 package shop.gaship.gashipshoppingmall.tag.repository.impl;
 
+import com.querydsl.core.types.Projections;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
+import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepositoryCustom;
@@ -23,17 +25,26 @@ public class TagRepositoryImpl extends QuerydslRepositorySupport implements TagR
 
     /**
      * {@inheritDoc}
-     *
-     * @param pageable {@inheritDoc}
-     * @return {@inheritDoc}
      */
     @Override
-    public Page<Tag> getAllTags(Pageable pageable) {
+    public Page<TagResponseDto> getTags(Pageable pageable) {
         QTag tag = QTag.tag;
 
-        List<Tag> list = from(tag).orderBy(tag.title.asc()).limit(pageable.getPageSize())
-            .offset(pageable.getOffset()).fetch();
+        List<TagResponseDto> tags = from(tag)
+                .orderBy(tag.title.asc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .select(Projections.fields(TagResponseDto.class,
+                        tag.tagNo,
+                        tag.title,
+                        tag.registerDatetime,
+                        tag.modifyDatetime))
+                .fetch();
 
-        return PageableExecutionUtils.getPage(list, pageable, () -> from(tag).fetch().size());
+        return PageableExecutionUtils.getPage(tags,
+                pageable,
+                () -> from(tag)
+                        .fetch()
+                        .size());
     }
 }
