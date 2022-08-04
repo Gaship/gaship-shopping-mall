@@ -150,7 +150,7 @@ public class InquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-    @GetMapping(value = "/customer-inquiries/status-hold", params = {"page", "size"})
+    @GetMapping(value = "/customer-inquiries/status-hold")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusHoldList(
         Pageable pageable) {
         Page<InquiryListResponseDto> inquiriesPage =
@@ -169,7 +169,7 @@ public class InquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-    @GetMapping(value = "/customer-inquiries/status-complete", params = {"page", "size"})
+    @GetMapping(value = "/customer-inquiries/status-complete")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusCompleteList(
         Pageable pageable) {
         Page<InquiryListResponseDto> inquiriesPage =
@@ -188,7 +188,7 @@ public class InquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-    @GetMapping(value = "/product-inquiries/status-hold", params = {"page", "size"})
+    @GetMapping(value = "/product-inquiries/status-hold")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryStatusHoldList(
         Pageable pageable) {
         Page<InquiryListResponseDto> inquiriesPage =
@@ -207,7 +207,7 @@ public class InquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-    @GetMapping(value = "/product-inquiries/status-complete", params = {"page", "size"})
+    @GetMapping(value = "/product-inquiries/status-complete")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryStatusCompleteList(
         Pageable pageable) {
         Page<InquiryListResponseDto> inquiriesPage =
@@ -227,7 +227,7 @@ public class InquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-    @GetMapping(value = "/member/{memberNo}/customer-inquiries", params = {"page", "size"})
+    @GetMapping(value = "/member/{memberNo}/customer-inquiries")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryMemberList(
         Pageable pageable, @PathVariable Integer memberNo) {
         Page<InquiryListResponseDto> inquiriesPage =
@@ -247,7 +247,7 @@ public class InquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-    @GetMapping(value = "/member/{memberNo}/product-inquiries", params = {"page", "size"})
+    @GetMapping(value = "/member/{memberNo}/product-inquiries")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryMemberList(
         Pageable pageable, @PathVariable Integer memberNo) {
 
@@ -268,7 +268,6 @@ public class InquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-
     @GetMapping(value = "/product/{productNo}")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryProductList(
         Pageable pageable, @PathVariable Integer productNo) {
@@ -292,6 +291,7 @@ public class InquiryRestController {
     @GetMapping(value = "/{inquiryNo}")
     public ResponseEntity<InquiryDetailsResponseDto> inquiryDetails(
         @PathVariable Integer inquiryNo) {
+
         return ResponseEntity.ok(inquiryService.findInquiry(inquiryNo));
     }
 }
