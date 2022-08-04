@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.gaship.gashipshoppingmall.inquiry.exception.AlreadyCompleteInquiryAnswerException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentEmployeeWriterAboutInquiryAnswerException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentInquiryException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.InquirySearchBadRequestException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.NoRegisteredAnswerException;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
@@ -37,7 +39,9 @@ public class ExceptionAdviceController {
         InvalidReissueQualificationException.class, DuplicatedNicknameException.class,
         AlreadyCompleteInquiryAnswerException.class,
         DifferentEmployeeWriterAboutInquiryAnswerException.class,
-        InquiryNotFoundException.class, NoRegisteredAnswerException.class})
+        InquiryNotFoundException.class, NoRegisteredAnswerException.class,
+        DifferentInquiryException.class, InquirySearchBadRequestException.class
+    })
     public ResponseEntity<ErrorResponse> declaredExceptionAdvice(RuntimeException exception) {
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON)
             .body(new ErrorResponse(exception.getMessage()));
