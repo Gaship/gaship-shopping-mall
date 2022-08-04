@@ -40,9 +40,9 @@ public class ProductReview {
 
     private String imagePath;
 
-    @NotNull
-    @Min(1)
-    @Max(5)
+    @NotNull(message = "별점은 필수입력사항입니다.")
+    @Min(value = 1, message = "별점은 1이상 5이하여야 합니다.")
+    @Max(value = 5, message = "별점은 1이상 5이하여야 합니다.")
     private Integer starScore;
 
     @NotNull

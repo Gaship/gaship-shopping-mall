@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -74,14 +75,14 @@ public class ProductReviewRepositoryImpl extends QuerydslRepositorySupport
     }
 
     private BooleanExpression eqOrderProductNo(Integer orderProductNo) {
-        return (orderProductNo != 0) ? review.orderProduct.no.eq(orderProductNo) : null;
+        return (!Objects.isNull(orderProductNo)) ? review.orderProduct.no.eq(orderProductNo) : null;
     }
 
     private BooleanExpression eqProductNo(Integer productNo) {
-        return (productNo != 0) ? product.no.eq(productNo) : null;
+        return (!Objects.isNull(productNo)) ? product.no.eq(productNo) : null;
     }
 
     private BooleanExpression eqMemberNo(Integer memberNo) {
-        return (memberNo != 0) ? member.memberNo.eq(memberNo) : null;
+        return (!Objects.isNull(memberNo)) ? member.memberNo.eq(memberNo) : null;
     }
 }

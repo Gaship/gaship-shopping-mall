@@ -17,17 +17,14 @@ import org.springframework.data.domain.Pageable;
 @EqualsAndHashCode
 @Builder
 public class ProductReviewViewRequestDto {
-    @Min(0)
-    @Builder.Default
-    private Integer orderProductNo = 0;
+    @Min(value = 1, message = "주문상품번호는 0보다 커야합니다.")
+    private Integer orderProductNo;
 
-    @Min(0)
-    @Builder.Default
-    private Integer productNo = 0;
+    @Min(value = 1, message = "상품번호는 0보다 커야합니다.")
+    private Integer productNo;
 
-    @Min(0)
-    @Builder.Default
-    private Integer memberNo = 0;
+    @Min(value = 1, message = "회원번호는 0보다 커야합니다.")
+    private Integer memberNo;
 
     @Builder.Default
     private Pageable pageable = PageRequest.of(0, 5);

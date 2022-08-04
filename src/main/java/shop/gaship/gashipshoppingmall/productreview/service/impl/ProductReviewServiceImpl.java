@@ -119,10 +119,13 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 ).getContent().get(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<ProductReviewResponseDto> findReviews(Pageable pageable) {
         return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
-                        .pageable(pageable)
+                .pageable(pageable)
                 .build());
     }
 

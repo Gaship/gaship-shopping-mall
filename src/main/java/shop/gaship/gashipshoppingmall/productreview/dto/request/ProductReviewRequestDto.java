@@ -15,16 +15,16 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ProductReviewRequestDto {
-    @Min(1)
-    @NotNull
+    @Min(value = 1, message = "주문상품번호(상품평번호)는 0보다 커야합니다.")
+    @NotNull(message = "주문상품번호(상품평번호)는 필수 입력값입니다.")
     private Integer orderProductNo;
 
     private String title;
 
     private String content;
 
-    @Min(1)
-    @Max(5)
+    @Min(value = 1, message = "별점은 1이상 5이하여야 합니다.")
+    @Max(value = 5, message = "별점은 1이상 5이하여야 합니다.")
     @NotNull
     private Integer starScore;
 }
