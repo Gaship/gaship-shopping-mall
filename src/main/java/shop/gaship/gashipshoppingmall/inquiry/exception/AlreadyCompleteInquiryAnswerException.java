@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.inquiry.exception;
 /**
  * 답변 등록이 이미 완료되었는데 재차 답변요청을 할시에 발생시킬 예외클래스입니다.
  *
- * @author : 최겸준
+ * @author 최겸준
  * @since 1.0
  */
 public class AlreadyCompleteInquiryAnswerException extends RuntimeException {
