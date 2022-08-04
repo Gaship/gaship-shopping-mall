@@ -10,7 +10,6 @@ import shop.gaship.gashipshoppingmall.inquiry.repository.custom.InquiryRepositor
  * @author 최겸준
  * @since 1.0
  */
-public interface InquiryRepository extends JpaRepository<Inquiry, Integer>,
-    InquiryRepositoryCustom {
-
+public interface InquiryRepository
+    extends JpaRepository<Inquiry, Integer>, InquiryRepositoryCustom {
 }

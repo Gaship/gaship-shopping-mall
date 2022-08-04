@@ -93,10 +93,10 @@ public class Inquiry {
      * Inquriy entity를 생성하기위한 생성자이며 Builder를 붙여서 편리하게 생성할수 있습니다.
      *
      * @param processStatusCode 처리상태정보를 담고있는 상태코드객체입니다.
-     * @param title 문의 제목입니다.
-     * @param inquiryContent 문의내용입니다.
-     * @param registerDatetime 문의등록 시간입니다.
-     * @param isProduct 상품문의인지 고객문의인지 구분하기위해 사용합니다. true이면 상품문의, false이면 고객문의입니다.
+     * @param title             문의 제목입니다.
+     * @param inquiryContent    문의내용입니다.
+     * @param registerDatetime  문의등록 시간입니다.
+     * @param isProduct         상품문의인지 고객문의인지 구분하기위해 사용합니다. true이면 상품문의, false이면 고객문의입니다.
      * @author 최겸준
      */
     @Builder
@@ -149,12 +149,9 @@ public class Inquiry {
      */
     public static Inquiry dtoToEntityWhenCreation(InquiryAddRequestDto inquiryAddRequestDto,
                                                   StatusCode statusCode) {
-        return Inquiry.builder()
-            .title(inquiryAddRequestDto.getTitle())
-            .inquiryContent(inquiryAddRequestDto.getInquiryContent())
-            .processStatusCode(statusCode)
-            .isProduct(inquiryAddRequestDto.getIsProduct())
-            .registerDatetime(LocalDateTime.now())
+        return Inquiry.builder().title(inquiryAddRequestDto.getTitle())
+            .inquiryContent(inquiryAddRequestDto.getInquiryContent()).processStatusCode(statusCode)
+            .isProduct(inquiryAddRequestDto.getIsProduct()).registerDatetime(LocalDateTime.now())
             .build();
     }
 
@@ -162,8 +159,8 @@ public class Inquiry {
      * 문의 답변을 추가하는 기능입니다.
      *
      * @param inquiryAnswerRequestDto 문의 답변 추가에 필요한 정보를 담고 있는 DTO 객체입니다.
-     * @param employee                   답변을 등록하려는 사원의 영속화된 entity입니다.
-     * @param processStatusCode 처리상태정보를 담고있는 상태코드객체입니다.
+     * @param employee                답변을 등록하려는 사원의 영속화된 entity입니다.
+     * @param processStatusCode       처리상태정보를 담고있는 상태코드객체입니다.
      * @author 최겸준
      */
     public void addAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto, Employee employee,
@@ -194,7 +191,8 @@ public class Inquiry {
             throw new DifferentInquiryException();
         }
 
-        if (!Objects.equals(inquiryAnswerRequestDto.getEmployeeNo(), this.employee.getEmployeeNo())) {
+        if (!Objects.equals(inquiryAnswerRequestDto.getEmployeeNo(),
+            this.employee.getEmployeeNo())) {
             throw new DifferentEmployeeWriterAboutInquiryAnswerException();
         }
 
@@ -212,11 +210,10 @@ public class Inquiry {
      * 정확하게는 테이블의 컬럼을 수정하는 용도입니다.
      *
      * @param processStatusCode 답변삭제시 답변완료상태에서 답변대기상태로 변경되어야하는데 해당 정보를 담고있는 상태코드입니다.
-     * @param inquiryNo
+     * @param inquiryNo 답변삭제의 기준이 되는 문의번호입니다.
      * @author 최겸준
      */
-    public void deleteAnswer(
-        StatusCode processStatusCode, Integer inquiryNo) {
+    public void deleteAnswer(StatusCode processStatusCode, Integer inquiryNo) {
         if (!Objects.equals(inquiryNo, this.inquiryNo)) {
             throw new DifferentInquiryException();
         }

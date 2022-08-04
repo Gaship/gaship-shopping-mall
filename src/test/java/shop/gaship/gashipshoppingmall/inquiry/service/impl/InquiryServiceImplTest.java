@@ -2,7 +2,6 @@ package shop.gaship.gashipshoppingmall.inquiry.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -12,6 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +34,9 @@ import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
+import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.AlreadyCompleteInquiryAnswerException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentEmployeeWriterAboutInquiryAnswerException;
@@ -45,7 +47,6 @@ import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
@@ -95,7 +96,8 @@ class InquiryServiceImplTest {
 
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "memberNo", 1);
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "title", "첫번재 고객문의 제목");
-        ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "inquiryContent","첫번째 고객문의 내용");
+        ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "inquiryContent",
+            "첫번째 고객문의 내용");
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "isProduct", Boolean.FALSE);
 
         inquiryAddRequestDtoWhenProduct
@@ -104,7 +106,8 @@ class InquiryServiceImplTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "memberNo", 1);
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "productNo", 1);
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "title", "두번재 상품문의 제목");
-        ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "inquiryContent","두번째 고객문의 내용");
+        ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "inquiryContent",
+            "두번째 고객문의 내용");
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "isProduct", Boolean.TRUE);
 
         inquiryAnswerRequestDto
@@ -162,7 +165,7 @@ class InquiryServiceImplTest {
         // when then
         assertThatThrownBy(() -> inquiryService.addInquiry(inquiryAddRequestDtoWhenProduct))
             .isInstanceOf(MemberNotFoundException.class)
-                .hasMessageContaining(MemberNotFoundException.MESSAGE);
+            .hasMessageContaining(MemberNotFoundException.MESSAGE);
     }
 
     @DisplayName("존재하지 않는 상품의 상품문의가 왔을때 ProductNotFoundException이 발생한다.")
@@ -201,7 +204,8 @@ class InquiryServiceImplTest {
             .willReturn(Optional.ofNullable(InquiryDummy.statusCodeHolderDummy()));
 
         // when then
-        assertThatNoException().isThrownBy(() -> inquiryService.addInquiryAnswer(inquiryAnswerRequestDto));
+        assertThatNoException().isThrownBy(
+            () -> inquiryService.addInquiryAnswer(inquiryAnswerRequestDto));
     }
 
     @DisplayName("답변을 등록하고 실제 답변이 등록되어 있지않았지만(답변대기) 문의번호가 잘못온경우 InquiryNotFoundException이 발생한다.")
@@ -297,7 +301,8 @@ class InquiryServiceImplTest {
         assertThat(inquiry.getAnswerContent())
             .isNull();
 
-        assertThatNoException().isThrownBy(() -> inquiryService.modifyInquiryAnswer(inquiryAnswerRequestDto));
+        assertThatNoException().isThrownBy(
+            () -> inquiryService.modifyInquiryAnswer(inquiryAnswerRequestDto));
 
         assertThat(inquiry.getAnswerContent())
             .isEqualTo("첫번째 답변입니다.");
@@ -331,7 +336,7 @@ class InquiryServiceImplTest {
         // when then
         assertThatThrownBy(() -> inquiryService.modifyInquiryAnswer(inquiryAnswerRequestDto))
             .isInstanceOf(NoRegisteredAnswerException.class)
-                .hasMessageContaining(NoRegisteredAnswerException.MESSAGE);
+            .hasMessageContaining(NoRegisteredAnswerException.MESSAGE);
     }
 
     @DisplayName("답변을 수정하는 경우에 실제 답변이 등록되어 있지만(답변완료) 실제 직원 작성자와 번호가 다른 직원으로 요청이 왔다면 보안방어를 위해 DifferentEmployeeWriterAboutInquiryAnswerException이 발생한다.")
@@ -440,7 +445,8 @@ class InquiryServiceImplTest {
         // given
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
         Page<InquiryListResponseDto> page = new PageImpl<>(Collections.EMPTY_LIST, pageRequest, 10);
-        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class), any(InquirySearchRequestDto.class)))
+        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
+            any(InquirySearchRequestDto.class)))
             .willReturn(page);
 
         // when then
@@ -461,11 +467,13 @@ class InquiryServiceImplTest {
 
         given(statusCodeRepository.findByStatusCodeName(ProcessStatus.WAITING.getValue()))
             .willReturn(Optional.ofNullable(statusCode));
-        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class), any(InquirySearchRequestDto.class)))
+        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
+            any(InquirySearchRequestDto.class)))
             .willReturn(page);
 
         // when then
-        assertThat(inquiryService.findInquiriesByStatusCodeNo(pageRequest, Boolean.TRUE, ProcessStatus.WAITING.getValue()))
+        assertThat(inquiryService.findInquiriesByStatusCodeNo(pageRequest, Boolean.TRUE,
+            ProcessStatus.WAITING.getValue()))
             .isEqualTo(page);
     }
 
@@ -485,7 +493,7 @@ class InquiryServiceImplTest {
             () -> inquiryService.findInquiriesByStatusCodeNo(
                 pageRequest, Boolean.TRUE, value))
             .isInstanceOf(StatusCodeNotFoundException.class)
-                .hasMessageContaining(StatusCodeNotFoundException.MESSAGE);
+            .hasMessageContaining(StatusCodeNotFoundException.MESSAGE);
     }
 
     @DisplayName("존재하는 특정 회원번호를 받아서 상품 또는 고객문의 리스트를 repository에 요청하고 Page 객체를 반환한다.")
@@ -497,7 +505,8 @@ class InquiryServiceImplTest {
 
         given(memberRepository.existsById(anyInt()))
             .willReturn(Boolean.TRUE);
-        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class), any(InquirySearchRequestDto.class)))
+        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
+            any(InquirySearchRequestDto.class)))
             .willReturn(page);
 
         // when then
@@ -531,7 +540,8 @@ class InquiryServiceImplTest {
 
         given(productRepository.existsById(anyInt()))
             .willReturn(Boolean.TRUE);
-        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class), any(InquirySearchRequestDto.class)))
+        given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
+            any(InquirySearchRequestDto.class)))
             .willReturn(page);
 
         // when then
@@ -554,5 +564,70 @@ class InquiryServiceImplTest {
             () -> inquiryService.findInquiriesByProductNo(pageRequest, 1))
             .isInstanceOf(ProductNotFoundException.class)
             .hasMessageContaining(ProductNotFoundException.MESSAGE);
+    }
+
+    @DisplayName("상세조회 요청시 필요한 값들만 dto로 만들어 반환한다.")
+    @Test
+    void findInquiry() {
+        // given
+        InquiryDetailsResponseDto mockDto = new InquiryDetailsResponseDto(
+            1, 1, "memberNickName", "employeeName", "processStatus",
+            "productName", "title", "inquiryContent", LocalDateTime.now(), "answerContent",LocalDateTime.now(), null);
+
+        given(inquiryRepository.findDetailsById(anyInt()))
+            .willReturn(Optional.ofNullable(mockDto));
+
+        // when
+        InquiryDetailsResponseDto resultDto = inquiryService.findInquiry(1);
+
+        // then
+        assertThat(resultDto.getInquiryNo())
+            .isEqualTo(mockDto.getInquiryNo());
+
+        assertThat(resultDto.getMemberNickname())
+            .isEqualTo(mockDto.getMemberNickname());
+
+        assertThat(resultDto.getProcessStatus())
+            .isEqualTo(mockDto.getProcessStatus());
+
+        assertThat(resultDto.getTitle())
+            .isEqualTo(mockDto.getTitle());
+
+        assertThat(resultDto.getInquiryContent())
+            .isEqualTo(mockDto.getInquiryContent());
+
+        assertThat(resultDto.getRegisterDatetime())
+            .isEqualTo(mockDto.getRegisterDatetime());
+
+        assertThat(resultDto.getEmployeeName())
+            .isEqualTo(mockDto.getEmployeeName());
+
+        assertThat(resultDto.getAnswerContent())
+            .isEqualTo(mockDto.getAnswerContent());
+
+        assertThat(resultDto.getRegisterDatetime())
+            .isEqualTo(mockDto.getRegisterDatetime());
+
+        assertThat(resultDto.getAnswerModifyDatetime())
+            .isEqualTo(mockDto.getAnswerModifyDatetime());
+
+        assertThat(resultDto.getProductNo())
+            .isEqualTo(mockDto.getProductNo());
+
+        assertThat(resultDto.getProductName())
+            .isEqualTo(mockDto.getProductName());
+    }
+
+    @DisplayName("상세조회 요청시 존재하지 않는 문의를 요청하면 InquiryNotFoundException이 발생한다.")
+    @Test
+    void findInquiry_fail() {
+        // given
+        given(inquiryRepository.findDetailsById(anyInt()))
+            .willReturn(Optional.empty());
+
+        // when then
+        assertThatThrownBy(() -> inquiryService.findInquiry(1))
+            .isInstanceOf(InquiryNotFoundException.class)
+            .hasMessageContaining(InquiryNotFoundException.MESSAGE);
     }
 }

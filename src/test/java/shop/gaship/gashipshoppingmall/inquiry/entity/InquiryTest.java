@@ -49,7 +49,10 @@ class InquiryTest {
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "employeeNo", 1);
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "answerContent", "4번문의 답변입니다.");
 
-        assertThatThrownBy(() -> inquiry.addAnswer(inquiryAnswerRequestDto, EmployeeDummy.dummy(), InquiryDummy.statusCodeCompleteDummy()))
+        Employee employeeDummy = EmployeeDummy.dummy();
+        StatusCode statusCode = InquiryDummy.statusCodeCompleteDummy();
+        assertThatThrownBy(() -> inquiry.addAnswer(inquiryAnswerRequestDto, employeeDummy,
+            statusCode))
             .isInstanceOf(DifferentInquiryException.class)
             .hasMessageContaining(DifferentInquiryException.MESSAGE);
     }
@@ -77,10 +80,11 @@ class InquiryTest {
     @DisplayName("답변삭제시 요청한 문의번호와 삭제하려는 엔티티의 문의번호가 다를경우 DifferentInquiryException 이 발생한다.")
     @Test
     void deleteAnswer_fail_DifferentInquiryException() {
-        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeCompleteDummy());
+        StatusCode processStatusCode = InquiryDummy.statusCodeCompleteDummy();
+        Inquiry inquiry = InquiryDummy.customerDummy(processStatusCode);
         ReflectionTestUtils.setField(inquiry, "inquiryNo", 1);
 
-        assertThatThrownBy(() -> inquiry.deleteAnswer(InquiryDummy.statusCodeCompleteDummy(), 20))
+        assertThatThrownBy(() -> inquiry.deleteAnswer(processStatusCode, 20))
             .isInstanceOf(DifferentInquiryException.class)
             .hasMessageContaining(DifferentInquiryException.MESSAGE);
     }
