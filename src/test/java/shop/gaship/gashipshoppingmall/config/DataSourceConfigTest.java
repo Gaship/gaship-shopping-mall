@@ -23,7 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     "classpath:application-dev.properties",
     "classpath:application.properties"
 })
-public class DataSourceConfigTest {
+class DataSourceConfigTest {
     @Autowired
     DataSourceConfig dataSourceConfig;
 

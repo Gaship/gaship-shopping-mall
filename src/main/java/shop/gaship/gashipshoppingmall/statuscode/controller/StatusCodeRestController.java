@@ -15,7 +15,7 @@ import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponse
 import shop.gaship.gashipshoppingmall.statuscode.service.StatusCodeService;
 
 /**
- * 상테코드 Rest 컨트롤러
+ * 상태코드에 관한 요청을 받는 Rest 컨트롤러입니다.
  *
  * @author : 김세미
  * @since 1.0

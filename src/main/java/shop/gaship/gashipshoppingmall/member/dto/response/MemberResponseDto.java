@@ -3,10 +3,8 @@ package shop.gaship.gashipshoppingmall.member.dto.response;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import lombok.Builder;
 import lombok.Getter;
-
 
 /**
  * 멤버 정보 수정을 위한 정보를 담는 dto 입니다.

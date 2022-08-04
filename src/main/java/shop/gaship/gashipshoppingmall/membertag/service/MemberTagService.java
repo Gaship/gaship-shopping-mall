@@ -27,10 +27,13 @@ public interface MemberTagService {
      */
     List<MemberTagResponseDto> findMemberTags(Integer memberNo);
 
+    /**
+     * MemberTag 엔티티에서 MemberTagResponseDto엔티티로 변환하는 메서드입니다.
+     *
+     * @param memberTag memberTag 엔티티 객체입니다.
+     * @return MemberTagResponseDto로 변환된 객체입니다.
+     */
     default MemberTagResponseDto entityToDto(MemberTag memberTag) {
-        return MemberTagResponseDto
-            .builder()
-            .tag(memberTag.getTag())
-            .build();
+        return MemberTagResponseDto.builder().tag(memberTag.getTag()).build();
     }
 }

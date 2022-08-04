@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.addresslist.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -11,22 +10,13 @@ import lombok.Getter;
  */
 @Getter
 public class AddressListAddRequestDto {
-    private final Integer addressLocalNo;
-//todo: zipcode address addressdetail valid 추가
-    private final Integer memberNo;
+    private Integer addressLocalNo;
 
-    private final String address;
+    private Integer memberNo;
 
-    private final String addressDetail;
+    private String address;
 
-    private final String zipCode;
+    private String addressDetail;
 
-    @Builder
-    public AddressListAddRequestDto(Integer addressLocalNo, Integer memberNo, String address, String addressDetail, String zipCode) {
-        this.addressLocalNo = addressLocalNo;
-        this.memberNo = memberNo;
-        this.address = address;
-        this.addressDetail = addressDetail;
-        this.zipCode = zipCode;
-    }
+    private String zipCode;
 }

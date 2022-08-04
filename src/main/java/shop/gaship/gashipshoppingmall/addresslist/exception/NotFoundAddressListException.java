@@ -1,6 +1,8 @@
 package shop.gaship.gashipshoppingmall.addresslist.exception;
 
 /**
+ * 배송지 목록이 존재하지 않을 때 발생시키는 예외입니다.
+ *
  * @author 최정우
  * @since 1.0
  */
