@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.order.entity;
 
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "order_no")
+    @Column(name = "order_no")
     private Integer no;
 
     @ManyToOne(fetch = FetchType.LAZY)
