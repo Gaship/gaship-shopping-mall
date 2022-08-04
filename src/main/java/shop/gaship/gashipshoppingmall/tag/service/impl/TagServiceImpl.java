@@ -5,9 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
@@ -29,7 +29,6 @@ public class TagServiceImpl implements TagService {
     /**
      * {@inheritDoc}
      *
-     * @param request 등록에 필요한 정보를 담는 dto 입니다.
      * @throws DuplicatedTagTitleException 등록하려는 태그명이 이미 존재할 경우 나오는 예외입니다.
      */
     @Transactional
@@ -45,7 +44,6 @@ public class TagServiceImpl implements TagService {
     /**
      * {@inheritDoc}
      *
-     * @param request 수정에 필요한 정보를 담는 dto 입니다.
      * @throws DuplicatedTagTitleException 수정하려는 태그명이 이미 존재할 경우 나오는 예외입니다.
      * @throws TagNotFoundException        수정하려는 태그 조회 실패 시 나오는 예외입니다.
      */
@@ -57,14 +55,11 @@ public class TagServiceImpl implements TagService {
         }
         Tag tag = tagRepository.findById(request.getTagNo()).orElseThrow(TagNotFoundException::new);
         tag.modifyEntity(request);
-        tagRepository.save(tag);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param tagNo 단건 조회하려는 태그의 식별번호입니다.
-     * @return TagResponseDto
      * @throws TagNotFoundException 수정하려는 태그 조회 실패 시 나오는 예외입니다.
      */
     @Override
@@ -75,13 +70,10 @@ public class TagServiceImpl implements TagService {
 
     /**
      * {@inheritDoc}
-     *
-     * @param pageable 다건 조회하려는 태그 페이지의 page, size 가 담겨져있습니다.
-     * @return TagResponseDto
      */
     @Override
-    public PageResponseDto<TagResponseDto, Tag> findTags(Pageable pageable) {
-        Page<Tag> page = tagRepository.getAllTags(pageable);
-        return new PageResponseDto<>(page, this::entityToDto);
+    public PageResponse<TagResponseDto> findTags(Pageable pageable) {
+        Page<TagResponseDto> page = tagRepository.getTags(pageable);
+        return new PageResponse<>(page);
     }
 }
