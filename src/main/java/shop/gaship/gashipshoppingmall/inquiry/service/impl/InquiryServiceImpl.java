@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.inquiry.service.impl;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -133,6 +134,10 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional
     @Override
     public void deleteInquiry(Integer inquiryNo) {
+        if (!inquiryRepository.existsById(inquiryNo)) {
+            throw new InquiryNotFoundException();
+        }
+
         inquiryRepository.deleteById(inquiryNo);
     }
 
