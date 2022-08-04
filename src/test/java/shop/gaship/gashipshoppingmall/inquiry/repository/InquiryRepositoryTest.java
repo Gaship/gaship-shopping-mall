@@ -24,6 +24,7 @@ import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
@@ -848,5 +849,71 @@ class InquiryRepositoryTest {
     private InquirySearchRequestDto getInquirySearchRequestDto(boolean isProduct, Integer statusCodeNo, Integer memberNo, Integer productNo) {
         InquirySearchRequestDto dto = new InquirySearchRequestDto(isProduct, statusCodeNo, memberNo, productNo);
         return dto;
+    }
+
+    @DisplayName("등록된 답변전 문의를 조회하면 연관된 member와 status 값들이 모두 들어온다.")
+    @Test
+    void findDetailsById_customer_holder() {
+        InquiryDetailsResponseDto
+            inquiry = inquiryRepository.findDetailsById(customerInquiry.getInquiryNo()).orElseThrow();
+
+        assertThat(inquiry.getInquiryContent())
+            .isEqualTo("1번째 고객문의내용");
+        assertThat(inquiry.getTitle())
+            .isEqualTo("1번째 고객문의제목");
+        assertThat(inquiry.getMemberNickname())
+            .isEqualTo(member.getNickname());
+        assertThat(inquiry.getProcessStatus())
+            .isEqualTo(statusCodeHolder.getStatusCodeName());
+    }
+
+    @DisplayName("등록된 답변후 상품문의를 조회하면 연관된 member와 status, employee, product 값들이 모두 들어온다.")
+    @Test
+    void findDetailsById_product_complete() {
+        Inquiry inquiryBasic = inquiryRepository.findById(productInquiry.getInquiryNo()).orElseThrow();
+
+        InquiryAnswerRequestDto inquiryAnswerRequestDto = new InquiryAnswerRequestDto();
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo", productInquiry.getInquiryNo());
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "employeeNo", 1);
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "answerContent", "1번문의 답변입니다.");
+
+        Employee employee = EmployeeDummy.dummy();
+
+        AddressLocal addressLocal = AddressLocalDummy.dummy1();
+
+        StatusCode code = StatusCodeDummy.dummy();
+
+        DayLabor labor = new DayLabor(1, 10);
+
+        addressLocal.registerDayLabor(labor);
+
+        labor.fixLocation(addressLocal);
+
+        employee.fixCode(code);
+        employee.fixLocation(addressLocal);
+        testEntityManager.persist(labor);
+        testEntityManager.persist(addressLocal);
+        testEntityManager.persist(code);
+        testEntityManager.persist(employee);
+
+        inquiryBasic.addAnswer(inquiryAnswerRequestDto, employee, statusCodeComplete);
+        InquiryDetailsResponseDto inquiry = inquiryRepository.findDetailsById(productInquiry.getInquiryNo()).orElseThrow();
+
+
+
+        assertThat(inquiry.getInquiryContent())
+            .isEqualTo("2번째 상품문의내용");
+        assertThat(inquiry.getTitle())
+            .isEqualTo("2번째 상품문의제목");
+        assertThat(inquiry.getMemberNickname())
+            .isEqualTo(member.getNickname());
+        assertThat(inquiry.getProcessStatus())
+            .isEqualTo(statusCodeComplete.getStatusCodeName());
+        assertThat(inquiry.getEmployeeName())
+            .isEqualTo(employee.getName());
+        assertThat(inquiry.getProductNo())
+            .isEqualTo(product.getNo());
+        assertThat(inquiry.getProductName())
+            .isEqualTo(product.getName());
     }
 }
