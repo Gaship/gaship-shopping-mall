@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -21,9 +22,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,8 +42,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
+import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
 
 /**
  * InquiryRestController test
@@ -621,5 +627,306 @@ class InquiryRestControllerTest {
             .andExpect(jsonPath("$.size").value(5));
 
         verify(inquiryService).findInquiries(any(Pageable.class), eq(true));
+    }
+
+    @DisplayName("고객문의중 답변대기상태의 목록을 요청받았을시에 대기상태의 value값을 전달인자로 추가하여 서비스에 위임하며 PageResponse 객체를 body에 담아서 ResponseEntity를 반환한다. status : 200")
+    @Test
+    void customerInquiryStatusHoldList() throws Exception {
+        List<InquiryListResponseDto> list = new ArrayList<>();
+        InquiryListResponseDto customerInquiryPasswordDto = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "inquiryNo", 1);
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "memberNickname", "홍길동");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "processStatus", "답변대기");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "title", "비밀번호를 까먹었어요..");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "registerDatetime", LocalDateTime.now());
+
+        InquiryListResponseDto customerInquiryBeautiful = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "inquiryNo", 2);
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "memberNickname", "이순신");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "processStatus", "답변완료");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "title", "이 사이트는 왜이렇게 이쁘나요?");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "registerDatetime", LocalDateTime.now());
+
+        list.add(customerInquiryPasswordDto);
+        list.add(customerInquiryBeautiful);
+
+        Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
+        given(inquiryService.findInquiriesByStatusCodeNo(any(Pageable.class), anyBoolean(), anyString()))
+            .willReturn(page);
+
+        mvc.perform(get("/api/inquiries/customer-inquiries/status-hold")
+                .queryParam("page", "0")
+                .queryParam("size", "5")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].inquiryNo").value(customerInquiryPasswordDto.getInquiryNo()))
+            .andExpect(jsonPath("$.content[0].memberNickname").value(customerInquiryPasswordDto.getMemberNickname()))
+            .andExpect(jsonPath("$.content[0].processStatus").value(customerInquiryPasswordDto.getProcessStatus()))
+            .andExpect(jsonPath("$.content[0].title").value(customerInquiryPasswordDto.getTitle()))
+            .andExpect(jsonPath("$.content[1].inquiryNo").value(customerInquiryBeautiful.getInquiryNo()))
+            .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
+            .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
+            .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
+            .andExpect(jsonPath("$.page").value(0))
+            .andExpect(jsonPath("$.size").value(5));
+
+        verify(inquiryService).findInquiriesByStatusCodeNo(any(Pageable.class), eq(false),
+            eq(ProcessStatus.WAITING.getValue()));
+    }
+
+    @DisplayName("고객문의중 답변완료상태의 목록을 요청받았을시에 대기상태의 value값을 전달인자로 추가하여 서비스에 위임하며 PageResponse 객체를 body에 담아서 ResponseEntity를 반환한다. status : 200")
+    @Test
+    void customerInquiryStatusCompleteList() throws Exception {
+        List<InquiryListResponseDto> list = new ArrayList<>();
+        InquiryListResponseDto customerInquiryPasswordDto = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "inquiryNo", 1);
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "memberNickname", "홍길동");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "processStatus", "답변대기");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "title", "비밀번호를 까먹었어요..");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "registerDatetime", LocalDateTime.now());
+
+        InquiryListResponseDto customerInquiryBeautiful = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "inquiryNo", 2);
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "memberNickname", "이순신");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "processStatus", "답변완료");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "title", "이 사이트는 왜이렇게 이쁘나요?");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "registerDatetime", LocalDateTime.now());
+
+        list.add(customerInquiryPasswordDto);
+        list.add(customerInquiryBeautiful);
+
+        Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
+        given(inquiryService.findInquiriesByStatusCodeNo(any(Pageable.class), anyBoolean(), anyString()))
+            .willReturn(page);
+
+        mvc.perform(get("/api/inquiries/customer-inquiries/status-complete")
+                .queryParam("page", "0")
+                .queryParam("size", "5")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].inquiryNo").value(customerInquiryPasswordDto.getInquiryNo()))
+            .andExpect(jsonPath("$.content[0].memberNickname").value(customerInquiryPasswordDto.getMemberNickname()))
+            .andExpect(jsonPath("$.content[0].processStatus").value(customerInquiryPasswordDto.getProcessStatus()))
+            .andExpect(jsonPath("$.content[0].title").value(customerInquiryPasswordDto.getTitle()))
+            .andExpect(jsonPath("$.content[1].inquiryNo").value(customerInquiryBeautiful.getInquiryNo()))
+            .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
+            .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
+            .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
+            .andExpect(jsonPath("$.page").value(0))
+            .andExpect(jsonPath("$.size").value(5));
+
+        verify(inquiryService).findInquiriesByStatusCodeNo(any(Pageable.class), eq(false),
+            eq(ProcessStatus.COMPLETE.getValue()));
+    }
+
+    @DisplayName("상품문의중 답변대기상태의 목록을 요청받았을시에 대기상태의 value값을 전달인자로 추가하여 서비스에 위임하며 PageResponse 객체를 body에 담아서 ResponseEntity를 반환한다. status : 200")
+    @Test
+    void productInquiryStatusHoldList() throws Exception {
+        List<InquiryListResponseDto> list = new ArrayList<>();
+        InquiryListResponseDto customerInquiryPasswordDto = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "inquiryNo", 1);
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "memberNickname", "홍길동");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "processStatus", "답변대기");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "title", "비밀번호를 까먹었어요..");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "registerDatetime", LocalDateTime.now());
+
+        InquiryListResponseDto customerInquiryBeautiful = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "inquiryNo", 2);
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "memberNickname", "이순신");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "processStatus", "답변완료");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "title", "이 사이트는 왜이렇게 이쁘나요?");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "registerDatetime", LocalDateTime.now());
+
+        list.add(customerInquiryPasswordDto);
+        list.add(customerInquiryBeautiful);
+
+        Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
+        given(inquiryService.findInquiriesByStatusCodeNo(any(Pageable.class), anyBoolean(), anyString()))
+            .willReturn(page);
+
+        mvc.perform(get("/api/inquiries/product-inquiries/status-hold")
+                .queryParam("page", "0")
+                .queryParam("size", "5")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].inquiryNo").value(customerInquiryPasswordDto.getInquiryNo()))
+            .andExpect(jsonPath("$.content[0].memberNickname").value(customerInquiryPasswordDto.getMemberNickname()))
+            .andExpect(jsonPath("$.content[0].processStatus").value(customerInquiryPasswordDto.getProcessStatus()))
+            .andExpect(jsonPath("$.content[0].title").value(customerInquiryPasswordDto.getTitle()))
+            .andExpect(jsonPath("$.content[1].inquiryNo").value(customerInquiryBeautiful.getInquiryNo()))
+            .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
+            .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
+            .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
+            .andExpect(jsonPath("$.page").value(0))
+            .andExpect(jsonPath("$.size").value(5));
+
+        verify(inquiryService).findInquiriesByStatusCodeNo(any(Pageable.class), eq(true),
+            eq(ProcessStatus.WAITING.getValue()));
+    }
+
+    @DisplayName("상품문의중 답변완료상태의 목록을 요청받았을시에 대기상태의 value값을 전달인자로 추가하여 서비스에 위임하며 PageResponse 객체를 body에 담아서 ResponseEntity를 반환한다. status : 200")
+    @Test
+    void productInquiryStatusCompleteList() throws Exception {
+        List<InquiryListResponseDto> list = new ArrayList<>();
+        InquiryListResponseDto customerInquiryPasswordDto = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "inquiryNo", 1);
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "memberNickname", "홍길동");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "processStatus", "답변대기");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "title", "비밀번호를 까먹었어요..");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "registerDatetime", LocalDateTime.now());
+
+        InquiryListResponseDto customerInquiryBeautiful = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "inquiryNo", 2);
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "memberNickname", "이순신");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "processStatus", "답변완료");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "title", "이 사이트는 왜이렇게 이쁘나요?");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "registerDatetime", LocalDateTime.now());
+
+        list.add(customerInquiryPasswordDto);
+        list.add(customerInquiryBeautiful);
+
+        Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
+        given(inquiryService.findInquiriesByStatusCodeNo(any(Pageable.class), anyBoolean(), anyString()))
+            .willReturn(page);
+
+        mvc.perform(get("/api/inquiries/product-inquiries/status-complete")
+                .queryParam("page", "0")
+                .queryParam("size", "5")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].inquiryNo").value(customerInquiryPasswordDto.getInquiryNo()))
+            .andExpect(jsonPath("$.content[0].memberNickname").value(customerInquiryPasswordDto.getMemberNickname()))
+            .andExpect(jsonPath("$.content[0].processStatus").value(customerInquiryPasswordDto.getProcessStatus()))
+            .andExpect(jsonPath("$.content[0].title").value(customerInquiryPasswordDto.getTitle()))
+            .andExpect(jsonPath("$.content[1].inquiryNo").value(customerInquiryBeautiful.getInquiryNo()))
+            .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
+            .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
+            .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
+            .andExpect(jsonPath("$.page").value(0))
+            .andExpect(jsonPath("$.size").value(5));
+
+        verify(inquiryService).findInquiriesByStatusCodeNo(any(Pageable.class), eq(true),
+            eq(ProcessStatus.COMPLETE.getValue()));
+    }
+
+    @DisplayName("문의중 특정회원의 목록을 요청받았을시에 memberNo 파라미터를 추가하여 서비스에 위임하며 PageResponse 객체를 body에 담아서 ResponseEntity를 반환한다. status : 200")
+    @ParameterizedTest
+    @CsvSource({
+        "/api/inquiries/member/{memberNo}/customer-inquiries, false",
+        "/api/inquiries/member/{memberNo}/product-inquiries, true"
+    })
+    void customerInquiryMemberList(String uri, Boolean isProduct) throws Exception {
+        List<InquiryListResponseDto> list = new ArrayList<>();
+        InquiryListResponseDto customerInquiryPasswordDto = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "inquiryNo", 1);
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "memberNickname", "홍길동");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "processStatus", "답변대기");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "title", "비밀번호를 까먹었어요..");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "registerDatetime", LocalDateTime.now());
+
+        InquiryListResponseDto customerInquiryBeautiful = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "inquiryNo", 2);
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "memberNickname", "이순신");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "processStatus", "답변완료");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "title", "이 사이트는 왜이렇게 이쁘나요?");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "registerDatetime", LocalDateTime.now());
+
+        list.add(customerInquiryPasswordDto);
+        list.add(customerInquiryBeautiful);
+
+        Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
+        given(inquiryService.findInquiriesByMemberNo(any(Pageable.class), anyBoolean(), anyInt()))
+            .willReturn(page);
+
+        mvc.perform(get(uri, 1)
+                .queryParam("page", "0")
+                .queryParam("size", "5")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].inquiryNo").value(customerInquiryPasswordDto.getInquiryNo()))
+            .andExpect(jsonPath("$.content[0].memberNickname").value(customerInquiryPasswordDto.getMemberNickname()))
+            .andExpect(jsonPath("$.content[0].processStatus").value(customerInquiryPasswordDto.getProcessStatus()))
+            .andExpect(jsonPath("$.content[0].title").value(customerInquiryPasswordDto.getTitle()))
+            .andExpect(jsonPath("$.content[1].inquiryNo").value(customerInquiryBeautiful.getInquiryNo()))
+            .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
+            .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
+            .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
+            .andExpect(jsonPath("$.page").value(0))
+            .andExpect(jsonPath("$.size").value(5));
+
+        verify(inquiryService).findInquiriesByMemberNo(any(Pageable.class), eq(isProduct),
+            eq(1));
+    }
+
+
+    @DisplayName("상품문의중 특정상품의 목록을 요청받았을시에 productNo 파라미터를 추가하여 서비스에 위임하며 PageResponse 객체를 body에 담아서 ResponseEntity를 반환한다. status : 200")
+    @Test
+    void productInquiryProductList() throws Exception {
+        List<InquiryListResponseDto> list = new ArrayList<>();
+        InquiryListResponseDto customerInquiryPasswordDto = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "inquiryNo", 1);
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "memberNickname", "홍길동");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "processStatus", "답변대기");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "title", "비밀번호를 까먹었어요..");
+        ReflectionTestUtils.setField(customerInquiryPasswordDto, "registerDatetime", LocalDateTime.now());
+
+        InquiryListResponseDto customerInquiryBeautiful = new InquiryListResponseDto();
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "inquiryNo", 2);
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "memberNickname", "이순신");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "processStatus", "답변완료");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "title", "이 사이트는 왜이렇게 이쁘나요?");
+        ReflectionTestUtils.setField(customerInquiryBeautiful, "registerDatetime", LocalDateTime.now());
+
+        list.add(customerInquiryPasswordDto);
+        list.add(customerInquiryBeautiful);
+
+        Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
+        given(inquiryService.findInquiriesByMemberNo(any(Pageable.class), anyBoolean(), anyInt()))
+            .willReturn(page);
+
+        mvc.perform(get("/api/inquiries/product/{productNo}", 1)
+                .queryParam("page", "0")
+                .queryParam("size", "5")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].inquiryNo").value(customerInquiryPasswordDto.getInquiryNo()))
+            .andExpect(jsonPath("$.content[0].memberNickname").value(customerInquiryPasswordDto.getMemberNickname()))
+            .andExpect(jsonPath("$.content[0].processStatus").value(customerInquiryPasswordDto.getProcessStatus()))
+            .andExpect(jsonPath("$.content[0].title").value(customerInquiryPasswordDto.getTitle()))
+            .andExpect(jsonPath("$.content[1].inquiryNo").value(customerInquiryBeautiful.getInquiryNo()))
+            .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
+            .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
+            .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
+            .andExpect(jsonPath("$.page").value(0))
+            .andExpect(jsonPath("$.size").value(5));
+
+        verify(inquiryService).findInquiriesByMemberNo(any(Pageable.class), eq(true),
+            eq(1));
+    }
+
+    @DisplayName("문의 단건조회요청을 잘 받고 service에 위임하여 반환된 InquiryDetailsResponseDto를 ResponseEntity의 body에 넣어서 반환한다. 상태코드 200")
+    @Test
+    void inquiryDetails() throws Exception {
+        InquiryDetailsResponseDto mockDto = new InquiryDetailsResponseDto(
+            1, 1, "memberNickName", "employeeName", "processStatus",
+            "productName", "title", "inquiryContent", LocalDateTime.now(), "answerContent",LocalDateTime.now(), null);
+
+        given(inquiryService.findInquiry(anyInt()))
+            .willReturn(mockDto);
+
+        mvc.perform(get("/api/inquiries/{inquiryNo}", 1)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.inquiryNo").value(mockDto.getInquiryNo()))
+            .andExpect(jsonPath("$.inquiryContent").value(mockDto.getInquiryContent()))
+            .andExpect(jsonPath("$.answerContent").value(mockDto.getAnswerContent()))
+            .andExpect(jsonPath("$.title").value(mockDto.getTitle()))
+            .andExpect(jsonPath("$.employeeName").value(mockDto.getEmployeeName()))
+            .andExpect(jsonPath("$.memberNickname").value(mockDto.getMemberNickname()))
+            .andExpect(jsonPath("$.productName").value(mockDto.getProductName()))
+            .andExpect(jsonPath("$.productNo").value(mockDto.getProductNo()))
+            .andExpect(jsonPath("$.processStatus").value(mockDto.getProcessStatus()));
+
+        verify(inquiryService).findInquiry(1);
     }
 }
