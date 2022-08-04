@@ -52,7 +52,6 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
         query.offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .orderBy(inquiry.inquiryNo.desc()).where(builder);
-
         List<InquiryListResponseDto> content = query.fetch();
 
         return PageableExecutionUtils.getPage(content, pageable,

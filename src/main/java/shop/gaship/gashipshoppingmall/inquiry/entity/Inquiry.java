@@ -191,15 +191,16 @@ public class Inquiry {
             throw new DifferentInquiryException();
         }
 
+        if (Objects.equals(this.processStatusCode.getStatusCodeName(),
+            ProcessStatus.WAITING.getValue())) {
+            throw new NoRegisteredAnswerException();
+        }
+
         if (!Objects.equals(inquiryAnswerRequestDto.getEmployeeNo(),
             this.employee.getEmployeeNo())) {
             throw new DifferentEmployeeWriterAboutInquiryAnswerException();
         }
 
-        if (Objects.equals(this.processStatusCode.getStatusCodeName(),
-            ProcessStatus.WAITING.getValue())) {
-            throw new NoRegisteredAnswerException();
-        }
 
         this.answerContent = inquiryAnswerRequestDto.getAnswerContent();
         this.answerModifyDatetime = LocalDateTime.now();
