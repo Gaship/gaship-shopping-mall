@@ -106,7 +106,9 @@ public class ProductReviewServiceImpl implements ProductReviewService {
      * {@inheritDoc}
      *
      * @throws OrderProductNotFoundException 주문 상품이 없을 때 던질 예외
+     * @throws ProductReviewNotFoundException 상품평이 없을 때 던질 예외
      */
+    @Transactional(readOnly = true)
     @Override
     public ProductReviewResponseDto findReview(Integer orderProductNo) {
         if (orderProductRepository.findById(orderProductNo).isEmpty()) {
@@ -115,13 +117,16 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
         return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
                         .orderProductNo(orderProductNo)
-                        .build()
-                ).getContent().get(0);
+                        .build())
+                .getContent().stream()
+                .findFirst()
+                .orElseThrow(ProductReviewNotFoundException::new);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<ProductReviewResponseDto> findReviews(Pageable pageable) {
         return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
@@ -134,6 +139,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
      *
      * @throws ProductNotFoundException 상품이 없을 때 던질 예외
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<ProductReviewResponseDto> findReviewsByProductNo(Integer productNo,
                                                                  Pageable pageable) {
@@ -152,6 +158,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
      *
      * @throws MemberNotFoundException 회원이 없을 때 던질 예외
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<ProductReviewResponseDto> findReviewsByMemberNo(Integer memberNo,
                                                                 Pageable pageable) {

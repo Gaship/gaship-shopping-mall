@@ -215,7 +215,7 @@ class ProductReviewServiceTest {
         verify(productReviewRepository).findProductReviews(viewRequest);
     }
 
-    @DisplayName("상품평 단건 조회 실패 테스트")
+    @DisplayName("상품평 단건 조회 실패 테스트 - 주문상품이 없는 경우")
     @Test
     void findReviewFailure_notFoundOrderProduct() {
         Integer orderProductNo = 1;
@@ -226,6 +226,25 @@ class ProductReviewServiceTest {
                 .isInstanceOf(OrderProductNotFoundException.class);
 
         verify(orderProductRepository).findById(orderProductNo);
+    }
+
+    @DisplayName("상품평 단건 조회 실패 테스트 - 상품평이 없는 경우")
+    @Test
+    void findReviewFailure_notFoundProductReview() {
+        Integer orderProductNo = 1;
+        ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
+                .orderProductNo(orderProductNo)
+                .build();
+
+        when(orderProductRepository.findById(orderProductNo)).thenReturn(Optional.of(orderProduct));
+        when(productReviewRepository.findProductReviews(viewRequest))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        assertThatThrownBy(() -> productReviewService.findReview(orderProductNo))
+                .isInstanceOf(ProductReviewNotFoundException.class);
+
+        verify(orderProductRepository).findById(orderProductNo);
+        verify(productReviewRepository).findProductReviews(viewRequest);
     }
 
     @DisplayName("상품평 전체 조회 성공 테스트")
