@@ -197,7 +197,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
      * @param file 이미지 파일
      */
     private void uploadProductReviewImage(ProductReview review, MultipartFile file) {
-        if (!Objects.isNull(file)) {
+        if (Objects.nonNull(file)) {
             String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);
             review.updateImagePath(imagePath);
             applicationEventPublisher.publishEvent(new ProductReviewSaveEvent(imagePath));

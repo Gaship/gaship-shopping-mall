@@ -40,33 +40,33 @@ public interface ProductReviewService {
      * 상품평 단건 조회 서비스 메서드입니다.
      *
      * @param orderProductNo 조회할 상품평 번호
-     * @return the product review response dto
+     * @return productReviewResponseDto 상품평 응답 dto
      */
     ProductReviewResponseDto findReview(Integer orderProductNo);
 
     /**
      * 상품평 전체 조회 서비스 메서드입니다.
      *
-     * @param pageable the pageable
-     * @return the page
+     * @param pageable 페이지 정보
+     * @return page 조회한 상품평들의 응답 dto를 포함하는 페이지
      */
     Page<ProductReviewResponseDto> findReviews(Pageable pageable);
 
     /**
      * 상품번호로 상품평 다건 조회 서비스 메서드입니다.
      *
-     * @param productNo the product no
-     * @param pageable  the pageable
-     * @return the page
+     * @param productNo 상품번호
+     * @param pageable  페이지 정보
+     * @return page 조회한 상품평들의 응답 dto를 포함하는 페이지
      */
     Page<ProductReviewResponseDto> findReviewsByProductNo(Integer productNo, Pageable pageable);
 
     /**
      * 회원번호로 상품평 다건 조회 서비스 메서드입니다.
      *
-     * @param memberNo the member no
-     * @param pageable the pageable
-     * @return the page
+     * @param memberNo 회원번호
+     * @param pageable 페이지 정보
+     * @return page 조회한 상품평들의 응답 dto를 포함하는 페이지
      */
     Page<ProductReviewResponseDto> findReviewsByMemberNo(Integer memberNo, Pageable pageable);
 }

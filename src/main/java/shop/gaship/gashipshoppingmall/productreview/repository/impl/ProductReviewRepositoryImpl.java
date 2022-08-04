@@ -75,14 +75,14 @@ public class ProductReviewRepositoryImpl extends QuerydslRepositorySupport
     }
 
     private BooleanExpression eqOrderProductNo(Integer orderProductNo) {
-        return (!Objects.isNull(orderProductNo)) ? review.orderProduct.no.eq(orderProductNo) : null;
+        return (Objects.nonNull(orderProductNo)) ? review.orderProduct.no.eq(orderProductNo) : null;
     }
 
     private BooleanExpression eqProductNo(Integer productNo) {
-        return (!Objects.isNull(productNo)) ? product.no.eq(productNo) : null;
+        return (Objects.nonNull(productNo)) ? product.no.eq(productNo) : null;
     }
 
     private BooleanExpression eqMemberNo(Integer memberNo) {
-        return (!Objects.isNull(memberNo)) ? member.memberNo.eq(memberNo) : null;
+        return (Objects.nonNull(memberNo)) ? member.memberNo.eq(memberNo) : null;
     }
 }
