@@ -1,7 +1,10 @@
 package shop.gaship.gashipshoppingmall.employee.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
@@ -9,6 +12,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalReposi
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
@@ -51,8 +55,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         StatusCode statusCode = statusCodeRepository.findById(dto.getAuthorityNo())
             .orElseThrow(WrongStatusCodeException::new);
-        AddressLocal addressLocal = localRepository.findById(dto.getAddressNo())
-            .orElseThrow(WrongAddressException::new);
+        AddressLocal addressLocal =
+            localRepository.findById(dto.getAddressNo()).orElseThrow(WrongAddressException::new);
 
         Employee employee = new Employee();
         employee.registerEmployee(dto);
@@ -72,8 +76,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void modifyEmployee(ModifyEmployeeRequestDto dto) {
-        Employee employee = repository.findById(1)
-            .orElseThrow(EmployeeNotFoundException::new);
+        Employee employee = repository.findById(1).orElseThrow(EmployeeNotFoundException::new);
         employee.modifyEmployee(dto);
     }
 
@@ -87,8 +90,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public EmployeeInfoResponseDto findEmployee(Integer employeeNo) {
-        Employee employee = repository.findById(employeeNo)
-            .orElseThrow(EmployeeNotFoundException::new);
+        Employee employee =
+            repository.findById(employeeNo).orElseThrow(EmployeeNotFoundException::new);
 
         return new EmployeeInfoResponseDto(employee);
     }
@@ -115,4 +118,31 @@ public class EmployeeServiceImpl implements EmployeeService {
         return repository.findSignInEmployeeUserDetail(email)
             .orElseThrow(EmployeeNotFoundException::new);
     }
+
+    @Override
+    public PageResponse<InstallOrderResponseDto> findInstallOrdersFromEmployeeLocation(
+        Pageable pageable, Integer employeeNo) {
+        List<InstallOrderResponseDto> installOrders =
+            repository.findOrderBasedOnEmployeeLocation(pageable, employeeNo)
+                .getContent().stream()
+                .map(order -> InstallOrderResponseDto.builder()
+                    .orderNo(order.getNo())
+                    .address(order.getAddressList()
+                                .getAddressLocal()
+                                .getUpperLocal()
+                                .getAddressName().concat(" ")
+                            .concat(order.getAddressList()
+                                .getAddressLocal()
+                                .getAddressName()).concat(" ")
+                            .concat(order.getAddressList().getAddress()))
+                    .build())
+
+                .collect(Collectors.toUnmodifiableList());
+
+        return new PageResponse<>(
+            new PageImpl<>(installOrders, pageable, 4L)
+        );
+    }
+
+
 }

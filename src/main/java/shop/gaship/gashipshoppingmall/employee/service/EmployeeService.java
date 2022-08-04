@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 
@@ -55,4 +56,7 @@ public interface EmployeeService {
      * @author 김민수
      */
     SignInUserDetailsDto findSignInEmployeeFromEmail(String email);
+
+    PageResponse<InstallOrderResponseDto> findInstallOrdersFromEmployeeLocation(Pageable pageable,
+                                                                                Integer employeeNo);
 }

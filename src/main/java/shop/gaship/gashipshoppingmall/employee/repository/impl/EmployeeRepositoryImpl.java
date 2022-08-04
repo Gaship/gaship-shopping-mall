@@ -102,7 +102,8 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public PageResponse<Order> findOrderBasedOnMyLocation(Pageable pageable, Integer employeeNo) {
+    public PageResponse<Order> findOrderBasedOnEmployeeLocation(Pageable pageable,
+                                                                Integer employeeNo) {
         QEmployee employee = QEmployee.employee;
         QOrder order = QOrder.order;
         QStatusCode statusCode = QStatusCode.statusCode;

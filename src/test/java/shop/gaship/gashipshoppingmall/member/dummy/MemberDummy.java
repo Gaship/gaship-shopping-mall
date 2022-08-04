@@ -22,7 +22,6 @@ public class MemberDummy extends Member {
             .build();
 
         return MemberDummy.builder()
-            .memberNo(1)
             .recommendMember(null)
             .memberStatusCodes(status)
             .memberGrades(MemberGradeDummy.dummy(

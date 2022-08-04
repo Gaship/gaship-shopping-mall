@@ -30,5 +30,5 @@ public interface EmployeeRepositoryCustom {
      */
     PageResponse<EmployeeInfoResponseDto> findAllEmployees(Pageable pageable);
 
-    PageResponse<Order> findOrderBasedOnMyLocation(Pageable pageable, Integer employeeNo);
+    PageResponse<Order> findOrderBasedOnEmployeeLocation(Pageable pageable, Integer employeeNo);
 }

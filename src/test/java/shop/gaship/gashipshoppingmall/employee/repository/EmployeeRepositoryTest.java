@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -56,6 +58,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * 생성
  */
 @DataJpaTest
+@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class EmployeeRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
@@ -92,6 +95,7 @@ class EmployeeRepositoryTest {
 
     @DisplayName("이메일 중복검증을 위한 테스트")
     @Test
+    @org.junit.jupiter.api.Order(4)
     void findByEmail() {
         //given
         employee.fixCode(code);
@@ -110,6 +114,7 @@ class EmployeeRepositoryTest {
 
     @Test
     @DisplayName("직원의 이메일을 통해서 직원 계정 정보를 가져옵니다. : 성공")
+    @org.junit.jupiter.api.Order(2)
     void findSignInEmployeeUserDetailCaseSuccess() {
         employee.fixCode(code);
         employee.fixLocation(addressLocal);
@@ -129,6 +134,7 @@ class EmployeeRepositoryTest {
 
     @Test
     @DisplayName("직원의 이메일을 통해서 직원 계정 정보를 가져옵니다. : 실패")
+    @org.junit.jupiter.api.Order(3)
     void findSignInEmployeeUserDetailCaseFailure() {
         SignInUserDetailsDto loginEmployee =
             repository.findSignInEmployeeUserDetail("test@naver.com").orElse(null);
@@ -138,6 +144,7 @@ class EmployeeRepositoryTest {
 
     @Test
     @DisplayName("직원이 자신의 지역에서 설치해야 할 주문들을 조회합니다.")
+    @org.junit.jupiter.api.Order(1)
     void findOrderBasedOnMyLocationTest(@Autowired AddressListRepository addressListRepository,
                                         @Autowired MemberRepository memberRepository,
                                         @Autowired OrderRepository orderRepository,
@@ -155,13 +162,23 @@ class EmployeeRepositoryTest {
         entityManager.persist(addressLocalLevel1);
         AddressLocal savedLocalLevel2 = entityManager.persist(addressLocalLevel2);
 
-        AddressList addressListDummy = AddressListDummy.addressListEntity();
+        AddressList addressListDummy = AddressList.builder()
+            .addressLocal(AddressLocalDummy.dummy2())
+            .member(MemberDummy.dummy())
+            .statusCode(shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy.dummy())
+            .address("경기도 안양시 비산동")
+            .addressDetail("현대아파트 65층 화장실")
+            .zipCode("12344")
+            .build();
         ReflectionTestUtils.setField(addressListDummy, "addressLocal", savedLocalLevel2);
         ReflectionTestUtils.setField(addressListDummy, "member", savedMember);
         entityManager.persist(addressListDummy.getAddressLocal());
-        addressListRepository.save(addressListDummy);
+        AddressList addressList = addressListRepository.save(addressListDummy);
 
-        Order orderDummy = orderRepository.save(OrderDummy.createOrderDummy());
+        Order orderDummy = OrderDummy.createOrderDummy();
+        ReflectionTestUtils.setField(orderDummy, "addressList", addressList);
+        ReflectionTestUtils.setField(orderDummy, "member", savedMember);
+        Order savedOrderDummy = orderRepository.save(orderDummy);
 
         // 주문 상품 저장
         Product productDummy = ProductDummy.dummy();
@@ -176,14 +193,14 @@ class EmployeeRepositoryTest {
         StatusCode orderStatus = entityManager.persist(orderProduct1.getOrderStatusCode());
         ReflectionTestUtils.setField(orderProduct1, "orderStatusCode", orderStatus);
         ReflectionTestUtils.setField(orderProduct1, "product", productDummy);
-        ReflectionTestUtils.setField(orderProduct1, "order", orderDummy);
+        ReflectionTestUtils.setField(orderProduct1, "order", savedOrderDummy);
         ReflectionTestUtils.setField(orderProduct2, "orderStatusCode", orderStatus);
         ReflectionTestUtils.setField(orderProduct2, "product", productDummy);
-        ReflectionTestUtils.setField(orderProduct2, "order", orderDummy);
+        ReflectionTestUtils.setField(orderProduct2, "order", savedOrderDummy);
         ReflectionTestUtils.setField(orderProduct2, "no", 2);
         ReflectionTestUtils.setField(orderProduct3, "orderStatusCode", orderStatus);
         ReflectionTestUtils.setField(orderProduct3, "product", productDummy);
-        ReflectionTestUtils.setField(orderProduct3, "order", orderDummy);
+        ReflectionTestUtils.setField(orderProduct3, "order", savedOrderDummy);
         ReflectionTestUtils.setField(orderProduct3, "no", 3);
 
         orderProductRepository.save(orderProduct1);
@@ -197,8 +214,7 @@ class EmployeeRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 10);
 
-        PageResponse<?> result =
-            repository.findOrderBasedOnMyLocation(pageable, id);
+        PageResponse<Order> result = repository.findOrderBasedOnEmployeeLocation(pageable, id);
 
         assertThat(result.getSize()).isEqualTo(10);
         assertThat(result.getPage()).isZero();
