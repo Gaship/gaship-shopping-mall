@@ -343,7 +343,7 @@ class InquiryServiceImplTest {
     @Test
     void modifyInquiryAnswer_fail_DifferentEmployeeWriterAboutInquiryAnswerException() {
         // given
-        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeHolderDummy());
+        Inquiry inquiry = InquiryDummy.customerDummy(InquiryDummy.statusCodeCompleteDummy());
         ReflectionTestUtils.setField(inquiry, "inquiryNo", 1);
 
         Employee employee = EmployeeDummy.dummy();
@@ -359,10 +359,25 @@ class InquiryServiceImplTest {
             .hasMessageContaining(DifferentEmployeeWriterAboutInquiryAnswerException.MESSAGE);
     }
 
-    @DisplayName("문의삭제 요청이 잘 이루어진다.")
+    @DisplayName("문의가 존재할때 문의삭제 요청이 잘 이루어진다.")
     @Test
     void deleteInquiry() {
+        given(inquiryRepository.existsById(anyInt()))
+            .willReturn(Boolean.TRUE);
+
         assertThatNoException().isThrownBy(() -> inquiryService.deleteInquiry(1));
+        verify(inquiryRepository).deleteById(1);
+    }
+
+    @DisplayName("문의가 존재하지 않을때 InquiryNotFoundException 이 발생한다.")
+    @Test
+    void deleteInquiry_fail() {
+        given(inquiryRepository.existsById(anyInt()))
+            .willReturn(Boolean.FALSE);
+
+        assertThatThrownBy(() -> inquiryService.deleteInquiry(1))
+            .isInstanceOf(InquiryNotFoundException.class)
+                .hasMessageContaining(InquiryNotFoundException.MESSAGE);
     }
 
     @DisplayName("답변삭제시 답변이 등록되어 있을시에(답변완료) 답변삭제 요청이 잘 이루어진다.")
