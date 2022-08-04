@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.tag.dto.request;
 
 import javax.validation.constraints.NotNull;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -14,13 +14,9 @@ import org.hibernate.validator.constraints.Length;
  */
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class TagAddRequestDto {
     @NotNull(message = "등록하려는 태그의 title 은 필수값입니다.")
     @Length(min = 1, max = 10, message = "title 의 길이는 최소 1 이상 최대 10 이하 입니다.")
     private String title;
-
-    @Builder
-    public TagAddRequestDto(String title) {
-        this.title = title;
-    }
 }
