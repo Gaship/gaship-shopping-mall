@@ -13,16 +13,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class TotalSaleDto {
+public class TotalSaleResponseDto {
     private LocalDateTime totalSaleDate;
     private Long orderCnt;
-
     private Long orderCancelCnt;
-
     private Long orderSaleCnt;
     private Long totalAmount;
-
     private Integer cancelAmount;
-
     private Long orderSaleAmount;
 }

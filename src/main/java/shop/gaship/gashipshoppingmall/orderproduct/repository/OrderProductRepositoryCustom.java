@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.orderproduct.repository;
 import java.util.List;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.totalsale.dto.request.TotalSaleRequestDto;
-import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleDto;
+import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDto;
 
 /**
  * QueryDsl 을 쓰기위한 인터페이스입니다.
@@ -15,5 +15,5 @@ import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleDto;
 @NoRepositoryBean
 public interface OrderProductRepositoryCustom {
 
-    List<TotalSaleDto> findTotalSale(TotalSaleRequestDto dto);
+    List<TotalSaleResponseDto> findTotalSale(TotalSaleRequestDto dto);
 }

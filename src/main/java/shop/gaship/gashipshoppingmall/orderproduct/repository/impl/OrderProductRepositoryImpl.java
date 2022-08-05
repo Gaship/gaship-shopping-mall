@@ -10,7 +10,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.QOrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepositoryCustom;
 import shop.gaship.gashipshoppingmall.totalsale.dto.request.TotalSaleRequestDto;
-import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleDto;
+import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDto;
 
 /**
  * 주문제품을 QueryDsl 을 통해 사용하기위한 클래스 구현체입니다.
@@ -28,7 +28,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public List<TotalSaleDto> findTotalSale(TotalSaleRequestDto dto) {
+    public List<TotalSaleResponseDto> findTotalSale(TotalSaleRequestDto dto) {
         QOrderProduct orderProduct = QOrderProduct.orderProduct;
         QOrder order = QOrder.order;
 
@@ -45,7 +45,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
             .innerJoin(orderProduct)
             .on(order.eq(orderProduct.order))
             .where(order.no.in(orderList))
-            .select(Projections.constructor(TotalSaleDto.class,
+            .select(Projections.constructor(TotalSaleResponseDto.class,
                 order.orderDatetime.as("totalSaleDate"),
                 orderProduct.product.no.count().as("orderCnt"),
                 (new CaseBuilder()

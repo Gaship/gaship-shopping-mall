@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.totalsale.dto.request;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class TotalSaleRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -20,4 +22,5 @@ public class TotalSaleRequestDto {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endDate;
+
 }
