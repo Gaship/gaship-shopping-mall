@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.totalsale.dto.request.TotalSaleRequestDto;
-import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleDto;
+import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +33,7 @@ class OrderProductRepositoryTest {
         LocalDateTime startDate = LocalDateTime.of(2021, 1, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2022, 12, 30, 23, 59, 59);
         TotalSaleRequestDto requestDto = new TotalSaleRequestDto(startDate, endDate);
-        List<TotalSaleDto> totalSale = orderProductRepository.findTotalSale(requestDto);
+        List<TotalSaleResponseDto> totalSale = orderProductRepository.findTotalSale(requestDto);
         assertThat(totalSale).hasSize(3);
     }
 }
