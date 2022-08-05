@@ -38,7 +38,6 @@ import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
 @Entity
 @Table(name = "inquiries")
 @NoArgsConstructor
-@Setter
 @Getter
 public class Inquiry {
 
