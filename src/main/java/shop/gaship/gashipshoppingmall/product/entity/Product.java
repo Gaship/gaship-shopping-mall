@@ -20,7 +20,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -38,7 +37,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 @Entity
 @Getter
 @NoArgsConstructor
-@EqualsAndHashCode
 @AllArgsConstructor
 @Table(name = "products")
 public class Product {
