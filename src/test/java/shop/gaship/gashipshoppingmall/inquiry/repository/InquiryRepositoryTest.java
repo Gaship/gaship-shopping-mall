@@ -17,21 +17,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
-import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
+import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
+import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquirySearchBadRequestException;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
@@ -229,8 +229,8 @@ class InquiryRepositoryTest {
         assertThat(result.getProcessStatusCode())
             .isEqualTo(statusCodeHolder);
 
-        result.setTitle("변경된제목");
-        result.setProcessStatusCode(statusCodeComplete);
+        ReflectionTestUtils.setField(result, "title", "변경된제목");
+        ReflectionTestUtils.setField(result, "processStatusCode", statusCodeComplete);
 
         Inquiry test = inquiryRepository.findById(customerInquiry.getInquiryNo()).orElseThrow();
         assertThat(test.getTitle())
@@ -256,7 +256,7 @@ class InquiryRepositoryTest {
                 InquiryNotFoundException::new);
         })
             .isInstanceOf(InquiryNotFoundException.class)
-                .hasMessageContaining(InquiryNotFoundException.MESSAGE);
+            .hasMessageContaining(InquiryNotFoundException.MESSAGE);
     }
 
     @DisplayName("고객문의리스트 조건없는 전체조회에 대해서 List<InquiryResponseDto>를(내부값 3개, 답변대기 2, 답변완료 1) content로 가지는 PageImpl 객체가 잘 넘어온다.(limit 3, offset 0, 최신순)")
@@ -303,7 +303,8 @@ class InquiryRepositoryTest {
         inquiry2.addAnswer(inquiryAnswerRequestDto, employee, statusCodeComplete);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
+        Page<InquiryListResponseDto> page =
+            inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -349,7 +350,8 @@ class InquiryRepositoryTest {
         inquiryRepository.save(inquiry);
 
         InquiryAnswerRequestDto inquiryAnswerRequestDto = new InquiryAnswerRequestDto();
-        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo", customerInquiry.getInquiryNo());
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo",
+            customerInquiry.getInquiryNo());
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "employeeNo", 1);
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "answerContent", "1번문의 답변입니다.");
 
@@ -387,7 +389,8 @@ class InquiryRepositoryTest {
             getInquirySearchRequestDto(false, statusCodeComplete.getStatusCodeNo(), null, null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
+        Page<InquiryListResponseDto> page =
+            inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -436,7 +439,8 @@ class InquiryRepositoryTest {
             getInquirySearchRequestDto(false, statusCodeHolder.getStatusCodeNo(), null, null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
+        Page<InquiryListResponseDto> page =
+            inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -483,7 +487,8 @@ class InquiryRepositoryTest {
                 null, member.getMemberNo(), null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
+        Page<InquiryListResponseDto> page =
+            inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -564,7 +569,8 @@ class InquiryRepositoryTest {
         inquiry2.addAnswer(inquiryAnswerRequestDto, employee, statusCodeComplete);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
+        Page<InquiryListResponseDto> page =
+            inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -610,7 +616,8 @@ class InquiryRepositoryTest {
         inquiryRepository.save(inquiry);
 
         InquiryAnswerRequestDto inquiryAnswerRequestDto = new InquiryAnswerRequestDto();
-        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo", productInquiry.getInquiryNo());
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo",
+            productInquiry.getInquiryNo());
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "employeeNo", 1);
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "answerContent", "1번문의 답변입니다.");
 
@@ -648,7 +655,8 @@ class InquiryRepositoryTest {
             getInquirySearchRequestDto(true, statusCodeComplete.getStatusCodeNo(), null, null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
+        Page<InquiryListResponseDto> page =
+            inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -697,7 +705,8 @@ class InquiryRepositoryTest {
             getInquirySearchRequestDto(true, statusCodeHolder.getStatusCodeNo(), null, null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
+        Page<InquiryListResponseDto> page =
+            inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -744,7 +753,8 @@ class InquiryRepositoryTest {
                 null, member.getMemberNo(), null);
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
+        Page<InquiryListResponseDto> page =
+            inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -795,7 +805,8 @@ class InquiryRepositoryTest {
                 null, null, product.getNo());
 
         // when
-        Page<InquiryListResponseDto> page = inquiryRepository.findAllThroughSearchDto(pageable, dto);
+        Page<InquiryListResponseDto> page =
+            inquiryRepository.findAllThroughSearchDto(pageable, dto);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -846,8 +857,12 @@ class InquiryRepositoryTest {
             .hasMessageContaining(InquirySearchBadRequestException.MESSAGE);
     }
 
-    private InquirySearchRequestDto getInquirySearchRequestDto(boolean isProduct, Integer statusCodeNo, Integer memberNo, Integer productNo) {
-        InquirySearchRequestDto dto = new InquirySearchRequestDto(isProduct, statusCodeNo, memberNo, productNo);
+    private InquirySearchRequestDto getInquirySearchRequestDto(boolean isProduct,
+                                                               Integer statusCodeNo,
+                                                               Integer memberNo,
+                                                               Integer productNo) {
+        InquirySearchRequestDto dto =
+            new InquirySearchRequestDto(isProduct, statusCodeNo, memberNo, productNo);
         return dto;
     }
 
@@ -855,7 +870,8 @@ class InquiryRepositoryTest {
     @Test
     void findDetailsById_customer_holder() {
         InquiryDetailsResponseDto
-            inquiry = inquiryRepository.findDetailsById(customerInquiry.getInquiryNo()).orElseThrow();
+            inquiry =
+            inquiryRepository.findDetailsById(customerInquiry.getInquiryNo()).orElseThrow();
 
         assertThat(inquiry.getInquiryContent())
             .isEqualTo("1번째 고객문의내용");
@@ -870,10 +886,12 @@ class InquiryRepositoryTest {
     @DisplayName("등록된 답변후 상품문의를 조회하면 연관된 member와 status, employee, product 값들이 모두 들어온다.")
     @Test
     void findDetailsById_product_complete() {
-        Inquiry inquiryBasic = inquiryRepository.findById(productInquiry.getInquiryNo()).orElseThrow();
+        Inquiry inquiryBasic =
+            inquiryRepository.findById(productInquiry.getInquiryNo()).orElseThrow();
 
         InquiryAnswerRequestDto inquiryAnswerRequestDto = new InquiryAnswerRequestDto();
-        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo", productInquiry.getInquiryNo());
+        ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo",
+            productInquiry.getInquiryNo());
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "employeeNo", 1);
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "answerContent", "1번문의 답변입니다.");
 
@@ -897,8 +915,8 @@ class InquiryRepositoryTest {
         testEntityManager.persist(employee);
 
         inquiryBasic.addAnswer(inquiryAnswerRequestDto, employee, statusCodeComplete);
-        InquiryDetailsResponseDto inquiry = inquiryRepository.findDetailsById(productInquiry.getInquiryNo()).orElseThrow();
-
+        InquiryDetailsResponseDto inquiry =
+            inquiryRepository.findDetailsById(productInquiry.getInquiryNo()).orElseThrow();
 
 
         assertThat(inquiry.getInquiryContent())

@@ -292,7 +292,9 @@ class InquiryServiceImplTest {
 
         Employee employee = EmployeeDummy.dummy();
         ReflectionTestUtils.setField(employee, "employeeNo", 1);
-        inquiry.setEmployee(employee);
+
+        ReflectionTestUtils.setField(inquiry, "inquiryNo", 1);
+        ReflectionTestUtils.setField(inquiry, "employee", employee);
 
         given(inquiryRepository.findById(anyInt()))
             .willReturn(Optional.ofNullable(inquiry));
@@ -328,7 +330,7 @@ class InquiryServiceImplTest {
 
         Employee employee = EmployeeDummy.dummy();
         ReflectionTestUtils.setField(employee, "employeeNo", 1);
-        inquiry.setEmployee(employee);
+        ReflectionTestUtils.setField(inquiry, "employee", employee);
 
         given(inquiryRepository.findById(anyInt()))
             .willReturn(Optional.ofNullable(inquiry));
@@ -348,7 +350,7 @@ class InquiryServiceImplTest {
 
         Employee employee = EmployeeDummy.dummy();
         ReflectionTestUtils.setField(employee, "employeeNo", 252123);
-        inquiry.setEmployee(employee);
+        ReflectionTestUtils.setField(inquiry, "employee", employee);
 
         given(inquiryRepository.findById(anyInt()))
             .willReturn(Optional.ofNullable(inquiry));

@@ -1,34 +1,16 @@
 package shop.gaship.gashipshoppingmall.inquiry.entity;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
-import shop.gaship.gashipshoppingmall.addressLocal.dummy.AddressLocalDummy;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
-import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
 import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentInquiryException;
-import shop.gaship.gashipshoppingmall.inquiry.repository.InquiryRepository;
-import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
-import shop.gaship.gashipshoppingmall.product.entity.Product;
-import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
@@ -68,7 +50,8 @@ class InquiryTest {
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "employeeNo", 1);
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "answerContent", "4번문의 답변입니다.");
 
-        inquiry.addAnswer(inquiryAnswerRequestDto, EmployeeDummy.dummy(), InquiryDummy.statusCodeCompleteDummy());
+        inquiry.addAnswer(inquiryAnswerRequestDto, EmployeeDummy.dummy(),
+            InquiryDummy.statusCodeCompleteDummy());
 
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo", 223);
         assertThatThrownBy(() -> inquiry.modifyAnswer(inquiryAnswerRequestDto))
