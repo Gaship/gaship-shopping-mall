@@ -68,6 +68,8 @@ public class OrderProduct {
 
     private LocalDateTime cancellationDatetime;
 
+    private Integer cancellationAmount;
+
     private String employeeName;
 
     private Integer trackingNo;

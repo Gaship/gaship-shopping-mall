@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.order.entity;
 
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "order_no")
+    @Column(name = "order_no")
     private Integer no;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,7 +42,8 @@ public class Order {
     private AddressList addressList;
 
     @NotNull
-    private LocalDateTime orderDateTime;
+    @Column(name = "order_datetime")
+    private LocalDateTime orderDatetime;
 
     @NotNull
     private String receiptName;
@@ -52,6 +54,10 @@ public class Order {
     private String receiptSubPhoneNumber;
 
     private String deliveryRequest;
+
+    private String orderPaymentKey;
+
+    private Long totalOrderAmount;
 
     /**
      * Instantiates a new Order.
@@ -66,7 +72,7 @@ public class Order {
                  String receiptName, String receiptPhoneNumber) {
         this.member = member;
         this.addressList = addressList;
-        this.orderDateTime = LocalDateTime.now();
+        this.orderDatetime = LocalDateTime.now();
         this.receiptName = receiptName;
         this.receiptPhoneNumber = receiptPhoneNumber;
     }
