@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.employee.repository;
 
 import java.util.Optional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
@@ -30,5 +31,5 @@ public interface EmployeeRepositoryCustom {
      */
     PageResponse<EmployeeInfoResponseDto> findAllEmployees(Pageable pageable);
 
-    PageResponse<Order> findOrderBasedOnEmployeeLocation(Pageable pageable, Integer employeeNo);
+    Page<Order> findOrderBasedOnEmployeeLocation(Pageable pageable, Integer employeeNo);
 }

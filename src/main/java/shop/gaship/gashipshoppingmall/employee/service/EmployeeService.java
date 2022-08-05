@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.employee.service;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
@@ -57,6 +58,6 @@ public interface EmployeeService {
      */
     SignInUserDetailsDto findSignInEmployeeFromEmail(String email);
 
-    PageResponse<InstallOrderResponseDto> findInstallOrdersFromEmployeeLocation(Pageable pageable,
-                                                                                Integer employeeNo);
+    Page<InstallOrderResponseDto> findInstallOrdersFromEmployeeLocation(Pageable pageable,
+                                                                        Integer employeeNo);
 }

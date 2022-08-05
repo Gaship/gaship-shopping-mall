@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.employee.service;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -291,16 +293,17 @@ class EmployeeServiceTest {
         orders.add(order);
         orders.add(order);
 
-        ReflectionTestUtils.setField(order.getAddressList().getAddressLocal(), "upperLocal", AddressLocalDummy.dummy1());
+        ReflectionTestUtils.setField(
+            order.getAddressList().getAddressLocal(),
+            "upperLocal",
+            AddressLocalDummy.dummy1());
 
-        PageResponse<Order> response =
-            new PageResponse<>(new PageImpl<>(orders, PageRequest.of(0, 10), 1));
+        Page<Order> response = new PageImpl<>(orders, PageRequest.of(0, 10), 1);
 
-        given(
-            repository.findOrderBasedOnEmployeeLocation(any(Pageable.class), anyInt())).willReturn(
-            response);
+        given(repository.findOrderBasedOnEmployeeLocation(any(Pageable.class), anyInt()))
+            .willReturn(response);
 
-        PageResponse<InstallOrderResponseDto> result =
+        Page<InstallOrderResponseDto> result =
             service.findInstallOrdersFromEmployeeLocation(PageRequest.of(0, 10), 1);
 
         assertThat(result.getContent()).hasSize(4);

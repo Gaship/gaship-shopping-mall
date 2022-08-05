@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
@@ -33,12 +34,12 @@ class EmployeeInstallOrderRepositoryTest {
     void findOrderBasedOnMyLocationTest() {
         Pageable pageable = PageRequest.of(0, 10);
 
-        PageResponse<Order> result = employeeRepository.findOrderBasedOnEmployeeLocation(pageable, 1);
+        Page<Order> result = employeeRepository.findOrderBasedOnEmployeeLocation(pageable, 1);
 
         assertThat(result.getSize()).isEqualTo(10);
-        assertThat(result.getPage()).isZero();
-        assertThat(result.isNext()).isTrue();
-        assertThat(result.isPrev()).isFalse();
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.hasNext()).isFalse();
+        assertThat(result.hasPrevious()).isFalse();
         assertThat(result.getContent()).isNotEmpty();
         System.out.println(result.getContent());
     }

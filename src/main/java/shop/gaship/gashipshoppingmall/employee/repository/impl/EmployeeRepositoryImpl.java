@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -102,8 +103,8 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public PageResponse<Order> findOrderBasedOnEmployeeLocation(Pageable pageable,
-                                                                Integer employeeNo) {
+    public Page<Order> findOrderBasedOnEmployeeLocation(Pageable pageable,
+                                                        Integer employeeNo) {
         QEmployee employee = QEmployee.employee;
         QOrder order = QOrder.order;
         QStatusCode statusCode = QStatusCode.statusCode;
@@ -139,10 +140,7 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize());
 
-        return new PageResponse<>(PageableExecutionUtils.getPage(
-                employeeInstallWorkResult.fetch(),
-                pageable,
-                installWorkResult::fetchCount)
-        );
+        return PageableExecutionUtils.getPage(
+            employeeInstallWorkResult.fetch(), pageable, installWorkResult::fetchCount);
     }
 }
