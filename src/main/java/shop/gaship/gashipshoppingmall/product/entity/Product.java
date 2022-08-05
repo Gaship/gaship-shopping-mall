@@ -25,8 +25,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
@@ -166,7 +165,7 @@ public class Product {
      * @author 김보민
      */
     public static Product create(Category category, StatusCode deliveryType,
-                                 ProductCreateRequestDto createRequest) {
+                                 ProductRequestDto createRequest) {
         return Product.builder()
                 .category(category)
                 .deliveryType(deliveryType)
@@ -195,7 +194,7 @@ public class Product {
      * @author 김보민
      */
     public void updateProduct(Category category, StatusCode deliveryType,
-                              ProductModifyRequestDto modifyRequest) {
+                              ProductRequestDto modifyRequest) {
         this.category = category;
         this.deliveryType = deliveryType;
         this.name = modifyRequest.getName();

@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
@@ -46,7 +45,7 @@ public class ProductController {
      */
     @PostMapping
     public ResponseEntity<Void> productAdd(@RequestPart("image") List<MultipartFile> files,
-                                           @RequestPart ProductCreateRequestDto createRequest) {
+                                           @RequestPart ProductRequestDto createRequest) {
         service.addProduct(files, createRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -64,7 +63,7 @@ public class ProductController {
      */
     @PutMapping
     public ResponseEntity<Void> productModify(@RequestPart("image") List<MultipartFile> files,
-                                              @RequestPart ProductModifyRequestDto modifyRequest) {
+                                              @RequestPart ProductRequestDto modifyRequest) {
         service.modifyProduct(files, modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)

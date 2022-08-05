@@ -17,9 +17,8 @@ import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticRepository;
 import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
 import shop.gaship.gashipshoppingmall.error.FileUploadFailureException;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
@@ -69,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Transactional
     @Override
-    public void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest) {
+    public void addProduct(List<MultipartFile> files, ProductRequestDto createRequest) {
         Category category = categoryRepository.findById(createRequest.getCategoryNo())
             .orElseThrow(CategoryNotFoundException::new);
         StatusCode deliveryType = statusCodeRepository.findById(createRequest.getDeliveryTypeNo())
@@ -121,7 +120,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Transactional
     @Override
-    public void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest) {
+    public void modifyProduct(List<MultipartFile> files, ProductRequestDto modifyRequest) {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
 
@@ -152,7 +151,7 @@ public class ProductServiceImpl implements ProductService {
                                                                      Pageable pageable) {
         List<ElasticProduct> elasticProducts = elasticRepository.findByCode(productCode);
 
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .pageable(pageable)
             .productNoList(getProductNoList(elasticProducts))
             .build();
@@ -171,7 +170,7 @@ public class ProductServiceImpl implements ProductService {
         if (repository.findById(no).isEmpty()) {
             throw new ProductNotFoundException();
         }
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .productNo(no)
             .build();
         PageResponse<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
@@ -186,7 +185,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductByPrice(Long min, Long max,
                                                                       Pageable pageable) {
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .minAmount(min)
             .maxAmount(max)
             .pageable(pageable)
@@ -207,7 +206,7 @@ public class ProductServiceImpl implements ProductService {
         if (categoryRepository.findById(no).isEmpty()) {
             throw new CategoryNotFoundException();
         }
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .categoryNo(no)
             .pageable(pageable)
             .build();
@@ -224,7 +223,7 @@ public class ProductServiceImpl implements ProductService {
                                                                      Pageable pageable) {
         List<ElasticProduct> elasticProducts = elasticRepository.findByProductName(name);
 
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .pageable(pageable)
             .productNoList(getProductNoList(elasticProducts))
             .build();
@@ -241,7 +240,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductsInfo(Pageable pageable) {
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .pageable(pageable)
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
@@ -263,7 +262,7 @@ public class ProductServiceImpl implements ProductService {
         if (statusCodeRepository.findByStatusCodeName(statusName).isEmpty()) {
             throw new StatusCodeNotFoundException();
         }
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .statusName(statusName)
             .pageable(pageable)
             .build();
@@ -278,7 +277,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductByProductNos(List<Integer> productNos,
                                                                            Pageable pageable) {
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .productNoList(productNos)
             .pageable(pageable)
             .build();

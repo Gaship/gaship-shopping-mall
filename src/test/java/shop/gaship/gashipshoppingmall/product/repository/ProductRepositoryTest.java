@@ -13,7 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
@@ -117,7 +117,7 @@ class ProductRepositoryTest {
                         savedProduct, savedTag);
         productTagRepository.save(productTag);
 
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
                 .productNo(savedProduct.getNo())
                 .build();
 
@@ -159,7 +159,7 @@ class ProductRepositoryTest {
 
         productTagRepository.save(productTag);
 
-        ProductRequestDto requestDto = new ProductRequestDto();
+        ProductRequestViewDto requestDto = new ProductRequestViewDto();
 
         PageResponse<ProductAllInfoResponseDto> page = repository.findProduct(requestDto);
         List<ProductAllInfoResponseDto> result = page.getContent();

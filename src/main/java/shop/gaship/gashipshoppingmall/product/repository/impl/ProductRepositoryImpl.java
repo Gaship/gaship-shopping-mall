@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
@@ -38,7 +38,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public PageResponse<ProductAllInfoResponseDto> findProduct(ProductRequestDto requestDto) {
+    public PageResponse<ProductAllInfoResponseDto> findProduct(ProductRequestViewDto requestDto) {
 
         QCategory upper = new QCategory("upper");
         QCategory top = new QCategory("top");
@@ -85,7 +85,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .size()));
     }
 
-    private JPQLQuery<Product> productQuery(ProductRequestDto requestDto) {
+    private JPQLQuery<Product> productQuery(ProductRequestViewDto requestDto) {
         return from(product)
             .innerJoin(category)
             .on(product.category.no.eq(category.no))

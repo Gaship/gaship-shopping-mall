@@ -27,8 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
@@ -95,7 +94,7 @@ class ProductControllerTest {
     @DisplayName("상품 생성 post 요청")
     @Test
     void productAdd() throws Exception {
-        ProductCreateRequestDto createRequest = ProductDummy.createRequestDummy();
+        ProductRequestDto createRequest = ProductDummy.createRequestDummy();
         MockMultipartFile multipartCreateRequest = new MockMultipartFile("createRequest", "createRequest",
             "application/json", objectMapper.writeValueAsString(createRequest).getBytes(StandardCharsets.UTF_8));
 
@@ -112,7 +111,7 @@ class ProductControllerTest {
     @DisplayName("상품 수정 put 요청")
     @Test
     void productModify() throws Exception {
-        ProductModifyRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
+        ProductRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
         MockMultipartFile multipartModifyRequest = new MockMultipartFile("modifyRequest", "modifyRequest",
             "application/json", objectMapper.writeValueAsString(modifyRequest).getBytes(StandardCharsets.UTF_8));
 

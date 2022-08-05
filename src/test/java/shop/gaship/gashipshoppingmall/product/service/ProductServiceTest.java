@@ -26,9 +26,8 @@ import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundExcepti
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticRepository;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
@@ -123,7 +122,7 @@ class ProductServiceTest {
     @DisplayName("상품 등록 성공")
     @Test
     void addProduct() {
-        ProductCreateRequestDto createRequest = ProductDummy.createRequestDummy();
+        ProductRequestDto createRequest = ProductDummy.createRequestDummy();
         List<MultipartFile> files = List.of(multipartFile);
         String uploadDir = File.separator + "products";
         ReflectionTestUtils.setField(product, "no", 1);
@@ -151,7 +150,7 @@ class ProductServiceTest {
     @DisplayName("상품 수정 성공")
     @Test
     void modifyProduct() {
-        ProductModifyRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
+        ProductRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
         Product product = ProductDummy.dummy();
         ReflectionTestUtils.setField(product, "no", modifyRequest.getNo());
         List<MultipartFile> files = List.of(multipartFile);
@@ -178,7 +177,7 @@ class ProductServiceTest {
     @DisplayName("상품 수정 실패 - 해당 상품 찾기 불가")
     @Test
     void modifyProductFail_NotFoundProduct() {
-        ProductModifyRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
+        ProductRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
         Integer productNo = modifyRequest.getNo();
 
         when(repository.findById(productNo))
@@ -219,7 +218,7 @@ class ProductServiceTest {
     @Test
     void productFindByCodeTest() {
         //given
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .pageable(pageRequest)
             .build();
 
@@ -244,7 +243,7 @@ class ProductServiceTest {
     @Test
     void productFindOneTest() {
         //given
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .productNo(response.getProductNo())
             .build();
 
@@ -301,7 +300,7 @@ class ProductServiceTest {
     @Test
     void productFindByPrice() {
         //given
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .minAmount(0L)
             .maxAmount(product.getAmount())
             .pageable(PageRequest.of(0, 10))
@@ -342,7 +341,7 @@ class ProductServiceTest {
     @Test
     void productFindByCategorySuccess() {
         //given
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .categoryNo(1)
             .pageable(pageRequest)
             .build();
@@ -370,7 +369,7 @@ class ProductServiceTest {
     @Test
     void productFindByProductName() {
         //given
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .pageable(pageRequest)
             .build();
 
@@ -393,7 +392,7 @@ class ProductServiceTest {
     @Test
     void findProductInfo() {
         //given
-        ProductRequestDto requestDto = new ProductRequestDto();
+        ProductRequestViewDto requestDto = new ProductRequestViewDto();
         given(repository.findProduct(requestDto))
             .willReturn(pageResponse);
         given(productTagRepository.findTagsByProductNo(any()))
@@ -424,7 +423,7 @@ class ProductServiceTest {
     void findProductByStatusNameSuccess() {
         //given
         StatusCode d1 = StatusCodeDummy.dummy();
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .statusName(d1.getStatusCodeName())
             .pageable(pageRequest)
             .build();
@@ -446,7 +445,7 @@ class ProductServiceTest {
     void findProductByProductNos() {
         //given
         List<Integer> productNo = List.of(1);
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .pageable(pageRequest)
             .productNoList(productNo)
             .build();
