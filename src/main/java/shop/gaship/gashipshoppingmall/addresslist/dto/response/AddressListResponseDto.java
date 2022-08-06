@@ -19,7 +19,9 @@ public class AddressListResponseDto {
     private final String zipCode;
 
     @Builder
-    public AddressListResponseDto(Integer addressListNo, String addressName, boolean allowDelivery, String address, String addressDetail, String zipCode) {
+    public AddressListResponseDto(Integer addressListNo, String addressName,
+                                  boolean allowDelivery, String address,
+                                  String addressDetail, String zipCode) {
         this.addressListNo = addressListNo;
         this.addressName = addressName;
         this.allowDelivery = allowDelivery;
