@@ -1,12 +1,18 @@
 package shop.gaship.gashipshoppingmall.productreview.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -14,6 +20,8 @@ import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
+import shop.gaship.gashipshoppingmall.file.entity.File;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 
 /**
@@ -51,6 +59,14 @@ public class ProductReview {
     private LocalDateTime registerDatetime;
 
     private LocalDateTime modifyDatetime;
+
+    @Transient
+    private static final String SERVICE = "productReview";
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "owner_no", referencedColumnName = "order_product_no")
+    @Where(clause = "service = productReview")
+    private final List<File> reviewImages = new ArrayList<>();
 
     /**
      * 상품평 생성자입니다.
@@ -94,5 +110,10 @@ public class ProductReview {
      */
     public void updateImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public void addProductReviewImage(File file){
+        file.updateFile(orderProductNo, SERVICE);
+        reviewImages.add(file);
     }
 }

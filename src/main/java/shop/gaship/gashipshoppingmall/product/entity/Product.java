@@ -16,14 +16,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
+import shop.gaship.gashipshoppingmall.file.entity.File;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -37,7 +40,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "products")
 public class Product {
 
@@ -129,6 +131,14 @@ public class Product {
     @NotNull
     @Column(name = "product_code", unique = true)
     private String code;
+
+    @Transient
+    private static final String SERVICE = "product";
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "owner_no", referencedColumnName = "product_no")
+    @Where(clause = "service = product")
+    private final List<File> productImages = new ArrayList<>();
 
     @Builder
     public Product(Category category, StatusCode deliveryType, String name,
@@ -253,5 +263,10 @@ public class Product {
         imageLinks.removeAll(Collections.singletonList(null));
 
         return imageLinks;
+    }
+
+    public void addProductImage(File file){
+        file.updateFile(no, SERVICE);
+        productImages.add(file);
     }
 }

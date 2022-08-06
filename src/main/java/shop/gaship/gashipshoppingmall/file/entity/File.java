@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +35,23 @@ public class File {
 
     @NotNull
     private String extension;
+
+    @NotNull
+    @Column(name = "owner_no")
+    private Integer ownerNo;
+
+    @NotNull
+    private String service;
+
+    @Builder
+    public File(String path, String originalName, String extension) {
+        this.path = path;
+        this.originalName = originalName;
+        this.extension = extension;
+    }
+
+    public void updateFile(Integer ownerNo, String service) {
+        this.ownerNo = ownerNo;
+        this.service = service;
+    }
 }
