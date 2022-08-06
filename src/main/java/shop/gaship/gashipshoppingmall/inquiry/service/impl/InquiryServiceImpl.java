@@ -38,6 +38,7 @@ import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class InquiryServiceImpl implements InquiryService {
 
     private final InquiryRepository inquiryRepository;
