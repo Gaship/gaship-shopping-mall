@@ -45,13 +45,13 @@ public class AddressList {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "status_code_no", nullable = false)
+    @JoinColumn(name = "address_status_no", nullable = false)
     private StatusCode statusCode;
 
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "address_datail")
     private String addressDetail;
 
     @Column(nullable = false)
