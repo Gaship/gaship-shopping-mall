@@ -32,7 +32,7 @@ public class TagRepositoryImpl extends QuerydslRepositorySupport implements TagR
 
         List<TagResponseDto> tags = from(tag)
                 .orderBy(tag.title.asc())
-                .limit(pageable.getPageSize())
+                .limit(Math.min(pageable.getPageSize(), 50))
                 .offset(pageable.getOffset())
                 .select(Projections.fields(TagResponseDto.class,
                         tag.tagNo,
