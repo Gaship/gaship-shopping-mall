@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
-import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 import shop.gaship.gashipshoppingmall.inquiry.inquiryenum.InquiryType;
+import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
 
