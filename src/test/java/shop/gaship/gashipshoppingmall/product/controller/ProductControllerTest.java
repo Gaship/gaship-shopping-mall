@@ -88,7 +88,7 @@ class ProductControllerTest {
         product = ProductDummy.dummy();
         response = new ProductAllInfoResponseDto(1, "a", "d", "카테", 100L, LocalDateTime.now(),
             "아", "한국", "판매원", "가나다라", 100L, "w", "#RRRR",
-            1, "img", null, null, null, null, "설명", 3, "카테");
+            1, "설명", 3, "카테");
     }
 
     @DisplayName("상품 생성 post 요청")
@@ -183,11 +183,6 @@ class ProductControllerTest {
             .andExpect(jsonPath("$.content[0].installationCost").value(response.getInstallationCost()))
             .andExpect(jsonPath("$.content[0].color").value(response.getColor()))
             .andExpect(jsonPath("$.content[0].quantity").value(response.getQuantity()))
-            .andExpect(jsonPath("$.content[0].img1").value(response.getImg1()))
-            .andExpect(jsonPath("$.content[0].img5").value(response.getImg5()))
-            .andExpect(jsonPath("$.content[0].img4").value(response.getImg4()))
-            .andExpect(jsonPath("$.content[0].img3").value(response.getImg3()))
-            .andExpect(jsonPath("$.content[0].img2").value(response.getImg2()))
             .andExpect(jsonPath("$.content[0].explanation").value(response.getExplanation()))
             .andExpect(jsonPath("$.content[0].level").value(response.getLevel()))
             .andExpect(jsonPath("$.content[0].upperName").value(response.getUpperName()))
@@ -221,11 +216,6 @@ class ProductControllerTest {
             .andExpect(jsonPath("$.installationCost").value(response.getInstallationCost()))
             .andExpect(jsonPath("$.color").value(response.getColor()))
             .andExpect(jsonPath("$.quantity").value(response.getQuantity()))
-            .andExpect(jsonPath("$.img1").value(response.getImg1()))
-            .andExpect(jsonPath("$.img5").value(response.getImg5()))
-            .andExpect(jsonPath("$.img4").value(response.getImg4()))
-            .andExpect(jsonPath("$.img3").value(response.getImg3()))
-            .andExpect(jsonPath("$.img2").value(response.getImg2()))
             .andExpect(jsonPath("$.explanation").value(response.getExplanation()))
             .andExpect(jsonPath("$.level").value(response.getLevel()))
             .andExpect(jsonPath("$.upperName").value(response.getUpperName()))
@@ -265,11 +255,6 @@ class ProductControllerTest {
             .andExpect(jsonPath("$.content[0].installationCost").value(response.getInstallationCost()))
             .andExpect(jsonPath("$.content[0].color").value(response.getColor()))
             .andExpect(jsonPath("$.content[0].quantity").value(response.getQuantity()))
-            .andExpect(jsonPath("$.content[0].img1").value(response.getImg1()))
-            .andExpect(jsonPath("$.content[0].img5").value(response.getImg5()))
-            .andExpect(jsonPath("$.content[0].img4").value(response.getImg4()))
-            .andExpect(jsonPath("$.content[0].img3").value(response.getImg3()))
-            .andExpect(jsonPath("$.content[0].img2").value(response.getImg2()))
             .andExpect(jsonPath("$.content[0].explanation").value(response.getExplanation()))
             .andExpect(jsonPath("$.content[0].level").value(response.getLevel()))
             .andExpect(jsonPath("$.content[0].upperName").value(response.getUpperName()))
@@ -308,11 +293,6 @@ class ProductControllerTest {
             .andExpect(jsonPath("$.content[0].installationCost").value(response.getInstallationCost()))
             .andExpect(jsonPath("$.content[0].color").value(response.getColor()))
             .andExpect(jsonPath("$.content[0].quantity").value(response.getQuantity()))
-            .andExpect(jsonPath("$.content[0].img1").value(response.getImg1()))
-            .andExpect(jsonPath("$.content[0].img5").value(response.getImg5()))
-            .andExpect(jsonPath("$.content[0].img4").value(response.getImg4()))
-            .andExpect(jsonPath("$.content[0].img3").value(response.getImg3()))
-            .andExpect(jsonPath("$.content[0].img2").value(response.getImg2()))
             .andExpect(jsonPath("$.content[0].explanation").value(response.getExplanation()))
             .andExpect(jsonPath("$.content[0].level").value(response.getLevel()))
             .andExpect(jsonPath("$.content[0].upperName").value(response.getUpperName()))
@@ -352,11 +332,6 @@ class ProductControllerTest {
             .andExpect(jsonPath("$.content[0].installationCost").value(response.getInstallationCost()))
             .andExpect(jsonPath("$.content[0].color").value(response.getColor()))
             .andExpect(jsonPath("$.content[0].quantity").value(response.getQuantity()))
-            .andExpect(jsonPath("$.content[0].img1").value(response.getImg1()))
-            .andExpect(jsonPath("$.content[0].img5").value(response.getImg5()))
-            .andExpect(jsonPath("$.content[0].img4").value(response.getImg4()))
-            .andExpect(jsonPath("$.content[0].img3").value(response.getImg3()))
-            .andExpect(jsonPath("$.content[0].img2").value(response.getImg2()))
             .andExpect(jsonPath("$.content[0].explanation").value(response.getExplanation()))
             .andExpect(jsonPath("$.content[0].level").value(response.getLevel()))
             .andExpect(jsonPath("$.content[0].upperName").value(response.getUpperName()))
@@ -393,11 +368,6 @@ class ProductControllerTest {
             .andExpect(jsonPath("$.content[0].installationCost").value(response.getInstallationCost()))
             .andExpect(jsonPath("$.content[0].color").value(response.getColor()))
             .andExpect(jsonPath("$.content[0].quantity").value(response.getQuantity()))
-            .andExpect(jsonPath("$.content[0].img1").value(response.getImg1()))
-            .andExpect(jsonPath("$.content[0].img5").value(response.getImg5()))
-            .andExpect(jsonPath("$.content[0].img4").value(response.getImg4()))
-            .andExpect(jsonPath("$.content[0].img3").value(response.getImg3()))
-            .andExpect(jsonPath("$.content[0].img2").value(response.getImg2()))
             .andExpect(jsonPath("$.content[0].explanation").value(response.getExplanation()))
             .andExpect(jsonPath("$.content[0].level").value(response.getLevel()))
             .andExpect(jsonPath("$.content[0].upperName").value(response.getUpperName()))
@@ -436,11 +406,6 @@ class ProductControllerTest {
             .andExpect(jsonPath("$.content[0].installationCost").value(response.getInstallationCost()))
             .andExpect(jsonPath("$.content[0].color").value(response.getColor()))
             .andExpect(jsonPath("$.content[0].quantity").value(response.getQuantity()))
-            .andExpect(jsonPath("$.content[0].img1").value(response.getImg1()))
-            .andExpect(jsonPath("$.content[0].img5").value(response.getImg5()))
-            .andExpect(jsonPath("$.content[0].img4").value(response.getImg4()))
-            .andExpect(jsonPath("$.content[0].img3").value(response.getImg3()))
-            .andExpect(jsonPath("$.content[0].img2").value(response.getImg2()))
             .andExpect(jsonPath("$.content[0].explanation").value(response.getExplanation()))
             .andExpect(jsonPath("$.content[0].level").value(response.getLevel()))
             .andExpect(jsonPath("$.content[0].upperName").value(response.getUpperName()))
@@ -455,7 +420,7 @@ class ProductControllerTest {
     void getProductListByProductNos() throws Exception {
         ProductAllInfoResponseDto dto = new ProductAllInfoResponseDto(2, "a", "d", "카테", 100L, LocalDateTime.now(),
             "아", "한국", "판매원", "가나다라", 100L, "w", "#RRRR",
-            1, "img", null, null, null, null, "설명", 3, "카테");
+            1, "설명", 3, "카테");
         List<ProductAllInfoResponseDto> responseDtoList = new ArrayList<>();
         responseDtoList.add(response);
         responseDtoList.add(dto);
@@ -484,11 +449,6 @@ class ProductControllerTest {
             .andExpect(jsonPath("$.content[0].installationCost").value(response.getInstallationCost()))
             .andExpect(jsonPath("$.content[0].color").value(response.getColor()))
             .andExpect(jsonPath("$.content[0].quantity").value(response.getQuantity()))
-            .andExpect(jsonPath("$.content[0].img1").value(response.getImg1()))
-            .andExpect(jsonPath("$.content[0].img5").value(response.getImg5()))
-            .andExpect(jsonPath("$.content[0].img4").value(response.getImg4()))
-            .andExpect(jsonPath("$.content[0].img3").value(response.getImg3()))
-            .andExpect(jsonPath("$.content[0].img2").value(response.getImg2()))
             .andExpect(jsonPath("$.content[0].explanation").value(response.getExplanation()))
             .andExpect(jsonPath("$.content[0].level").value(response.getLevel()))
             .andExpect(jsonPath("$.content[0].upperName").value(response.getUpperName()))
@@ -504,11 +464,6 @@ class ProductControllerTest {
             .andExpect(jsonPath("$.content[1].installationCost").value(dto.getInstallationCost()))
             .andExpect(jsonPath("$.content[1].color").value(dto.getColor()))
             .andExpect(jsonPath("$.content[1].quantity").value(dto.getQuantity()))
-            .andExpect(jsonPath("$.content[1].img1").value(dto.getImg1()))
-            .andExpect(jsonPath("$.content[1].img5").value(dto.getImg5()))
-            .andExpect(jsonPath("$.content[1].img4").value(dto.getImg4()))
-            .andExpect(jsonPath("$.content[1].img3").value(dto.getImg3()))
-            .andExpect(jsonPath("$.content[1].img2").value(dto.getImg2()))
             .andExpect(jsonPath("$.content[1].explanation").value(dto.getExplanation()))
             .andExpect(jsonPath("$.content[1].level").value(dto.getLevel()))
             .andExpect(jsonPath("$.content[1].upperName").value(dto.getUpperName()))

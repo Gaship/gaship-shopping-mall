@@ -135,11 +135,6 @@ class ProductRepositoryTest {
         assertThat(result.get(0).getColor()).isEqualTo(product.getColor());
         assertThat(result.get(0).getQuality()).isEqualTo(product.getQualityAssuranceStandard());
         assertThat(result.get(0).getQuantity()).isEqualTo(product.getStockQuantity());
-        assertThat(result.get(0).getImg1()).isEqualTo(product.getImageLink1());
-        assertThat(result.get(0).getImg2()).isEqualTo(product.getImageLink2());
-        assertThat(result.get(0).getImg3()).isEqualTo(product.getImageLink3());
-        assertThat(result.get(0).getImg4()).isEqualTo(product.getImageLink4());
-        assertThat(result.get(0).getImg5()).isEqualTo(product.getImageLink5());
         assertThat(result.get(0).getLevel()).isEqualTo(product.getCategory().getLevel());
 
 
@@ -175,11 +170,6 @@ class ProductRepositoryTest {
         assertThat(result.get(0).getColor()).isEqualTo(product.getColor());
         assertThat(result.get(0).getQuality()).isEqualTo(product.getQualityAssuranceStandard());
         assertThat(result.get(0).getQuantity()).isEqualTo(product.getStockQuantity());
-        assertThat(result.get(0).getImg1()).isEqualTo(product.getImageLink1());
-        assertThat(result.get(0).getImg2()).isEqualTo(product.getImageLink2());
-        assertThat(result.get(0).getImg3()).isEqualTo(product.getImageLink3());
-        assertThat(result.get(0).getImg4()).isEqualTo(product.getImageLink4());
-        assertThat(result.get(0).getImg5()).isEqualTo(product.getImageLink5());
         assertThat(result.get(0).getLevel()).isEqualTo(product.getCategory().getLevel());
     }
 }

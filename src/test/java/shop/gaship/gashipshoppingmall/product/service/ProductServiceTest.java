@@ -108,7 +108,7 @@ class ProductServiceTest {
         category = CategoryDummy.bottomDummy();
         product = ProductDummy.dummy();
         response = new ProductAllInfoResponseDto(1, "a", "d", "카테", 100L, LocalDateTime.now(), "아",
-            "한국", "판매원", "가나다라", 100L, "w", "#RRRR", 1, "img", null, null, null, null, "설명", 3,
+            "한국", "판매원", "가나다라", 100L, "w", "#RRRR", 1, "설명", 3,
             "카테");
         tag = new Tag(1, "title");
         response.getTags().add(tag.getTitle());
@@ -276,11 +276,6 @@ class ProductServiceTest {
         assertThat(result.getColor()).isEqualTo(response.getColor());
         assertThat(result.getQuality()).isEqualTo(response.getQuality());
         assertThat(result.getQuantity()).isEqualTo(response.getQuantity());
-        assertThat(result.getImg1()).isEqualTo(response.getImg1());
-        assertThat(result.getImg2()).isEqualTo(response.getImg2());
-        assertThat(result.getImg3()).isEqualTo(response.getImg3());
-        assertThat(result.getImg4()).isEqualTo(response.getImg4());
-        assertThat(result.getImg5()).isEqualTo(response.getImg5());
         assertThat(result.getLevel()).isEqualTo(response.getLevel());
     }
 
@@ -477,11 +472,6 @@ class ProductServiceTest {
         assertThat(result.getContent().get(0).getColor()).isEqualTo(response.getColor());
         assertThat(result.getContent().get(0).getQuality()).isEqualTo(response.getQuality());
         assertThat(result.getContent().get(0).getQuantity()).isEqualTo(response.getQuantity());
-        assertThat(result.getContent().get(0).getImg1()).isEqualTo(response.getImg1());
-        assertThat(result.getContent().get(0).getImg2()).isEqualTo(response.getImg2());
-        assertThat(result.getContent().get(0).getImg3()).isEqualTo(response.getImg3());
-        assertThat(result.getContent().get(0).getImg4()).isEqualTo(response.getImg4());
-        assertThat(result.getContent().get(0).getImg5()).isEqualTo(response.getImg5());
         assertThat(result.getContent().get(0).getLevel()).isEqualTo(response.getLevel());
     }
 }

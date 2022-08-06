@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import shop.gaship.gashipshoppingmall.commonfile.entity.File;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.commonfile.exception.CommonFileNotFoundException;
 import shop.gaship.gashipshoppingmall.commonfile.exception.ResourceLoadFailureException;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
@@ -26,10 +26,10 @@ public class CommonFileServiceImpl implements CommonFileService {
 
     @Override
     public Resource loadResource(Integer fileNo) {
-        File file = commonFileRepository.findById(fileNo).orElseThrow(CommonFileNotFoundException::new);
+        CommonFile commonFile = commonFileRepository.findById(fileNo).orElseThrow(CommonFileNotFoundException::new);
 
         try {
-            return new UrlResource("file:" + file.getPath());
+            return new UrlResource("file:" + commonFile.getPath());
         } catch (MalformedURLException e) {
             throw new ResourceLoadFailureException();
         }

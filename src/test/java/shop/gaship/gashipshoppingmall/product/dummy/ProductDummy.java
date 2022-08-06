@@ -25,7 +25,6 @@ public class ProductDummy {
                 .explanation("설명")
                 .code("A001")
                 .build();
-        dummy.updateImageLinks(List.of("이미지 링크"));
         return dummy;
     }
 

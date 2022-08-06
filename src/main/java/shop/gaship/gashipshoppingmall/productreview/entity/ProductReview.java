@@ -21,7 +21,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
-import shop.gaship.gashipshoppingmall.commonfile.entity.File;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 
 /**
@@ -66,7 +66,7 @@ public class ProductReview {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_no", referencedColumnName = "order_product_no")
     @Where(clause = "service = productReview")
-    private final List<File> reviewImages = new ArrayList<>();
+    private final List<CommonFile> reviewImages = new ArrayList<>();
 
     /**
      * 상품평 생성자입니다.
@@ -112,8 +112,8 @@ public class ProductReview {
         this.imagePath = imagePath;
     }
 
-    public void addProductReviewImage(File file){
-        file.updateFile(orderProductNo, SERVICE);
-        reviewImages.add(file);
+    public void addProductReviewImage(CommonFile commonFile){
+        commonFile.updateCommonFile(orderProductNo, SERVICE);
+        reviewImages.add(commonFile);
     }
 }

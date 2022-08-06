@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "files")
-public class File {
+@Table(name = "common_files")
+public class CommonFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "file_no")
@@ -44,13 +44,13 @@ public class File {
     private String service;
 
     @Builder
-    public File(String path, String originalName, String extension) {
+    public CommonFile(String path, String originalName, String extension) {
         this.path = path;
         this.originalName = originalName;
         this.extension = extension;
     }
 
-    public void updateFile(Integer ownerNo, String service) {
+    public void updateCommonFile(Integer ownerNo, String service) {
         this.ownerNo = ownerNo;
         this.service = service;
     }

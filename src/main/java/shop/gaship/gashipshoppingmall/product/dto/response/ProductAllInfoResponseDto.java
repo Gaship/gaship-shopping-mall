@@ -30,11 +30,6 @@ public class ProductAllInfoResponseDto {
     private final String quality;
     private final String color;
     private final Integer quantity;
-    private final String img1;
-    private final String img2;
-    private final String img3;
-    private final String img4;
-    private final String img5;
     private final String explanation;
     private final Integer level;
     private final String upperName;

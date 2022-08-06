@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
-import shop.gaship.gashipshoppingmall.commonfile.entity.File;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -107,22 +107,6 @@ public class Product {
     @NotNull
     private Integer stockQuantity;
 
-    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    @NotNull
-    private String imageLink1;
-
-    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    private String imageLink2;
-
-    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    private String imageLink3;
-
-    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    private String imageLink4;
-
-    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    private String imageLink5;
-
     @NotNull
     private String explanation;
 
@@ -137,7 +121,7 @@ public class Product {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_no", referencedColumnName = "product_no")
     @Where(clause = "service = product")
-    private final List<File> productImages = new ArrayList<>();
+    private final List<CommonFile> productImages = new ArrayList<>();
 
     @Builder
     public Product(Category category, StatusCode deliveryType, String name,
@@ -228,44 +212,8 @@ public class Product {
         this.salesStatus = salesStatus;
     }
 
-    /**
-     * 서버에 업로드한 상품의 이미지들을 엔티티에 업데이트하는 메서드입니다.
-     *
-     * @param imageLinks 서버에 업로드한 이미지 이름 리스트
-     * @author 김보민
-     */
-    public void updateImageLinks(List<String> imageLinks) {
-        String[] updatingImageLinks = new String[5];
-        IntStream.range(0, imageLinks.size())
-                .forEach(i -> updatingImageLinks[i] = imageLinks.get(i));
-
-        this.imageLink1 = updatingImageLinks[0];
-        this.imageLink2 = updatingImageLinks[1];
-        this.imageLink3 = updatingImageLinks[2];
-        this.imageLink4 = updatingImageLinks[3];
-        this.imageLink5 = updatingImageLinks[4];
-    }
-
-    /**
-     * 상품의 이미지 링크들을 리스트형태로 반환하는 메서드입니다.
-     *
-     * @return imageLinks 이미지 링크 리스트
-     */
-    public List<String> getImageLinkList() {
-        List<String> imageLinks = new ArrayList<>();
-
-        imageLinks.add(this.imageLink1);
-        imageLinks.add(this.imageLink2);
-        imageLinks.add(this.imageLink3);
-        imageLinks.add(this.imageLink4);
-        imageLinks.add(this.imageLink5);
-        imageLinks.removeAll(Collections.singletonList(null));
-
-        return imageLinks;
-    }
-
-    public void addProductImage(File file){
-        file.updateFile(no, SERVICE);
-        productImages.add(file);
+    public void addProductImage(CommonFile commonFile){
+        commonFile.updateCommonFile(no, SERVICE);
+        productImages.add(commonFile);
     }
 }

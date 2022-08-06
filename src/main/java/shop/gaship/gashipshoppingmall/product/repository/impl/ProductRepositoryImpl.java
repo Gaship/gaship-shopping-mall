@@ -60,11 +60,6 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 product.qualityAssuranceStandard.as("quality"),
                 product.color,
                 product.stockQuantity.as("quantity"),
-                product.imageLink1.as("img1"),
-                product.imageLink2.as("img2"),
-                product.imageLink3.as("img3"),
-                product.imageLink4.as("img4"),
-                product.imageLink5.as("img5"),
                 product.explanation,
                 category.level,
                 JPAExpressions.select(upper.name.concat("-").concat(

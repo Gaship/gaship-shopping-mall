@@ -81,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
         product.updateSalesStatus(salesStatus);
 
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
-        product.updateImageLinks(imageLinks);
+//        product.updateImageLinks(imageLinks);
 
         applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks));
 
@@ -124,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
 
-        fileUploadUtil.cleanUpFiles(product.getImageLinkList());
+//        fileUploadUtil.cleanUpFiles(product.getImageLinkList());
 
         Category category = categoryRepository.findById(modifyRequest.getCategoryNo())
             .orElseThrow(CategoryNotFoundException::new);
@@ -134,7 +134,7 @@ public class ProductServiceImpl implements ProductService {
 
         applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks));
 
-        product.updateImageLinks(imageLinks);
+//        product.updateImageLinks(imageLinks);
         product.updateProduct(category, deliveryType, modifyRequest);
 
         productTagRepository.deleteAllByPkProductNo(product.getNo());
