@@ -21,7 +21,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
-import shop.gaship.gashipshoppingmall.file.entity.File;
+import shop.gaship.gashipshoppingmall.commonfile.entity.File;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 
 /**

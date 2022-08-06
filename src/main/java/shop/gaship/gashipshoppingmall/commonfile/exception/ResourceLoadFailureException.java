@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.file.exception;
+package shop.gaship.gashipshoppingmall.commonfile.exception;
 
 /**
  * Resource 로드 실패 시 던질 예외입니다.

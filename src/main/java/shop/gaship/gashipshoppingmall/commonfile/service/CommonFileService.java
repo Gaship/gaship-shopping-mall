@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.file.service;
+package shop.gaship.gashipshoppingmall.commonfile.service;
 
 import org.springframework.core.io.Resource;
 
@@ -8,6 +8,6 @@ import org.springframework.core.io.Resource;
  * @author : 김보민
  * @since 1.0
  */
-public interface FileService {
+public interface CommonFileService {
     Resource loadResource(Integer fileNo);
 }

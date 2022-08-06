@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.file.entity;
+package shop.gaship.gashipshoppingmall.commonfile.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
