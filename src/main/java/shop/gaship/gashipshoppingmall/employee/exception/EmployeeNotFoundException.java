@@ -9,6 +9,7 @@ package shop.gaship.gashipshoppingmall.employee.exception;
  */
 public class EmployeeNotFoundException extends RuntimeException {
 
+    public static final String MESSAGE = "직원이 존재하지 않습니다.";
     public EmployeeNotFoundException() {
         super("직원이 존재하지 않습니다.");
     }
