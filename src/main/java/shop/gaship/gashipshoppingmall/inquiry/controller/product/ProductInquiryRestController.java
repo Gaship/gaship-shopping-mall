@@ -119,8 +119,7 @@ public class ProductInquiryRestController {
         Pageable pageable, @PathVariable Integer productNo) {
 
         Page<InquiryListResponseDto> inquiriesPage =
-            inquiryService.findInquiriesByMemberNo(pageable,
-                InquiryType.PRODUCT_INQUIRIES.getValue(), productNo);
+            inquiryService.findInquiriesByProductNo(pageable, productNo);
 
         PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
 
