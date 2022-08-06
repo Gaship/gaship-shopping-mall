@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.orderproduct.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -28,8 +29,9 @@ class OrderProductRepositoryTest {
     @Autowired
     OrderProductRepository orderProductRepository;
 
+    @DisplayName("mysql 에서 특정범위의 매출량을 보기위한 테스트입니다.")
     @Test
-    void test1() {
+    void findTotalSaleTestBetweenStartDateEndDate() {
         LocalDateTime startDate = LocalDateTime.of(2021, 1, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2022, 12, 30, 23, 59, 59);
         TotalSaleRequestDto requestDto = new TotalSaleRequestDto(startDate, endDate);

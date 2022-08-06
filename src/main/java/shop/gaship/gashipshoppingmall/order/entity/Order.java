@@ -60,12 +60,12 @@ public class Order {
     private Long totalOrderAmount;
 
     /**
-     * Instantiates a new Order.
+     * 특정값을 통해 생성자를 만들메서드입니다.
      *
-     * @param member             the member
-     * @param addressList        the address list
-     * @param receiptName        the receipt name
-     * @param receiptPhoneNumber the receipt phone number
+     * @param member             멤버가 기입됩니다.
+     * @param addressList        주소리스트가 기입됩니다.
+     * @param receiptName        수령자명이 기입됩니다.
+     * @param receiptPhoneNumber 수령인 번호가 기입됩니다.
      */
     @Builder
     public Order(Member member, AddressList addressList,

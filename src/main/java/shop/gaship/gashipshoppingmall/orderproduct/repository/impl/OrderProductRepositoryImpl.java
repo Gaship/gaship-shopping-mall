@@ -1,7 +1,10 @@
 package shop.gaship.gashipshoppingmall.orderproduct.repository.impl;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.NumberPath;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -48,25 +51,34 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
             .select(Projections.constructor(TotalSaleResponseDto.class,
                 order.orderDatetime.as("totalSaleDate"),
                 orderProduct.product.no.count().as("orderCnt"),
-                (new CaseBuilder()
-                    .when(orderProduct.orderStatusCode.statusCodeNo.between(1, 12))
-                    .then(orderProduct.no)
-                    .otherwise(0)).count().as("orderCancelCnt"),
-                (new CaseBuilder()
-                    .when(orderProduct.orderStatusCode.statusCodeNo.eq(13))
-                    .then(orderProduct.no)
-                    .otherwise(0)).count().as("orderSaleCnt"),
+                queryCase(orderProduct.orderStatusCode.statusCodeNo
+                    .between(1, 12), orderProduct.no)
+                    .otherwise(0)
+                    .count().as("orderCancelCnt"),
+                queryCase(orderProduct.orderStatusCode.statusCodeNo.eq(13),
+                    orderProduct.no)
+                    .otherwise(0)
+                    .count().as("orderSaleCnt"),
                 orderProduct.amount.sum().as("totalAmount"),
-                (new CaseBuilder()
-                    .when(orderProduct.orderStatusCode.statusCodeNo.between(7, 12))
-                    .then(orderProduct.cancellationAmount)
-                    .otherwise(0)).sum().as("cancelAmount"),
+                queryCase(orderProduct.orderStatusCode.statusCodeNo.between(7, 12),
+                    orderProduct.cancellationAmount)
+                    .otherwise(0)
+                    .sum().as("cancelAmount"),
                 (new CaseBuilder()
                     .when(orderProduct.orderStatusCode.statusCodeNo.eq(13)
                         .or(orderProduct.orderStatusCode.statusCodeNo.eq(4)))
                     .then(orderProduct.amount)
-                    .otherwise(0L)).sum().as("orderSaleAmount")))
+                    .otherwise(0L))
+                    .sum().as("orderSaleAmount")))
             .groupBy(order.orderDatetime)
             .fetch();
+    }
+
+    private CaseBuilder.Cases<Integer, NumberExpression<Integer>> queryCase(
+        BooleanExpression statusCodeNo,
+        NumberPath<Integer> orderProduct) {
+        return new CaseBuilder()
+            .when(statusCodeNo)
+            .then(orderProduct);
     }
 }

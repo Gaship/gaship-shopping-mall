@@ -14,10 +14,10 @@ public interface TotalSaleService {
 
 
     /**
-     * 검색할 시작날와 끝날짜를 입력하면 관련 매출현황이 나오는 메서드입니다.
+     * 검색할 시작날과 끝날짜를 입력하면 관련 매출현황이 나오는 메서드입니다.
      *
      * @param dto 시작날짜와 끝날짜가 기입되어있습니다.
      * @return 매출현황이 반환됩니다.
      */
-    List<TotalSaleResponseDto> findTotalSaleList(TotalSaleRequestDto dto);
+    List<TotalSaleResponseDto> findTotalSales(TotalSaleRequestDto dto);
 }

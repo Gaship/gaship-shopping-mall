@@ -40,8 +40,8 @@ class TotalSaleServiceTest {
     void WrongYearException() {
         //given
         TotalSaleRequestDto dto = new TotalSaleRequestDto(LocalDateTime.now(), LocalDateTime.now().plusYears(2));
-        //when
-        assertThatThrownBy(() -> service.findTotalSaleList(dto))
+        //when & then
+        assertThatThrownBy(() -> service.findTotalSales(dto))
             .isInstanceOf(LocalDateMaxYearException.class);
     }
 
@@ -55,11 +55,10 @@ class TotalSaleServiceTest {
         TotalSaleRequestDto dto = new TotalSaleRequestDto(startDate, endDate);
         TotalSaleResponseDto responseDto = new TotalSaleResponseDto(startDate, 2L, 1L, 1L, 10000L, 1000, 9000L);
 
-        //when
         given(repository.findTotalSale(dto))
             .willReturn(List.of(responseDto));
-
-        List<TotalSaleResponseDto> result = service.findTotalSaleList(dto);
+        //when
+        List<TotalSaleResponseDto> result = service.findTotalSales(dto);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getTotalSaleDate()).isEqualTo(startDate);

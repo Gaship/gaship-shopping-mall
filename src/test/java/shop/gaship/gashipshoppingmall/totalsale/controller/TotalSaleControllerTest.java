@@ -54,7 +54,7 @@ class TotalSaleControllerTest {
         TotalSaleResponseDto responseDto = new TotalSaleResponseDto(startDate, 2L, 1L, 1L, 10000L, 1000, 9000L);
 
         //when
-        when(service.findTotalSaleList(any())).thenReturn(List.of(responseDto));
+        when(service.findTotalSales(any())).thenReturn(List.of(responseDto));
 
         mvc.perform(get("/api/total-sale/date/{start}/end/{end}", startDate, endDate)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -69,7 +69,7 @@ class TotalSaleControllerTest {
             .andExpect(jsonPath("$[0].orderSaleAmount").value(objectMapper.writeValueAsString(responseDto.getOrderSaleAmount())))
             .andDo(print());
 
-        verify(service, times(1)).findTotalSaleList(any());
+        verify(service, times(1)).findTotalSales(any());
 
     }
 }

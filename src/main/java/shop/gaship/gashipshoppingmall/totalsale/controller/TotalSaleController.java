@@ -42,7 +42,7 @@ public class TotalSaleController {
         @PathVariable("end")
         LocalDateTime end) {
         List<TotalSaleResponseDto> totalSale =
-            service.findTotalSaleList(new TotalSaleRequestDto(start, end));
+            service.findTotalSales(new TotalSaleRequestDto(start, end));
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
