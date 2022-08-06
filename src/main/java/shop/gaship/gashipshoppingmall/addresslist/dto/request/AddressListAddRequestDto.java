@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.addresslist.dto;
+package shop.gaship.gashipshoppingmall.addresslist.dto.request;
 
 import lombok.Getter;
 
@@ -11,12 +11,8 @@ import lombok.Getter;
 @Getter
 public class AddressListAddRequestDto {
     private Integer addressLocalNo;
-
     private Integer memberNo;
-
     private String address;
-
     private String addressDetail;
-
     private String zipCode;
 }
