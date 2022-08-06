@@ -6,19 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListAddRequestDto;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListModifyRequestDto;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListPageResponseDto;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListResponseDto;
-import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
+import org.springframework.web.bind.annotation.*;
+import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListAddRequestDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListModifyRequestDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.service.AddressListService;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 배송지목록의 restController 입니다.
@@ -40,11 +33,11 @@ public class AddressListController {
      */
     @PostMapping("/api/members/{memberId}/addressLists")
     public ResponseEntity<Void> addressListAdd(
-        @Valid @RequestBody AddressListAddRequestDto request) {
+            @Valid @RequestBody AddressListAddRequestDto request) {
         addressListService.addAddressList(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
-            .build();
+                .build();
     }
 
     /**
@@ -58,12 +51,12 @@ public class AddressListController {
      */
     @PutMapping("/api/members/{memberId}/addressLists")
     public ResponseEntity<Void> addressListModify(
-        @Valid @RequestBody AddressListModifyRequestDto request) {
+            @Valid @RequestBody AddressListModifyRequestDto request) {
         addressListService.modifyAddressList(request);
         addressListService.addAddressList(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
-            .build();
+                .build();
     }
 
     /**
@@ -87,12 +80,12 @@ public class AddressListController {
      */
     @GetMapping("/api/members/{memberId}/addressLists/{addressListId}")
     public ResponseEntity<AddressListResponseDto> addressListDetails(
-        @PathVariable Integer addressListId) {
+            @PathVariable Integer addressListId) {
         AddressListResponseDto addressListResponseDto =
-            addressListService.findAddressList(addressListId);
+                addressListService.findAddressList(addressListId);
 
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-            .body(addressListResponseDto);
+                .body(addressListResponseDto);
     }
 
     /**
@@ -102,12 +95,12 @@ public class AddressListController {
      * @return responseEntity body 는 조회하길 원하는 배송지목록 페이지정보를 담고있는 dto, 응답 status 는 OK.
      */
     @GetMapping("/api/members/{memberId}/addressLists")
-    public ResponseEntity<AddressListPageResponseDto<AddressListResponseDto, AddressList>>
-        addressListList(@PathVariable Integer memberId, Pageable pageable) {
-        AddressListPageResponseDto<AddressListResponseDto, AddressList> addressListPageResponseDto =
-            addressListService.findAddressLists(memberId, pageable);
+    public ResponseEntity<PageResponse<AddressListResponseDto>> addressListList(
+            @PathVariable Integer memberId, Pageable pageable) {
+        PageResponse<AddressListResponseDto> pageResponse =
+                addressListService.findAddressLists(memberId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-            .body(addressListPageResponseDto);
+                .body(pageResponse);
     }
 }
