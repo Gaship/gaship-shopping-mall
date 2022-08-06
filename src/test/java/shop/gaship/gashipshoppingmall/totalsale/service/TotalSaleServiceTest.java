@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -27,6 +28,8 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(SpringExtension.class)
 @Import(TotalSaleServiceImpl.class)
 class TotalSaleServiceTest {
+
+    @Autowired
     TotalSaleService service;
 
     @MockBean
@@ -36,7 +39,7 @@ class TotalSaleServiceTest {
     @Test
     void WrongYearException() {
         //given
-        TotalSaleRequestDto dto = new TotalSaleRequestDto(LocalDateTime.now(), LocalDateTime.now().plusYears(3));
+        TotalSaleRequestDto dto = new TotalSaleRequestDto(LocalDateTime.now(), LocalDateTime.now().plusYears(2));
         //when
         assertThatThrownBy(() -> service.findTotalSaleList(dto))
             .isInstanceOf(LocalDateMaxYearException.class);
@@ -46,7 +49,7 @@ class TotalSaleServiceTest {
     @Test
     void findTotalSaleListTest() {
         //given
-        LocalDateTime startDate = LocalDateTime.of(2022, 1, 1, 0, 0);
+        LocalDateTime startDate = LocalDateTime.of(2022, 2, 2, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2022, 12, 30, 23, 59, 59);
 
         TotalSaleRequestDto dto = new TotalSaleRequestDto(startDate, endDate);
