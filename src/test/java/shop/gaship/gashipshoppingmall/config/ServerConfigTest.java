@@ -19,7 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties(value= ServerConfig.class)
 @TestPropertySource("classpath:application-prod.properties")
-public class ServerConfigTest {
+class ServerConfigTest {
 
     @Autowired
     ServerConfig config;

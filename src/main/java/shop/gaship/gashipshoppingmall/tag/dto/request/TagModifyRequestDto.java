@@ -1,12 +1,12 @@
 package shop.gaship.gashipshoppingmall.tag.dto.request;
 
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 /**
  * 태그를 등록 수정할 때 사용되는 dto 입니다.

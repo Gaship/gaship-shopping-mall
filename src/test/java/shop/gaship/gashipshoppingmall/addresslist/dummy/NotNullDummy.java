@@ -1,18 +1,16 @@
 package shop.gaship.gashipshoppingmall.addresslist.dummy;
 
+import java.time.LocalDate;
 import lombok.EqualsAndHashCode;
 import org.springframework.test.util.ReflectionTestUtils;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.dayLabor.entity.DayLabor;
-import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberStatus;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.status.AddressStatus;
 import shop.gaship.gashipshoppingmall.statuscode.status.RenewalPeriod;
-
-import java.time.LocalDate;
 
 /**
  * @author 최정우

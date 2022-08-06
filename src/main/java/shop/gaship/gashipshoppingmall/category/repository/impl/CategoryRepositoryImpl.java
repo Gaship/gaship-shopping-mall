@@ -20,6 +20,8 @@ import shop.gaship.gashipshoppingmall.category.repository.custom.CategoryReposit
  */
 public class CategoryRepositoryImpl
     extends QuerydslRepositorySupport implements CategoryRepositoryCustom {
+    private static final String UPPER_CATEGORY_NO = "upperCategoryNo";
+    private static final String UPPER_CATEGORY_NAME = "upperCategoryName";
 
     public CategoryRepositoryImpl() {
         super(Category.class);
@@ -39,8 +41,8 @@ public class CategoryRepositoryImpl
                 category.no,
                 category.name,
                 category.level,
-                category.upperCategory.no.as("upperCategoryNo"),
-                category.upperCategory.name.as("upperCategoryName")))
+                category.upperCategory.no.as(UPPER_CATEGORY_NO),
+                category.upperCategory.name.as(UPPER_CATEGORY_NAME)))
             .fetchOne()
         );
     }
@@ -58,8 +60,8 @@ public class CategoryRepositoryImpl
                 category.no,
                 category.name,
                 category.level,
-                category.upperCategory.no.as("upperCategoryNo"),
-                category.upperCategory.name.as("upperCategoryName")))
+                category.upperCategory.no.as(UPPER_CATEGORY_NO),
+                category.upperCategory.name.as(UPPER_CATEGORY_NAME)))
             .fetch();
     }
 
@@ -76,8 +78,8 @@ public class CategoryRepositoryImpl
                 category.no,
                 category.name,
                 category.level,
-                category.upperCategory.no.as("upperCategoryNo"),
-                category.upperCategory.name.as("upperCategoryName")))
+                category.upperCategory.no.as(UPPER_CATEGORY_NO),
+                category.upperCategory.name.as(UPPER_CATEGORY_NAME)))
             .fetch();
     }
 }

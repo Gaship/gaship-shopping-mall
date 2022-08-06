@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.gaship.gashipshoppingmall.addressLocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -29,7 +29,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 @Table(name = "employees")
 @Entity
 public class Employee {
-
     @Id
     @Column(name = "employee_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,17 +54,6 @@ public class Employee {
     @Column(name = "phone_number", unique = true)
     private String phoneNo;
 
-    public Employee(StatusCode statusCode, AddressLocal addressLocal,
-                    String name,
-                    String email, String password, String phoneNo) {
-        this.statusCode = statusCode;
-        this.addressLocal = addressLocal;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.phoneNo = phoneNo;
-    }
-
     /**
      * 직원에대한 지역을 수정하기위한 메서드입니다.
      *
@@ -90,7 +78,6 @@ public class Employee {
 
     /**
      * 직원에 있는 공통코드의 권한을 변경하기위한 메서드입니다.
-     *
      *
      * @param code 변경되어야할 권한이 들어옵니다.
      * @author 유호철

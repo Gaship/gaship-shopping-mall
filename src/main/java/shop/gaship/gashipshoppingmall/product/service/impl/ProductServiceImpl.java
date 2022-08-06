@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.product.service.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +15,8 @@ import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundExcepti
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticRepository;
+import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
+import shop.gaship.gashipshoppingmall.error.FileUploadFailureException;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
@@ -26,8 +27,8 @@ import shop.gaship.gashipshoppingmall.product.event.ProductSaveUpdateEvent;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
-import shop.gaship.gashipshoppingmall.productTag.entity.ProductTag;
-import shop.gaship.gashipshoppingmall.productTag.repository.ProductTagRepository;
+import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
+import shop.gaship.gashipshoppingmall.producttag.repository.ProductTagRepository;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
@@ -64,11 +65,11 @@ public class ProductServiceImpl implements ProductService {
      *
      * @throws CategoryNotFoundException   카테고리가 존재하지않을경우 발생합니다.
      * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
+     * @throws FileUploadFailureException  파일 저장에 오류가 발생하였을 때 에외를 던집니다.
      */
     @Transactional
     @Override
-    public void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest)
-        throws IOException {
+    public void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest) {
         Category category = categoryRepository.findById(createRequest.getCategoryNo())
             .orElseThrow(CategoryNotFoundException::new);
         StatusCode deliveryType = statusCodeRepository.findById(createRequest.getDeliveryTypeNo())
@@ -88,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = repository.save(product);
         addProductTags(product, createRequest.getTagNos());
         elasticRepository.save(new ElasticProduct(
-                savedProduct.getNo(), savedProduct.getName(), savedProduct.getCode()));
+            savedProduct.getNo(), savedProduct.getName(), savedProduct.getCode()));
     }
 
     /**
@@ -115,19 +116,21 @@ public class ProductServiceImpl implements ProductService {
      * @throws ProductNotFoundException    제품이 존재하지않을경우 발생합니다.
      * @throws CategoryNotFoundException   카테고리가 존재하지않을경우 발생합니다.
      * @throws StatusCodeNotFoundException 상태코드가 존재하지않을경우 발생합니다.
+     * @throws FileUploadFailureException  파일 저장에 오류가 발생하였을 때 에외를 던집니다.
+     * @throws FileDeleteFailureException  파일 삭제에 오류가 발생하였을 때 에외를 던집니다.
      */
     @Transactional
     @Override
-    public void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest)
-        throws IOException {
+    public void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest) {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
+
+        fileUploadUtil.cleanUpFiles(product.getImageLinkList());
+
         Category category = categoryRepository.findById(modifyRequest.getCategoryNo())
             .orElseThrow(CategoryNotFoundException::new);
         StatusCode deliveryType = statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo())
             .orElseThrow(StatusCodeNotFoundException::new);
-
-        fileUploadUtil.deleteFiles(product.getImageLinkList());
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
 
         applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks));
@@ -138,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
         productTagRepository.deleteAllByPkProductNo(product.getNo());
         addProductTags(product, modifyRequest.getTagNos());
         elasticRepository.save(
-                new ElasticProduct(product.getNo(), product.getName(), product.getCode()));
+            new ElasticProduct(product.getNo(), product.getName(), product.getCode()));
     }
 
     /**
@@ -270,6 +273,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PageResponse<ProductAllInfoResponseDto> findProductByProductNos(List<Integer> productNos,
+                                                                           Pageable pageable) {
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+            .productNoList(productNos)
+            .pageable(pageable)
+            .build();
+
+        PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
+        findProductTagInfo(products);
+        return products;
+    }
+
+    /**
      * 상품 태그 등록 메서드입니다.
      *
      * @param product 태그를 등록할 상품
@@ -297,7 +316,8 @@ public class ProductServiceImpl implements ProductService {
      */
     private void findProductTagInfo(PageResponse<ProductAllInfoResponseDto> products) {
         products.getContent().forEach(product -> {
-            List<String> tagNameList = productTagRepository.findTagsByProductNo(product.getProductNo());
+            List<String> tagNameList =
+                productTagRepository.findTagsByProductNo(product.getProductNo());
             product.getTags().addAll(tagNameList);
         });
     }

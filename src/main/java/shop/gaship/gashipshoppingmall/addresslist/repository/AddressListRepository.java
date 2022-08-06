@@ -1,16 +1,9 @@
 package shop.gaship.gashipshoppingmall.addresslist.repository;
 
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.FluentQuery;
-import org.springframework.data.repository.query.Param;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
-
-import javax.persistence.Index;
-import java.util.function.Function;
 
 /**
  * 배송지목록의 db 에 접근하기 위한 repository 입니다.
@@ -28,5 +21,7 @@ public interface AddressListRepository extends JpaRepository<AddressList, Intege
      * @return 상태가 statusCondition 인 배송지목록을 pageable 조건에 따라 가져옵니다.
      */
 
-    Page<AddressList> findByMember_MemberNoAndStatusCode_StatusCodeName(Integer memberNo, String statusCodeName, Pageable pageable);
+    Page<AddressList> findByMember_MemberNoAndStatusCode_StatusCodeName(Integer memberNo,
+                                                                        String statusCodeName,
+                                                                        Pageable pageable);
 }

@@ -50,6 +50,15 @@ public class Coupon {
     @NotNull
     private Integer expirationPeriod;
 
+    /**
+     * 쿠폰을 생성하는 생성자입니다.
+     *
+     * @param sendStatusCode 쿠폰 상태를 의미하는 상태코드 엔티티 객체입니다.
+     * @param name 쿠폰명입니다.
+     * @param warrantyPeriod 보증기간입니다.
+     * @param condition 발급조건입니다.
+     * @param expirationPeriod 만료기간입니다.
+     */
     @Builder
     public Coupon(StatusCode sendStatusCode, String name, Integer warrantyPeriod,
                   String condition, Integer expirationPeriod) {

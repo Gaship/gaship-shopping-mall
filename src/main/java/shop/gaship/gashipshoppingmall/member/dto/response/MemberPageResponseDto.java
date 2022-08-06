@@ -40,6 +40,12 @@ public class MemberPageResponseDto<D, E> {
     //페이지 번호  목록
     private List<Integer> pageList;
 
+    /**
+     * 페이지 네이션 결과를 통해서 멤버 목록 페이지네이션 Dto를 생성하는 생성자입니다.
+     *
+     * @param result 페이지네이션 결과입니다.
+     * @param fn Member 엔티티에서 Dto 타입으로 만들기 위한 함수형 파라미터입니다.
+     */
     public MemberPageResponseDto(Page<E> result, Function<E, D> fn) {
 
         dtoList = result.stream().map(fn).collect(Collectors.toList());
@@ -51,7 +57,6 @@ public class MemberPageResponseDto<D, E> {
 
 
     private void makePageList(Pageable pageable) {
-
         this.page = pageable.getPageNumber() + 1; // 0부터 시작하므로 1을 추가
         this.size = pageable.getPageSize();
 

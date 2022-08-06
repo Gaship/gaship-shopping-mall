@@ -33,7 +33,7 @@ public class MemberTagController {
      * @return the response entity
      */
     @PostMapping("/members/{memberNo}/tags")
-    public ResponseEntity<Void> MemberTagDeleteAllAndAddAll(
+    public ResponseEntity<Void> memberTagDeleteAllAndAddAll(
         @Valid @RequestBody MemberTagRequestDto memberTagRequestDto) {
         memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -48,7 +48,7 @@ public class MemberTagController {
      * @return the response entity
      */
     @GetMapping("/members/{memberNo}/tags")
-    public ResponseEntity<List<MemberTagResponseDto>> MemberTagList(
+    public ResponseEntity<List<MemberTagResponseDto>> memberTagList(
         @PathVariable Integer memberNo) {
         return ResponseEntity.status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
