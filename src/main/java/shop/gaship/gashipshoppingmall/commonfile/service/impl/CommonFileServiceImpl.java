@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.commonfile.service.impl;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,5 +34,15 @@ public class CommonFileServiceImpl implements CommonFileService {
         } catch (MalformedURLException e) {
             throw new ResourceLoadFailureException();
         }
+    }
+
+    @Override
+    public CommonFile createCommonFile(String fileLink) {
+        String fileName = fileLink.substring(fileLink.lastIndexOf(File.separator) + 1);
+        return CommonFile.builder()
+                .path(fileLink)
+                .originalName(fileName)
+                .extension(fileName.substring(fileName.lastIndexOf(".") + 1))
+                .build();
     }
 }

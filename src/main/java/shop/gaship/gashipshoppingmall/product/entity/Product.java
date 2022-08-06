@@ -2,9 +2,7 @@ package shop.gaship.gashipshoppingmall.product.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,6 +27,7 @@ import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
 /**
  * 상품 엔티티 클래스 입니다.
@@ -62,7 +61,7 @@ public class Product {
     @JoinColumn(name = "sales_status_no")
     private StatusCode salesStatus;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductTag> productTags = new ArrayList<>();
 
     @Length(max = 100, message = "상품 이름은 100자 이하여야 합니다.")
@@ -121,7 +120,7 @@ public class Product {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_no", referencedColumnName = "product_no")
     @Where(clause = "service = product")
-    private final List<CommonFile> productImages = new ArrayList<>();
+    private List<CommonFile> productImages = new ArrayList<>();
 
     @Builder
     public Product(Category category, StatusCode deliveryType, String name,
@@ -144,36 +143,6 @@ public class Product {
         this.stockQuantity = stockQuantity;
         this.explanation = explanation;
         this.code = code;
-    }
-
-    /**
-     * 상품 생성 메서드입니다.
-     *
-     * @param category 상품의 카테고리
-     * @param deliveryType 상품의 배송형태
-     * @param createRequest 상품 생성 요청 dto
-     * @return product 생성 상품
-     * @author 김보민
-     */
-    public static Product create(Category category, StatusCode deliveryType,
-                                 ProductRequestDto createRequest) {
-        return Product.builder()
-                .category(category)
-                .deliveryType(deliveryType)
-                .name(createRequest.getName())
-                .amount(createRequest.getAmount())
-                .registerDatetime(LocalDateTime.now())
-                .manufacturer(createRequest.getManufacturer())
-                .manufacturerCountry(createRequest.getManufacturerCountry())
-                .seller(createRequest.getSeller())
-                .importer(createRequest.getImporter())
-                .shippingInstallationCost(createRequest.getShippingInstallationCost())
-                .qualityAssuranceStandard(createRequest.getQualityAssuranceStandard())
-                .color(createRequest.getColor())
-                .stockQuantity(createRequest.getStockQuantity())
-                .explanation(createRequest.getExplanation())
-                .code(createRequest.getCode())
-                .build();
     }
 
     /**
@@ -215,5 +184,9 @@ public class Product {
     public void addProductImage(CommonFile commonFile){
         commonFile.updateCommonFile(no, SERVICE);
         productImages.add(commonFile);
+    }
+
+    public void addProductTag(Tag tag) {
+        productTags.add(new ProductTag(new ProductTag.Pk(no, tag.getTagNo()), this, tag));
     }
 }

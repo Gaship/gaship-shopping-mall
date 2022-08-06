@@ -24,7 +24,8 @@ import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
-import shop.gaship.gashipshoppingmall.elastic.repository.ElasticRepository;
+import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
+import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
@@ -85,7 +86,10 @@ class ProductServiceTest {
     FileUploadUtil fileUploadUtil;
 
     @MockBean
-    ElasticRepository elasticRepository;
+    ElasticProductRepository elasticProductRepository;
+
+    @MockBean
+    CommonFileService commonFileService;
 
     Product product;
     ProductAllInfoResponseDto response;
