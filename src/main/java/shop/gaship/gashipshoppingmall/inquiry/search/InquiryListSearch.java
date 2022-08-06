@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.inquiry.dto.request;
+package shop.gaship.gashipshoppingmall.inquiry.search;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public class InquirySearchRequestDto {
+public class InquirySearch {
 
     private final Boolean isProduct;
     private final Integer statusCodeNo;
