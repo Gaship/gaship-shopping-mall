@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
  * @since 1.0
  */
 @RequiredArgsConstructor
-// TODO Getter 없어도 보내지는지 확인
 @Getter
 public class InquiryDetailsResponseDto {
     private final Integer inquiryNo;

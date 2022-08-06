@@ -17,7 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
-import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.exception.AlreadyCompleteInquiryAnswerException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentEmployeeWriterAboutInquiryAnswerException;
@@ -193,7 +192,7 @@ public class Inquiry {
      * 정확하게는 테이블의 컬럼을 수정하는 용도입니다.
      *
      * @param processStatusCode 답변삭제시 답변완료상태에서 답변대기상태로 변경되어야하는데 해당 정보를 담고있는 상태코드입니다.
-     * @param inquiryNo 답변삭제의 기준이 되는 문의번호입니다.
+     * @param inquiryNo         답변삭제의 기준이 되는 문의번호입니다.
      * @author 최겸준
      */
     public void deleteAnswer(StatusCode processStatusCode, Integer inquiryNo) {

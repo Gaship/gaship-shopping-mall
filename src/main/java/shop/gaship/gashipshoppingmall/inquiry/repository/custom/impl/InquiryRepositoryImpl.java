@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.inquiry.repository.impl;
+package shop.gaship.gashipshoppingmall.inquiry.repository.custom.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
