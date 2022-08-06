@@ -315,7 +315,7 @@ class ProductInquiryRestControllerTest {
         list.add(customerInquiryBeautiful);
 
         Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
-        given(inquiryService.findInquiriesByMemberNo(any(Pageable.class), anyBoolean(), anyInt()))
+        given(inquiryService.findInquiriesByProductNo(any(Pageable.class), anyInt()))
             .willReturn(page);
 
         mvc.perform(get("/api/inquiries/product/{productNo}", 1)
@@ -334,7 +334,6 @@ class ProductInquiryRestControllerTest {
             .andExpect(jsonPath("$.page").value(0))
             .andExpect(jsonPath("$.size").value(5));
 
-        verify(inquiryService).findInquiriesByMemberNo(any(Pageable.class), eq(true),
-            eq(1));
+        verify(inquiryService).findInquiriesByProductNo(any(Pageable.class), eq(1));
     }
 }
