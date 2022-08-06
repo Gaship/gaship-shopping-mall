@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public class InquirySearch {
+public class InquiryListSearch {
 
     private final Boolean isProduct;
     private final Integer statusCodeNo;

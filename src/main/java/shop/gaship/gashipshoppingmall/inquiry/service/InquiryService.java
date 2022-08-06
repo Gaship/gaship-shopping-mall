@@ -1,11 +1,14 @@
 package shop.gaship.gashipshoppingmall.inquiry.service;
 
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
+import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
  * 문의요청을 처리할때 비지니스로직을 처리하는 service 클래스입니다.
@@ -107,4 +110,20 @@ public interface InquiryService {
      * @author 최겸준
      */
     InquiryDetailsResponseDto findInquiry(int inquiryNo);
+
+    /**
+     * 문의등록 요청시에 넘어온 requestDto객체를 이용하여 영속화되지 않은 entity를 반환하는 기능입니다.
+     *
+     * @param inquiryAddRequestDto 문의등록에 필요한 정보가 담긴 DTO입니다.
+     * @param statusCode           처리상태를 나타내는 것으로서 답변대기, 답변완료 2가지 경우가 있습니다.
+     * @return 영속화되지 않은 Inquiry entity를 반환합니다.
+     * @author 최겸준
+     */
+    default Inquiry inquriyAddRequestDtoToInquiryEntityWhenCreation(InquiryAddRequestDto inquiryAddRequestDto,
+                                                                    StatusCode statusCode) {
+        return Inquiry.builder().title(inquiryAddRequestDto.getTitle())
+            .inquiryContent(inquiryAddRequestDto.getInquiryContent()).processStatusCode(statusCode)
+            .isProduct(inquiryAddRequestDto.getIsProduct()).registerDatetime(LocalDateTime.now())
+            .build();
+    }
 }

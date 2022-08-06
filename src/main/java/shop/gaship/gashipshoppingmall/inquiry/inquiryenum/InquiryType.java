@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.inquiry.util;
+package shop.gaship.gashipshoppingmall.inquiry.inquiryenum;
 
 import lombok.Getter;
 

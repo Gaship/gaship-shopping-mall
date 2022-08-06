@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 
@@ -26,7 +26,7 @@ public interface InquiryRepositoryCustom {
      * @author 최겸준
      */
     Page<InquiryListResponseDto> findAllThroughSearchDto(Pageable pageable,
-        InquirySearchRequestDto inquirySearchRequestDto);
+        InquiryListSearch inquirySearchRequestDto);
 
     /**
      * 문의를 상세조회하는 기능입니다.

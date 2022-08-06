@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.inquiry.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
@@ -16,5 +17,7 @@ public class InquiryListResponseDto {
     private String memberNickname;
     private String processStatus;
     private String title;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime registerDatetime;
 }

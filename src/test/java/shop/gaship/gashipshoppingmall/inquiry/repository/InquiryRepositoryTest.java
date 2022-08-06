@@ -23,7 +23,7 @@ import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
-import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
@@ -269,7 +269,7 @@ class InquiryRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
-        InquirySearchRequestDto dto =
+        InquiryListSearch dto =
             getInquirySearchRequestDto(false, null, null, null);
 
         Inquiry inquiry2 = InquiryDummy.customerDummy(statusCodeHolder);
@@ -385,7 +385,7 @@ class InquiryRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
-        InquirySearchRequestDto inquirySearchRequestDto =
+        InquiryListSearch inquirySearchRequestDto =
             getInquirySearchRequestDto(false, statusCodeComplete.getStatusCodeNo(), null, null);
 
         // when
@@ -435,7 +435,7 @@ class InquiryRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
-        InquirySearchRequestDto dto =
+        InquiryListSearch dto =
             getInquirySearchRequestDto(false, statusCodeHolder.getStatusCodeNo(), null, null);
 
         // when
@@ -482,7 +482,7 @@ class InquiryRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
-        InquirySearchRequestDto dto =
+        InquiryListSearch dto =
             getInquirySearchRequestDto(false,
                 null, member.getMemberNo(), null);
 
@@ -534,7 +534,7 @@ class InquiryRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
-        InquirySearchRequestDto dto =
+        InquiryListSearch dto =
             getInquirySearchRequestDto(true, null, null, null);
 
         Inquiry inquiry2 = InquiryDummy.productDummy(statusCodeHolder);
@@ -651,7 +651,7 @@ class InquiryRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
-        InquirySearchRequestDto inquirySearchRequestDto =
+        InquiryListSearch inquirySearchRequestDto =
             getInquirySearchRequestDto(true, statusCodeComplete.getStatusCodeNo(), null, null);
 
         // when
@@ -701,7 +701,7 @@ class InquiryRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
-        InquirySearchRequestDto dto =
+        InquiryListSearch dto =
             getInquirySearchRequestDto(true, statusCodeHolder.getStatusCodeNo(), null, null);
 
         // when
@@ -748,7 +748,7 @@ class InquiryRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
-        InquirySearchRequestDto dto =
+        InquiryListSearch dto =
             getInquirySearchRequestDto(true,
                 null, member.getMemberNo(), null);
 
@@ -800,7 +800,7 @@ class InquiryRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
-        InquirySearchRequestDto dto =
+        InquiryListSearch dto =
             getInquirySearchRequestDto(true,
                 null, null, product.getNo());
 
@@ -847,7 +847,7 @@ class InquiryRepositoryTest {
         // given
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
 
-        InquirySearchRequestDto dto =
+        InquiryListSearch dto =
             getInquirySearchRequestDto(false,
                 null, null, product.getNo());
 
@@ -857,12 +857,12 @@ class InquiryRepositoryTest {
             .hasMessageContaining(InquirySearchBadRequestException.MESSAGE);
     }
 
-    private InquirySearchRequestDto getInquirySearchRequestDto(boolean isProduct,
-                                                               Integer statusCodeNo,
-                                                               Integer memberNo,
-                                                               Integer productNo) {
-        InquirySearchRequestDto dto =
-            new InquirySearchRequestDto(isProduct, statusCodeNo, memberNo, productNo);
+    private InquiryListSearch getInquirySearchRequestDto(boolean isProduct,
+                                                         Integer statusCodeNo,
+                                                         Integer memberNo,
+                                                         Integer productNo) {
+        InquiryListSearch dto =
+            new InquiryListSearch(isProduct, statusCodeNo, memberNo, productNo);
         return dto;
     }
 

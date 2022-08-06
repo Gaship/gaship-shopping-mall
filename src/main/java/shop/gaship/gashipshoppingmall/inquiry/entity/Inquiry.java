@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.logging.log4j.util.Strings;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
@@ -136,22 +135,6 @@ public class Inquiry {
 
         this.product = product;
         product.getInquiries().add(this);
-    }
-
-    /**
-     * 문의등록 요청시에 넘어온 requestDto객체를 이용하여 영속화되지 않은 entity를 반환하는 기능입니다.
-     *
-     * @param inquiryAddRequestDto 문의등록에 필요한 정보가 담긴 DTO입니다.
-     * @param statusCode           처리상태를 나타내는 것으로서 답변대기, 답변완료 2가지 경우가 있습니다.
-     * @return 영속화되지 않은 Inquiry entity를 반환합니다.
-     * @author 최겸준
-     */
-    public static Inquiry dtoToEntityWhenCreation(InquiryAddRequestDto inquiryAddRequestDto,
-                                                  StatusCode statusCode) {
-        return Inquiry.builder().title(inquiryAddRequestDto.getTitle())
-            .inquiryContent(inquiryAddRequestDto.getInquiryContent()).processStatusCode(statusCode)
-            .isProduct(inquiryAddRequestDto.getIsProduct()).registerDatetime(LocalDateTime.now())
-            .build();
     }
 
     /**

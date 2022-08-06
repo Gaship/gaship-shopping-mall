@@ -16,13 +16,15 @@ import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDt
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 
 /**
+ * 상품문의와 고객문의에 대한 공통적인 처리 요청을 담당하는 클래스입니다.
+ *
  * @author : 최겸준
  * @since 1.0
  */
 @RestController
 @RequestMapping("/api/inquiries")
 @RequiredArgsConstructor
-public class CommonInquiryController {
+public class CommonInquiryRestController {
     private final InquiryService inquiryService;
 
     /**

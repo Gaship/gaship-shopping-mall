@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.employee.entity.QEmployee;
-import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
@@ -38,19 +38,18 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
 
     @Override
     public Page<InquiryListResponseDto> findAllThroughSearchDto(Pageable pageable,
-            InquirySearchRequestDto inquirySearchRequestDto) {
+            InquiryListSearch inquirySearchRequestDto) {
         QInquiry inquiry = QInquiry.inquiry;
         QMember member = QMember.member;
         QStatusCode statusCode = QStatusCode.statusCode;
 
         JPQLQuery<InquiryListResponseDto> query = getQuery(inquiry, member, statusCode);
 
-
         BooleanBuilder builder = new BooleanBuilder();
         setBuilder(inquirySearchRequestDto, inquiry, builder);
 
         query.offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
+            .limit(Math.min(pageable.getPageSize(), 30))
             .orderBy(inquiry.inquiryNo.desc()).where(builder);
         List<InquiryListResponseDto> content = query.fetch();
 
@@ -67,7 +66,7 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
                 inquiry.title, inquiry.registerDatetime));
     }
 
-    private void setBuilder(InquirySearchRequestDto inquirySearchRequestDto, QInquiry inquiry,
+    private void setBuilder(InquiryListSearch inquirySearchRequestDto, QInquiry inquiry,
                             BooleanBuilder builder) {
         if (Objects.nonNull(inquirySearchRequestDto.getMemberNo())) {
             builder.and(inquiry.member.memberNo.eq(inquirySearchRequestDto.getMemberNo()));
@@ -90,12 +89,12 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
     }
 
     private boolean isProductFalseAndProductNoExists(
-        InquirySearchRequestDto inquirySearchRequestDto) {
+        InquiryListSearch inquirySearchRequestDto) {
         return Boolean.FALSE.equals(inquirySearchRequestDto.getIsProduct())
             && Objects.nonNull(inquirySearchRequestDto.getProductNo());
     }
 
-    private boolean isSearchByProductNo(InquirySearchRequestDto dto) {
+    private boolean isSearchByProductNo(InquiryListSearch dto) {
         return Boolean.TRUE.equals(dto.getIsProduct()) && Objects.nonNull(dto.getProductNo());
     }
 

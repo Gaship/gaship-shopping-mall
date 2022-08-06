@@ -33,7 +33,7 @@ import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundExcepti
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
-import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquirySearchRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
@@ -463,7 +463,7 @@ class InquiryServiceImplTest {
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
         Page<InquiryListResponseDto> page = new PageImpl<>(Collections.EMPTY_LIST, pageRequest, 10);
         given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
-            any(InquirySearchRequestDto.class)))
+            any(InquiryListSearch.class)))
             .willReturn(page);
 
         // when then
@@ -485,7 +485,7 @@ class InquiryServiceImplTest {
         given(statusCodeRepository.findByStatusCodeName(ProcessStatus.WAITING.getValue()))
             .willReturn(Optional.ofNullable(statusCode));
         given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
-            any(InquirySearchRequestDto.class)))
+            any(InquiryListSearch.class)))
             .willReturn(page);
 
         // when then
@@ -523,7 +523,7 @@ class InquiryServiceImplTest {
         given(memberRepository.existsById(anyInt()))
             .willReturn(Boolean.TRUE);
         given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
-            any(InquirySearchRequestDto.class)))
+            any(InquiryListSearch.class)))
             .willReturn(page);
 
         // when then
@@ -558,7 +558,7 @@ class InquiryServiceImplTest {
         given(productRepository.existsById(anyInt()))
             .willReturn(Boolean.TRUE);
         given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
-            any(InquirySearchRequestDto.class)))
+            any(InquiryListSearch.class)))
             .willReturn(page);
 
         // when then
