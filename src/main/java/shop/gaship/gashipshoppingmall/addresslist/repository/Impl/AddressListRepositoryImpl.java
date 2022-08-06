@@ -30,7 +30,8 @@ public class AddressListRepositoryImpl
     }
 
     @Override
-    public Page<AddressListResponseDto> findAddressListByMemberId(Integer memberNo, Pageable pageable) {
+    public Page<AddressListResponseDto> findAddressListByMemberId(Integer memberNo,
+                                                                  Pageable pageable) {
         QAddressList addressList = QAddressList.addressList;
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
         QStatusCode statusCode = QStatusCode.statusCode;
@@ -39,7 +40,8 @@ public class AddressListRepositoryImpl
                         .innerJoin(addressList.addressLocal, addressLocal)
                         .innerJoin(addressList.statusCode, statusCode)
                         .where(addressList.member.memberNo.eq(memberNo),
-                                addressList.statusCode.statusCodeName.eq(AddressStatus.USE.getValue()))
+                                addressList.statusCode.statusCodeName
+                                        .eq(AddressStatus.USE.getValue()))
                         .limit(Math.min(pageable.getPageSize(), 10))
                         .offset(pageable.getOffset())
                         .orderBy(addressList.addressListsNo.desc())

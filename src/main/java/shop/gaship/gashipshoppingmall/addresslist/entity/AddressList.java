@@ -51,7 +51,7 @@ public class AddressList {
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false,name = "address_datail")
+    @Column(nullable = false, name = "address_datail")
     private String addressDetail;
 
     @Column(nullable = false)

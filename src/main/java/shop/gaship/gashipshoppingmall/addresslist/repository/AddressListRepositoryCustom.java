@@ -6,7 +6,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListResponseDto;
 
 /**
- * 레포지토리 커스텀
+ * 레포지토리 커스텀.
  *
  * @author 최정우
  * @since 1.0

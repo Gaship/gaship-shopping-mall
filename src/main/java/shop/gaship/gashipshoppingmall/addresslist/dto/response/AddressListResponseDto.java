@@ -18,6 +18,9 @@ public class AddressListResponseDto {
     private final String addressDetail;
     private final String zipCode;
 
+    /**
+     * 배송지목록 Response Builder 입니다.
+     */
     @Builder
     public AddressListResponseDto(Integer addressListNo, String addressName,
                                   boolean allowDelivery, String address,
