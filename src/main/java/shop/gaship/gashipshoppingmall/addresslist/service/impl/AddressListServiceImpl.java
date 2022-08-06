@@ -5,10 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListAddRequestDto;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListModifyRequestDto;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListPageResponseDto;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListResponseDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListAddRequestDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListModifyRequestDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
 import shop.gaship.gashipshoppingmall.addresslist.exception.NotFoundAddressListException;
 import shop.gaship.gashipshoppingmall.addresslist.repository.AddressListRepository;
@@ -19,6 +18,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalReposi
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -61,7 +61,6 @@ public class AddressListServiceImpl implements AddressListService {
     /**
      * {@inheritDoc}
      *
-     * @param request 등록에 필요한 정보를 담는 dto 입니다.
      * @throws NotExistAddressLocal        주소지역 id 값으로 주소지역 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      * @throws MemberNotFoundException     회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      * @throws StatusCodeNotFoundException 상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
@@ -82,7 +81,6 @@ public class AddressListServiceImpl implements AddressListService {
     /**
      * {@inheritDoc}
      *
-     * @param request 수정에 필요한 정보를 담는 dto 입니다.
      * @throws NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      * @throws StatusCodeNotFoundException  상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
@@ -101,7 +99,6 @@ public class AddressListServiceImpl implements AddressListService {
     /**
      * {@inheritDoc}
      *
-     * @param addressListId 조회에 필요한 정보를 담는 값입니다.
      * @throws NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      * @throws StatusCodeNotFoundException  상태코드 값으로 상태코드 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
@@ -120,7 +117,6 @@ public class AddressListServiceImpl implements AddressListService {
     /**
      * {@inheritDoc}
      *
-     * @param addressListId 조회에 필요한 정보를 담는 dto 입니다.
      * @throws NotFoundAddressListException 배송지목록 id 값으로 배송지목록 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      */
     @Override
@@ -131,16 +127,13 @@ public class AddressListServiceImpl implements AddressListService {
 
     /**
      * {@inheritDoc}
-     *
-     * @param pageable 배송지목록의 다건 조회에 필요한 정보를 담는 pageable 입니다.
      */
     @Override
-    public AddressListPageResponseDto<AddressListResponseDto, AddressList> findAddressLists(
-        Integer memberId, Pageable pageable) {
-        Page<AddressList> page =
-            addressListRepository.findByMember_MemberNoAndStatusCode_StatusCodeName(memberId,
-                AddressStatus.USE.getValue(), pageable);
+    public PageResponse<AddressListResponseDto> findAddressLists(
+        Integer memberNo, Pageable pageable) {
+        Page<AddressListResponseDto> page =
+            addressListRepository.findAddressListByMemberId(memberNo, pageable);
 
-        return new AddressListPageResponseDto<>(page, this::entityToDto);
+        return new PageResponse<>(page);
     }
 }
