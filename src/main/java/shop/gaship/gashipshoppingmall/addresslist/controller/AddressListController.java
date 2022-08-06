@@ -49,7 +49,7 @@ public class AddressListController {
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
      * @author 최정우
      */
-    @PutMapping("/api/members/{memberId}/addressLists")
+    @PutMapping("/api/members/{memberId}/addressLists/{addressListNo}")
     public ResponseEntity<Void> addressListModify(
             @Valid @RequestBody AddressListModifyRequestDto request) {
         addressListService.modifyAddressList(request);
