@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.member.entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membertag.entity.MemberTag;
@@ -37,6 +39,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * @since 1.0
  */
 @Entity
+@AttributeOverride(name = "modifiedDatetime", column = @Column(name = "modify_datetime"))
 @Table(name = "members")
 @Getter
 @Builder
@@ -99,6 +102,10 @@ public class Member extends BaseEntity {
     private List<MembersRole> roleSet = new ArrayList<>();
 
     private String encodedEmailForSearch;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Inquiry> inquiries = new ArrayList<>();
 
     /**
      * 멤버의 정보를 변경하는 메서드입니다.

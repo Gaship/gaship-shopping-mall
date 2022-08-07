@@ -29,7 +29,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 /**
  * 주문 entity class.
  *
- * @author : 김세미
+ * @author : 김세미, 
  * @since 1.0
  */
 @Getter

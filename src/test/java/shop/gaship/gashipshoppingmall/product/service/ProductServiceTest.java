@@ -115,19 +115,18 @@ class ProductServiceTest {
         response.getTags().add(tag.getTitle());
 
         pageRequest = PageRequest.of(0, 10);
-        page = new PageImpl(List.of(response), pageRequest, 1);
+        page = new PageImpl<>(List.of(response), pageRequest, 1);
         pageResponse = new PageResponse<>(page);
         productTag = new ProductTag(new ProductTag.Pk(1, 1), product, tag);
     }
 
     @DisplayName("상품 등록 성공")
     @Test
-    void addProduct() throws IOException {
+    void addProduct() {
         ProductCreateRequestDto createRequest = ProductDummy.createRequestDummy();
         List<MultipartFile> files = List.of(multipartFile);
         String uploadDir = File.separator + "products";
         ReflectionTestUtils.setField(product, "no", 1);
-
         when(repository.save(any(Product.class))).thenReturn(product);
         when(categoryRepository.findById(createRequest.getCategoryNo()))
             .thenReturn(Optional.of(CategoryDummy.dummy()));
@@ -151,7 +150,7 @@ class ProductServiceTest {
 
     @DisplayName("상품 수정 성공")
     @Test
-    void modifyProduct() throws IOException {
+    void modifyProduct() {
         ProductModifyRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
         Product product = ProductDummy.dummy();
         ReflectionTestUtils.setField(product, "no", modifyRequest.getNo());
@@ -435,6 +434,27 @@ class ProductServiceTest {
             .willReturn(Optional.of(d1));
         //when
         PageResponse<ProductAllInfoResponseDto> result = service.findProductStatusCode(requestDto.getStatusName(), pageRequest);
+
+        //then
+        verify(repository, times(1)).findProduct(requestDto);
+
+        checkContent(result);
+    }
+
+    @DisplayName("상품 번호들을 통해 상품을 조회하는 경우")
+    @Test
+    void findProductByProductNos() {
+        //given
+        List<Integer> productNo = List.of(1);
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+            .pageable(pageRequest)
+            .productNoList(productNo)
+            .build();
+        given(repository.findProduct(requestDto))
+            .willReturn(pageResponse);
+
+        //when
+        PageResponse<ProductAllInfoResponseDto> result = service.findProductByProductNos(productNo, pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(requestDto);

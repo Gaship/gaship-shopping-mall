@@ -21,12 +21,13 @@ import org.hibernate.annotations.ColumnDefault;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
  * 주문상품 entity class.
  *
- * @author : 김세미
+ * @author : 김세미, 김민수
  * @since 1.0
  */
 @Getter
@@ -54,6 +55,9 @@ public class OrderProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_status_no", nullable = false)
     private StatusCode orderStatusCode;
+    
+    @OneToOne(mappedBy = "orderProduct", fetch = FetchType.LAZY)
+    private ProductReview review;
 
     @Column(name = "member_coupon_no")
     private Integer memberCouponNo;
@@ -74,7 +78,7 @@ public class OrderProduct {
     private String employeeName;
 
     private Integer trackingNo;
-
+    
     /**
      * hibernate의 save를 통한 persist가 진행되기 전에 값을 비교하여 null이면 기본값 0을 사용한다.
      */
