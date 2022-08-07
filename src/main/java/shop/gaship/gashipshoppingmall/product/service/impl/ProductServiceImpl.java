@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
@@ -85,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
 
-        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(imageLinks);
+        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(imageLinks, null);
         applicationEventPublisher.publishEvent(event);
 
         Product savedProduct = repository.save(product);
@@ -127,24 +128,25 @@ public class ProductServiceImpl implements ProductService {
     public void modifyProduct(List<MultipartFile> files, ProductRequestDto modifyRequest) {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
-
-//        fileUploadUtil.cleanUpFiles(product.getImageLinkList());
-
         Category category = categoryRepository.findById(modifyRequest.getCategoryNo())
-            .orElseThrow(CategoryNotFoundException::new);
+                .orElseThrow(CategoryNotFoundException::new);
         StatusCode deliveryType = statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo())
-            .orElseThrow(StatusCodeNotFoundException::new);
+                .orElseThrow(StatusCodeNotFoundException::new);
+
+        //기존에 업로드되어있던 이미지 파일들 삭제
+        fileUploadUtil.cleanUpFiles(product.getProductImages().stream()
+                .map(CommonFile::getPath)
+                .collect(Collectors.toList()));
+
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
 
-        applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks));
+        applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks, product));
 
-//        product.updateImageLinks(imageLinks);
         product.updateProduct(category, deliveryType, modifyRequest);
 
         productTagRepository.deleteAllByPkProductNo(product.getNo());
         addProductTags(product, modifyRequest.getTagNos());
-        elasticProductRepository.save(
-            new ElasticProduct(product.getNo(), product.getName(), product.getCode()));
+        addProductImages(product, imageLinks);
     }
 
     /**

@@ -1,8 +1,8 @@
 package shop.gaship.gashipshoppingmall.product.event;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 
@@ -13,7 +13,7 @@ import shop.gaship.gashipshoppingmall.product.entity.Product;
  * @since 1.0
  */
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ProductSaveUpdateEvent {
     private final List<String> imageLinks;
 
