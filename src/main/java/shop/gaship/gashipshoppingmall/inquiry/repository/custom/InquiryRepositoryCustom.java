@@ -4,9 +4,9 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
+import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 
 /**
  * 네이밍 쿼리 외의 방법으로 쿼리를 작성하고 요청하는 방법인 queryDsl을 사용하기위한 커스텀 interface입니다.
@@ -26,7 +26,7 @@ public interface InquiryRepositoryCustom {
      * @author 최겸준
      */
     Page<InquiryListResponseDto> findAllThroughSearchDto(Pageable pageable,
-        InquiryListSearch inquirySearchRequestDto);
+                                                         InquiryListSearch inquirySearchRequestDto);
 
     /**
      * 문의를 상세조회하는 기능입니다.

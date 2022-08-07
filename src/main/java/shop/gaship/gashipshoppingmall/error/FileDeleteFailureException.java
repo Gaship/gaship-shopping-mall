@@ -6,7 +6,7 @@ package shop.gaship.gashipshoppingmall.error;
  * @author : 김보민
  * @since 1.0
  */
-public class FileDeleteFailureException extends RuntimeException{
+public class FileDeleteFailureException extends RuntimeException {
     public static final String MESSAGE = "파일 삭제에 실패했습니다.";
 
     public FileDeleteFailureException() {
