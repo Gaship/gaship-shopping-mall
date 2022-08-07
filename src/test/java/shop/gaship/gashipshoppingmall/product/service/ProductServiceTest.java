@@ -24,6 +24,7 @@ import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
@@ -90,6 +91,9 @@ class ProductServiceTest {
 
     @MockBean
     CommonFileService commonFileService;
+
+    @MockBean
+    CommonFileRepository commonFileRepository;
 
     Product product;
     ProductAllInfoResponseDto response;

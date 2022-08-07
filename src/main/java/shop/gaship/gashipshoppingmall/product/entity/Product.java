@@ -61,7 +61,7 @@ public class Product {
     @JoinColumn(name = "sales_status_no")
     private StatusCode salesStatus;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductTag> productTags = new ArrayList<>();
 
     @Length(max = 100, message = "상품 이름은 100자 이하여야 합니다.")
@@ -115,11 +115,11 @@ public class Product {
     private String code;
 
     @Transient
-    private static final String SERVICE = "product";
+    public static final String SERVICE = "product";
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_no", referencedColumnName = "product_no")
-    @Where(clause = "service = product")
+    @Where(clause = "service = 'product'")
     private List<CommonFile> productImages = new ArrayList<>();
 
     @Builder

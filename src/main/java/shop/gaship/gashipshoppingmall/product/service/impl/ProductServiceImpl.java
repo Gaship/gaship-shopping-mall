@@ -15,6 +15,7 @@ import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
+import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
@@ -58,6 +59,7 @@ public class ProductServiceImpl implements ProductService {
     private final StatusCodeRepository statusCodeRepository;
     private final TagRepository tagRepository;
     private final ProductTagRepository productTagRepository;
+    private final CommonFileRepository fileRepository;
     private final CommonFileService fileService;
     private final FileUploadUtil fileUploadUtil;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -163,6 +165,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -181,6 +184,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         PageResponse<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
         findProductTagInfo(product);
+        findFilePath(product);
 
         return product.getContent().get(0);
     }
@@ -198,6 +202,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -218,6 +223,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -236,6 +242,7 @@ public class ProductServiceImpl implements ProductService {
 
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
 
         return products;
     }
@@ -251,6 +258,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -274,6 +282,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -290,6 +299,7 @@ public class ProductServiceImpl implements ProductService {
 
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -322,6 +332,11 @@ public class ProductServiceImpl implements ProductService {
                 productTagRepository.findTagsByProductNo(product.getProductNo());
             product.getTags().addAll(tagNameList);
         });
+    }
+
+    private void findFilePath(PageResponse<ProductAllInfoResponseDto> products) {
+        products.getContent().forEach(product -> product.getFilePaths()
+                .addAll(fileRepository.findPaths(product.getProductNo(), Product.SERVICE)));
     }
 
 

@@ -60,13 +60,13 @@ public class ProductReview {
 
     private LocalDateTime modifyDatetime;
 
-    @Transient
-    private static final String SERVICE = "productReview";
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner_no", referencedColumnName = "order_product_no")
-    @Where(clause = "service = productReview")
-    private final List<CommonFile> reviewImages = new ArrayList<>();
+//    @Transient
+//    private static final String SERVICE = "productReview";
+//
+//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "owner_no", referencedColumnName = "order_product_no")
+//    @Where(clause = "service = 'productReview'")
+//    private final List<CommonFile> reviewImages = new ArrayList<>();
 
     /**
      * 상품평 생성자입니다.
@@ -112,8 +112,8 @@ public class ProductReview {
         this.imagePath = imagePath;
     }
 
-    public void addProductReviewImage(CommonFile commonFile){
-        commonFile.updateCommonFile(orderProductNo, SERVICE);
-        reviewImages.add(commonFile);
-    }
+//    public void addProductReviewImage(CommonFile commonFile){
+//        commonFile.updateCommonFile(orderProductNo, SERVICE);
+//        reviewImages.add(commonFile);
+//    }
 }
