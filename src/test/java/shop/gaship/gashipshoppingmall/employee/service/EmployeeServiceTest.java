@@ -17,6 +17,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
@@ -70,6 +72,12 @@ class EmployeeServiceTest {
 
     @MockBean
     AddressLocalRepository localRepository;
+
+    @MockBean
+    Aes aes;
+
+    @MockBean
+    Sha512 sha512;
 
     @Autowired
     EmployeeService service;
@@ -152,7 +160,10 @@ class EmployeeServiceTest {
 
         given(localRepository.findById(any()))
             .willReturn(Optional.of(addressLocal));
-
+        given(aes.aesEcbDecode(anyString()))
+            .willReturn(employee.getEmail());
+        given(sha512.encryptPlainText(anyString()))
+            .willReturn(employee.getEmail());
         //when
         service.addEmployee(dto);
 
@@ -161,9 +172,7 @@ class EmployeeServiceTest {
             .save(captor.capture());
 
         Employee test = captor.getValue();
-        assertThat(dto.getEmail()).isEqualTo(test.getEmail());
-        assertThat(dto.getName()).isEqualTo(test.getName());
-        assertThat(dto.getPassword()).isEqualTo(test.getPassword());
+        assertThat(dto.getEmail()).isEqualTo(test.getEncodedEmailForSearch());
         assertThat(dto.getAuthorityNo()).isEqualTo(1);
     }
 
@@ -205,7 +214,8 @@ class EmployeeServiceTest {
 
         given(repository.findById(any()))
             .willReturn(Optional.of(employee));
-
+        given(repository.existsByEncodedEmailForSearch(anyString()))
+            .willReturn(true);
         given(codeRepository.findById(any()))
             .willReturn(Optional.of(code));
 
@@ -227,7 +237,6 @@ class EmployeeServiceTest {
         Employee value = captor.getValue();
         assertThat(test.getEmail()).isEqualTo(value.getEmail());
         assertThat(test.getName()).isEqualTo(value.getName());
-        assertThat(test.getPhoneNo()).isEqualTo(value.getPhoneNo());
 
     }
 
@@ -273,7 +282,10 @@ class EmployeeServiceTest {
                 true,
                 List.of("ROLE_ADMIN")
             );
-
+        given(sha512.encryptPlainText(anyString()))
+            .willReturn("a");
+        given(aes.aesEcbDecode(anyString()))
+            .willReturn("b");
         given(repository.findSignInEmployeeUserDetail(anyString()))
             .willReturn(Optional.of(dto));
 
@@ -294,7 +306,5 @@ class EmployeeServiceTest {
         assertThatThrownBy(() -> repository.findSignInEmployeeUserDetail("exam@nhn.com"))
             .isInstanceOf(EmployeeNotFoundException.class)
             .hasMessage("직원이 존재하지 않습니다.");
-
-
     }
 }

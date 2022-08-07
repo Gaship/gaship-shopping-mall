@@ -27,6 +27,6 @@ public class CreateEmployeeDtoDummy {
      * @return create employee request dto
      */
     public static CreateEmployeeRequestDto dummy() {
-        return new CreateEmployeeRequestDto(1, 1, "test", "test@naver.com", "test", "010101");
+        return new CreateEmployeeRequestDto(1, 1, "test", "test2@naver.com", "test", "010101");
     }
 }
