@@ -9,6 +9,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
 
 /**
  * 주문을 등록 요청을 위한 DTO입니다.

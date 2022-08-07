@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.order.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,11 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.lang.Nullable;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
@@ -49,7 +52,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY,
         orphanRemoval = true, cascade = CascadeType.REMOVE)
-    private List<OrderProduct> orderProducts = new ArrayList<>();
+    private final List<OrderProduct> orderProducts = new ArrayList<>();
 
     @NotNull
     private LocalDateTime orderDatetime;
@@ -63,6 +66,19 @@ public class Order {
     private String receiptSubPhoneNumber;
 
     private String deliveryRequest;
+
+    private String orderPaymentKey;
+
+    @ColumnDefault("0")
+    private Long totalOrderAmount;
+
+    /**
+     * hibernate의 save를 통한 persist가 진행되기 전에 값을 비교하여 null이면 기본값 0을 사용한다.
+     */
+    @PrePersist
+    public void initTotalOrderAmount() {
+        this.totalOrderAmount = Objects.isNull(totalOrderAmount) ? 0 : this.totalOrderAmount;
+    }
 
     /**
      * 주문을 생성하는 생성자입니다.
@@ -87,5 +103,9 @@ public class Order {
         this.receiptPhoneNumber = receiptPhoneNumber;
         this.receiptSubPhoneNumber = receiptSubPhoneNumber;
         this.deliveryRequest = deliveryRequest;
+    }
+
+    public void updateTotalOrderAmount(Long totalOrderAmount) {
+        this.totalOrderAmount = totalOrderAmount;
     }
 }

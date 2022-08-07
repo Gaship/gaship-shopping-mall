@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,7 +26,10 @@ import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
+import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisterEvent;
+import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisterEventHandler;
 import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
+import shop.gaship.gashipshoppingmall.product.event.ProductSaveUpdateEvent;
 
 /**
  * 설명작성란
@@ -34,13 +38,16 @@ import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
  * @since 1.0
  */
 @ExtendWith(SpringExtension.class)
-@Import(OrderServiceImpl.class)
+@Import({OrderServiceImpl.class})
 class OrderServiceImplTest {
     @Autowired
     private OrderService orderService;
 
     @MockBean
-    private OrderProductService orderProductService;
+    private ApplicationEventPublisher applicationEventPublisher;
+
+    @MockBean
+    private OrderProductRegisterEventHandler handler;
 
     @MockBean
     private OrderRepository orderRepository;
@@ -60,12 +67,16 @@ class OrderServiceImplTest {
             .willReturn(Optional.of(AddressListDummy.addressListEntity()));
         given(memberRepository.findById(anyInt())).willReturn(Optional.of(MemberDummy.dummy()));
         given(orderRepository.save(any(Order.class))).willReturn(orderDummy);
-        willDoNothing().given(orderProductService).registerOrderProduct(any(Order.class), anyList());
+        willDoNothing().given(applicationEventPublisher)
+            .publishEvent(any(OrderProductRegisterEvent.class));
+        willDoNothing().given(handler)
+                .saveOrderProduct(any(OrderProductRegisterEvent.class));
 
         orderService.insertOrder(orderRequestDtoDummy);
 
         verify(orderRepository, times(1)).save(any(Order.class));
         verify(addressListRepository, times(1)).findById(any());
         verify(memberRepository, times(1)).findById(any());
+        verify(handler, times(1)).saveOrderProduct(any());
     }
 }

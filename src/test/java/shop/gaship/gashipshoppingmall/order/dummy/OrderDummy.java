@@ -27,6 +27,8 @@ public class OrderDummy {
         ReflectionTestUtils.setField(order, "receiptPhoneNumber", "01012345678");
         ReflectionTestUtils.setField(order, "receiptSubPhoneNumber", null);
         ReflectionTestUtils.setField(order, "deliveryRequest", null);
+        ReflectionTestUtils.setField(order, "orderPaymentKey", null);
+        ReflectionTestUtils.setField(order, "totalOrderAmount", 0L);
 
         return order;
     }

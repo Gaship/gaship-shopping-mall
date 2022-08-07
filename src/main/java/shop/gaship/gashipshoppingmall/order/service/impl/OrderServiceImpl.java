@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.order.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
@@ -13,7 +14,7 @@ import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
-import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
+import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisterEvent;
 
 /**
  * 주문에 관한 요구사항 정의를 구현하는 클래스입니다.
@@ -27,7 +28,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final AddressListRepository addressListRepository;
-    private final OrderProductService orderProductService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     @Override
@@ -43,11 +44,12 @@ public class OrderServiceImpl implements OrderService {
             .receiptName(orderRequest.getReceiverName())
             .receiptPhoneNumber(orderRequest.getReceiverPhoneNo())
             .receiptSubPhoneNumber(orderRequest.getReceiverSubPhoneNo())
-            .deliveryRequest(orderRequest.getDeliveryRequest()).build();
+            .deliveryRequest(orderRequest.getDeliveryRequest())
+            .build();
 
         // 주문 등록
         Order savedOrder = orderRepository.save(order);
-        orderProductService.registerOrderProduct(savedOrder,
-            orderRequest.getOrderProductSpecific());
+        applicationEventPublisher.publishEvent(
+            new OrderProductRegisterEvent(savedOrder, orderRequest.getOrderProductSpecific()));
     }
 }
