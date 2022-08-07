@@ -69,6 +69,8 @@ public class OrderProduct {
 
     private LocalDateTime cancellationDatetime;
 
+    private Integer cancellationAmount;
+
     private String employeeName;
 
     @OneToOne(mappedBy = "orderProduct", fetch = FetchType.LAZY)

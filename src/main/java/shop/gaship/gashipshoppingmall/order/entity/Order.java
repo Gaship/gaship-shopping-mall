@@ -42,7 +42,8 @@ public class Order {
     private AddressList addressList;
 
     @NotNull
-    private LocalDateTime orderDateTime;
+    @Column(name = "order_datetime")
+    private LocalDateTime orderDatetime;
 
     @NotNull
     private String receiptName;
@@ -67,7 +68,7 @@ public class Order {
                  String receiptName, String receiptPhoneNumber) {
         this.member = member;
         this.addressList = addressList;
-        this.orderDateTime = LocalDateTime.now();
+        this.orderDatetime = LocalDateTime.now();
         this.receiptName = receiptName;
         this.receiptPhoneNumber = receiptPhoneNumber;
     }
