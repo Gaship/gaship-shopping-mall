@@ -44,7 +44,7 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
 
         return Optional.ofNullable(
             from(employee)
-                .where(employee.email.eq(email))
+                .where(employee.encodedEmailForSearch.eq(email))
                 .select(
                     Projections.constructor(
                         SignInUserDetailsDto.class,
