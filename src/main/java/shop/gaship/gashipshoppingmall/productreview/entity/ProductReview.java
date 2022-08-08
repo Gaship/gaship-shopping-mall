@@ -103,4 +103,8 @@ public class ProductReview {
         commonFile.updateCommonFile(orderProductNo, SERVICE);
         reviewImages.add(commonFile);
     }
+
+    public void removeAllProductReviewImages() {
+        reviewImages.clear();
+    }
 }

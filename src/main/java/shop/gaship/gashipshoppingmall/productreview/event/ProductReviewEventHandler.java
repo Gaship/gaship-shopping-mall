@@ -40,6 +40,6 @@ public class ProductReviewEventHandler {
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleDeleteEvent(ProductReviewDeleteEvent event) {
-        fileUploadUtil.cleanUpFiles(List.of(event.getImagePath()));
+        fileUploadUtil.cleanUpFiles(event.getImagePaths());
     }
 }

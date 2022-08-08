@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.productreview.event;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,5 +13,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductReviewDeleteEvent {
     @Getter
-    private final String imagePath;
+    private final List<String> imagePaths;
 }
