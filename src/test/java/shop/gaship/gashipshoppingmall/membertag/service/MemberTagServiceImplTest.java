@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.membertag.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,14 +14,14 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.membertag.dto.MemberTagRequestDto;
+import shop.gaship.gashipshoppingmall.membertag.dto.request.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dummy.MemberTagDummy;
 import shop.gaship.gashipshoppingmall.membertag.exception.IllegalTagSelectionException;
 import shop.gaship.gashipshoppingmall.membertag.repository.MemberTagRepository;
+import shop.gaship.gashipshoppingmall.membertag.service.Impl.MemberTagServiceImpl;
 import shop.gaship.gashipshoppingmall.tag.dummy.TagDummy;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,7 @@ class MemberTagServiceImplTest {
     @MockBean
     MemberRepository memberRepository;
 
+    private final List<Integer> tagIds = new ArrayList<>(List.of(1,3,5,6,8));
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
@@ -63,12 +65,12 @@ class MemberTagServiceImplTest {
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
-        when(memberTagRepository.saveAll(any())).thenReturn(MemberTagDummy.memberTagList());
+        when(memberTagRepository.saveAll(any())).thenReturn(null);
 
-        memberTagService.deleteAllAndAddAllMemberTags(MemberTagDummy.memberTagRequestDtoDummy());
+        memberTagService.deleteAllAndAddAllMemberTags(MemberTagDummy.memberTagRequestDtoDummy(1,tagIds));
 
-        verify(memberTagRepository, times(1)).deleteAllByMember_MemberNo(any());
         verify(memberRepository, times(1)).findById(any());
+        verify(memberTagRepository, times(1)).deleteAllByMember_MemberNo(any());
         verify(tagRepository, times(1)).findByTagNoIn(any());
         verify(memberTagRepository, times(1)).saveAll(any());
     }
@@ -76,19 +78,19 @@ class MemberTagServiceImplTest {
     @DisplayName("태그 등록을 하려 memberRepository 를 조회하는데 해당 아이디를 가진 멤버를 조회할 수 없어서 MemberNotFoundException 오류가 발생")
     @Test
     void deleteAllAndAddAllMemberTagsMemberNotFoundExceptionFail() {
-        MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy();
+        MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy(1,tagIds);
         List<Tag> tagList = TagDummy.TagDummyListPersist();
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
         when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
-        when(memberTagRepository.saveAll(any())).thenReturn(MemberTagDummy.memberTagList());
+        when(memberTagRepository.saveAll(any())).thenReturn(null);
 
         assertThatThrownBy(() -> memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto))
                 .isInstanceOf(MemberNotFoundException.class)
                 .hasMessage("해당 멤버를 찾을 수 없습니다");
 
-        verify(memberTagRepository, times(1)).deleteAllByMember_MemberNo(any());
         verify(memberRepository, times(1)).findById(any());
+        verify(memberTagRepository, never()).deleteAllByMember_MemberNo(any());
         verify(tagRepository, never()).findByTagNoIn(any());
         verify(memberTagRepository, never()).saveAll(any());
     }
@@ -96,13 +98,13 @@ class MemberTagServiceImplTest {
     @DisplayName("태그 등록을 하려 회원이 요청한 tagId로 Tag DB 를 뒤졌는데 가져온 총 태그 갯수가 5개가 아닌 경우 IllegalTagSelectionException 오류가 발생")
     @Test
     void deleteAllAndAddAllMemberTagsIllegalTagSelectionExceptionFail() {
-        MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy();
+        MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy(1,tagIds);
         Member member = MemberTestDummy.member1();
         List<Tag> tagList = TagDummy.TagListDummyPersist();
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
-        when(memberTagRepository.saveAll(any())).thenReturn(MemberTagDummy.memberTagList());
+        when(memberTagRepository.saveAll(any())).thenReturn(null);
 
         assertThatThrownBy(() -> memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto))
                 .isInstanceOf(IllegalTagSelectionException.class)
@@ -117,22 +119,40 @@ class MemberTagServiceImplTest {
     @DisplayName("회원이 미리 설정한 태그 5개를 가져온다.(Success)")
     @Test
     void findMemberTags() {
-        when(memberTagRepository.findAllByMember_MemberNo(any())).thenReturn(MemberTagDummy.memberTagList());
+        when(memberTagRepository.findAllByMember_MemberNo(any())).thenReturn(MemberTagDummy.memberTagListDummy());
+        when(memberRepository.existsByMemberNo(any())).thenReturn(true);
 
         memberTagService.findMemberTags(1);
 
+        verify(memberRepository, times(1)).existsByMemberNo(any());
         verify(memberTagRepository, times(1)).findAllByMember_MemberNo(any());
     }
 
-    @DisplayName("회원이 미리 설정한 태그 5개를 가져오려했지만 자신이 설정한 태그는 5개가 아니었다.(Fail) 왜 하나싶은 테스트")
+    @DisplayName("회원이 미리 설정한 태그 5개를 가져온다.(회원 조회 실패(Fail))")
     @Test
-    void findMemberTagsIllegalTagSelectionException() {
-        when(memberTagRepository.findAllByMember_MemberNo(any())).thenReturn(MemberTagDummy.memberTagList100Size());
+    void findMemberTagsTest2() {
+        when(memberTagRepository.findAllByMember_MemberNo(any())).thenReturn(MemberTagDummy.memberTagListDummy());
+        when(memberRepository.existsByMemberNo(any())).thenReturn(false);
 
-        assertThatThrownBy(() -> memberTagService.findMemberTags(1))
+        assertThatThrownBy(()->memberTagService.findMemberTags(1))
+                .isInstanceOf(MemberNotFoundException.class)
+                .hasMessage("해당 멤버를 찾을 수 없습니다");
+
+        verify(memberRepository, times(1)).existsByMemberNo(any());
+        verify(memberTagRepository, never()).findAllByMember_MemberNo(any());
+    }
+
+    @DisplayName("회원이 미리 설정한 태그 5개를 가져온다.(찾은 멤버태그 리스트 사이즈가 5가 아님(Fail))")
+    @Test
+    void findMemberTagsTest3() {
+        when(memberTagRepository.findAllByMember_MemberNo(any())).thenReturn(MemberTagDummy.memberTagList100SizeDummy());
+        when(memberRepository.existsByMemberNo(any())).thenReturn(true);
+
+        assertThatThrownBy(()->memberTagService.findMemberTags(1))
                 .isInstanceOf(IllegalTagSelectionException.class)
                 .hasMessage("태그는 다섯개까지 선택할 수 있습니다");
 
+        verify(memberRepository, times(1)).existsByMemberNo(any());
         verify(memberTagRepository, times(1)).findAllByMember_MemberNo(any());
     }
 }
