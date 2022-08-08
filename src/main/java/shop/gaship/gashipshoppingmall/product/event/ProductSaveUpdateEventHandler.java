@@ -38,6 +38,12 @@ public class ProductSaveUpdateEventHandler {
         fileUploadUtil.cleanUpFiles(event.getImageLinks());
     }
 
+    /**
+     * 상품 생성, 수정 커밋 시 이벤트 핸들 메서드입니다.
+     * 수정 전 이미지파일 삭제합니다, 상품을 엘라스틱 레퍼지토리에 저장합니다.
+     *
+     * @param event 상품 생성 및 수정 이벤트
+     */
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommit(ProductSaveUpdateEvent event) {
