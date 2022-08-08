@@ -2,7 +2,6 @@ package shop.gaship.gashipshoppingmall.product.service.impl;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +29,12 @@ import shop.gaship.gashipshoppingmall.product.event.ProductSaveUpdateEvent;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
-import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.producttag.repository.ProductTagRepository;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
-import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
@@ -135,10 +132,13 @@ public class ProductServiceImpl implements ProductService {
         StatusCode deliveryType = statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo())
                 .orElseThrow(StatusCodeNotFoundException::new);
 
-        //기존에 업로드되어있던 이미지 파일들 삭제
+        //로컬에 업로드되어있던 이미지 파일들 삭제
         fileUploadUtil.cleanUpFiles(product.getProductImages().stream()
                 .map(CommonFile::getPath)
                 .collect(Collectors.toList()));
+
+        //db 파일 데이터 삭제
+        product.removeAllProductImages();
 
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
 
@@ -146,8 +146,7 @@ public class ProductServiceImpl implements ProductService {
 
         product.updateProduct(category, deliveryType, modifyRequest);
 
-        productTagRepository.deleteAllByPkProductNo(product.getNo());
-        addProductTags(product, modifyRequest.getTagNos());
+        updateProductTags(product, modifyRequest.getTagNos());
         addProductImages(product, imageLinks);
     }
 
@@ -318,6 +317,22 @@ public class ProductServiceImpl implements ProductService {
     private void addProductImages(Product product, List<String> imageLinks) {
         imageLinks.forEach(imageLink -> product.addProductImage(
                 fileService.createCommonFile(imageLink)));
+    }
+
+    private void updateProductTags(Product product, List<Integer> tagNos) {
+        List<Integer> productTagNos = product.getProductTags().stream()
+                .map(productTag -> productTag.getPk().getTagNo())
+                .collect(Collectors.toList());
+
+        productTagNos.forEach(productTagNo -> {
+            if (!tagNos.contains(productTagNo)) {
+                product.removeProductTag(productTagNo);
+            } else {
+                tagNos.remove(productTagNo);
+            }
+        });
+
+        addProductTags(product, tagNos);
     }
 
     /**

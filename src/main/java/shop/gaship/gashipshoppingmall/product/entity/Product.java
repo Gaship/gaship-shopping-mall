@@ -18,8 +18,10 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
@@ -117,7 +119,7 @@ public class Product {
     @Transient
     public static final String SERVICE = "product";
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "owner_no", referencedColumnName = "product_no")
     @Where(clause = "service = 'product'")
     private List<CommonFile> productImages = new ArrayList<>();
@@ -186,7 +188,15 @@ public class Product {
         productImages.add(commonFile);
     }
 
+    public void removeAllProductImages() {
+        productImages.clear();
+    }
+
     public void addProductTag(Tag tag) {
         productTags.add(new ProductTag(new ProductTag.Pk(no, tag.getTagNo()), this, tag));
+    }
+
+    public void removeProductTag(Integer tagNo) {
+        productTags.removeIf(productTag -> productTag.getPk().getTagNo().equals(tagNo));
     }
 }
