@@ -48,8 +48,6 @@ public class ProductReview {
 
     private String content;
 
-    private String imagePath;
-
     @NotNull(message = "별점은 필수입력사항입니다.")
     @Min(value = 1, message = "별점은 1이상 5이하여야 합니다.")
     @Max(value = 5, message = "별점은 1이상 5이하여야 합니다.")
@@ -60,13 +58,13 @@ public class ProductReview {
 
     private LocalDateTime modifyDatetime;
 
-//    @Transient
-//    private static final String SERVICE = "productReview";
-//
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "owner_no", referencedColumnName = "order_product_no")
-//    @Where(clause = "service = 'productReview'")
-//    private final List<CommonFile> reviewImages = new ArrayList<>();
+    @Transient
+    private static final String SERVICE = "productReview";
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "owner_no", referencedColumnName = "order_product_no")
+    @Where(clause = "service = 'productReview'")
+    private final List<CommonFile> reviewImages = new ArrayList<>();
 
     /**
      * 상품평 생성자입니다.
@@ -74,17 +72,15 @@ public class ProductReview {
      * @param orderProduct     주문상품
      * @param title            상품평 제목
      * @param content          상품평 내용
-     * @param imagePath        상품평 이미지 경로
      * @param starScore        별점
      * @param registerDatetime 상품평 등록 일시
      */
     @Builder
     public ProductReview(OrderProduct orderProduct, String title, String content,
-                         String imagePath, Integer starScore, LocalDateTime registerDatetime) {
+                         Integer starScore, LocalDateTime registerDatetime) {
         this.orderProduct = orderProduct;
         this.title = title;
         this.content = content;
-        this.imagePath = imagePath;
         this.starScore = starScore;
         this.registerDatetime = registerDatetime;
     }
@@ -103,17 +99,8 @@ public class ProductReview {
         this.modifyDatetime = LocalDateTime.now();
     }
 
-    /**
-     * 상품평 이미지 경로 수정 메서드입니다.
-     *
-     * @param imagePath 이미지 경로
-     */
-    public void updateImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void addProductReviewImage(CommonFile commonFile){
+        commonFile.updateCommonFile(orderProductNo, SERVICE);
+        reviewImages.add(commonFile);
     }
-
-//    public void addProductReviewImage(CommonFile commonFile){
-//        commonFile.updateCommonFile(orderProductNo, SERVICE);
-//        reviewImages.add(commonFile);
-//    }
 }

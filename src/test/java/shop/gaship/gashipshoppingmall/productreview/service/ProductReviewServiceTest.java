@@ -137,11 +137,9 @@ class ProductReviewServiceTest {
     @Test
     void modifyProductReviewSuccess() {
         ReflectionTestUtils.setField(review, "orderProductNo", modifyRequest.getOrderProductNo());
-        String deletedFilePath = review.getImagePath();
 
         when(productReviewRepository.findById(modifyRequest.getOrderProductNo()))
                 .thenReturn(Optional.of(review));
-        doNothing().when(fileUploadUtil).cleanUpFiles(List.of(deletedFilePath));
         when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
                 .thenReturn(List.of(multipartFile.getOriginalFilename()));
 
@@ -150,7 +148,6 @@ class ProductReviewServiceTest {
         assertProductReview(modifyRequest);
 
         verify(productReviewRepository).findById(modifyRequest.getOrderProductNo());
-        verify(fileUploadUtil).cleanUpFiles(List.of(deletedFilePath));
         verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
     }
 
@@ -333,7 +330,6 @@ class ProductReviewServiceTest {
         assertThat(review.getOrderProductNo()).isEqualTo(reviewRequest.getOrderProductNo());
         assertThat(review.getTitle()).isEqualTo(reviewRequest.getTitle());
         assertThat(review.getContent()).isEqualTo(reviewRequest.getContent());
-        assertThat(review.getImagePath()).isEqualTo(multipartFile.getOriginalFilename());
         assertThat(review.getStarScore()).isEqualTo(reviewRequest.getStarScore());
     }
 

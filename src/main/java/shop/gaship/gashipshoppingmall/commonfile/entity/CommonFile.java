@@ -36,7 +36,6 @@ public class CommonFile {
     @NotNull
     private String extension;
 
-    @NotNull
     @Column(name = "owner_no")
     private Integer ownerNo;
 
