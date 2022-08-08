@@ -1,9 +1,9 @@
 package shop.gaship.gashipshoppingmall.tag.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
-import shop.gaship.gashipshoppingmall.tag.dto.response.PageResponseDto;
 import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
-import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.DuplicatedTagTitleException;
 import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.service.TagService;
 
 /**
- * tag 등록 수정삭제를 하는 restcontroller 입니다.
+ * tag 등록 수정삭제를 하는 restController 입니다.
  *
  * @author 최정우
  * @since 1.0
@@ -34,7 +32,6 @@ import shop.gaship.gashipshoppingmall.tag.service.TagService;
 @RequiredArgsConstructor
 @RequestMapping("/api/tags")
 public class TagController {
-
     private final TagService tagService;
 
     /**
@@ -91,14 +88,14 @@ public class TagController {
      * 태그 Get Mapping
      * 태그 다건 조회를 위한 RestController 메서드.
      *
-     * @param pageable page 와 size 가 담겨져있음
      * @return responseEntity body 는 조회된 페이지의 정보, 응답 status 는 OK .
      * @author 최정우
      */
     @GetMapping
-    public ResponseEntity<PageResponseDto<TagResponseDto, Tag>> tagList(Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-            .body(tagService.findTags(pageable));
+    public ResponseEntity<List<TagResponseDto>> tagList() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(tagService.findTags());
     }
 
 }
