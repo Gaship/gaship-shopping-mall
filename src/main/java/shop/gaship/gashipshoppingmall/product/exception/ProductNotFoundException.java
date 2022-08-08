@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.product.exception;
  * @since 1.0
  */
 public class ProductNotFoundException extends RuntimeException {
-    private static final String MESSAGE = "제품이 존재하지않습니다.";
+    public static final String MESSAGE = "제품이 존재하지않습니다.";
 
     public ProductNotFoundException() {
         super(MESSAGE);
