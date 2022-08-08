@@ -25,6 +25,11 @@ import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 public class CommonFileServiceImpl implements CommonFileService {
     private final CommonFileRepository commonFileRepository;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws ResourceLoadFailureException 리소스의 프로토콜이 올바르지않으면 발생하는 예외입니다.
+     */
     @Override
     public Resource loadResource(Integer fileNo) {
         CommonFile commonFile = commonFileRepository.findById(fileNo).orElseThrow(CommonFileNotFoundException::new);
@@ -36,6 +41,9 @@ public class CommonFileServiceImpl implements CommonFileService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CommonFile createCommonFile(String fileLink) {
         String fileName = fileLink.substring(fileLink.lastIndexOf(File.separator) + 1);

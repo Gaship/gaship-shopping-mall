@@ -132,18 +132,13 @@ public class ProductServiceImpl implements ProductService {
         StatusCode deliveryType = statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo())
                 .orElseThrow(StatusCodeNotFoundException::new);
 
-        //로컬에 업로드되어있던 이미지 파일들 삭제
-        fileUploadUtil.cleanUpFiles(product.getProductImages().stream()
-                .map(CommonFile::getPath)
-                .collect(Collectors.toList()));
-
-        //db 파일 데이터 삭제
-        product.removeAllProductImages();
-
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
+        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(imageLinks, product);
+        event.updateBeforeImages(product.getProductImages());
 
-        applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks, product));
+        applicationEventPublisher.publishEvent(event);
 
+        product.removeAllProductImages();
         product.updateProduct(category, deliveryType, modifyRequest);
 
         updateProductTags(product, modifyRequest.getTagNos());

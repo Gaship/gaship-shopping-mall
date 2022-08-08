@@ -1,10 +1,12 @@
 package shop.gaship.gashipshoppingmall.product.event;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
@@ -39,6 +41,10 @@ public class ProductSaveUpdateEventHandler {
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommit(ProductSaveUpdateEvent event) {
+        fileUploadUtil.cleanUpFiles(event.getBeforeImages().stream()
+                .map(CommonFile::getPath)
+                .collect(Collectors.toList()));
+
         Product savedProduct = event.getSavedProduct();
         elasticProductRepository.save(new ElasticProduct(
                 savedProduct.getNo(), savedProduct.getName(), savedProduct.getCode()));
