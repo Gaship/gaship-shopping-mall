@@ -7,12 +7,12 @@ MSA 기반의 가구 쇼핑몰 서비스
 ## 서비스 플로우
 ### shopping mall 아키텍처
 
-![쇼핑몰 아키텍처](https://user-images.githubusercontent.com/68586846/183290788-fb457819-5c30-46ae-9545-2b90e309c776.svg)
+![쇼핑몰 아키텍처](https://user-images.githubusercontent.com/60546275/183345555-b1da2978-d581-4344-b7c3-7234a0ff892b.jpg)
 
 - - -
 ### CI/CD 아키텍처
 
-![ci:cd](https://user-images.githubusercontent.com/68586846/183290799-b553cae9-84f5-468a-acc4-f3cbab1cab08.svg)
+![CI-CD](https://user-images.githubusercontent.com/60546275/183345684-31307b9e-dd92-44ca-953e-455f62966737.jpg)
 
 ## 주요 기능
 
@@ -152,7 +152,7 @@ MSA 기반의 가구 쇼핑몰 서비스
 ### 주문
 * 담당자 : 김민수
 * shop.gaship.gashipshoppingmall.order.*
-* shop.gaship.gashipshoppingmall.orderproduct.*
+* shop.gaship.gashipshoppingmall.orderproduct.*
 * spring event를 이용하여 주문의 등록
 * 주문자의 기본 주문정보(실수령자 이름, 전화번호, 주소 등) 수정
 * 주문의 취소, 환불, 반품, 교환 등의 서비스 제공
@@ -160,12 +160,8 @@ MSA 기반의 가구 쇼핑몰 서비스
 ### 회원
 * 담당자 : 김민수
 * shop.gaship.gashipshoppingmall.member.* (아래 기능 관련 패키지)
-* 스프링 시큐리티를 사용한 회원가입, 로그인기능 구현
-* 자사회원가입 기능 추가.
-    * 자사 회원가입시 데이터베이스에 개인정보를 암호화하여 저장 (AES-256)
-    * 비밀번호 암호화는 Bcrypt사용
-* 자사 회원 로그인 기능 추가
-    * 로그인시  SHA-512 암호화를 이용하여 데이터베이스에 질의
+* 자사 회원가입시 데이터베이스에 개인정보를 암호화하여 저장 (AES-256)
+* 로그인시  SHA-512 암호화를 이용하여 데이터베이스에 질의
 * AOP를 이용한 쇼핑몰 서버의 회원 권한 접근 검증.
 
 ### 인프라
