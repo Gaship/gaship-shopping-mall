@@ -19,7 +19,7 @@ import shop.gaship.gashipshoppingmall.membertag.service.MemberTagService;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members/{memberNo}/tags")
+@RequestMapping("/api/members/{memberNo}/member-tag")
 public class MemberTagController {
     private final MemberTagService memberTagService;
 
