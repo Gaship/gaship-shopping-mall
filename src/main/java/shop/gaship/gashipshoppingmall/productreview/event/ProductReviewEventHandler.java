@@ -1,11 +1,13 @@
 package shop.gaship.gashipshoppingmall.productreview.event;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 /**
@@ -27,8 +29,16 @@ public class ProductReviewEventHandler {
      */
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
-    public void handleSaveEvent(ProductReviewSaveEvent event) {
+    public void handleSaveRollback(ProductReviewSaveUpdateEvent event) {
         fileUploadUtil.cleanUpFiles(List.of(event.getImagePath()));
+    }
+
+    @Transactional
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleSaveCommit(ProductReviewSaveUpdateEvent event) {
+        fileUploadUtil.cleanUpFiles(event.getBeforeImages().stream()
+                .map(CommonFile::getPath)
+                .collect(Collectors.toList()));
     }
 
     /**
@@ -38,8 +48,8 @@ public class ProductReviewEventHandler {
      * @param event 상품평 삭제 이벤트
      */
     @Transactional
-    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void handleDeleteEvent(ProductReviewDeleteEvent event) {
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleDeleteCommit(ProductReviewDeleteEvent event) {
         fileUploadUtil.cleanUpFiles(event.getImagePaths());
     }
 }

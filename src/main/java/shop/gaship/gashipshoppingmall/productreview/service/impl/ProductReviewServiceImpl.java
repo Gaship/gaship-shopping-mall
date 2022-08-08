@@ -27,7 +27,7 @@ import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewVie
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 import shop.gaship.gashipshoppingmall.productreview.event.ProductReviewDeleteEvent;
-import shop.gaship.gashipshoppingmall.productreview.event.ProductReviewSaveEvent;
+import shop.gaship.gashipshoppingmall.productreview.event.ProductReviewSaveUpdateEvent;
 import shop.gaship.gashipshoppingmall.productreview.exception.ProductReviewNotFoundException;
 import shop.gaship.gashipshoppingmall.productreview.repository.ProductReviewRepository;
 import shop.gaship.gashipshoppingmall.productreview.service.ProductReviewService;
@@ -66,7 +66,12 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .orElseThrow(OrderProductNotFoundException::new);
 
         ProductReview review = createProductReview(createRequest, orderProduct);
-        uploadProductReviewImage(review, file);
+
+        if (Objects.nonNull(file)) {
+            String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);
+            applicationEventPublisher.publishEvent(new ProductReviewSaveUpdateEvent(imagePath));
+            review.addProductReviewImage(fileService.createCommonFile(imagePath));
+        }
 
         productReviewRepository.save(review);
     }
@@ -82,15 +87,16 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         ProductReview review = productReviewRepository.findById(modifyRequest.getOrderProductNo())
                 .orElseThrow(ProductReviewNotFoundException::new);
 
-        //로컬에 업로드되어있던 이미지 파일들 삭제
-        fileUploadUtil.cleanUpFiles(review.getReviewImages().stream()
-                .map(CommonFile::getPath)
-                .collect(Collectors.toList()));
-
-        //db 파일 데이터 삭제
+        ProductReviewSaveUpdateEvent event =
+                new ProductReviewSaveUpdateEvent(review.getReviewImages());
+        applicationEventPublisher.publishEvent(event);
         review.removeAllProductReviewImages();
 
-        uploadProductReviewImage(review, file);
+        if (Objects.nonNull(file)) {
+            String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);
+            event.setImagePath(imagePath);
+            review.addProductReviewImage(fileService.createCommonFile(imagePath));
+        }
 
         review.updateProductReview(modifyRequest.getTitle(), modifyRequest.getContent(),
                 modifyRequest.getStarScore());
@@ -213,20 +219,6 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .starScore(createRequest.getStarScore())
                 .registerDatetime(LocalDateTime.now())
                 .build();
-    }
-
-    /**
-     * 상품평 이미지가 있을 경우 해당 이미지를 업로드하는 메서드입니다.
-     *
-     * @param review 상품평
-     * @param file 이미지 파일
-     */
-    private void uploadProductReviewImage(ProductReview review, MultipartFile file) {
-        if (Objects.nonNull(file)) {
-            String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);
-            applicationEventPublisher.publishEvent(new ProductReviewSaveEvent(imagePath));
-            review.addProductReviewImage(fileService.createCommonFile(imagePath));
-        }
     }
 
     /**
