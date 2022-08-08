@@ -49,7 +49,6 @@ public class ProductReviewDummy {
         responseDto.setProductName("상품");
         responseDto.setTitle("상품평 제목");
         responseDto.setContent("상품평 내용");
-        responseDto.setImagePath("이미지 경로");
         responseDto.setStarScore(3);
         responseDto.setRegisterDateTime(LocalDateTime.now());
         responseDto.setModifyDateTime(LocalDateTime.now());

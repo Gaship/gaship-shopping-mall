@@ -59,7 +59,7 @@ public class ProductReview {
     private LocalDateTime modifyDatetime;
 
     @Transient
-    private static final String SERVICE = "productReview";
+    public static final String SERVICE = "productReview";
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "owner_no", referencedColumnName = "order_product_no")
