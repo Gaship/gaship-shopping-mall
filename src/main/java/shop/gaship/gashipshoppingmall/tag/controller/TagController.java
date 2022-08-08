@@ -1,9 +1,9 @@
 package shop.gaship.gashipshoppingmall.tag.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
@@ -89,15 +88,14 @@ public class TagController {
      * 태그 Get Mapping
      * 태그 다건 조회를 위한 RestController 메서드.
      *
-     * @param pageable page 와 size 가 담겨져있음
      * @return responseEntity body 는 조회된 페이지의 정보, 응답 status 는 OK .
      * @author 최정우
      */
     @GetMapping
-    public ResponseEntity<PageResponse<TagResponseDto>> tagList(Pageable pageable) {
+    public ResponseEntity<List<TagResponseDto>> tagList() {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(tagService.findTags(pageable));
+                .body(tagService.findTags());
     }
 
 }
