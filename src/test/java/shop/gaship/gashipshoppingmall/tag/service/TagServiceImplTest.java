@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.tag.service;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -127,14 +128,11 @@ class TagServiceImplTest {
     @DisplayName("tagService findTags 테스트")
     @Test
     void findTagsTest() {
-        Pageable pageable = PageRequest.of(1, 10, Sort.by("title"));
-        Page<TagResponseDto> response = TagDummy.TagPageDummy(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort().toString());
-        when(tagRepository.getTags(pageable)).thenReturn(response);
+        when(tagRepository.findAll()).thenReturn(TagDummy.TagListDummyPersist());
 
-        PageResponse<TagResponseDto> tags = tagService.findTags(pageable);
+        List<TagResponseDto> tags = tagService.findTags();
 
-        verify(tagRepository).getTags(pageable);
-        assertThat(tags.getContent()).hasSize(33);
-        assertThat(tags.getTotalPage()).isEqualTo(4);
+        verify(tagRepository).findAll();
+        assertThat(tags).hasSize(33);
     }
 }

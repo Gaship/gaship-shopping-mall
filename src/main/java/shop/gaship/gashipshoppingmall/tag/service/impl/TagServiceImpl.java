@@ -1,11 +1,10 @@
 package shop.gaship.gashipshoppingmall.tag.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
@@ -72,8 +71,10 @@ public class TagServiceImpl implements TagService {
      * {@inheritDoc}
      */
     @Override
-    public PageResponse<TagResponseDto> findTags(Pageable pageable) {
-        Page<TagResponseDto> page = tagRepository.getTags(pageable);
-        return new PageResponse<>(page);
+    public List<TagResponseDto> findTags() {
+        return tagRepository.findAll()
+                .stream()
+                .map(this::entityToDto)
+                .collect(Collectors.toList());
     }
 }

@@ -52,23 +52,14 @@ public class TagDummy {
 
     public static List<Tag> TagListDummyPersist() {
         List<Tag> list = new ArrayList<>();
-        IntStream.rangeClosed(1, 100).forEach(i -> list.add(Tag.builder().tagNo(i).title("title....." + i).build()));
+        IntStream.rangeClosed(1, 33).forEach(i -> list.add(Tag.builder().tagNo(i).title("title....." + i).build()));
         return list;
     }
 
-    public static PageResponse<TagResponseDto> TagPageResponseDummy(Integer page,Integer size,String sort){
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+
+    public static List<TagResponseDto> TagResponseDtoListDummy(){
         List<TagResponseDto> list = new ArrayList<>();
         IntStream.rangeClosed(1, 33).forEach(i -> list.add(TagResponseDto.builder().tagNo(i).title("title..." + i).registerDatetime(LocalDateTime.now()).modifyDatetime(LocalDateTime.now()).build()));
-        Page<TagResponseDto> responseDtoPage  = new PageImpl<>(list, pageable,list.size());
-        return new PageResponse<>(responseDtoPage);
+        return list;
     }
-
-    public static Page<TagResponseDto> TagPageDummy(Integer page,Integer size,String sort){
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
-        List<TagResponseDto> list = new ArrayList<>();
-        IntStream.rangeClosed(1, 33).forEach(i -> list.add(TagResponseDto.builder().tagNo(i).title("title..." + i).registerDatetime(LocalDateTime.now()).modifyDatetime(LocalDateTime.now()).build()));
-        return new PageImpl<>(list, pageable,list.size());
-    }
-
 }

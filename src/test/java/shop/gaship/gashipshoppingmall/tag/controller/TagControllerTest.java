@@ -117,21 +117,14 @@ class TagControllerTest {
         Integer page = 1;
         Integer size = 10;
         String sort = "title";
-        PageResponse<TagResponseDto> tagPageResponseDto = TagDummy.TagPageResponseDummy(page, size, sort);
-        when(tagService.findTags(any())).thenReturn(tagPageResponseDto);
+        when(tagService.findTags()).thenReturn(TagDummy.TagResponseDtoListDummy());
 
         mockMvc.perform(get("/api/tags")
-                        .queryParam("page", String.valueOf(page))
-                        .queryParam("size", String.valueOf(size))
-                        .queryParam("sort", sort)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.totalPage", equalTo(4)))
-                .andExpect(jsonPath("$.content.[0].title", equalTo("title...1")))
-                .andExpect(jsonPath("$.page", equalTo(page)));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        verify(tagService, times(1)).findTags(any());
+        verify(tagService, times(1)).findTags();
     }
 }

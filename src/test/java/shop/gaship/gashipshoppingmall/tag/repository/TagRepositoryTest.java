@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.tag.repository;
 
+import java.util.List;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -32,12 +34,10 @@ class TagRepositoryTest {
     @Test
     void getAllTagsTest() {
         IntStream.rangeClosed(1, 15).forEach(i -> tagRepository.save(Tag.builder().title("title....." + i).build()));
-        Pageable pageable = PageRequest.of(0, 10);
 
-        Page<TagResponseDto> tags = tagRepository.getTags(pageable);
+        List<Tag> tags = tagRepository.findAll();
 
-        assertThat(tags).isNotEmpty();
-        assertThat(tags.getTotalPages()).isEqualTo(2);
-        assertThat(tags.getTotalElements()).isEqualTo(15);
+        assertThat(tags).hasSize(15);
+
     }
 }

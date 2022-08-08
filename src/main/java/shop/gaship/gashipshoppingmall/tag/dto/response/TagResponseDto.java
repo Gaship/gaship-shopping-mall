@@ -1,10 +1,8 @@
 package shop.gaship.gashipshoppingmall.tag.dto.response;
 
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * 태그 단건 조회시에 필요한 값을 담는 dto입니다.
@@ -13,12 +11,26 @@ import lombok.NoArgsConstructor;
  * @since 1.0
  */
 @Getter
-@NoArgsConstructor
-@Builder
-@AllArgsConstructor
 public class TagResponseDto {
-    private Integer tagNo;
-    private String title;
-    private LocalDateTime registerDatetime;
-    private LocalDateTime modifyDatetime;
+    private final Integer tagNo;
+    private final String title;
+    private final LocalDateTime registerDatetime;
+    private final LocalDateTime modifyDatetime;
+
+    /**
+     * dto 의 빌더.
+     *
+     * @param tagNo 태그 id
+     * @param title 태그명
+     * @param registerDatetime 등록시간
+     * @param modifyDatetime 수정시간
+     */
+    @Builder
+    public TagResponseDto(Integer tagNo, String title,
+                          LocalDateTime registerDatetime, LocalDateTime modifyDatetime) {
+        this.tagNo = tagNo;
+        this.title = title;
+        this.registerDatetime = registerDatetime;
+        this.modifyDatetime = modifyDatetime;
+    }
 }
