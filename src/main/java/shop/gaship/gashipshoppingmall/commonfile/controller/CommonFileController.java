@@ -27,6 +27,13 @@ import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 public class CommonFileController {
     private final CommonFileService commonFileService;
 
+    /**
+     * 로컬의 파일 이미지를 다운로드하는 메서드입니다.
+     *
+     * @param fileNo  다운로드할 파일번호
+     * @param request http 요청
+     * @return responseEntity 파일 리소스를 포함하고 있습니다.
+     */
     @GetMapping("/download/{fileNo}")
     public ResponseEntity<Resource> fileDownload(@PathVariable Integer fileNo,
                                                  HttpServletRequest request) {

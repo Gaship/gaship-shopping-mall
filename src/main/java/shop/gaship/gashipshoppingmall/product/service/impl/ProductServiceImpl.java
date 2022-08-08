@@ -314,11 +314,23 @@ public class ProductServiceImpl implements ProductService {
                 tagRepository.findById(tagNo).orElseThrow(TagNotFoundException::new)));
     }
 
+    /**
+     * 하나의 상품에 다수의 이미지파일을 추가하는 메서드입니다.
+     *
+     * @param product 상품
+     * @param imageLinks 추가할 이미지파일 링크
+     */
     private void addProductImages(Product product, List<String> imageLinks) {
         imageLinks.forEach(imageLink -> product.addProductImage(
                 fileService.createCommonFile(imageLink)));
     }
 
+    /**
+     * 상품 태그를 업데이트하는 메서드입니다.
+     *
+     * @param product 상품
+     * @param tagNos 수정할 태그 목록
+     */
     private void updateProductTags(Product product, List<Integer> tagNos) {
         List<Integer> productTagNos = product.getProductTags().stream()
                 .map(productTag -> productTag.getPk().getTagNo())
@@ -349,12 +361,22 @@ public class ProductServiceImpl implements ProductService {
         });
     }
 
+    /**
+     * 상품의 이미지 파일 경로를 찾아오는 메서드입니다.
+     *
+     * @param products 파일 경로를 찾을 상품 목록
+     */
     private void findFilePath(PageResponse<ProductAllInfoResponseDto> products) {
         products.getContent().forEach(product -> product.getFilePaths()
                 .addAll(fileRepository.findPaths(product.getProductNo(), Product.SERVICE)));
     }
 
-
+    /**
+     * 엘라스틱서치로 검색한 결과에서 상품번호를 가져오는 메서드입니다.
+     *
+     * @param elasticProducts 엘라스틱서치 검색 결과 목록
+     * @return 상품번호 목록
+     */
     private List<Integer> getProductNoList(List<ElasticProduct> elasticProducts) {
         return elasticProducts.stream()
             .map(ElasticProduct::getId)

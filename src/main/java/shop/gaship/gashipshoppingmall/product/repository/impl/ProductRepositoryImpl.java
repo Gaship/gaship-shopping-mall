@@ -37,6 +37,9 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         super(Product.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProduct(ProductRequestViewDto requestDto) {
 

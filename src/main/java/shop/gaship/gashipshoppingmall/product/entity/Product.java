@@ -183,19 +183,37 @@ public class Product {
         this.salesStatus = salesStatus;
     }
 
+    /**
+     * 상품에 이미지파일을 추가하는 메서드입니다.
+     * 
+     * @param commonFile 추가할 이미지파일 엔티티
+     */
     public void addProductImage(CommonFile commonFile){
         commonFile.updateCommonFile(no, SERVICE);
         productImages.add(commonFile);
     }
 
+    /**
+     * 상품의 이미지파일들을 모두 삭제하는 메서드입니다.
+     */
     public void removeAllProductImages() {
         productImages.clear();
     }
 
+    /**
+     * 상품에 상품태그를 추가하는 메서드입니다.
+     * 
+     * @param tag 추가할 태그
+     */
     public void addProductTag(Tag tag) {
         productTags.add(new ProductTag(new ProductTag.Pk(no, tag.getTagNo()), this, tag));
     }
 
+    /**
+     * 상품태그를 삭제하는 메서드입니다.
+     * 
+     * @param tagNo 삭제할 태그번호
+     */
     public void removeProductTag(Integer tagNo) {
         productTags.removeIf(productTag -> productTag.getPk().getTagNo().equals(tagNo));
     }

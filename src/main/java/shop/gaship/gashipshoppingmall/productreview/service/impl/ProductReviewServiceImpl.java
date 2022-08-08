@@ -229,6 +229,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         }
     }
 
+    /**
+     * 상품평의 이미지경로를 찾아오는 메서드입니다.
+     *
+     * @param productReviews 이미지경로를 찾을 상품평
+     */
     private void findFilePath(Page<ProductReviewResponseDto> productReviews) {
         productReviews.getContent().forEach(review -> review.getFilePaths()
                 .addAll(fileRepository.findPaths(review.getOrderProductNo(),

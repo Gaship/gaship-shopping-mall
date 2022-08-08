@@ -99,11 +99,19 @@ public class ProductReview {
         this.modifyDatetime = LocalDateTime.now();
     }
 
+    /**
+     * 상품평에 이미지파일을 추가하는 메서드입니다.
+     *
+     * @param commonFile 추가할 파일 엔티티입니다.
+     */
     public void addProductReviewImage(CommonFile commonFile){
         commonFile.updateCommonFile(orderProductNo, SERVICE);
         reviewImages.add(commonFile);
     }
 
+    /**
+     * 상품평의 모든 이미지파일을 제거하는 메서드입니다.
+     */
     public void removeAllProductReviewImages() {
         reviewImages.clear();
     }

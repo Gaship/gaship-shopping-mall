@@ -18,12 +18,15 @@ public class CommonFileRepositoryImpl extends QuerydslRepositorySupport implemen
         super(CommonFile.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> findPaths(Integer ownerNo, String service) {
         QCommonFile commonFile = QCommonFile.commonFile;
         return from(commonFile)
                 .select(commonFile.path)
-                .where(commonFile.service.eq(service))
+                .where(commonFile.service.eq(service).and(commonFile.ownerNo.eq(ownerNo)))
                 .fetch();
     }
 }
