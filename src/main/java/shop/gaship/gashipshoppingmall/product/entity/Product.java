@@ -62,7 +62,7 @@ public class Product {
     private StatusCode salesStatus;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductTag> productTags = new ArrayList<>();
+    private final List<ProductTag> productTags = new ArrayList<>();
 
     @Length(max = 100, message = "상품 이름은 100자 이하여야 합니다.")
     @NotNull
@@ -120,7 +120,7 @@ public class Product {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "owner_no", referencedColumnName = "product_no")
     @Where(clause = "service = 'product'")
-    private List<CommonFile> productImages = new ArrayList<>();
+    private final List<CommonFile> productImages = new ArrayList<>();
 
     @Builder
     public Product(Category category, StatusCode deliveryType, String name,
@@ -183,7 +183,7 @@ public class Product {
 
     /**
      * 상품에 이미지파일을 추가하는 메서드입니다.
-     * 
+     *
      * @param commonFile 추가할 이미지파일 엔티티
      */
     public void addProductImage(CommonFile commonFile) {
@@ -200,7 +200,7 @@ public class Product {
 
     /**
      * 상품에 상품태그를 추가하는 메서드입니다.
-     * 
+     *
      * @param tag 추가할 태그
      */
     public void addProductTag(Tag tag) {
@@ -209,7 +209,7 @@ public class Product {
 
     /**
      * 상품태그를 삭제하는 메서드입니다.
-     * 
+     *
      * @param tagNo 삭제할 태그번호
      */
     public void removeProductTag(Integer tagNo) {

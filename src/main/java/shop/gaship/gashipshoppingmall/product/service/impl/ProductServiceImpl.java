@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
-import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
@@ -127,16 +126,16 @@ public class ProductServiceImpl implements ProductService {
     public void modifyProduct(List<MultipartFile> files, ProductRequestDto modifyRequest) {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
-        Category category = categoryRepository.findById(modifyRequest.getCategoryNo())
-                .orElseThrow(CategoryNotFoundException::new);
-        StatusCode deliveryType = statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo())
-                .orElseThrow(StatusCodeNotFoundException::new);
 
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
         ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(imageLinks, product);
         event.updateBeforeImages(product.getProductImages());
-
         applicationEventPublisher.publishEvent(event);
+
+        Category category = categoryRepository.findById(modifyRequest.getCategoryNo())
+                .orElseThrow(CategoryNotFoundException::new);
+        StatusCode deliveryType = statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo())
+                .orElseThrow(StatusCodeNotFoundException::new);
 
         product.removeAllProductImages();
         product.updateProduct(category, deliveryType, modifyRequest);
