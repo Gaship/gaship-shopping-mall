@@ -2,7 +2,9 @@ package shop.gaship.gashipshoppingmall.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * object storage 관련 설정을 위한 configuration 입니다.
@@ -42,5 +44,10 @@ public class ObjectStorageConfig {
 
     public void setAccount(String account) {
         this.account = account;
+    }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
     }
 }
