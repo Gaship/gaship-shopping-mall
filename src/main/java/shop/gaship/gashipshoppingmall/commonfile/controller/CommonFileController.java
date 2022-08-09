@@ -34,7 +34,7 @@ public class CommonFileController {
      * @param request http 요청
      * @return responseEntity 파일 리소스를 포함하고 있습니다.
      */
-    @GetMapping("/download/{fileNo}")
+    @GetMapping("/{fileNo}/download")
     public ResponseEntity<Resource> fileDownload(@PathVariable Integer fileNo,
                                                  HttpServletRequest request) {
         Resource resource = commonFileService.loadResource(fileNo);

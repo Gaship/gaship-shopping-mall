@@ -16,6 +16,7 @@ import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 /**
  * 파일 서비스 구현체입니다.
  *
+ * @see CommonFileService
  * @author : 김보민
  * @since 1.0
  */
@@ -32,7 +33,8 @@ public class CommonFileServiceImpl implements CommonFileService {
      */
     @Override
     public Resource loadResource(Integer fileNo) {
-        CommonFile commonFile = commonFileRepository.findById(fileNo).orElseThrow(CommonFileNotFoundException::new);
+        CommonFile commonFile = commonFileRepository.findById(fileNo)
+                .orElseThrow(CommonFileNotFoundException::new);
 
         try {
             return new UrlResource("file:" + commonFile.getPath());
