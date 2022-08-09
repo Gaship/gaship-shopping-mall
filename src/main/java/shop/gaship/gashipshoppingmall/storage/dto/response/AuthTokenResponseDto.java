@@ -12,9 +12,9 @@ import lombok.Getter;
 public class AuthTokenResponseDto {
     private Access access;
 
+    @Getter
     public class Access {
         private Token token;
-        private String[] serviceCatalog;
         private User user;
     }
 }
