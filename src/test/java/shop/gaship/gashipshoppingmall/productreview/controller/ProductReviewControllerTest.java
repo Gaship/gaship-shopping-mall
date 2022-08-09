@@ -142,7 +142,6 @@ class ProductReviewControllerTest {
                 .andExpect(jsonPath("$.title").value(responseDto.getTitle()))
                 .andExpect(jsonPath("$.content").value(responseDto.getContent()))
                 .andExpect(jsonPath("$.starScore").value(responseDto.getStarScore()))
-                .andExpect(jsonPath("$.imagePath").value(responseDto.getImagePath()))
                 .andDo(print());
 
         verify(productReviewService).findReview(orderProductNo);
@@ -165,7 +164,6 @@ class ProductReviewControllerTest {
                 .andExpect(jsonPath("$.content[0].title").value(responseDto.getTitle()))
                 .andExpect(jsonPath("$.content[0].content").value(responseDto.getContent()))
                 .andExpect(jsonPath("$.content[0].starScore").value(responseDto.getStarScore()))
-                .andExpect(jsonPath("$.content[0].imagePath").value(responseDto.getImagePath()))
                 .andDo(print());
 
         verify(productReviewService).findReviews(pageable);
@@ -190,7 +188,6 @@ class ProductReviewControllerTest {
                 .andExpect(jsonPath("$.content[0].title").value(responseDto.getTitle()))
                 .andExpect(jsonPath("$.content[0].content").value(responseDto.getContent()))
                 .andExpect(jsonPath("$.content[0].starScore").value(responseDto.getStarScore()))
-                .andExpect(jsonPath("$.content[0].imagePath").value(responseDto.getImagePath()))
                 .andDo(print());
 
         verify(productReviewService).findReviewsByProductNo(productNo, pageable);
@@ -215,7 +212,6 @@ class ProductReviewControllerTest {
                 .andExpect(jsonPath("$.content[0].title").value(responseDto.getTitle()))
                 .andExpect(jsonPath("$.content[0].content").value(responseDto.getContent()))
                 .andExpect(jsonPath("$.content[0].starScore").value(responseDto.getStarScore()))
-                .andExpect(jsonPath("$.content[0].imagePath").value(responseDto.getImagePath()))
                 .andDo(print());
 
         verify(productReviewService).findReviewsByMemberNo(memberNo, pageable);

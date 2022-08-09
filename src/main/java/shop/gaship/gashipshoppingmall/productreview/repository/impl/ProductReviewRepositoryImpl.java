@@ -51,7 +51,6 @@ public class ProductReviewRepositoryImpl extends QuerydslRepositorySupport
                         orderProduct.product.name.as("productName"),
                         review.title,
                         review.content,
-                        review.imagePath,
                         review.starScore,
                         review.registerDatetime.as("registerDateTime"),
                         review.modifyDatetime.as("modifyDateTime")

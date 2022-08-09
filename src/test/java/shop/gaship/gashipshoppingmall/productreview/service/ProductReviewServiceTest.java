@@ -27,6 +27,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
+import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
+import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
@@ -71,6 +74,12 @@ class ProductReviewServiceTest {
     MemberRepository memberRepository;
 
     @MockBean
+    CommonFileRepository fileRepository;
+
+    @MockBean
+    CommonFileService fileService;
+
+    @MockBean
     FileUploadUtil fileUploadUtil;
 
     ProductReview review;
@@ -103,10 +112,10 @@ class ProductReviewServiceTest {
     @Test
     void addProductReviewSuccess() {
         ReflectionTestUtils.setField(review, "orderProductNo", createRequest.getOrderProductNo());
-        ReflectionTestUtils.setField(review, "imagePath", multipartFile.getOriginalFilename());
-        
+
         when(orderProductRepository.findById(createRequest.getOrderProductNo()))
                 .thenReturn(Optional.of(orderProduct));
+        when(fileService.createCommonFile(any())).thenReturn(new CommonFile());
         when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
                 .thenReturn(List.of(multipartFile.getOriginalFilename()));
         when(productReviewRepository.save(any(ProductReview.class)))
@@ -117,6 +126,7 @@ class ProductReviewServiceTest {
         assertProductReview(createRequest);
 
         verify(orderProductRepository).findById(createRequest.getOrderProductNo());
+        verify(fileService).createCommonFile(any());
         verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
         verify(productReviewRepository).save(any(ProductReview.class));
     }
@@ -137,11 +147,10 @@ class ProductReviewServiceTest {
     @Test
     void modifyProductReviewSuccess() {
         ReflectionTestUtils.setField(review, "orderProductNo", modifyRequest.getOrderProductNo());
-        String deletedFilePath = review.getImagePath();
 
         when(productReviewRepository.findById(modifyRequest.getOrderProductNo()))
                 .thenReturn(Optional.of(review));
-        doNothing().when(fileUploadUtil).cleanUpFiles(List.of(deletedFilePath));
+        when(fileService.createCommonFile(any())).thenReturn(new CommonFile());
         when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
                 .thenReturn(List.of(multipartFile.getOriginalFilename()));
 
@@ -150,7 +159,7 @@ class ProductReviewServiceTest {
         assertProductReview(modifyRequest);
 
         verify(productReviewRepository).findById(modifyRequest.getOrderProductNo());
-        verify(fileUploadUtil).cleanUpFiles(List.of(deletedFilePath));
+        verify(fileService).createCommonFile(any());
         verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
     }
 
@@ -333,7 +342,6 @@ class ProductReviewServiceTest {
         assertThat(review.getOrderProductNo()).isEqualTo(reviewRequest.getOrderProductNo());
         assertThat(review.getTitle()).isEqualTo(reviewRequest.getTitle());
         assertThat(review.getContent()).isEqualTo(reviewRequest.getContent());
-        assertThat(review.getImagePath()).isEqualTo(multipartFile.getOriginalFilename());
         assertThat(review.getStarScore()).isEqualTo(reviewRequest.getStarScore());
     }
 
@@ -343,7 +351,6 @@ class ProductReviewServiceTest {
         assertThat(responseDto.getProductName()).isEqualTo(responseDummy.getProductName());
         assertThat(responseDto.getTitle()).isEqualTo(responseDummy.getTitle());
         assertThat(responseDto.getContent()).isEqualTo(responseDummy.getContent());
-        assertThat(responseDto.getImagePath()).isEqualTo(responseDummy.getImagePath());
         assertThat(responseDto.getStarScore()).isEqualTo(responseDummy.getStarScore());
         assertThat(responseDto.getRegisterDateTime()).isNotNull();
         assertThat(responseDto.getModifyDateTime()).isNotNull();

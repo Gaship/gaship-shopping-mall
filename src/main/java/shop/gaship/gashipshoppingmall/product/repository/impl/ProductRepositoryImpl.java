@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
@@ -37,8 +37,11 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         super(Product.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public PageResponse<ProductAllInfoResponseDto> findProduct(ProductRequestDto requestDto) {
+    public PageResponse<ProductAllInfoResponseDto> findProduct(ProductRequestViewDto requestDto) {
 
         QCategory upper = new QCategory("upper");
         QCategory top = new QCategory("top");
@@ -60,11 +63,6 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 product.qualityAssuranceStandard.as("quality"),
                 product.color,
                 product.stockQuantity.as("quantity"),
-                product.imageLink1.as("img1"),
-                product.imageLink2.as("img2"),
-                product.imageLink3.as("img3"),
-                product.imageLink4.as("img4"),
-                product.imageLink5.as("img5"),
                 product.explanation,
                 category.level,
                 JPAExpressions.select(upper.name.concat("-").concat(
@@ -85,7 +83,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .size()));
     }
 
-    private JPQLQuery<Product> productQuery(ProductRequestDto requestDto) {
+    private JPQLQuery<Product> productQuery(ProductRequestViewDto requestDto) {
         return from(product)
             .innerJoin(category)
             .on(product.category.no.eq(category.no))

@@ -55,12 +55,11 @@ public interface CategoryService {
      */
     List<CategoryResponseDto> findCategories();
 
+
     /**
-     * 하위 카테고리 조회 메서드입니다.
+     * 카테고리 삭제 메서드입니다.
      *
-     * @param categoryNo 하위카테고리를 조회할 상위 카테고리 번호
-     * @throws CategoryNotFoundException            카테고리를 못찾음
-     * @author 김보민
+     * @param categoryNo 삭제할 카테고리
      */
     void removeCategory(Integer categoryNo);
 

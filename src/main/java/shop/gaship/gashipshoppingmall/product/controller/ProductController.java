@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
+import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
@@ -44,9 +44,10 @@ public class ProductController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
+    @AdminAuthority
     @PostMapping
     public ResponseEntity<Void> productAdd(@RequestPart("image") List<MultipartFile> files,
-                                           @RequestPart ProductCreateRequestDto createRequest) {
+                                           @RequestPart ProductRequestDto createRequest) {
         service.addProduct(files, createRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -62,9 +63,10 @@ public class ProductController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
+    @AdminAuthority
     @PutMapping
     public ResponseEntity<Void> productModify(@RequestPart("image") List<MultipartFile> files,
-                                              @RequestPart ProductModifyRequestDto modifyRequest) {
+                                              @RequestPart ProductRequestDto modifyRequest) {
         service.modifyProduct(files, modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -208,7 +210,7 @@ public class ProductController {
      * @return response entity 전체 상품들 조회하는 메서드입니다.
      * @author 유호철
      */
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListAll(
         Pageable pageable) {
         return ResponseEntity

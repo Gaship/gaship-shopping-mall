@@ -119,7 +119,6 @@ class ProductReviewRepositoryTest {
         assertThat(savedReview.getOrderProductNo()).isEqualTo(review.getOrderProductNo());
         assertThat(savedReview.getTitle()).isEqualTo(review.getTitle());
         assertThat(savedReview.getContent()).isEqualTo(review.getContent());
-        assertThat(savedReview.getImagePath()).isEqualTo(review.getImagePath());
         assertThat(savedReview.getStarScore()).isEqualTo(review.getStarScore());
         assertThat(savedReview.getRegisterDatetime()).isNotNull();
         assertThat(savedReview.getModifyDatetime()).isNotNull();
@@ -148,7 +147,6 @@ class ProductReviewRepositoryTest {
         assertThat(found.get().getOrderProductNo()).isEqualTo(savedReview.getOrderProductNo());
         assertThat(found.get().getTitle()).isEqualTo(savedReview.getTitle());
         assertThat(found.get().getContent()).isEqualTo(savedReview.getContent());
-        assertThat(found.get().getImagePath()).isEqualTo(savedReview.getImagePath());
         assertThat(found.get().getStarScore()).isEqualTo(savedReview.getStarScore());
     }
 
@@ -217,7 +215,6 @@ class ProductReviewRepositoryTest {
             assertThat(responseDtos.get(i).getTitle()).isEqualTo(review.getTitle());
             assertThat(responseDtos.get(i).getContent()).isEqualTo(review.getContent());
             assertThat(responseDtos.get(i).getStarScore()).isEqualTo(review.getStarScore());
-            assertThat(responseDtos.get(i).getImagePath()).isEqualTo(review.getImagePath());
             assertThat(responseDtos.get(i).getRegisterDateTime()).isNotNull();
             assertThat(responseDtos.get(i).getModifyDateTime()).isEqualTo(review.getModifyDatetime());
         });
