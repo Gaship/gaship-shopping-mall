@@ -18,10 +18,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
@@ -188,7 +186,7 @@ public class Product {
      * 
      * @param commonFile 추가할 이미지파일 엔티티
      */
-    public void addProductImage(CommonFile commonFile){
+    public void addProductImage(CommonFile commonFile) {
         commonFile.updateCommonFile(no, SERVICE);
         productImages.add(commonFile);
     }

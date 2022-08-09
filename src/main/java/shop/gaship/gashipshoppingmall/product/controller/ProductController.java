@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
@@ -43,6 +44,7 @@ public class ProductController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
+    @AdminAuthority
     @PostMapping
     public ResponseEntity<Void> productAdd(@RequestPart("image") List<MultipartFile> files,
                                            @RequestPart ProductRequestDto createRequest) {
@@ -61,6 +63,7 @@ public class ProductController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
+    @AdminAuthority
     @PutMapping
     public ResponseEntity<Void> productModify(@RequestPart("image") List<MultipartFile> files,
                                               @RequestPart ProductRequestDto modifyRequest) {
@@ -207,7 +210,7 @@ public class ProductController {
      * @return response entity 전체 상품들 조회하는 메서드입니다.
      * @author 유호철
      */
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListAll(
         Pageable pageable) {
         return ResponseEntity
