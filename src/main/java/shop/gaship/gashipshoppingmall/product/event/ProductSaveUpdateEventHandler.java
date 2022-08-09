@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.product.event;
 
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +10,7 @@ import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.storage.service.ObjectStorageService;
 import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 /**
@@ -23,6 +23,7 @@ import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 @RequiredArgsConstructor
 public class ProductSaveUpdateEventHandler {
     private final FileUploadUtil fileUploadUtil;
+    private final ObjectStorageService objectStorageService;
     private final ElasticProductRepository elasticProductRepository;
 
     /**
@@ -35,7 +36,9 @@ public class ProductSaveUpdateEventHandler {
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
     public void handleRollback(ProductSaveUpdateEvent event) {
-        fileUploadUtil.cleanUpFiles(event.getImageLinks());
+//        fileUploadUtil.cleanUpFiles(event.getImageLinks());
+        event.getImageLinks().stream().map(link -> link.substring(link.lastIndexOf("/") + 1))
+                .forEach(objectStorageService::deleteObject);
     }
 
     /**
@@ -47,9 +50,11 @@ public class ProductSaveUpdateEventHandler {
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommit(ProductSaveUpdateEvent event) {
-        fileUploadUtil.cleanUpFiles(event.getBeforeImages().stream()
-                .map(CommonFile::getPath)
-                .collect(Collectors.toList()));
+//        fileUploadUtil.cleanUpFiles(event.getBeforeImages().stream()
+//                .map(CommonFile::getPath)
+//                .collect(Collectors.toList()));
+        event.getBeforeImages().stream().map(CommonFile::getOriginalName)
+                .forEach(objectStorageService::deleteObject);
 
         Product savedProduct = event.getSavedProduct();
         elasticProductRepository.save(new ElasticProduct(

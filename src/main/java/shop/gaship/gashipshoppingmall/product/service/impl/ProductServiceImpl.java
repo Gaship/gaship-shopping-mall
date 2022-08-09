@@ -34,6 +34,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
+import shop.gaship.gashipshoppingmall.storage.service.ObjectStorageService;
 import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
@@ -57,9 +58,10 @@ public class ProductServiceImpl implements ProductService {
     private final ProductTagRepository productTagRepository;
     private final CommonFileRepository fileRepository;
     private final CommonFileService fileService;
-    private final FileUploadUtil fileUploadUtil;
+//    private final FileUploadUtil fileUploadUtil;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ElasticProductRepository elasticProductRepository;
+    private final ObjectStorageService objectStorageService;
 
     /**
      * {@inheritDoc}
@@ -82,7 +84,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = createProduct(category, deliveryType, createRequest);
         product.updateSalesStatus(salesStatus);
 
-        List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
+//        List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
+        List<String> imageLinks = files.stream()
+                .map(objectStorageService::uploadMultipartFile)
+                .collect(Collectors.toList());
 
         ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(imageLinks, null);
         applicationEventPublisher.publishEvent(event);
@@ -127,7 +132,11 @@ public class ProductServiceImpl implements ProductService {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
 
-        List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
+//        List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
+        List<String> imageLinks = files.stream()
+                .map(objectStorageService::uploadMultipartFile)
+                .collect(Collectors.toList());
+
         ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(imageLinks, product);
         event.updateBeforeImages(product.getProductImages());
         applicationEventPublisher.publishEvent(event);

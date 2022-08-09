@@ -48,7 +48,8 @@ public class CommonFileServiceImpl implements CommonFileService {
      */
     @Override
     public CommonFile createCommonFile(String fileLink) {
-        String fileName = fileLink.substring(fileLink.lastIndexOf(File.separator) + 1);
+//        String fileName = fileLink.substring(fileLink.lastIndexOf(File.separator) + 1);
+        String fileName = fileLink.substring(fileLink.lastIndexOf("/") + 1);
         return CommonFile.builder()
                 .path(fileLink)
                 .originalName(fileName)
