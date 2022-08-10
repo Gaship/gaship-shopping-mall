@@ -1,6 +1,8 @@
 package shop.gaship.gashipshoppingmall.productreview.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,8 +22,8 @@ public class ProductReviewResponseDto {
     private String productName;
     private String title;
     private String content;
-    private String imagePath;
     private Integer starScore;
     private LocalDateTime registerDateTime;
     private LocalDateTime modifyDateTime;
+    private final List<String> filePaths = new ArrayList<>();
 }
