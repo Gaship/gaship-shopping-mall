@@ -47,7 +47,6 @@ import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 import shop.gaship.gashipshoppingmall.productreview.exception.ProductReviewNotFoundException;
 import shop.gaship.gashipshoppingmall.productreview.repository.ProductReviewRepository;
 import shop.gaship.gashipshoppingmall.productreview.service.impl.ProductReviewServiceImpl;
-import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 /**
  * 상품평 서비스 테스트입니다.
@@ -78,9 +77,6 @@ class ProductReviewServiceTest {
 
     @MockBean
     CommonFileService fileService;
-
-    @MockBean
-    FileUploadUtil fileUploadUtil;
 
     ProductReview review;
     ProductReviewResponseDto responseDummy;

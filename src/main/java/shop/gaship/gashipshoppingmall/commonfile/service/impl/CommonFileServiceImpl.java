@@ -18,7 +18,6 @@ import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.error.FileUploadFailureException;
 import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 import shop.gaship.gashipshoppingmall.file.service.FileService;
-import shop.gaship.gashipshoppingmall.file.service.impl.ObjectStorageFileService;
 
 /**
  * 파일 서비스 구현체입니다.

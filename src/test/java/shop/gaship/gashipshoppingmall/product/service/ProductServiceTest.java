@@ -46,7 +46,6 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
-import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -82,9 +81,6 @@ class ProductServiceTest {
 
     @MockBean
     ProductTagRepository productTagRepository;
-
-    @MockBean
-    FileUploadUtil fileUploadUtil;
 
     @MockBean
     ElasticProductRepository elasticProductRepository;

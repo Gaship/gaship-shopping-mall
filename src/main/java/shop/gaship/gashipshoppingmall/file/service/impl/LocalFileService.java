@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.commonfile.exception.ResourceLoadFailureException;
@@ -28,6 +29,7 @@ import shop.gaship.gashipshoppingmall.file.service.FileService;
  */
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "file.service", havingValue = "local-storage", matchIfMissing = true)
 public class LocalFileService implements FileService {
     @Value("${file.upload.url}")
     private String uploadBaseUrl;

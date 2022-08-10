@@ -9,6 +9,7 @@ import java.util.Objects;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,6 +34,7 @@ import shop.gaship.gashipshoppingmall.storage.service.StorageAuthService;
  */
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "file.service", havingValue = "object-storage")
 public class ObjectStorageFileService implements FileService {
     private final ObjectStorageConfig config;
     private final StorageAuthService storageAuthService;

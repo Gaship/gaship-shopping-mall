@@ -79,7 +79,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = createProduct(category, deliveryType, createRequest);
         product.updateSalesStatus(salesStatus);
 
-        List<FileRequestDto> fileRequests = files.stream().map(commonFileService::uploadMultipartFile)
+        List<FileRequestDto> fileRequests = files.stream()
+                .map(commonFileService::uploadMultipartFile)
                 .collect(Collectors.toList());
 
         ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(fileRequests, null);
@@ -125,7 +126,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
 
-        List<FileRequestDto> fileRequests = files.stream().map(commonFileService::uploadMultipartFile)
+        List<FileRequestDto> fileRequests = files.stream()
+                .map(commonFileService::uploadMultipartFile)
                 .collect(Collectors.toList());
 
         ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(fileRequests, product);
