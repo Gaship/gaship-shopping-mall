@@ -37,6 +37,7 @@ public class MemberTagServiceImpl implements MemberTagService {
      *
      * @throws MemberNotFoundException      회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      * @throws IllegalTagSelectionException 회원 태그 리스트의 사이즈가 5가 아닐경우 발생하는 에외입니다.
+     * @author 최정우
      */
     @Transactional
     @Override
@@ -44,7 +45,7 @@ public class MemberTagServiceImpl implements MemberTagService {
         Member member = memberRepository.findById(memberTagRequestDto.getMemberNo())
                 .orElseThrow(MemberNotFoundException::new);
         memberTagRepository.deleteAllByMember_MemberNo(memberTagRequestDto.getMemberNo());
-        List<Tag> tagList = tagRepository.findByTagNoIn(memberTagRequestDto.getTagIds());
+        List<Tag> tagList = tagRepository.findAllById(memberTagRequestDto.getTagIds());
         if (tagList.size() != 5) {
             throw new IllegalTagSelectionException();
         }
@@ -54,6 +55,7 @@ public class MemberTagServiceImpl implements MemberTagService {
                         .member(member)
                         .tag(tagList.get(i))
                         .build()));
+        memberTagRepository.findAllByMember_MemberNo(member.getMemberNo());
         memberTagRepository.saveAll(memberTags);
     }
 
@@ -62,6 +64,7 @@ public class MemberTagServiceImpl implements MemberTagService {
      *
      * @throws MemberNotFoundException      회원 id 값으로 회원 Repository 를 조회하는데 실패할 경우 나오는 예외입니다.
      * @throws IllegalTagSelectionException 회원 태그 리스트의 사이즈가 5가 아닐경우 발생하는 에외입니다.
+     * @author 최정우
      */
     @Override
     public List<MemberTagResponseDto> findMemberTags(Integer memberNo) {

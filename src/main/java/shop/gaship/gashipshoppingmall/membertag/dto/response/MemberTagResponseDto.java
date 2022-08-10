@@ -19,6 +19,7 @@ public class MemberTagResponseDto {
      *
      * @param tagNo 태그 번호
      * @param title 태그명
+     * @author 최정우
      */
     @Builder
     public MemberTagResponseDto(Integer tagNo, String title) {

@@ -27,6 +27,9 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
      */
     List<Tag> findByTagNoIn(List<Integer> tagIds);
 
+    @Override
+    List<Tag> findAllById(Iterable<Integer> tagIds);
+
     /**
      * 모든 태그를 가져오는 메서드입니다.
      *

@@ -15,6 +15,7 @@ public interface MemberTagRepository extends JpaRepository<MemberTag, Integer> {
      * 회원이 기존에 설정한 모든 태그를 지우고 등록하길 원하는 모든 태그를 등록하는 메서드입니다.
      *
      * @param memberNo 회원 id
+     * @author 최정우
      */
     void deleteAllByMember_MemberNo(Integer memberNo);
 
@@ -23,7 +24,7 @@ public interface MemberTagRepository extends JpaRepository<MemberTag, Integer> {
      *
      * @param memberNo 회원 id
      * @return 회원이 등록한 회원 태그 리스트
+     * @author 최정우
      */
     List<MemberTag> findAllByMember_MemberNo(Integer memberNo);
-
 }

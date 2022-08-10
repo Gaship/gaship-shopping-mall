@@ -62,16 +62,18 @@ class MemberTagServiceImplTest {
     void deleteAllAndAddAllMemberTags() {
         Member member = MemberTestDummy.member1();
         List<Tag> tagList = TagDummy.TagDummyListPersist();
-        doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
+        doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
+        when(tagRepository.findAllById(any())).thenReturn(tagList);
+        when(memberTagRepository.findAllByMember_MemberNo(any())).thenReturn(null);
         when(memberTagRepository.saveAll(any())).thenReturn(null);
 
         memberTagService.deleteAllAndAddAllMemberTags(MemberTagDummy.memberTagRequestDtoDummy(1,tagIds));
 
         verify(memberRepository, times(1)).findById(any());
         verify(memberTagRepository, times(1)).deleteAllByMember_MemberNo(any());
-        verify(tagRepository, times(1)).findByTagNoIn(any());
+        verify(tagRepository, times(1)).findAllById(any());
+        verify(memberTagRepository, times(1)).findAllByMember_MemberNo(any());
         verify(memberTagRepository, times(1)).saveAll(any());
     }
 
@@ -80,9 +82,10 @@ class MemberTagServiceImplTest {
     void deleteAllAndAddAllMemberTagsMemberNotFoundExceptionFail() {
         MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy(1,tagIds);
         List<Tag> tagList = TagDummy.TagDummyListPersist();
-        doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.empty());
-        when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
+        doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
+        when(tagRepository.findAllById(any())).thenReturn(tagList);
+        when(memberTagRepository.findAllByMember_MemberNo(any())).thenReturn(null);
         when(memberTagRepository.saveAll(any())).thenReturn(null);
 
         assertThatThrownBy(() -> memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto))
@@ -91,7 +94,8 @@ class MemberTagServiceImplTest {
 
         verify(memberRepository, times(1)).findById(any());
         verify(memberTagRepository, never()).deleteAllByMember_MemberNo(any());
-        verify(tagRepository, never()).findByTagNoIn(any());
+        verify(tagRepository, never()).findAllById(any());
+        verify(memberTagRepository, never()).findAllByMember_MemberNo(any());
         verify(memberTagRepository, never()).saveAll(any());
     }
 
@@ -101,18 +105,20 @@ class MemberTagServiceImplTest {
         MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy(1,tagIds);
         Member member = MemberTestDummy.member1();
         List<Tag> tagList = TagDummy.TagListDummyPersist();
-        doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        when(tagRepository.findByTagNoIn(any())).thenReturn(tagList);
+        doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
+        when(tagRepository.findAllById(any())).thenReturn(tagList);
+        when(memberTagRepository.findAllByMember_MemberNo(any())).thenReturn(null);
         when(memberTagRepository.saveAll(any())).thenReturn(null);
 
         assertThatThrownBy(() -> memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto))
                 .isInstanceOf(IllegalTagSelectionException.class)
                 .hasMessage("태그는 다섯개까지 선택할 수 있습니다");
 
-        verify(memberTagRepository, times(1)).deleteAllByMember_MemberNo(any());
         verify(memberRepository, times(1)).findById(any());
-        verify(tagRepository, times(1)).findByTagNoIn(any());
+        verify(memberTagRepository, times(1)).deleteAllByMember_MemberNo(any());
+        verify(tagRepository, times(1)).findAllById(any());
+        verify(memberTagRepository, never()).findAllByMember_MemberNo(any());
         verify(memberTagRepository, never()).saveAll(any());
     }
 
