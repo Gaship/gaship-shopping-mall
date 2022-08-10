@@ -111,7 +111,7 @@ public class MemberTestDummy {
                 .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
                 .nextRenewalGradeDate(member.getNextRenewalGradeDate())
                 .registerDatetime(member.getRegisterDatetime())
-                .modifyDatetime(member.getModifiedDatetime())
+                .modifyDatetime(member.getModifyDatetime())
                 .build();
         Page<Member> page = new PageImpl<>(MemberTestDummy.CreateTestMemberEntityList(), pageable, 100);
 
