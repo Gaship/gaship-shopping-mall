@@ -26,13 +26,12 @@ import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.response.EmailPresence;
 import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberNumberPresence;
-import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.NicknamePresence;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * member 등록, 수정, 삭제, 회원등록과 관련된 요청을 수행하는 restController 입니다.
@@ -56,9 +55,9 @@ public class MemberController {
      */
     @PostMapping("/sign-up")
     public ResponseEntity<Void> memberAdd(
-        @Valid @RequestBody MemberCreationRequest memberCreationRequest) {
+            @Valid @RequestBody MemberCreationRequest memberCreationRequest) {
         if (memberCreationRequest.getIsUniqueEmail()
-            && memberCreationRequest.getIsVerifiedEmail()) {
+                && memberCreationRequest.getIsVerifiedEmail()) {
             memberService.addMember(memberCreationRequest);
             return ResponseEntity.created(URI.create("/api/members")).build();
         }
@@ -73,7 +72,7 @@ public class MemberController {
      */
     @PostMapping(value = "/sign-up/oauth")
     public ResponseEntity<Void> memberAdd(
-        @RequestBody MemberCreationRequestOauth memberCreationRequestOauth) {
+            @RequestBody MemberCreationRequestOauth memberCreationRequestOauth) {
         memberService.addMemberByOauth(memberCreationRequestOauth);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -108,9 +107,12 @@ public class MemberController {
      */
     @GetMapping(value = "/recommend-member", params = "nickname")
     public ResponseEntity<MemberNumberPresence> retrieveFromNickname(
-        @RequestParam String nickname) {
+            @RequestParam String nickname) {
         return ResponseEntity.ok(
-            new MemberNumberPresence(memberService.findMemberFromNickname(nickname).getMemberNo()));
+                new MemberNumberPresence(
+                        memberService
+                                .findMemberFromNickname(nickname)
+                                .getMemberNo()));
     }
 
     /**
@@ -132,7 +134,7 @@ public class MemberController {
     @GetMapping("/members/last-no")
     public ResponseEntity<Integer> retrieveLastNo() {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-            .body(memberService.findLastNo());
+                .body(memberService.findLastNo());
     }
 
     /**
@@ -143,8 +145,22 @@ public class MemberController {
      */
     @PutMapping("/{memberNo}")
     public ResponseEntity<Void> memberModify(
-        @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
+            @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
         memberService.modifyMember(memberModifyRequestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
+    }
+
+    /**
+     * 관리자가 멤버의 활성상태정보를 수정하기위한 매서드입니다.
+     *
+     * @param request 변경하고싶은 회원의 상태, 닉네임 정보가있는 객체입니다.
+     * @return body 데이터는 없고, 응답 상태는 200을 반환합니다.
+     */
+    @PutMapping("/{memberNo}/role")
+    public ResponseEntity<Void> memberModifyByAdmin(MemberModifyByAdminDto request) {
+        memberService.modifyMemberByAdmin(request);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
     }
 
@@ -170,7 +186,7 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable Integer memberNo) {
         MemberResponseDto memberResponseDto = memberService.findMember(memberNo);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-            .body(memberResponseDto);
+                .body(memberResponseDto);
     }
 
     /**
@@ -183,7 +199,7 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable String email) {
         MemberResponseDto memberResponseDto = memberService.findMemberFromEmail(email);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-            .body(memberResponseDto);
+                .body(memberResponseDto);
     }
 
     /**
@@ -193,23 +209,12 @@ public class MemberController {
      * @return body는 조회된 멤버들의 정보, 응답 상태는 200을 반환합니다.
      */
     @GetMapping
-    public ResponseEntity<MemberPageResponseDto<MemberResponseDto, Member>> memberList(
-        Pageable pageable) {
+    public ResponseEntity<PageResponse<MemberResponseDto>> memberList(
+            Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-            .body(memberService.findMembers(pageable));
+                .body(memberService.findMembers(pageable));
     }
 
-    /**
-     * 관리자가 멤버의 활성상태정보를 수정하기위한 매서드입니다.
-     *
-     * @param request 변경하고싶은 회원의 상태, 닉네임 정보가있는 객체입니다.
-     * @return body 데이터는 없고, 응답 상태는 200을 반환합니다.
-     */
-    @PutMapping("/{memberNo}/role")
-    public ResponseEntity<Void> memberModifyByAdmin(MemberModifyByAdminDto request) {
-        memberService.modifyMemberByAdmin(request);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
-    }
 
     /**
      * 멤버의 이메일을 찾는 요청을 받는 메서드입니다.
@@ -219,10 +224,10 @@ public class MemberController {
      */
     @PostMapping("/find-email")
     public ResponseEntity<FindMemberEmailResponse> memberEmailFromNicknameFind(
-        @Valid @RequestBody FindMemberEmailRequest findMemberEmailRequest) {
+            @Valid @RequestBody FindMemberEmailRequest findMemberEmailRequest) {
 
         return ResponseEntity.ok(
-            memberService.findMemberEmailFromNickname(findMemberEmailRequest.getNickname()));
+                memberService.findMemberEmailFromNickname(findMemberEmailRequest.getNickname()));
     }
 
     /**
@@ -233,7 +238,7 @@ public class MemberController {
      */
     @PostMapping("/find-password")
     public ResponseEntity<Map<String, Boolean>> reissuePasswordCheck(
-        @Valid @RequestBody ReissuePasswordRequest reissuePasswordRequest) {
+            @Valid @RequestBody ReissuePasswordRequest reissuePasswordRequest) {
         Boolean result = memberService.reissuePassword(reissuePasswordRequest);
         return ResponseEntity.ok(Map.of("changed", result));
     }
