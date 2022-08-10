@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberModifyByAdminDtoDummy;
-import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberDummy;
+import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberBaseDummy;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 
@@ -46,8 +46,8 @@ class MemberControllerBaseFunctionTest {
     @DisplayName("회원 정보 수정 테스트")
     @Test
     void modifyMemberTest() throws Exception {
-        String body = objectMapper.writeValueAsString(MemberDummy.memberModifyRequestDtoDummy());
-        doNothing().when(memberService).modifyMember(MemberDummy.memberModifyRequestDtoDummy());
+        String body = objectMapper.writeValueAsString(MemberBaseDummy.memberModifyRequestDtoDummy());
+        doNothing().when(memberService).modifyMember(MemberBaseDummy.memberModifyRequestDtoDummy());
 
         mockMvc.perform(put("/api/members/{memberNo}", 1)
                         .accept(MediaType.APPLICATION_JSON)
@@ -89,7 +89,7 @@ class MemberControllerBaseFunctionTest {
     @DisplayName("회원 단건 조회 테스트")
     @Test
     void getMemberTest() throws Exception {
-        when(memberService.findMember(anyInt())).thenReturn(MemberDummy.memberResponseDto());
+        when(memberService.findMember(anyInt())).thenReturn(MemberBaseDummy.memberResponseDto());
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/members/1")
@@ -105,7 +105,7 @@ class MemberControllerBaseFunctionTest {
     @Test
     void getMemberListTest() throws Exception {
         PageResponse<MemberResponseDto> memberResponseDto =
-                MemberDummy.createTestMemberPageResponseDto();
+                MemberBaseDummy.createTestMemberPageResponseDto();
         when(memberService.findMembers(any(Pageable.class))).thenReturn(memberResponseDto);
         mockMvc.perform(get("/api/members")
                         .queryParam("page", "0")
