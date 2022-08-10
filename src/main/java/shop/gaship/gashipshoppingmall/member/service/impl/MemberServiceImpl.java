@@ -249,7 +249,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(MemberNotFoundException::new);
         MemberModifyRequestDto encodedRequest = encodePrivacyUserInformation(request);
         member.modifyMember(encodedRequest);
-        memberRepository.save(member);
     }
 
     /**

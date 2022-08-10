@@ -206,7 +206,7 @@ public class MemberController {
      * 멤버 다건조회를 위한 메서드입니다.
      *
      * @param pageable page와 size가 쿼리 파라미터로 담긴 객체입니다.
-     * @return body는 조회된 멤버들의 정보, 응답 상태는 200을 반환합니다.
+     * @return body 는 조회된 멤버들의 정보, 응답 상태는 200을 반환합니다.
      */
     @GetMapping
     public ResponseEntity<PageResponse<MemberResponseDto>> memberList(
