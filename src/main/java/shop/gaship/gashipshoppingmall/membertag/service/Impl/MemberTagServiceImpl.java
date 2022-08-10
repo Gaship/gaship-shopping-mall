@@ -44,7 +44,7 @@ public class MemberTagServiceImpl implements MemberTagService {
         Member member = memberRepository.findById(memberTagRequestDto.getMemberNo())
                 .orElseThrow(MemberNotFoundException::new);
         memberTagRepository.deleteAllByMember_MemberNo(memberTagRequestDto.getMemberNo());
-        List<Tag> tagList = tagRepository.findByTagNoIn(memberTagRequestDto.getTagIds());
+        List<Tag> tagList = tagRepository.findAllById(memberTagRequestDto.getTagIds());
         if (tagList.size() != 5) {
             throw new IllegalTagSelectionException();
         }
@@ -54,6 +54,7 @@ public class MemberTagServiceImpl implements MemberTagService {
                         .member(member)
                         .tag(tagList.get(i))
                         .build()));
+        memberTagRepository.findAllByMember_MemberNo(member.getMemberNo());
         memberTagRepository.saveAll(memberTags);
     }
 
