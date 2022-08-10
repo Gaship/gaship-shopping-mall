@@ -15,7 +15,6 @@ public class MemberModifyByAdminDtoDummy {
     public static MemberModifyByAdminDto dummy(){
         return MemberModifyByAdminDto.builder()
             .memberNo(1)
-            .nickname("example")
             .status("Active")
             .build();
     }
