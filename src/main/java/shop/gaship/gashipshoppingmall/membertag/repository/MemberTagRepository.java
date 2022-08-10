@@ -25,5 +25,4 @@ public interface MemberTagRepository extends JpaRepository<MemberTag, Integer> {
      * @return 회원이 등록한 회원 태그 리스트
      */
     List<MemberTag> findAllByMember_MemberNo(Integer memberNo);
-
 }
