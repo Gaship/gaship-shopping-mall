@@ -5,9 +5,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dummy.MemberStatus;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.MembersRole;
@@ -18,24 +19,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.IntStream;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 
-/**
- * packageName    : shop.gaship.gashipshoppingmall.member.memberTestUtils
- * fileName       : MemberTestUtils
- * author         : choijungwoo
- * date           : 2022/07/13
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2022/07/13        choijungwoo       최초 생성
- */
-public class MemberTestDummy {
+public class MemberDummy {
     private static final Integer memberNo = 1;
     private static final String recommendMemberNickname = "최정우친구";
     private static final String email = "abcd1010@naver.com";
+    private static final String memberStatus = MemberStatus.ACTIVATION.getValue();
+    private static final List<String> authorities = List.of("1","2");
     private static final String password = "qwer1234!";
     private static final String phoneNumber = "01053171234";
     private static final String name = "최정우";
@@ -46,8 +38,9 @@ public class MemberTestDummy {
     private static final LocalDate nextRenewalGradeDate = LocalDate.now();
     private static final LocalDateTime registerDatetime = LocalDateTime.now();
     private static final LocalDateTime modifyDatetime = LocalDateTime.now();
+    private static final Boolean social = false;
 
-    public static MemberModifyRequestDto memberModifyRequestDto() {
+    public static MemberModifyRequestDto memberModifyRequestDtoDummy() {
         MemberModifyRequestDto dummy = new MemberModifyRequestDto();
         ReflectionTestUtils.setField(dummy, "memberNo", memberNo);
         ReflectionTestUtils.setField(dummy, "password", password);
@@ -59,10 +52,21 @@ public class MemberTestDummy {
         return dummy;
     }
 
+    public static MemberModifyByAdminDto memberModifyByAdminDto() {
+        MemberModifyByAdminDto dummy = new MemberModifyByAdminDto();
+        ReflectionTestUtils.setField(dummy, "memberNo", memberNo);
+        ReflectionTestUtils.setField(dummy, "status", MemberStatus.ACTIVATION.getValue());
+
+        return dummy;
+    }
+
     public static MemberResponseDto memberResponseDto() {
 
         return MemberResponseDto.builder()
+                .memberNo(memberNo)
+                .memberStatus(memberStatus)
                 .email(email)
+                .authorities(authorities)
                 .password(password)
                 .phoneNumber(phoneNumber)
                 .name(name)
@@ -73,49 +77,42 @@ public class MemberTestDummy {
                 .nextRenewalGradeDate(nextRenewalGradeDate)
                 .registerDatetime(registerDatetime)
                 .modifyDatetime(modifyDatetime)
+                .social(social)
                 .build();
     }
 
-    public static List<Member> CreateTestMemberEntityList() {
-        List<Member> list = new ArrayList<>();
+    public static List<MemberResponseDto> MemberResponseDtoDummy() {
+        List<MemberResponseDto> list = new ArrayList<>();
         IntStream.rangeClosed(1, 100).forEach(i -> {
-            Member member = Member.builder().recommendMember(null)
-                    .memberStatusCodes(StatusCodeDummy.dummy())
-                    .memberGrades(null)
+            MemberResponseDto dto = MemberResponseDto.builder()
+                    .memberNo(i + 1)
+                    .memberStatus(MemberStatus.ACTIVATION.getValue())
                     .email("jwoo1016" + i + "@naver.com")
+                    .authorities(List.of("1","2"))
                     .password("qwer1234")
-                    .phoneNumber("010531783" + (i - 1) / 10 + (i - 1) % 10)
-                    .name("최정우")
-                    .birthDate(LocalDate.now())
                     .nickname(String.valueOf(i))
+                    .name("최정우")
                     .gender("남")
+                    .phoneNumber("010531783" + (i - 1) / 10 + (i - 1) % 10)
+                    .birthDate(LocalDate.now())
                     .accumulatePurchaseAmount(0L)
                     .nextRenewalGradeDate(LocalDate.now())
+                    .registerDatetime(LocalDateTime.now())
+                    .modifyDatetime(LocalDateTime.now())
+                    .social(false)
                     .build();
 
-            list.add(member);
+            list.add(dto);
         });
         return list;
     }
 
-    public static MemberPageResponseDto<MemberResponseDto,Member> CreateTestMemberPageResponseDto(){
+    public static PageResponse<MemberResponseDto> createTestMemberPageResponseDto(){
         Pageable pageable = PageRequest.of(0,10);
-        Function<Member, MemberResponseDto> fn = (Member member)-> MemberResponseDto.builder()
-                .email(member.getEmail())
-                .password(member.getPassword())
-                .phoneNumber(member.getPhoneNumber())
-                .name(member.getName())
-                .birthDate(member.getBirthDate())
-                .nickname(member.getNickname())
-                .gender(member.getGender())
-                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
-                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
-                .registerDatetime(member.getRegisterDatetime())
-                .modifyDatetime(member.getModifyDatetime())
-                .build();
-        Page<Member> page = new PageImpl<>(MemberTestDummy.CreateTestMemberEntityList(), pageable, 100);
+        List<MemberResponseDto> dtoList = List.of(memberResponseDto(), memberResponseDto(), memberResponseDto());
+        Page<MemberResponseDto> page = new PageImpl<>(dtoList, pageable, 100);
 
-        return new MemberPageResponseDto<>(page, fn);
+        return new PageResponse<>(page);
     }
 
     public static Member member1() {
