@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * 멤버 정보 수정을 위한 정보를 담는 dto 입니다.
+ * 멤버정보 반환값을 담는 dto 입니다.
  *
  * @author 최정우
  * @since 1.0
