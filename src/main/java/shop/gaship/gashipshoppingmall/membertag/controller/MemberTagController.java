@@ -28,6 +28,7 @@ public class MemberTagController {
      *
      * @param memberTagRequestDto 회원 번호와 회원에게 부여하려하는 태그 id 목록들이 들어가 있습니다.
      * @return the response entity
+     * @author 최정우
      */
     @PostMapping
     public ResponseEntity<Void> memberTagDeleteAllAndAddAll(
@@ -43,6 +44,7 @@ public class MemberTagController {
      *
      * @param memberNo 회원의 id 값입니다.
      * @return 회원이 그 태그를 선택했는지의 여부가 있는 태그 목록이 보입니다.
+     * @author 최정우
      */
     @GetMapping
     public ResponseEntity<List<MemberTagResponseDto>> memberTagList(

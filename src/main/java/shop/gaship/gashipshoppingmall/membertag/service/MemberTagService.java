@@ -16,6 +16,7 @@ public interface MemberTagService {
      * 회원이 설정한 태그목록을 삭제하고 회원이 등록하려는 모든 태그를 등록하는 메서드입니다.
      *
      * @param memberTagRequestDto 회원의 id 와 태그들의 id 가 들어있습니다.
+     * @author 최정우
      */
     void deleteAllAndAddAllMemberTags(MemberTagRequestDto memberTagRequestDto);
 
@@ -24,6 +25,7 @@ public interface MemberTagService {
      *
      * @param memberNo 회원의 id 입니다.
      * @return 태그들의 리스트가 있습니다.
+     * @author 최정우
      */
     List<MemberTagResponseDto> findMemberTags(Integer memberNo);
 
@@ -32,6 +34,7 @@ public interface MemberTagService {
      *
      * @param memberTag memberTag 엔티티 객체입니다.
      * @return MemberTagResponseDto 로 변환된 객체입니다.
+     * @author 최정우
      */
     default MemberTagResponseDto entityToDto(MemberTag memberTag) {
         return MemberTagResponseDto.builder()
