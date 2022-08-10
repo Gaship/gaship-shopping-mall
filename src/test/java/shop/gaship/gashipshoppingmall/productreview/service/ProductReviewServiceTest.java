@@ -116,8 +116,8 @@ class ProductReviewServiceTest {
         when(orderProductRepository.findById(createRequest.getOrderProductNo()))
                 .thenReturn(Optional.of(orderProduct));
         when(fileService.createCommonFile(any())).thenReturn(new CommonFile());
-        when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
-                .thenReturn(List.of(multipartFile.getOriginalFilename()));
+//        when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
+//                .thenReturn(List.of(multipartFile.getOriginalFilename()));
         when(productReviewRepository.save(any(ProductReview.class)))
                 .thenReturn(review);
 
@@ -127,7 +127,7 @@ class ProductReviewServiceTest {
 
         verify(orderProductRepository).findById(createRequest.getOrderProductNo());
         verify(fileService).createCommonFile(any());
-        verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
+//        verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
         verify(productReviewRepository).save(any(ProductReview.class));
     }
 
@@ -151,8 +151,8 @@ class ProductReviewServiceTest {
         when(productReviewRepository.findById(modifyRequest.getOrderProductNo()))
                 .thenReturn(Optional.of(review));
         when(fileService.createCommonFile(any())).thenReturn(new CommonFile());
-        when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
-                .thenReturn(List.of(multipartFile.getOriginalFilename()));
+//        when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
+//                .thenReturn(List.of(multipartFile.getOriginalFilename()));
 
         productReviewService.modifyProductReview(multipartFile, modifyRequest);
 
@@ -160,7 +160,7 @@ class ProductReviewServiceTest {
 
         verify(productReviewRepository).findById(modifyRequest.getOrderProductNo());
         verify(fileService).createCommonFile(any());
-        verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
+//        verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
     }
 
     @DisplayName("상품평 수정 실패 테스트 - 상품평을 찾을 수 없음")

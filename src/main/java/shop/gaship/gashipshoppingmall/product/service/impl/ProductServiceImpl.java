@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.product.service.impl;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +18,7 @@ import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
 import shop.gaship.gashipshoppingmall.error.FileUploadFailureException;
+import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
@@ -34,10 +34,8 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
-import shop.gaship.gashipshoppingmall.storage.service.ObjectStorageService;
 import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
-import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 /**
  * 상품 서비스 구현체 입니다.
@@ -50,18 +48,15 @@ import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    private static final String PRODUCT_DIR = File.separator + "products";
     private final ProductRepository repository;
     private final CategoryRepository categoryRepository;
     private final StatusCodeRepository statusCodeRepository;
     private final TagRepository tagRepository;
     private final ProductTagRepository productTagRepository;
-    private final CommonFileRepository fileRepository;
-    private final CommonFileService fileService;
-//    private final FileUploadUtil fileUploadUtil;
+    private final CommonFileRepository commonFileRepository;
+    private final CommonFileService commonFileService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ElasticProductRepository elasticProductRepository;
-    private final ObjectStorageService objectStorageService;
 
     /**
      * {@inheritDoc}
@@ -84,17 +79,15 @@ public class ProductServiceImpl implements ProductService {
         Product product = createProduct(category, deliveryType, createRequest);
         product.updateSalesStatus(salesStatus);
 
-//        List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
-        List<String> imageLinks = files.stream()
-                .map(objectStorageService::uploadMultipartFile)
+        List<FileRequestDto> fileRequests = files.stream().map(commonFileService::uploadMultipartFile)
                 .collect(Collectors.toList());
 
-        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(imageLinks, null);
+        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(fileRequests, null);
         applicationEventPublisher.publishEvent(event);
 
         Product savedProduct = repository.save(product);
         addProductTags(savedProduct, createRequest.getTagNos());
-        addProductImages(savedProduct, imageLinks);
+        addProductImages(savedProduct, fileRequests);
 
         event.setSavedProduct(savedProduct);
     }
@@ -132,12 +125,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
 
-//        List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
-        List<String> imageLinks = files.stream()
-                .map(objectStorageService::uploadMultipartFile)
+        List<FileRequestDto> fileRequests = files.stream().map(commonFileService::uploadMultipartFile)
                 .collect(Collectors.toList());
 
-        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(imageLinks, product);
+        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(fileRequests, product);
         event.updateBeforeImages(product.getProductImages());
         applicationEventPublisher.publishEvent(event);
 
@@ -150,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
         product.updateProduct(category, deliveryType, modifyRequest);
 
         updateProductTags(product, modifyRequest.getTagNos());
-        addProductImages(product, imageLinks);
+        addProductImages(product, fileRequests);
     }
 
     /**
@@ -321,11 +312,11 @@ public class ProductServiceImpl implements ProductService {
      * 하나의 상품에 다수의 이미지파일을 추가하는 메서드입니다.
      *
      * @param product 상품
-     * @param imageLinks 추가할 이미지파일 링크
+     * @param fileRequests CommonFile 생성 요청 dto
      */
-    private void addProductImages(Product product, List<String> imageLinks) {
-        imageLinks.forEach(imageLink -> product.addProductImage(
-                fileService.createCommonFile(imageLink)));
+    private void addProductImages(Product product, List<FileRequestDto> fileRequests) {
+        fileRequests.forEach(fileRequest -> product.addProductImage(
+                commonFileService.createCommonFile(fileRequest)));
     }
 
     /**
@@ -371,7 +362,7 @@ public class ProductServiceImpl implements ProductService {
      */
     private void findFilePath(PageResponse<ProductAllInfoResponseDto> products) {
         products.getContent().forEach(product -> product.getFilePaths()
-                .addAll(fileRepository.findPaths(product.getProductNo(), Product.SERVICE)));
+                .addAll(commonFileRepository.findPaths(product.getProductNo(), Product.SERVICE)));
     }
 
     /**

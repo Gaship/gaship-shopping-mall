@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
+import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 
 /**
  * 상품평 저장, 수정 이벤트입니다.
@@ -17,7 +18,7 @@ import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 @NoArgsConstructor
 public class ProductReviewSaveUpdateEvent {
     @Setter
-    private String imagePath;
+    private FileRequestDto imagePath;
 
     private final List<CommonFile> beforeImages = new ArrayList<>();
 
@@ -26,7 +27,7 @@ public class ProductReviewSaveUpdateEvent {
      *
      * @param imagePath 업로드한 이미지 경로
      */
-    public ProductReviewSaveUpdateEvent(String imagePath) {
+    public ProductReviewSaveUpdateEvent(FileRequestDto imagePath) {
         this.imagePath = imagePath;
     }
 

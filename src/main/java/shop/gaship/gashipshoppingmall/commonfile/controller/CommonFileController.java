@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
-import shop.gaship.gashipshoppingmall.storage.service.ObjectStorageService;
 
 /**
  * 파일 컨트롤러입니다.
@@ -27,7 +26,6 @@ import shop.gaship.gashipshoppingmall.storage.service.ObjectStorageService;
 @Slf4j
 public class CommonFileController {
     private final CommonFileService commonFileService;
-    private final ObjectStorageService objectStorageService;
 
     /**
      * 로컬의 파일 이미지를 다운로드하는 메서드입니다.
@@ -43,14 +41,16 @@ public class CommonFileController {
 
         String contentType = "application/octet-stream";
         try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+            contentType = request.getServletContext()
+                    .getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
             log.info("파일 타입을 지정할 수 없습니다.");
         }
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename())
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=" + resource.getFilename())
                 .body(resource);
     }
 }

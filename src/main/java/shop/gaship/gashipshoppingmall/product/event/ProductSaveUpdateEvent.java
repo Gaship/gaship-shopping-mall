@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
+import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 
 /**
@@ -15,7 +16,7 @@ import shop.gaship.gashipshoppingmall.product.entity.Product;
  */
 @Getter
 public class ProductSaveUpdateEvent {
-    private final List<String> imageLinks;
+    private final List<FileRequestDto> imageLinks;
 
     @Setter
     private Product savedProduct;
@@ -28,7 +29,7 @@ public class ProductSaveUpdateEvent {
      * @param imageLinks   업로드할 이미지 링크
      * @param savedProduct 저장된 상품
      */
-    public ProductSaveUpdateEvent(List<String> imageLinks,
+    public ProductSaveUpdateEvent(List<FileRequestDto> imageLinks,
                                   Product savedProduct) {
         this.imageLinks = imageLinks;
         this.savedProduct = savedProduct;

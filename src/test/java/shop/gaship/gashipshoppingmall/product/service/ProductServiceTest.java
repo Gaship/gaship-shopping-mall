@@ -144,15 +144,15 @@ class ProductServiceTest {
             .thenReturn(Optional.of(new StatusCode("판매중", 2, "판매상태", "")));
         when(tagRepository.findById(createRequest.getTagNos().get(0)))
             .thenReturn(Optional.of(new Tag(1, "태그")));
-        when(fileUploadUtil.uploadFile(uploadDir, files))
-            .thenReturn(List.of());
+//        when(fileUploadUtil.uploadFile(uploadDir, files))
+//            .thenReturn(List.of());
 
         service.addProduct(files, createRequest);
 
         verify(categoryRepository).findById(createRequest.getCategoryNo());
         verify(statusCodeRepository).findById(createRequest.getDeliveryTypeNo());
         verify(statusCodeRepository).findByStatusCodeName(SalesStatus.SALE.getValue());
-        verify(fileUploadUtil).uploadFile(uploadDir, files);
+//        verify(fileUploadUtil).uploadFile(uploadDir, files);
     }
 
     @DisplayName("상품 수정 성공")
@@ -171,15 +171,15 @@ class ProductServiceTest {
         when(statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo()))
             .thenReturn(Optional.of(
                 new StatusCode("설치", modifyRequest.getDeliveryTypeNo(), "배송형태", "")));
-        when(fileUploadUtil.uploadFile(uploadDir, files))
-            .thenReturn(List.of());
+//        when(fileUploadUtil.uploadFile(uploadDir, files))
+//            .thenReturn(List.of());
 
         service.modifyProduct(List.of(multipartFile), modifyRequest);
 
         verify(repository).findById(modifyRequest.getNo());
         verify(categoryRepository).findById(modifyRequest.getCategoryNo());
         verify(statusCodeRepository).findById(modifyRequest.getDeliveryTypeNo());
-        verify(fileUploadUtil).uploadFile(uploadDir, files);
+//        verify(fileUploadUtil).uploadFile(uploadDir, files);
     }
 
     @DisplayName("상품 수정 실패 - 해당 상품 찾기 불가")
