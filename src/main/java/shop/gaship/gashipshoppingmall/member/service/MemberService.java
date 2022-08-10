@@ -10,11 +10,11 @@ import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
-import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
@@ -78,7 +78,7 @@ public interface MemberService {
      * @param pageable 조회하고자 하는 멤버정보들의 페이지와 사이즈를 가지고있는 객체입니다.
      * @return 멤버들을 정보를 페이징 단위로 가지고있는 객체입니다.
      */
-    MemberPageResponseDto<MemberResponseDto, Member> findMembers(Pageable pageable);
+    PageResponse<MemberResponseDto> findMembers(Pageable pageable);
 
     /**
      * 이메일이 존재하는가에 대한 확인을 하는 메서드입니다.
@@ -119,17 +119,23 @@ public interface MemberService {
      * @return 변환된 MemberResponseDto객체입니다.
      */
     default MemberResponseDto entityToMemberResponseDto(Member member, Aes aes) {
-        return MemberResponseDto.builder().memberNo(member.getMemberNo())
-            .memberStatus(member.getMemberStatusCodes().toString())
-            .email(aes.aesEcbDecode(member.getEmail())).authorities(
-                member.getRoleSet().stream().map(Enum::toString).collect(Collectors.toList()))
-            .password(member.getPassword()).nickname(member.getNickname()).name(member.getName())
-            .gender(member.getGender()).phoneNumber(member.getPhoneNumber())
-            .birthDate(member.getBirthDate())
-            .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
-            .nextRenewalGradeDate(member.getNextRenewalGradeDate())
-            .registerDatetime(member.getRegisterDatetime())
-            .modifyDatetime(member.getModifyDatetime()).social(member.isSocial()).build();
+        return MemberResponseDto.builder()
+                .memberNo(member.getMemberNo())
+                .memberStatus(member.getMemberStatusCodes().toString())
+                .email(aes.aesEcbDecode(member.getEmail()))
+                .authorities(member.getRoleSet().stream().map(Enum::toString).collect(Collectors.toList()))
+                .password(member.getPassword())
+                .nickname(member.getNickname())
+                .name(member.getName())
+                .gender(member.getGender())
+                .phoneNumber(member.getPhoneNumber())
+                .birthDate(member.getBirthDate())
+                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
+                .registerDatetime(member.getRegisterDatetime())
+                .modifyDatetime(member.getModifyDatetime())
+                .social(member.isSocial())
+                .build();
     }
 
 
@@ -147,13 +153,13 @@ public interface MemberService {
                                                  StatusCode defaultStatus,
                                                  MemberGrade defaultGrade) {
         return Member.builder().recommendMember(recommendMember).memberStatusCodes(defaultStatus)
-            .memberGrades(defaultGrade).email(memberCreationRequest.getEmail())
-            .nickname(memberCreationRequest.getNickName()).name(memberCreationRequest.getName())
-            .password(memberCreationRequest.getPassword())
-            .phoneNumber(memberCreationRequest.getPhoneNumber())
-            .birthDate(memberCreationRequest.getBirthDate())
-            .gender(memberCreationRequest.getGender()).accumulatePurchaseAmount(0L).isSocial(false)
-            .build();
+                .memberGrades(defaultGrade).email(memberCreationRequest.getEmail())
+                .nickname(memberCreationRequest.getNickName()).name(memberCreationRequest.getName())
+                .password(memberCreationRequest.getPassword())
+                .phoneNumber(memberCreationRequest.getPhoneNumber())
+                .birthDate(memberCreationRequest.getBirthDate())
+                .gender(memberCreationRequest.getGender()).accumulatePurchaseAmount(0L).isSocial(false)
+                .build();
     }
 
     /**
@@ -165,17 +171,17 @@ public interface MemberService {
      * @return 신규 회원가입된 회원 객체를 반환합니다.
      */
     default Member creationRequestToMemberEntity(
-        MemberCreationRequestOauth memberCreationRequestOauth, StatusCode defaultStatus,
-        MemberGrade defaultGrade) {
+            MemberCreationRequestOauth memberCreationRequestOauth, StatusCode defaultStatus,
+            MemberGrade defaultGrade) {
         return Member.builder().memberStatusCodes(defaultStatus).memberGrades(defaultGrade)
-            .email(memberCreationRequestOauth.getEmail())
-            .nickname(memberCreationRequestOauth.getNickName())
-            .name(memberCreationRequestOauth.getName())
-            .password(memberCreationRequestOauth.getPassword())
-            .phoneNumber(memberCreationRequestOauth.getPhoneNumber())
-            .birthDate(memberCreationRequestOauth.getBirthDate())
-            .gender(memberCreationRequestOauth.getGender()).accumulatePurchaseAmount(0L)
-            .isSocial(true).build();
+                .email(memberCreationRequestOauth.getEmail())
+                .nickname(memberCreationRequestOauth.getNickName())
+                .name(memberCreationRequestOauth.getName())
+                .password(memberCreationRequestOauth.getPassword())
+                .phoneNumber(memberCreationRequestOauth.getPhoneNumber())
+                .birthDate(memberCreationRequestOauth.getBirthDate())
+                .gender(memberCreationRequestOauth.getGender()).accumulatePurchaseAmount(0L)
+                .isSocial(true).build();
     }
 
     /**
