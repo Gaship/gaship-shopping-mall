@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
+import shop.gaship.gashipshoppingmall.storage.service.ObjectStorageService;
 
 /**
  * 파일 컨트롤러입니다.
@@ -26,6 +27,7 @@ import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 @Slf4j
 public class CommonFileController {
     private final CommonFileService commonFileService;
+    private final ObjectStorageService objectStorageService;
 
     /**
      * 로컬의 파일 이미지를 다운로드하는 메서드입니다.
