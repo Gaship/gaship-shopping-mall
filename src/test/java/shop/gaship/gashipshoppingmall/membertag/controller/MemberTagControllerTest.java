@@ -41,7 +41,7 @@ class MemberTagControllerTest {
         doNothing().when(memberTagService).deleteAllAndAddAllMemberTags(any());
         String contentBody = objectMapper.writeValueAsString(MemberTagDummy.memberTagRequestDtoDummy(1, List.of(1,3,5,7,9)));
 
-        mockMvc.perform(post("/api/members/1/tags")
+        mockMvc.perform(post("/api/members/1/member-tag")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(contentBody))
@@ -55,7 +55,7 @@ class MemberTagControllerTest {
     void memberTagList() throws Exception {
         when(memberTagService.findMemberTags(any())).thenReturn(MemberTagDummy.memberTagResponseDtoListDummy());
 
-        mockMvc.perform(get("/api/members/1/tags")
+        mockMvc.perform(get("/api/members/1/member-tag")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
