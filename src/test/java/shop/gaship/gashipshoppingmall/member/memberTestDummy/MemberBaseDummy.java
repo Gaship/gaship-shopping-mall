@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 
-public class MemberDummy {
+public class MemberBaseDummy {
     private static final Integer memberNo = 1;
     private static final String recommendMemberNickname = "최정우친구";
     private static final String email = "abcd1010@naver.com";
