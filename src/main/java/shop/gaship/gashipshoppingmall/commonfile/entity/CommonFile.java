@@ -46,6 +46,7 @@ public class CommonFile {
     private Integer ownerNo;
 
     @NotNull
+    @Column(unique = true)
     private String service;
 
     /**
