@@ -1,16 +1,14 @@
 package shop.gaship.gashipshoppingmall.member.service;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
-import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
-import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
-import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
-import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
-import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
+import shop.gaship.gashipshoppingmall.member.dto.request.*;
 import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
@@ -26,7 +24,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * @since 1.0
  */
 public interface MemberService {
-
     /**
      * 회원을 등록하는 메서드입니다.
      *
@@ -73,12 +70,20 @@ public interface MemberService {
     MemberResponseDto findMember(Integer memberNo);
 
     /**
+     * 관리자가 회원의 정보를 상세조회하는 메서드입니다.
+     *
+     * @param memberNo 멤버 id
+     * @return 멤버의 상세정보가 담긴 객체를 반환합니다.
+     */
+    MemberResponseDtoByAdmin findMemberByAdmin(Integer memberNo);
+
+    /**
      * 멤버를 다건조회하는 메서드입니다.
      *
      * @param pageable 조회하고자 하는 멤버정보들의 페이지와 사이즈를 가지고있는 객체입니다.
      * @return 멤버들을 정보를 페이징 단위로 가지고있는 객체입니다.
      */
-    PageResponse<MemberResponseDto> findMembers(Pageable pageable);
+    PageResponse<MemberResponseDtoByAdmin> findMembers(Pageable pageable);
 
     /**
      * 이메일이 존재하는가에 대한 확인을 하는 메서드입니다.
@@ -119,16 +124,53 @@ public interface MemberService {
      * @return 변환된 MemberResponseDto객체입니다.
      */
     default MemberResponseDto entityToMemberResponseDto(Member member, Aes aes) {
+        String recommendMemberName = "";
+        if (Objects.isNull(member.getRecommendMember())) {
+            recommendMemberName = "추천인이없습니다";
+        } else {
+            recommendMemberName = member.getRecommendMember().getName();
+        }
         return MemberResponseDto.builder()
                 .memberNo(member.getMemberNo())
-                .memberStatus(member.getMemberStatusCodes().toString())
+                .recommendMemberName(recommendMemberName)
+                .memberStatus(member.getMemberStatusCodes().getStatusCodeName())
+                .memberGrade(member.getMemberGrades().getName())
                 .email(aes.aesEcbDecode(member.getEmail()))
-                .authorities(member.getRoleSet().stream().map(Enum::toString).collect(Collectors.toList()))
-                .password(member.getPassword())
+                .authorities(member.getRoleSet().stream()
+                        .map(Enum::toString).collect(Collectors.toList()))
+                .phoneNumber(aes.aesEcbDecode(member.getPhoneNumber()))
                 .nickname(member.getNickname())
-                .name(member.getName())
+                .name(aes.aesEcbDecode(member.getName()))
                 .gender(member.getGender())
-                .phoneNumber(member.getPhoneNumber())
+                .birthDate(member.getBirthDate())
+                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
+                .registerDatetime(member.getRegisterDatetime())
+                .build();
+    }
+
+    /**
+     * 멤버 엔티티 객체를 MemberResponseDtoByAdmin 으로 변환해주는 메서드입니다.
+     *
+     * @param member 멤버 엔티티 객체입니다.
+     * @return 변환된 MemberResponseDtoByAdmin 객체입니다.
+     */
+    default MemberResponseDtoByAdmin entityToMemberResponseDtoByAdmin(Member member, Aes aes) {
+        String recommendMemberName = "";
+        if (Objects.isNull(member.getRecommendMember())) {
+            recommendMemberName = "추천인이없습니다";
+        } else {
+            recommendMemberName = member.getRecommendMember().getName();
+        }
+        return MemberResponseDtoByAdmin.builder()
+                .memberNo(member.getMemberNo())
+                .recommendMemberName(recommendMemberName)
+                .memberStatus(member.getMemberStatusCodes().getStatusCodeName())
+                .memberGrade(member.getMemberGrades().getName())
+                .email(aes.aesEcbDecode(member.getEmail()))
+                .phoneNumber(aes.aesEcbDecode(member.getPhoneNumber()))
+                .nickname(member.getNickname())
+                .gender(member.getGender())
                 .birthDate(member.getBirthDate())
                 .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
                 .nextRenewalGradeDate(member.getNextRenewalGradeDate())
@@ -158,7 +200,9 @@ public interface MemberService {
                 .password(memberCreationRequest.getPassword())
                 .phoneNumber(memberCreationRequest.getPhoneNumber())
                 .birthDate(memberCreationRequest.getBirthDate())
-                .gender(memberCreationRequest.getGender()).accumulatePurchaseAmount(0L).isSocial(false)
+                .gender(memberCreationRequest.getGender())
+                .accumulatePurchaseAmount(0L)
+                .isSocial(false)
                 .build();
     }
 
@@ -215,4 +259,5 @@ public interface MemberService {
      * @return 비밀번호 변경 결과를 반환합니다.
      */
     Boolean reissuePassword(ReissuePasswordRequest reissuePasswordRequest);
+
 }
