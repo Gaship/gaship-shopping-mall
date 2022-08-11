@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.QMember;
@@ -76,8 +76,8 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public List<AdvancementTargetResponseDto>
-    findMembersByNextRenewalGradeDate(LocalDate nextRenewalGradeDate) {
+    public List<AdvancementTargetResponseDto> findMembersByNextRenewalGradeDate(
+            LocalDate nextRenewalGradeDate) {
 
         QMember member = QMember.member;
 
@@ -91,30 +91,29 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Page<MemberResponseDto> findMembers(Pageable pageable) {
+    public Page<MemberResponseDtoByAdmin> findMembers(Pageable pageable) {
         QMember member = QMember.member;
 
-        List<MemberResponseDto> content =
+        List<MemberResponseDtoByAdmin> content =
                 from(member)
                         .limit(Math.min(pageable.getPageSize(), 30))
                         .offset(pageable.getOffset())
                         .orderBy(member.memberNo.desc())
-                        .select(Projections.constructor(MemberResponseDto.class,
+                        .select(Projections.constructor(MemberResponseDtoByAdmin.class,
                                 member.memberNo,
-                                member.memberStatusCodes,
+                                member.recommendMember.name.as("recommendMemberName"),
+                                member.memberStatusCodes.statusCodeName.as("memberStatus"),
+                                member.memberGrades.name.as("memberGrade"),
                                 member.email,
-                                member.roleSet,
-                                member.password,
-                                member.nickname,
-                                member.name,
-                                member.gender,
                                 member.phoneNumber,
+                                member.nickname,
+                                member.gender,
                                 member.birthDate,
                                 member.accumulatePurchaseAmount,
                                 member.nextRenewalGradeDate,
                                 member.registerDatetime,
                                 member.modifyDatetime,
-                                member.isSocial))
+                                member.isSocial.as("social")))
                         .fetch();
 
         return PageableExecutionUtils.getPage(content,
@@ -123,4 +122,6 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         .fetch()
                         .size());
     }
+
+
 }
