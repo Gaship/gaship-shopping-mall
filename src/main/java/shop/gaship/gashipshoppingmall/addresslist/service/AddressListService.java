@@ -1,13 +1,13 @@
 package shop.gaship.gashipshoppingmall.addresslist.service;
 
 import org.springframework.data.domain.Pageable;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListAddRequestDto;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListModifyRequestDto;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListPageResponseDto;
-import shop.gaship.gashipshoppingmall.addresslist.dto.AddressListResponseDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListAddRequestDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListModifyRequestDto;
+import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
@@ -62,12 +62,13 @@ public interface AddressListService {
     /**
      * 배송지목록의 다건조회 하기 위한 메서드입니다. (배송지 정보 수정과 배송지목록 상세 보기에 사용됨)
      *
+     * @param memberNo 회원의 id 값입니다.
      * @param pageable 조회하길 원하는 배송지목록 페이지의 페이지 번호,사이즈,정렬조건 값을 담고있습니다.
      * @return 조회하길 원하는 배송지목록 페이지의 정보들을 담고있습니다.
      * @author 최정우
      */
-    AddressListPageResponseDto<AddressListResponseDto, AddressList> findAddressLists(
-        Integer memberId, Pageable pageable);
+    PageResponse<AddressListResponseDto> findAddressLists(
+        Integer memberNo, Pageable pageable);
 
     /**
      * 새로운 테이블을 등록시 필요한 정보로 데이터를 변환해주는 메서드입니다.
@@ -81,9 +82,14 @@ public interface AddressListService {
      */
     default AddressList dtoToEntity(AddressListAddRequestDto request, AddressLocal addressLocal,
                                     Member member, StatusCode defaultStatus) {
-        return AddressList.builder().addressLocal(addressLocal).member(member)
-            .statusCode(defaultStatus).address(request.getAddress())
-            .addressDetail(request.getAddressDetail()).zipCode(request.getZipCode()).build();
+        return AddressList.builder()
+                .addressLocal(addressLocal)
+                .member(member)
+                .statusCode(defaultStatus)
+                .address(request.getAddress())
+                .addressDetail(request.getAddressDetail())
+                .zipCode(request.getZipCode())
+                .build();
     }
 
     /**
@@ -98,9 +104,14 @@ public interface AddressListService {
      */
     default AddressList dtoToEntity(AddressListModifyRequestDto request, AddressLocal addressLocal,
                                     Member member, StatusCode defaultStatus) {
-        return AddressList.builder().addressLocal(addressLocal).member(member)
-            .statusCode(defaultStatus).address(request.getAddress())
-            .addressDetail(request.getAddressDetail()).zipCode(request.getZipCode()).build();
+        return AddressList.builder()
+                .addressLocal(addressLocal)
+                .member(member)
+                .statusCode(defaultStatus)
+                .address(request.getAddress())
+                .addressDetail(request.getAddressDetail())
+                .zipCode(request.getZipCode())
+                .build();
     }
 
     /**
@@ -111,9 +122,13 @@ public interface AddressListService {
      * @author 최정우
      */
     default AddressListResponseDto entityToDto(AddressList addressList) {
-        return AddressListResponseDto.builder().addressListNo(addressList.getAddressListNo())
-            .addressLocal(addressList.getAddressLocal()).address(addressList.getAddress())
-            .addressDetail(addressList.getAddressDetail()).zipCode(addressList.getZipCode())
-            .build();
+        return AddressListResponseDto.builder()
+                .addressListNo(addressList.getAddressListsNo())
+                .addressName(addressList.getAddressLocal().getAddressName())
+                .allowDelivery(addressList.getAddressLocal().isAllowDelivery())
+                .address(addressList.getAddress())
+                .addressDetail(addressList.getAddressDetail())
+                .zipCode(addressList.getZipCode())
+                .build();
     }
 }
