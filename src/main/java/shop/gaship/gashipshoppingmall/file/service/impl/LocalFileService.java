@@ -34,6 +34,7 @@ public class LocalFileService implements FileService {
     @Value("${file.upload.url}")
     private String uploadBaseUrl;
     private final ObjectMapper objectMapper;
+    private static final String PROTOCOL = "file:";
 
     @Override
     public String upload(String objectName, InputStream inputStream) {
@@ -62,7 +63,7 @@ public class LocalFileService implements FileService {
     @Override
     public InputStream download(String path) {
         try {
-            return new FileInputStream(path);
+            return new FileInputStream(path.replace(PROTOCOL, ""));
         } catch (IOException e) {
             throw new ResourceLoadFailureException();
         }
@@ -71,7 +72,7 @@ public class LocalFileService implements FileService {
     @Override
     public void delete(String path) {
         try {
-            Files.deleteIfExists(Paths.get(path));
+            Files.deleteIfExists(Paths.get(path.replace(PROTOCOL, "")));
         } catch (IOException e) {
             throw new FileDeleteFailureException();
         }
@@ -93,7 +94,7 @@ public class LocalFileService implements FileService {
     private FileRequestDto parse(String url) {
         String originalName = url.substring(url.lastIndexOf(File.separator) + 1);
         return FileRequestDto.builder()
-                .path(url)
+                .path(PROTOCOL + url)
                 .originalName(originalName)
                 .extension(originalName.substring(originalName.lastIndexOf(".")) + 1)
                 .build();

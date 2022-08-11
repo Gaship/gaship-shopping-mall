@@ -54,16 +54,17 @@ class CommonFileServiceTest {
     CommonFile commonFile;
     FileRequestDto fileRequest;
 
+    File file;
     MockMultipartFile multipartFile;
 
     @BeforeEach
     void setUp() throws IOException {
-        File file = new File("src/test/resources/sample.jpg");
+        file = new File("src/test/resources/sample.jpg");
         multipartFile = new MockMultipartFile(
                 "image", "sample.jpg", "multipart/mixed", new FileInputStream(file));
 
         fileRequest = FileRequestDto.builder()
-                .path(file.getAbsolutePath())
+                .path("file:" + file.getAbsolutePath())
                 .originalName(multipartFile.getOriginalFilename())
                 .extension("jpg")
                 .build();
@@ -79,16 +80,14 @@ class CommonFileServiceTest {
     @Test
     void loadResource() throws IOException {
         Integer fileNo = 1;
-        Resource resource = new UrlResource("file:src/test/resources/sample.jpg");
+        Resource resource = new UrlResource("file:" + file.getAbsolutePath());
 
         when(commonFileRepository.findById(fileNo)).thenReturn(Optional.of(commonFile));
-        when(fileService.download(commonFile.getPath())).thenReturn(resource.getInputStream());
 
         Resource result = commonFileService.loadResource(fileNo);
-        assertThat(result.getInputStream().readAllBytes()).isEqualTo(resource.getInputStream().readAllBytes());
+        assertThat(result.getFilename()).isEqualTo(resource.getFilename());
 
         verify(commonFileRepository).findById(fileNo);
-        verify(fileService).download(commonFile.getPath());
     }
 
     @DisplayName("멀티파트파일 업로드 테스트")

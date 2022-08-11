@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.commonfile.controller;
 
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,13 @@ public class CommonFileController {
                                                  HttpServletRequest request) {
         Resource resource = commonFileService.loadResource(fileNo);
 
-        String contentType = request.getServletContext().getMimeType(resource.getFilename());
+        String contentType = "application/octet-stream";
+        try {
+            contentType = request.getServletContext()
+                    .getMimeType(resource.getURL().getPath());
+        } catch (IOException ex) {
+            log.info("리소스 경로를 가져올 수 없습니다.");
+        }
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))

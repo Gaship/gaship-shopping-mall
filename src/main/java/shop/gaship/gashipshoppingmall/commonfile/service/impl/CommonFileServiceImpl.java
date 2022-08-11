@@ -2,12 +2,14 @@ package shop.gaship.gashipshoppingmall.commonfile.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
@@ -44,7 +46,11 @@ public class CommonFileServiceImpl implements CommonFileService {
         CommonFile commonFile = commonFileRepository.findById(fileNo)
                 .orElseThrow(CommonFileNotFoundException::new);
 
-        return new InputStreamResource(fileService.download(commonFile.getPath()));
+        try {
+            return new UrlResource(commonFile.getPath());
+        } catch (MalformedURLException e) {
+            throw new ResourceLoadFailureException();
+        }
     }
 
     @Override
