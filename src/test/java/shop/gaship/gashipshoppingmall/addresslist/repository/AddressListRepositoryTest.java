@@ -30,20 +30,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Disabled
 class AddressListRepositoryTest {
-
     @Autowired
     StatusCodeRepository statusCodeRepository;
+
     @Autowired
     MemberGradeRepository memberGradeRepository;
+
     @Autowired
     private AddressListRepository addressListRepository;
+
     @Autowired
     private AddressLocalRepository addressLocalRepository;
+
     @Autowired
     private MemberRepository memberRepository;
 
     @DisplayName("배송지목록중 사용상태가 '사용' 인것만 페이징해서 값을 불러오는지 테스트")
     @Test
+    @Disabled(value = "mysql 에 연동해서 테스트하면 내가 넣은 값이랑 겹쳐서 오류가 난다... h2에서는 잘됨")
     void findAddressListByMemberId() {
         StatusCode statusCode1 = statusCodeRepository.save(NotNullDummy.notNullAddressListUseStatusDummy());
         StatusCode statusCode2 = statusCodeRepository.save(NotNullDummy.notNullAddressListUseStatusDummy());
@@ -82,5 +86,12 @@ class AddressListRepositoryTest {
         Page<AddressListResponseDto> pageList = addressListRepository.findAddressListByMemberId(member1.getMemberNo(), pageable);
         assertThat(pageList.getContent()).hasSize(1);
         assertThat(pageList.getTotalElements()).isEqualTo(13L);
+    }
+
+    @DisplayName("배송지목록중 사용상태가 '사용' 인것만 페이징해서 값을 불러오는지 테스트")
+    @Test
+    void findAddressListByMemberId2() {
+        Page<AddressListResponseDto> list = addressListRepository.findAddressListByMemberId(1, PageRequest.of(1, 10));
+        assertThat(list).isEmpty();
     }
 }
