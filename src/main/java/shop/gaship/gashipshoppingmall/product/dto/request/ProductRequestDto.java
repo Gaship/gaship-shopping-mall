@@ -1,76 +1,84 @@
 package shop.gaship.gashipshoppingmall.product.dto.request;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
+import org.hibernate.validator.constraints.Length;
 
 /**
- * 상품들을 조회할때 조건들이 들어있는 클래스입니다.
+ * 상품 등록, 수정 요청 시 dto 입니다.
  *
- * @author : 유호철
+ * @author : 김보민
  * @since 1.0
  */
-
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductRequestDto {
-    @Builder.Default
-    private Integer productNo = 0;
+    @Min(1)
+    @NotNull
+    private Integer no;
 
-    @Builder.Default
-    private Integer categoryNo = 0;
+    @Min(1)
+    @NotNull
+    private Integer categoryNo;
 
-    @Builder.Default
-    private Long minAmount = 0L;
+    @Min(1)
+    @NotNull
+    private Integer deliveryTypeNo;
 
-    @Builder.Default
-    private Long maxAmount = 0L;
+    @Length(max = 100, message = "상품 이름은 100자 이하여야 합니다.")
+    @NotBlank
+    private String name;
 
-    @Builder.Default
-    private Integer tagNo = 0;
+    @Min(value = 0, message = "금액은 0보다 커야 합니다.")
+    @NotNull
+    private Long amount;
+
+    @Length(max = 20, message = "제조사는 20자 이하여야 합니다.")
+    @NotBlank
+    private String manufacturer;
+
+    @Length(max = 20, message = "제조국은 20자 이하여야 합니다.")
+    @NotBlank
+    private String manufacturerCountry;
+
+    @Length(max = 20, message = "판매자는 20자 이하여야 합니다.")
+    @NotBlank
+    private String seller;
+
+    @Length(max = 20, message = "수입자는 20자 이하여야 합니다.")
+    @NotBlank
+    private String importer;
+
+    @Min(value = 0, message = "금액은 0 이상이어야 합니다.")
+    @NotNull
+    private Long shippingInstallationCost;
+
+    @Length(max = 255, message = "품질보증기준은 255자 이하여야 합니다.")
+    @NotBlank
+    private String qualityAssuranceStandard;
+
+    @NotBlank
+    private String color;
+
+    @Min(value = 0, message = "재고량은 0 이상이여야 합니다.")
+    @NotNull
+    private Integer stockQuantity;
 
     @NotNull
-    @Builder.Default
-    private Pageable pageable = PageRequest.of(0, 10);
+    private String explanation;
 
-    @Builder.Default
-    private String statusName = null;
+    @NotEmpty(message = "태그는 비어있을수 없습니다.")
+    @NotNull
+    private List<Integer> tagNos;
 
-    @Builder.Default
-    private List<Integer> productNoList = new ArrayList<>();
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ProductRequestDto that = (ProductRequestDto) o;
-        return Objects.equals(productNo, that.productNo)
-            && Objects.equals(categoryNo, that.categoryNo)
-            && Objects.equals(minAmount, that.minAmount)
-            && Objects.equals(maxAmount, that.maxAmount)
-            && Objects.equals(tagNo, that.tagNo)
-            && Objects.equals(pageable, that.pageable);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(productNo,
-            categoryNo, minAmount, maxAmount,
-            tagNo, pageable);
-    }
+    @Length(max = 100, message = "제품코드는 100자 이하여야 합니다.")
+    @NotBlank
+    private String code;
 }

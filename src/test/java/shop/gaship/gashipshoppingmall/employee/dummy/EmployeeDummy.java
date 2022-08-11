@@ -23,6 +23,7 @@ public class EmployeeDummy {
         ReflectionTestUtils.setField(dummy, "email", "test@naver.com");
         ReflectionTestUtils.setField(dummy, "password", "password");
         ReflectionTestUtils.setField(dummy, "phoneNo", "01011111111");
+        ReflectionTestUtils.setField(dummy, "encodedEmailForSearch", "test@naver.com");
 
         return dummy;
     }

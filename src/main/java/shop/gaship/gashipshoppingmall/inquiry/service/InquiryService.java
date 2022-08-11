@@ -119,8 +119,8 @@ public interface InquiryService {
      * @return 영속화되지 않은 Inquiry entity를 반환합니다.
      * @author 최겸준
      */
-    default Inquiry inquriyAddRequestDtoToInquiryEntityWhenCreation(InquiryAddRequestDto inquiryAddRequestDto,
-                                                                    StatusCode statusCode) {
+    default Inquiry inquiryAddRequestDtoToInquiryEntityWhenCreation(
+        InquiryAddRequestDto inquiryAddRequestDto, StatusCode statusCode) {
         return Inquiry.builder().title(inquiryAddRequestDto.getTitle())
             .inquiryContent(inquiryAddRequestDto.getInquiryContent()).processStatusCode(statusCode)
             .isProduct(inquiryAddRequestDto.getIsProduct()).registerDatetime(LocalDateTime.now())

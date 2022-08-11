@@ -26,6 +26,12 @@ public class RedisConfig implements BeanClassLoaderAware {
     private int database;
     private ClassLoader classLoader;
 
+    /**
+     * Redis와 연결하기위한 스프링 빈입니다.
+     *
+     * @param dataProtectionConfig dataProtectionConfig에서 레디스의 연결 정보를 얻어 옵니다.
+     * @return Redis의 연결정보 객체를 반환합니다.
+     */
     @Bean
     public RedisConnectionFactory redisConnectionFactory(
         DataProtectionConfig dataProtectionConfig) {
@@ -42,6 +48,12 @@ public class RedisConfig implements BeanClassLoaderAware {
         return new LettuceConnectionFactory(configuration);
     }
 
+    /**
+     * RedisTemplate의 기본설정과 레디스의 인메모리 저장소에 접근하기 위한 스프링빈입니다.
+     *
+     * @return 기본설정이 설정된 레디스 템플릿을 반환합니다.
+     */
+    @SuppressWarnings("java:S1452") // 레디스의 key value의 타입을 자유롭게 지정하기위함.
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();

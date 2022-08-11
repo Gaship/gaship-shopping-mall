@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.service.ProductReviewService;
@@ -39,6 +40,7 @@ public class ProductReviewController {
      * @param createRequest 상품평 등록 요청 dto
      * @return responseEntity 응답 바디는 없습니다.
      */
+    @MemberAuthority
     @PostMapping
     public ResponseEntity<Void> productReviewAdd(
             @RequestPart(value = "image", required = false) MultipartFile file,
@@ -58,6 +60,7 @@ public class ProductReviewController {
      * @param orderProductNo 수정할 상품평 번호
      * @return responseEntity 응답 바디는 없습니다.
      */
+    @MemberAuthority
     @PutMapping("/{orderProductNo}")
     public ResponseEntity<Void> productReviewModify(
             @RequestPart(value = "image", required = false) MultipartFile file,
@@ -76,6 +79,7 @@ public class ProductReviewController {
      * @param orderProductNo 삭제할 상품평 번호
      * @return responseEntity 응답 바디는 없습니다.
      */
+    @MemberAuthority
     @DeleteMapping("/{orderProductNo}")
     public ResponseEntity<Void> productReviewRemove(
             @PathVariable("orderProductNo") Integer orderProductNo) {

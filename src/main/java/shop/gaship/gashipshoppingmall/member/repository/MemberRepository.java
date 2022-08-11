@@ -18,8 +18,11 @@ public interface MemberRepository extends JpaRepository<Member, Integer>, Member
 
     boolean existsByNickname(String nickname);
 
+    boolean existsByMemberNo(Integer memberNo);
+
     List<Member> findByMemberGrades(MemberGrade memberGrade);
 
     @Query("SELECT MAX(m.memberNo) From Member m")
     Integer findLastNo();
+
 }

@@ -9,43 +9,25 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.test.util.ReflectionTestUtils;
-import shop.gaship.gashipshoppingmall.addresslist.dummy.AddressListDummy;
-import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
-import shop.gaship.gashipshoppingmall.addresslist.repository.AddressListRepository;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
-import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
-import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
-import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
-import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
-import shop.gaship.gashipshoppingmall.order.entity.Order;
-import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
-import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
-import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
-import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
-import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
-import shop.gaship.gashipshoppingmall.product.entity.Product;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.employee.repository
@@ -61,9 +43,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class EmployeeRepositoryTest {
     @Autowired
-    private TestEntityManager entityManager;
-
-    @Autowired
     EmployeeRepository repository;
     @Autowired
     AddressLocalRepository localRepository;
@@ -71,6 +50,10 @@ class EmployeeRepositoryTest {
     StatusCodeRepository codeRepository;
     @Autowired
     DayLaborRepository laborRepository;
+    @MockBean
+    Sha512 sha512;
+    @MockBean
+    Aes aes;
     private Employee employee;
     private AddressLocal addressLocal;
     private StatusCode code;
@@ -123,10 +106,17 @@ class EmployeeRepositoryTest {
         codeRepository.save(code);
         repository.save(employee);
 
-        SignInUserDetailsDto loginEmployee =
-            repository.findSignInEmployeeUserDetail("test@naver.com").orElse(null);
+        given(sha512.encryptPlainText(anyString()))
+            .willReturn(employee.getEmail());
+        given(aes.aesEcbDecode(anyString()))
+            .willReturn(employee.getEmail());
 
-        assertThat(Objects.requireNonNull(loginEmployee).getMemberNo()).isEqualTo(employee.getEmployeeNo());
+        SignInUserDetailsDto loginEmployee =
+            repository.findSignInEmployeeUserDetail((employee.getEmail())).orElse(null);
+
+        assert loginEmployee != null;
+        assertThat(Objects.requireNonNull(loginEmployee.getMemberNo()))
+            .isEqualTo(employee.getEmployeeNo());
         assertThat(loginEmployee.getEmail()).isEqualTo("test@naver.com");
         assertThat(loginEmployee.getAuthorities()).isEqualTo(List.of(code.getStatusCodeName()));
         assertThat(loginEmployee.getHashedPassword()).isEqualTo(employee.getPassword());
@@ -142,5 +132,3 @@ class EmployeeRepositoryTest {
         assertThat(loginEmployee).isNull();
     }
 }
-
-

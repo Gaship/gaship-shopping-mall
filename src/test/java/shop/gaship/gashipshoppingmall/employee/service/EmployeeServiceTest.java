@@ -21,6 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
@@ -79,6 +81,12 @@ class EmployeeServiceTest {
     @MockBean
     AddressLocalRepository localRepository;
 
+    @MockBean
+    Aes aes;
+
+    @MockBean
+    Sha512 sha512;
+
     @Autowired
     EmployeeService service;
 
@@ -125,7 +133,8 @@ class EmployeeServiceTest {
     @Test
     void WrongStatusCodeException_createEmployeeTest() {
         //when
-        given(codeRepository.findById(dto.getAuthorityNo())).willReturn(Optional.empty());
+        given(codeRepository.findById(dto.getAuthorityNo()))
+            .willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> service.addEmployee(dto)).isInstanceOf(
@@ -136,8 +145,10 @@ class EmployeeServiceTest {
     @Test
     void WrongAddressException_createEmployeeTest() {
         //when
-        given(codeRepository.findById(dto.getAuthorityNo())).willReturn(Optional.of(code));
-        given(localRepository.findById(dto.getAddressNo())).willReturn(Optional.empty());
+        given(codeRepository.findById(dto.getAuthorityNo()))
+            .willReturn(Optional.of(code));
+        given(localRepository.findById(dto.getAddressNo()))
+            .willReturn(Optional.empty());
         //then
         assertThatThrownBy(() -> service.addEmployee(dto)).isInstanceOf(
             WrongAddressException.class);
@@ -150,22 +161,27 @@ class EmployeeServiceTest {
         employee.fixCode(code);
         employee.fixLocation(addressLocal);
 
-        given(repository.save(any())).willReturn(employee);
+        given(repository.save(any()))
+            .willReturn(employee);
 
-        given(codeRepository.findById(any())).willReturn(Optional.of(code));
+        given(codeRepository.findById(any()))
+            .willReturn(Optional.of(code));
 
-        given(localRepository.findById(any())).willReturn(Optional.of(addressLocal));
-
+        given(localRepository.findById(any()))
+            .willReturn(Optional.of(addressLocal));
+        given(aes.aesEcbDecode(anyString()))
+            .willReturn(employee.getEmail());
+        given(sha512.encryptPlainText(anyString()))
+            .willReturn(employee.getEmail());
         //when
         service.addEmployee(dto);
 
         //then
-        verify(repository, timeout(1)).save(captor.capture());
+        verify(repository, timeout(1))
+            .save(captor.capture());
 
         Employee test = captor.getValue();
-        assertThat(dto.getEmail()).isEqualTo(test.getEmail());
-        assertThat(dto.getName()).isEqualTo(test.getName());
-        assertThat(dto.getPassword()).isEqualTo(test.getPassword());
+        assertThat(dto.getEmail()).isEqualTo(test.getEncodedEmailForSearch());
         assertThat(dto.getAuthorityNo()).isEqualTo(1);
     }
 
@@ -173,13 +189,16 @@ class EmployeeServiceTest {
     @Test
     void successModifyEmployeeTest() {
         //given
-        given(repository.save(any())).willReturn(employee);
-        given(repository.findById(any())).willReturn(Optional.of(employee));
+        given(repository.save(any()))
+            .willReturn(employee);
+        given(repository.findById(any()))
+            .willReturn(Optional.of(employee));
         //when
         service.modifyEmployee(modifyEmployeeDto);
 
         //then
-        verify(repository, times(1)).findById(any());
+        verify(repository, times(1))
+            .findById(any());
 
     }
 
@@ -187,24 +206,30 @@ class EmployeeServiceTest {
     @Test
     void failModifyEmployeeAndFailGetEmployeeTest() {
         //given
-        given(repository.findById(any())).willReturn(Optional.empty());
+        given(repository.findById(any()))
+            .willReturn(Optional.empty());
 
         //when & then
-        assertThatThrownBy(() -> service.modifyEmployee(modifyEmployeeDto)).isInstanceOf(
-            EmployeeNotFoundException.class);
+        assertThatThrownBy(() -> service.modifyEmployee(modifyEmployeeDto))
+            .isInstanceOf(EmployeeNotFoundException.class);
     }
 
     @DisplayName("직원 가져오기 단건")
     @Test
     void successGetEmployeeTest() {
         //given
-        given(repository.save(any())).willReturn(employee);
+        given(repository.save(any()))
+            .willReturn(employee);
 
-        given(repository.findById(any())).willReturn(Optional.of(employee));
+        given(repository.findById(any()))
+            .willReturn(Optional.of(employee));
+        given(repository.existsByEncodedEmailForSearch(anyString()))
+            .willReturn(true);
+        given(codeRepository.findById(any()))
+            .willReturn(Optional.of(code));
 
-        given(codeRepository.findById(any())).willReturn(Optional.of(code));
-
-        given(localRepository.findById(any())).willReturn(Optional.of(addressLocal));
+        given(localRepository.findById(any()))
+            .willReturn(Optional.of(addressLocal));
         employee.fixLocation(addressLocal);
 
         //when
@@ -213,8 +238,10 @@ class EmployeeServiceTest {
         EmployeeInfoResponseDto test = service.findEmployee(employee.getEmployeeNo());
 
         //then
-        verify(repository, times(1)).save(captor.capture());
-        verify(repository, times(1)).findById(any());
+        verify(repository, times(1))
+            .save(captor.capture());
+        verify(repository, times(1))
+            .findById(any());
 
         Employee value = captor.getValue();
         assertThat(test.getEmail()).isEqualTo(value.getEmail());
@@ -233,16 +260,17 @@ class EmployeeServiceTest {
         list.add(e1);
         list.add(e2);
 
-        PageImpl<EmployeeInfoResponseDto> page =
-            new PageImpl<>(list, pageRequest, pageRequest.getPageSize());
+        PageImpl<EmployeeInfoResponseDto> page = new PageImpl<>(list, pageRequest, pageRequest.getPageSize());
         PageResponse<EmployeeInfoResponseDto> response = new PageResponse<>(page);
-        given(repository.findAllEmployees(pageRequest)).willReturn(response);
+        given(repository.findAllEmployees(pageRequest))
+            .willReturn(response);
 
         //when
         PageResponse<EmployeeInfoResponseDto> allEmployees = service.findEmployees(pageRequest);
 
         //then
-        verify(repository, times(1)).findAllEmployees(pageRequest);
+        verify(repository, times(1))
+            .findAllEmployees(pageRequest);
 
         assertThat(allEmployees.getContent().get(0).getAddress()).isEqualTo(e1.getAddress());
         assertThat(allEmployees.getContent().get(0).getEmail()).isEqualTo(e1.getEmail());
@@ -258,12 +286,20 @@ class EmployeeServiceTest {
     @DisplayName("로그인하는 직원의 계정 정보를 얻어온다. : 성공")
     void findSignInEmployeeFromEmailCaseSuccess() {
         SignInUserDetailsDto dto =
-            new SignInUserDetailsDto(employee.getEmployeeNo(), employee.getEmail(),
-                employee.getPassword(), true, List.of("ROLE_ADMIN"));
+            new SignInUserDetailsDto(employee.getEmployeeNo(),
+                employee.getEmail(),
+                employee.getPassword(),
+                List.of("ROLE_ADMIN")
+            );
+        given(sha512.encryptPlainText(anyString()))
+            .willReturn("a");
+        given(aes.aesEcbDecode(anyString()))
+            .willReturn("b");
+        given(repository.findSignInEmployeeUserDetail(anyString()))
+            .willReturn(Optional.of(dto));
 
-        given(repository.findSignInEmployeeUserDetail(anyString())).willReturn(Optional.of(dto));
-
-        SignInUserDetailsDto result = service.findSignInEmployeeFromEmail("exam@nhn.com");
+        SignInUserDetailsDto result =
+            service.findSignInEmployeeFromEmail("exam@nhn.com");
 
 
         assertThat(result).isNotNull().isEqualTo(dto);
@@ -276,9 +312,9 @@ class EmployeeServiceTest {
             new EmployeeNotFoundException());
 
 
-        assertThatThrownBy(
-            () -> repository.findSignInEmployeeUserDetail("exam@nhn.com")).isInstanceOf(
-            EmployeeNotFoundException.class).hasMessage("직원이 존재하지 않습니다.");
+        assertThatThrownBy(() -> repository.findSignInEmployeeUserDetail("exam@nhn.com"))
+            .isInstanceOf(EmployeeNotFoundException.class)
+            .hasMessage("직원이 존재하지 않습니다.");
     }
 
     @Test

@@ -10,14 +10,14 @@ import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundExcepti
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
-import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
-import shop.gaship.gashipshoppingmall.inquiry.repository.InquiryRepository;
-import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 import shop.gaship.gashipshoppingmall.inquiry.inquiryenum.InquiryType;
+import shop.gaship.gashipshoppingmall.inquiry.repository.InquiryRepository;
+import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
+import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
@@ -56,7 +56,8 @@ public class InquiryServiceImpl implements InquiryService {
         StatusCode statusCode =
             statusCodeRepository.findByStatusCodeName(ProcessStatus.WAITING.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
-        Inquiry inquiry = this.inquriyAddRequestDtoToInquiryEntityWhenCreation(inquiryAddRequestDto, statusCode);
+        Inquiry inquiry =
+            this.inquiryAddRequestDtoToInquiryEntityWhenCreation(inquiryAddRequestDto, statusCode);
 
 
         setMember(inquiryAddRequestDto, inquiry);

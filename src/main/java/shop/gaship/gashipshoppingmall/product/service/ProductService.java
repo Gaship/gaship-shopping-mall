@@ -3,8 +3,7 @@ package shop.gaship.gashipshoppingmall.product.service;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
@@ -24,7 +23,7 @@ public interface ProductService {
      * @param createRequest 상품 생성 요청 dto
      * @author 김보민
      */
-    void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest);
+    void addProduct(List<MultipartFile> files, ProductRequestDto createRequest);
 
     /**
      * 상품 수정 메서드입니다.
@@ -33,7 +32,7 @@ public interface ProductService {
      * @param modifyRequest 상품 수정 요청 dto
      * @author 김보민
      */
-    void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest);
+    void modifyProduct(List<MultipartFile> files, ProductRequestDto modifyRequest);
 
     /**
      * 상품 판매상태를 수정하는 메서드입니다.

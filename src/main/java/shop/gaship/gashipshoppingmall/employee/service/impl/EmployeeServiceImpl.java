@@ -10,11 +10,14 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
+import shop.gaship.gashipshoppingmall.employee.exception.EmailAlreadyExistException;
 import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongStatusCodeException;
@@ -43,6 +46,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final AddressLocalRepository localRepository;
 
+    private final Aes aes;
+
+    private final Sha512 sha512;
+
+
     /**
      * {@inheritDoc}
      *
@@ -57,13 +65,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         StatusCode statusCode = statusCodeRepository.findById(dto.getAuthorityNo())
             .orElseThrow(WrongStatusCodeException::new);
-        AddressLocal addressLocal =
-            localRepository.findById(dto.getAddressNo()).orElseThrow(WrongAddressException::new);
+        AddressLocal addressLocal = localRepository.findById(dto.getAddressNo())
+            .orElseThrow(WrongAddressException::new);
 
-        Employee employee = new Employee();
-        employee.registerEmployee(dto);
-        employee.fixLocation(addressLocal);
-        employee.fixCode(statusCode);
+        if (Boolean.TRUE.equals(repository.existsByEncodedEmailForSearch(
+            sha512.encryptPlainText(dto.getEmail())))) {
+            throw new EmailAlreadyExistException();
+        }
+
+        Employee employee = Employee.builder()
+            .addressLocal(addressLocal)
+            .statusCode(statusCode)
+            .email(aes.aesEcbEncode(dto.getEmail()))
+            .name(aes.aesEcbEncode(dto.getName()))
+            .password((dto.getPassword()))
+            .encodedEmailForSearch(sha512.encryptPlainText(dto.getEmail()))
+            .phoneNo(aes.aesEcbEncode(dto.getPhoneNo()))
+            .build();
 
         repository.save(employee);
     }
@@ -78,8 +96,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void modifyEmployee(ModifyEmployeeRequestDto dto) {
-        Employee employee = repository.findById(1).orElseThrow(EmployeeNotFoundException::new);
-        employee.modifyEmployee(dto);
+        Employee employee = repository.findById(dto.getEmployeeNo())
+            .orElseThrow(EmployeeNotFoundException::new);
+
+        if (Boolean.TRUE.equals(repository.existsByEncodedEmailForSearch(
+            sha512.encryptPlainText(dto.getEmail())))) {
+            throw new EmailAlreadyExistException();
+        }
+
+        employee.modifyEmployee(
+            aes.aesEcbEncode(dto.getName()),
+            aes.aesEcbEncode(dto.getPhoneNo()));
     }
 
     /**
@@ -92,10 +119,14 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public EmployeeInfoResponseDto findEmployee(Integer employeeNo) {
-        Employee employee =
-            repository.findById(employeeNo).orElseThrow(EmployeeNotFoundException::new);
+        Employee employee = repository.findById(employeeNo)
+            .orElseThrow(EmployeeNotFoundException::new);
 
-        return new EmployeeInfoResponseDto(employee);
+        return new EmployeeInfoResponseDto(
+            aes.aesEcbDecode(employee.getName()),
+            aes.aesEcbDecode(employee.getEmail()),
+            employee.getPassword(),
+            employee.getAddressLocal().getAddressName());
     }
 
     /**
@@ -117,8 +148,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public SignInUserDetailsDto findSignInEmployeeFromEmail(String email) {
-        return repository.findSignInEmployeeUserDetail(email)
+        SignInUserDetailsDto result = repository
+            .findSignInEmployeeUserDetail(sha512.encryptPlainText(email))
             .orElseThrow(EmployeeNotFoundException::new);
+
+        result.setEmail(aes.aesEcbDecode(result.getEmail()));
+
+        return result;
     }
 
     @Override
