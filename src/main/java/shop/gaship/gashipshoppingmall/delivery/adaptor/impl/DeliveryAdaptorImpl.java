@@ -7,6 +7,8 @@ import shop.gaship.gashipshoppingmall.delivery.adaptor.DeliveryAdaptor;
 import shop.gaship.gashipshoppingmall.delivery.dto.DeliveryDto;
 
 /**
+ * 배송 API 서버에 요청을 하기 위한 어댑터 클래스 입니다.
+ *
  * @author : 조재철
  * @since 1.0
  */
@@ -30,9 +32,9 @@ public class DeliveryAdaptorImpl implements DeliveryAdaptor {
         WebClient webClient = WebClient.builder().baseUrl(deliveryUrl).build();
 
         webClient.post().uri(uriBuilder -> uriBuilder.path("/eggplant-delivery/tracking-no").build())
-            .bodyValue(deliveryDto)
-            .retrieve()
-            .toEntity(Void.class)
-            .block();
+                 .bodyValue(deliveryDto)
+                 .retrieve()
+                 .toEntity(Void.class)
+                 .block();
     }
 }

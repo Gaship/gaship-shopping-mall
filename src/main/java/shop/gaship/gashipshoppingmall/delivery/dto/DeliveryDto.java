@@ -5,12 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * 배송 API 서버에 배송 요청, 운송장 번호 생성을 요청 하기 위해 필요한 정보를 담기 위한 DTO 클래스 입니다.
+ *
  * @author : 조재철
  * @since 1.0
  */
 @Getter
 @AllArgsConstructor
 public class DeliveryDto {
+
     @NotBlank(message = "수취인 이름은 필수 입니다.")
     private String receiverName;
 

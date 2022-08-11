@@ -13,6 +13,8 @@ import shop.gaship.gashipshoppingmall.delivery.dto.response.TrackingNoResponseDt
 import shop.gaship.gashipshoppingmall.delivery.service.DeliveryService;
 
 /**
+ * 배송 관련 요청을 받고 요청에 대한 응답을 하는 클래스 입니다.
+ *
  * @author : 조재철
  * @since 1.0
  */
@@ -23,6 +25,12 @@ public class DeliveryController {
 
     private final DeliveryService deliveryService;
 
+    /**
+     * 배송 요청을 통해 운송장 번호를 요청하는 메서드 입니다.
+     *
+     * @param orderProductNo 배송 요청시 전달하는 주문 상품 번호 입니다.
+     * @return 운송장 번호 생성 요청을 잘 받았다는 응답을 반환합니다.
+     */
     @GetMapping(value = "/api/delivery/tracking-no/{orderProductNo}")
     public ResponseEntity<Void> createTrackingNo(@PathVariable(value = "orderProductNo") Integer orderProductNo) {
         deliveryService.createTrackingNo(orderProductNo);
@@ -30,6 +38,12 @@ public class DeliveryController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    /**
+     * 배송 API 서버에서 전달한 운송장 번호를 받는 메서드 입니다.
+     *
+     * @param trackingNoResponseDto 운송장 번호와 해당 주문 상품 번호를 담은 dto 객체 입니다.
+     * @return 운송장 번호를 잘 받았다는 응답을 반환 합니다.
+     */
     @PostMapping(value = "/eggplant/tracking-no")
     public ResponseEntity<Void> addTrackingNo(@RequestBody TrackingNoResponseDto trackingNoResponseDto) {
         deliveryService.addTrackingNo(trackingNoResponseDto);
