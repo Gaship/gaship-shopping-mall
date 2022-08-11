@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.member.dto.request.FindMemberEmailRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
-import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
-import shop.gaship.gashipshoppingmall.member.dto.response.EmailPresence;
-import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
-import shop.gaship.gashipshoppingmall.member.dto.response.MemberNumberPresence;
-import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
-import shop.gaship.gashipshoppingmall.member.dto.response.NicknamePresence;
-import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.*;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * member 등록, 수정, 삭제, 회원등록과 관련된 요청을 수행하는 restController 입니다.
@@ -153,18 +145,6 @@ public class MemberController {
     }
 
     /**
-     * 관리자가 멤버의 활성상태정보를 수정하기위한 매서드입니다.
-     *
-     * @param request 변경하고싶은 회원의 상태, 닉네임 정보가있는 객체입니다.
-     * @return body 데이터는 없고, 응답 상태는 200을 반환합니다.
-     */
-    @PutMapping("/{memberNo}/role")
-    public ResponseEntity<Void> memberModifyByAdmin(MemberModifyByAdminDto request) {
-        memberService.modifyMemberByAdmin(request);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
-    }
-
-    /**
      * 멤버의 정보를 삭제하는 메서드입니다.
      *
      * @param memberNo 멤버의 고유번호입니다.
@@ -175,6 +155,7 @@ public class MemberController {
         memberService.removeMember(memberNo);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
     }
+
 
     /**
      * 멤버의 상세정보를 조회하는 메서드입니다.
@@ -201,20 +182,6 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
                 .body(memberResponseDto);
     }
-
-    /**
-     * 멤버 다건조회를 위한 메서드입니다.
-     *
-     * @param pageable page와 size가 쿼리 파라미터로 담긴 객체입니다.
-     * @return body 는 조회된 멤버들의 정보, 응답 상태는 200을 반환합니다.
-     */
-    @GetMapping
-    public ResponseEntity<PageResponse<MemberResponseDto>> memberList(
-            Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-                .body(memberService.findMembers(pageable));
-    }
-
 
     /**
      * 멤버의 이메일을 찾는 요청을 받는 메서드입니다.
