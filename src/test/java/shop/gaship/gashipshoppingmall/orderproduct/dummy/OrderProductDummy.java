@@ -21,6 +21,7 @@ public class OrderProductDummy {
             .product(ProductDummy.dummy())
             .hopeDate(LocalDate.now())
             .warrantyExpirationDate(LocalDate.now().plusYears(1L))
+            .memberCouponNo(1)
             .build();
     }
 

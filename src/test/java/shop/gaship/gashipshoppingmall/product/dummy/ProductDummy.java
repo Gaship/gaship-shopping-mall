@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.product.dummy;
 import java.time.LocalDateTime;
 import java.util.List;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
-import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;

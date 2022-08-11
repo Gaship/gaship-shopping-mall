@@ -41,14 +41,16 @@ class OrderProductRegisterEventHandlerTest {
         Order orderDummy = OrderDummy.createOrderDummy();
         OrderProductSpecificDto orderProductSpecificDto = new OrderProductSpecificDto();
         ReflectionTestUtils.setField(orderProductSpecificDto, "productNo", 1);
+        ReflectionTestUtils.setField(orderProductSpecificDto, "amount", 10000000L);
         ReflectionTestUtils.setField(orderProductSpecificDto, "additionalWarrantyPeriod", 1);
-        ReflectionTestUtils.setField(orderProductSpecificDto, "couponWarrantyPeriod", 0);
         ReflectionTestUtils.setField(orderProductSpecificDto, "couponNo", null);
-        ReflectionTestUtils.setField(orderProductSpecificDto, "isUseCoupon", false);
+        ReflectionTestUtils.setField(orderProductSpecificDto, "couponAmount", 100000L);
         ReflectionTestUtils.setField(orderProductSpecificDto, "hopeDate", null);
+
         List<OrderProductSpecificDto> orderProductSpecificDtos = IntStream.range(0, 10)
             .mapToObj(value -> orderProductSpecificDto)
             .collect(Collectors.toUnmodifiableList());
+
         OrderProductRegisterEvent event =
             new OrderProductRegisterEvent(orderDummy, orderProductSpecificDtos);
 

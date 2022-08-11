@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.order.service;
 
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 
 /**
  * 주문을 위해 처리될 서비스를 정의하는 인터페이스입니다.
@@ -14,5 +15,7 @@ public interface OrderService {
      *
      * @param orderRequest 주문을 요청하기 위한 데이터가 담긴 객체입니다.
      */
-    void insertOrder(OrderRegisterRequestDto orderRequest);
+    Integer insertOrder(OrderRegisterRequestDto orderRequest);
+
+    OrderResponseDto findOrderForPayments(Integer orderNo);
 }

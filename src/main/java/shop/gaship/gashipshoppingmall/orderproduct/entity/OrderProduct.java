@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -73,12 +74,17 @@ public class OrderProduct {
     private LocalDateTime cancellationDatetime;
 
     @ColumnDefault("0")
+    @NotNull
     private Long cancellationAmount;
 
     private String employeeName;
 
     private Integer trackingNo;
-    
+
+    private Integer paymentCancelHistoryNo;
+
+    private String cancellationReason;
+
     /**
      * hibernate의 save를 통한 persist가 진행되기 전에 값을 비교하여 null이면 기본값 0을 사용한다.
      */

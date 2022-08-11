@@ -27,10 +27,12 @@ class ServerConfigTest {
     @Test
     void serverConfigEnvironmentTest() {
         assertThat(config.getAuthUrl())
-            .isEqualTo("http://133.186.132.244:7071");
+            .isEqualTo("http://133.186.210.139:7071");
         assertThat(config.getPaymentsUrl())
-            .isEqualTo("http://133.186.132.244:7073");
+            .isEqualTo("http://133.186.152.91:7073");
         assertThat(config.getSchedulerUrl())
-            .isEqualTo("http://133.186.132.244:7074");
+            .isEqualTo("http://133.186.210.107:7074");
+        assertThat(config.getCouponUrl())
+            .isEqualTo("http://133.186.228.171:7075");
     }
 }

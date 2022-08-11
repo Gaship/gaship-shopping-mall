@@ -28,7 +28,7 @@ public class OrderRegisterRequestDto {
     @NotNull(message = "적어도 하나 이상의 상품을 주문하여야합니다.")
     @Size(min = 1, message = "적어도 하나 이상의 상품을 주문하여야합니다.")
     @Valid
-    private List<OrderProductSpecificDto> orderProductSpecific;
+    private List<OrderProductSpecificDto> orderProducts;
 
     @NotBlank(message = "수령인 이름을 입력해주세요.")
     private String receiverName;
@@ -42,4 +42,9 @@ public class OrderRegisterRequestDto {
 
     @Length(max = 255, message = "")
     private String deliveryRequest;
+
+    @Min(value = 0, message = "총 주문 금액은 0원 이상이어야 합니다.")
+    @NotNull(message = "주문 금액은 비어있을 수 없습니다.")
+    private Long totalAmount;
+
 }

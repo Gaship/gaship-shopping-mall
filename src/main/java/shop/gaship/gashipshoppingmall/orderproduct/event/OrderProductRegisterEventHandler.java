@@ -18,7 +18,6 @@ public class OrderProductRegisterEventHandler {
 
     @TransactionalEventListener
     public void saveOrderProduct(OrderProductRegisterEvent event) {
-        orderProductService.registerOrderProduct(event.getOrder(),
-            event.getOrderProductSpecifics());
+        orderProductService.registerOrderProduct(event.getOrder(), event.getOrderProducts());
     }
 }

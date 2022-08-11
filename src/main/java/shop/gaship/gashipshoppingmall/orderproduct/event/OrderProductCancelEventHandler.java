@@ -20,7 +20,6 @@ import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 @RequiredArgsConstructor
 public class OrderProductCancelEventHandler {
     private final StatusCodeRepository statusCodeRepository;
-
     private final OrderProductService orderProductService;
 
     /**

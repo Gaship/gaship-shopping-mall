@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.orderproduct.service.impl;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -11,12 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductCancelEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.exception.NoMoreProductException;
+import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
@@ -42,67 +43,63 @@ public class OrderProductServiceImpl implements OrderProductService {
     /**
      * {@inheritDoc}
      *
-     * @param order                 어느 주문에 저장할 것인지에 대한 주문 엔티티 객체입니다.
-     * @param orderProductSpecifics 상품의 고유번호, 쿠폰 고유번호, 수리설치 희망일자들을 담은 객체의 리스트 객체입니다.
+     * @param order         어느 주문에 저장할 것인지에 대한 주문 엔티티 객체입니다.
+     * @param orderProducts 구매자가 구매한 주문 상품의 고유번호, 쿠폰 고유번호등 상품의 기본주문 정보를 담은 객체의
+     *                      리스트 객체입니다.
      */
     @Transactional
     @Override
-    public void registerOrderProduct(Order order,
-                                     List<OrderProductSpecificDto> orderProductSpecifics) {
+    public void registerOrderProduct(Order order, List<OrderProductSpecificDto> orderProducts) {
         StatusCode deliveryPrepending =
             statusCodeRepository.findByStatusCodeName(OrderStatus.DELIVERY_PREPARING.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
 
-        List<Integer> productNos =
-            orderProductSpecifics.stream().map(OrderProductSpecificDto::getProductNo)
-                .collect(Collectors.toUnmodifiableList());
-        List<Product> products = productRepository.findAllById(productNos);
+        List<OrderProduct> orderProductsForSave = orderProducts.stream()
+            .map(orderProductSpecific ->
+                makeOrderProduct(order, deliveryPrepending, orderProductSpecific))
+            .collect(Collectors.toUnmodifiableList());
 
-        List<OrderProduct> orderProducts =
-            IntStream.range(0, orderProductSpecifics.size())
-                .mapToObj(i -> {
-                    Product product = products.get(i);
-                    OrderProductSpecificDto orderProductSpecific = orderProductSpecifics.get(i);
-                    return makeOrderProduct(order, product, orderProductSpecific,
-                        deliveryPrepending);
-                })
-                .collect(Collectors.toUnmodifiableList());
+        List<OrderProduct> savedOrderProducts =
+            orderProductRepository.saveAll(orderProductsForSave);
 
-        List<OrderProduct> savedOrderProducts = orderProductRepository.saveAll(orderProducts);
         decreaseProductStock(savedOrderProducts);
 
-        Long totalOrderAmount = savedOrderProducts.stream()
-            .map(OrderProduct::getAmount)
-            .reduce(0L, Long::sum);
-        order.updateTotalOrderAmount(totalOrderAmount);
+        // 쿠폰 사용 완료 처리 요청 발신
+        boolean isUsedCoupon = orderProducts.stream()
+            .anyMatch(orderProductSpecificDto -> orderProductSpecificDto.getCouponAmount() > 0);
+
+        if (isUsedCoupon) {
+            List<Integer> couponNos = orderProducts.stream()
+                .filter(orderProductSpecificDto -> orderProductSpecificDto.getCouponAmount() > 0)
+                .map(OrderProductSpecificDto::getCouponNo)
+                .collect(Collectors.toUnmodifiableList());
+
+            applicationEventPublisher.publishEvent(new CouponUseEvent(couponNos));
+        }
 
         // 주문 상세 저장 실패
         applicationEventPublisher.publishEvent(new OrderProductCancelEvent(savedOrderProducts));
     }
 
-    private OrderProduct makeOrderProduct(Order order, Product product,
-                                          OrderProductSpecificDto orderProductSpecific,
-                                          StatusCode statusCode) {
+    private OrderProduct makeOrderProduct(Order order, StatusCode statusCode,
+                                          OrderProductSpecificDto orderProductSpecific) {
         Integer additionalWarrantyPeriod = orderProductSpecific.getAdditionalWarrantyPeriod();
-        Integer couponWarrantyPeriod = orderProductSpecific.getCouponWarrantyPeriod();
+        Long amount = orderProductSpecific.getAmount();
+        LocalDate hopeDate = orderProductSpecific.getHopeDate();
+        Integer couponNo = orderProductSpecific.getCouponNo();
+
+        Product product = productRepository.findById(orderProductSpecific.getProductNo())
+            .orElseThrow(ProductNotFoundException::new);
 
         return OrderProduct.builder()
             .order(order)
             .product(product)
-            .amount(calculateTotalAmount(
-                product.getAmount(), additionalWarrantyPeriod, couponWarrantyPeriod))
-            .warrantyExpirationDate(LocalDate.now().plusYears(1L)
-                .plusMonths(additionalWarrantyPeriod))
-            .hopeDate(orderProductSpecific.getHopeDate())
-            .memberCouponNo(orderProductSpecific.getCouponNo())
+            .amount(amount)
+            .warrantyExpirationDate(calculateWarrantyDate(additionalWarrantyPeriod))
+            .hopeDate(hopeDate)
+            .memberCouponNo(couponNo)
             .orderStatusCode(statusCode)
             .build();
-    }
-
-    private Long calculateTotalAmount(Long amount, Integer additionalWarrantyPeriod,
-                                      Integer couponWarrantyPeriod) {
-        double result = amount + (0.1 * amount) * (additionalWarrantyPeriod - couponWarrantyPeriod);
-        return (long) result;
     }
 
     private void decreaseProductStock(List<OrderProduct> savedOrderProducts) {
@@ -114,6 +111,11 @@ public class OrderProductServiceImpl implements OrderProductService {
             }
             product.updateStockQuantity(afterStock);
         });
+    }
+
+    private LocalDate calculateWarrantyDate(Integer additionalWarrantyPeriod) {
+        return LocalDate.now().plusYears(1L)
+            .plusMonths(additionalWarrantyPeriod);
     }
 
     @Transactional

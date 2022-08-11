@@ -69,6 +69,7 @@ public class Order {
 
     private String orderPaymentKey;
 
+    @NotNull
     @ColumnDefault("0")
     private Long totalOrderAmount;
 
@@ -87,25 +88,28 @@ public class Order {
      * @param addressList 어디로 배송을 원하는지에 대한 배송지 목록 엔티티 객체입니다.
      * @param receiptName 실제 수령자 이름입니다.
      * @param receiptPhoneNumber 실제 수령자의 전화번호입니다.
+     * @param totalOrderAmount 총 주문 금액입니다.
      * @param receiptSubPhoneNumber 실제 수령자의 부 전화번호입니다. (선택)
      * @param deliveryRequest 배송요청 사항입니다. (선택)
      */
     @Builder
     public Order(Member member, AddressList addressList,
                  String receiptName, String receiptPhoneNumber,
+                 Long totalOrderAmount,
                  @Nullable String receiptSubPhoneNumber,
                  @Nullable String deliveryRequest
                  ) {
         this.member = member;
         this.addressList = addressList;
         this.orderDatetime = LocalDateTime.now();
+        this.totalOrderAmount = totalOrderAmount;
         this.receiptName = receiptName;
         this.receiptPhoneNumber = receiptPhoneNumber;
         this.receiptSubPhoneNumber = receiptSubPhoneNumber;
         this.deliveryRequest = deliveryRequest;
     }
 
-    public void updateTotalOrderAmount(Long totalOrderAmount) {
-        this.totalOrderAmount = totalOrderAmount;
+    public void updateOrderPaymentKey(String orderPaymentKey) {
+        this.orderPaymentKey = orderPaymentKey;
     }
 }

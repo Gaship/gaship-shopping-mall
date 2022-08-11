@@ -11,13 +11,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.employee.entity.QEmployee;
-import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.entity.QInquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquirySearchBadRequestException;
 import shop.gaship.gashipshoppingmall.inquiry.repository.custom.InquiryRepositoryCustom;
+import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.member.entity.QMember;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
@@ -38,7 +38,7 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
 
     @Override
     public Page<InquiryListResponseDto> findAllThroughSearchDto(Pageable pageable,
-            InquiryListSearch inquirySearchRequestDto) {
+                                                        InquiryListSearch inquirySearchRequestDto) {
         QInquiry inquiry = QInquiry.inquiry;
         QMember member = QMember.member;
         QStatusCode statusCode = QStatusCode.statusCode;
