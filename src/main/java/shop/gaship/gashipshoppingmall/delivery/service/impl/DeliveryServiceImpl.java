@@ -30,10 +30,10 @@ public class DeliveryServiceImpl implements DeliveryService {
             orderProductRepository.findOrderInfo(orderProductNo)
                                   .orElseThrow(OrderProductNotFoundException::new);
 
-        // 암호화 되어 있는 정보를 디코딩 해서 보내줘야 함!!
-//        deliveryDto.decodingReceiverAddress(aes.aesEcbDecode(deliveryDto.getReceiverAddress()));
-//        deliveryDto.decodingReceiverName(aes.aesEcbDecode(deliveryDto.getReceiverName()));
-//        deliveryDto.decodingReceiverPhone(aes.aesEcbDecode(deliveryDto.getReceiverPhone()));
+
+        deliveryDto.decodingReceiverAddress(aes.aesEcbDecode(deliveryDto.getReceiverAddress()));
+        deliveryDto.decodingReceiverName(aes.aesEcbDecode(deliveryDto.getReceiverName()));
+        deliveryDto.decodingReceiverPhone(aes.aesEcbDecode(deliveryDto.getReceiverPhone()));
 
 
         deliveryAdaptor.createTrackingNo(deliveryDto);
