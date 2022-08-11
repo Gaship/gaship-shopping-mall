@@ -8,6 +8,7 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Swagger REST API document를 제공하기 위한 설정 클래스입니다.
@@ -16,6 +17,7 @@ import springfox.documentation.spring.web.plugins.Docket;
  * @since 1.0
  */
 @Configuration
+@EnableSwagger2
 public class SwaggerConfiguration {
     /**
      * api 데모를 보여주기위한 설정을하는 스프링 빈입니다.

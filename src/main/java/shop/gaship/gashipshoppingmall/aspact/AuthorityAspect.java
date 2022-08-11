@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.aspact;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -93,7 +94,7 @@ public class AuthorityAspect {
         HttpServletRequest request = requestAttributes.getRequest();
         String authority = request.getHeader("X-AUTH-ROLE");
 
-        if (qualifyAuthority.test(authority)) {
+        if (isExecutable(qualifyAuthority, request, authority)) {
             try {
                 return pjp.proceed(pjp.getArgs());
             } catch (Throwable e) {
@@ -103,6 +104,12 @@ public class AuthorityAspect {
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(new InvalidAuthorityException("접근권한이 없습니다."));
+    }
+
+    private boolean isExecutable(Predicate<String> qualifyAuthority, HttpServletRequest request,
+                               String authority) {
+        return Objects.equals(request.getRequestURI(), "swagger-ui")
+            || Objects.nonNull(authority) && qualifyAuthority.test(authority);
     }
 
     /**
