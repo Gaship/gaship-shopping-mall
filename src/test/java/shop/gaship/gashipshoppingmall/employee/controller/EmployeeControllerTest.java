@@ -1,11 +1,14 @@
 package shop.gaship.gashipshoppingmall.employee.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +16,25 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dummy.CreateEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.dummy.GetEmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
+import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
+import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -98,7 +107,7 @@ class EmployeeControllerTest {
     @Test
     void putEmployee() throws Exception {
         //given
-        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto("aa", "test@mail.com", "000000");
+        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, "yhc", "test@mail.com", "000000");
 
         //when & then
         doNothing().when(service).modifyEmployee(dto);
@@ -118,7 +127,7 @@ class EmployeeControllerTest {
     @Test
     void putEmployeeFail() throws Exception {
         //given
-        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(null, "test@mail.com", "000000");
+        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, null, "test@mail.com", "000000");
 
         //when & then
         doNothing().when(service).modifyEmployee(dto);
@@ -201,5 +210,45 @@ class EmployeeControllerTest {
         assertThat(e2.getEmail()).isEqualTo(email2);
         assertThat(e2.getPhoneNo()).isEqualTo(phoneNo2);
         assertThat(e2.getName()).isEqualTo(name2);
+    }
+
+    @Test
+    void employeeInstallOrdersFindTest() throws Exception {
+
+        InstallOrderResponseDto dto = InstallOrderResponseDto.builder()
+            .address("경상남도 김해시")
+            .addressDetail("ㅇㅇ길 정우빌딩 5층")
+            .orderNo(1)
+            .memberName("정우")
+            .phoneNumber("01011132222")
+            .zipCode("12345")
+            .build();
+        List<InstallOrderResponseDto> orderList = IntStream.range(0, 25)
+                .mapToObj(value -> dto)
+                .collect(Collectors.toUnmodifiableList());
+
+        given(service.findInstallOrdersFromEmployeeLocation(any(Pageable.class), anyInt()))
+            .willReturn(new PageImpl<>(orderList, PageRequest.of(0, 10), 30));
+
+        MvcResult mvcResult = mvc.perform(get("/api/employees/{employeeNo}/orders", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .queryParam("page", "0")
+                .queryParam("size", "10"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.totalPage").value(3))
+            .andExpect(jsonPath("$.size").value(10))
+            .andExpect(jsonPath("$.hasPrev").value(false))
+            .andExpect(jsonPath("$.hasNext").value(true))
+            .andExpect(jsonPath("$.installOrders").isArray())
+            .andExpect(jsonPath("$.installOrders").exists())
+            .andExpect(jsonPath("$.installOrders[0].orderNo").value(dto.getOrderNo()))
+            .andExpect(jsonPath("$.installOrders[0].address").value(dto.getAddress()))
+            .andExpect(jsonPath("$.installOrders[0].addressDetail").value(dto.getAddressDetail()))
+            .andExpect(jsonPath("$.installOrders[0].zipCode").value(dto.getZipCode()))
+            .andExpect(jsonPath("$.installOrders[0].memberName").value(dto.getMemberName()))
+            .andExpect(jsonPath("$.installOrders[0].phoneNumber").value(dto.getPhoneNumber()))
+            .andDo(print())
+            .andReturn();
     }
 }

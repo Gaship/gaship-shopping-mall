@@ -1,11 +1,16 @@
 package shop.gaship.gashipshoppingmall.product.event;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
+import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
+import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
+import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 /**
@@ -18,6 +23,7 @@ import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 @RequiredArgsConstructor
 public class ProductSaveUpdateEventHandler {
     private final FileUploadUtil fileUploadUtil;
+    private final ElasticProductRepository elasticProductRepository;
 
     /**
      * 상품 생성 및 수정이 롤백되었을 때 업로드했던 파일을 삭제하는 이벤트 핸들 메서드입니다.
@@ -28,7 +34,25 @@ public class ProductSaveUpdateEventHandler {
      */
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
-    public void handle(ProductSaveUpdateEvent event) {
+    public void handleRollback(ProductSaveUpdateEvent event) {
         fileUploadUtil.cleanUpFiles(event.getImageLinks());
+    }
+
+    /**
+     * 상품 생성, 수정 커밋 시 이벤트 핸들 메서드입니다.
+     * 수정 전 이미지파일 삭제합니다, 상품을 엘라스틱 레퍼지토리에 저장합니다.
+     *
+     * @param event 상품 생성 및 수정 이벤트
+     */
+    @Transactional
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleCommit(ProductSaveUpdateEvent event) {
+        fileUploadUtil.cleanUpFiles(event.getBeforeImages().stream()
+                .map(CommonFile::getPath)
+                .collect(Collectors.toList()));
+
+        Product savedProduct = event.getSavedProduct();
+        elasticProductRepository.save(new ElasticProduct(
+                savedProduct.getNo(), savedProduct.getName(), savedProduct.getCode()));
     }
 }

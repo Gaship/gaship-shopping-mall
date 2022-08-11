@@ -2,9 +2,7 @@ package shop.gaship.gashipshoppingmall.product.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,20 +14,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.Length;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 
 /**
  * 상품 엔티티 클래스 입니다.
@@ -40,8 +39,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 @Entity
 @Getter
 @NoArgsConstructor
-@EqualsAndHashCode
-@AllArgsConstructor
 @Table(name = "products")
 public class Product {
 
@@ -65,8 +62,8 @@ public class Product {
     @JoinColumn(name = "sales_status_no")
     private StatusCode salesStatus;
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductTag> productTags = new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ProductTag> productTags = new ArrayList<>();
 
     @Length(max = 100, message = "상품 이름은 100자 이하여야 합니다.")
     @NotNull
@@ -74,7 +71,7 @@ public class Product {
 
     @Min(value = 0, message = "금액은 0보다 커야 합니다.")
     @NotNull
-    Long amount;
+    private Long amount;
 
     @NotNull
     private LocalDateTime registerDatetime;
@@ -110,22 +107,6 @@ public class Product {
     @NotNull
     private Integer stockQuantity;
 
-    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    @NotNull
-    private String imageLink1;
-
-    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    private String imageLink2;
-
-    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    private String imageLink3;
-
-    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    private String imageLink4;
-
-    @Length(max = 255, message = "이미지링크는 255자 이하여야 합니다.")
-    private String imageLink5;
-
     @NotNull
     private String explanation;
 
@@ -137,6 +118,34 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     List<Inquiry> inquiries = new ArrayList<>();
 
+    @Transient
+    public static final String SERVICE = "product";
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "owner_no", referencedColumnName = "product_no")
+    @Where(clause = "service = 'product'")
+    private final List<CommonFile> productImages = new ArrayList<>();
+
+    /**
+     * 상품을 생성하는 생성자입니다.
+     *
+     * @param category 상품의 카테고리입니다.
+     * @param deliveryType 상품의 배송타입입니다.
+     * @param name 상품명입니다.
+     * @param amount 상품의 가격입니다.
+     * @param registerDatetime 상품의 등록 시간입니다.
+     * @param manufacturer 제조사입니다.
+     * @param manufacturerCountry 제조국입니다.
+     * @param seller 판매자
+     * @param importer 수입자
+     * @param shippingInstallationCost 설치비용
+     * @param qualityAssuranceStandard 품질보증기준
+     * @param color 색상
+     * @param stockQuantity 재고수량
+     * @param explanation 설명
+     * @param code 상품코드
+     */
+    @SuppressWarnings("java:S107") // 빌더 패턴 제작시 필요하기 때문
     @Builder
     public Product(Category category, StatusCode deliveryType, String name,
                    Long amount, LocalDateTime registerDatetime, String manufacturer,
@@ -161,36 +170,6 @@ public class Product {
     }
 
     /**
-     * 상품 생성 메서드입니다.
-     *
-     * @param category 상품의 카테고리
-     * @param deliveryType 상품의 배송형태
-     * @param createRequest 상품 생성 요청 dto
-     * @return product 생성 상품
-     * @author 김보민
-     */
-    public static Product create(Category category, StatusCode deliveryType,
-                                 ProductCreateRequestDto createRequest) {
-        return Product.builder()
-                .category(category)
-                .deliveryType(deliveryType)
-                .name(createRequest.getName())
-                .amount(createRequest.getAmount())
-                .registerDatetime(LocalDateTime.now())
-                .manufacturer(createRequest.getManufacturer())
-                .manufacturerCountry(createRequest.getManufacturerCountry())
-                .seller(createRequest.getSeller())
-                .importer(createRequest.getImporter())
-                .shippingInstallationCost(createRequest.getShippingInstallationCost())
-                .qualityAssuranceStandard(createRequest.getQualityAssuranceStandard())
-                .color(createRequest.getColor())
-                .stockQuantity(createRequest.getStockQuantity())
-                .explanation(createRequest.getExplanation())
-                .code(createRequest.getCode())
-                .build();
-    }
-
-    /**
      * 상품 수정 메서드입니다.
      *
      * @param category 상품의 카테고리
@@ -199,7 +178,7 @@ public class Product {
      * @author 김보민
      */
     public void updateProduct(Category category, StatusCode deliveryType,
-                              ProductModifyRequestDto modifyRequest) {
+                              ProductRequestDto modifyRequest) {
         this.category = category;
         this.deliveryType = deliveryType;
         this.name = modifyRequest.getName();
@@ -227,38 +206,41 @@ public class Product {
     }
 
     /**
-     * 서버에 업로드한 상품의 이미지들을 엔티티에 업데이트하는 메서드입니다.
+     * 상품에 이미지파일을 추가하는 메서드입니다.
      *
-     * @param imageLinks 서버에 업로드한 이미지 이름 리스트
-     * @author 김보민
+     * @param commonFile 추가할 이미지파일 엔티티
      */
-    public void updateImageLinks(List<String> imageLinks) {
-        String[] updatingImageLinks = new String[5];
-        IntStream.range(0, imageLinks.size())
-                .forEach(i -> updatingImageLinks[i] = imageLinks.get(i));
-
-        this.imageLink1 = updatingImageLinks[0];
-        this.imageLink2 = updatingImageLinks[1];
-        this.imageLink3 = updatingImageLinks[2];
-        this.imageLink4 = updatingImageLinks[3];
-        this.imageLink5 = updatingImageLinks[4];
+    public void addProductImage(CommonFile commonFile) {
+        commonFile.updateCommonFile(no, SERVICE);
+        productImages.add(commonFile);
     }
 
     /**
-     * 상품의 이미지 링크들을 리스트형태로 반환하는 메서드입니다.
-     *
-     * @return imageLinks 이미지 링크 리스트
+     * 상품의 이미지파일들을 모두 삭제하는 메서드입니다.
      */
-    public List<String> getImageLinkList() {
-        List<String> imageLinks = new ArrayList<>();
+    public void removeAllProductImages() {
+        productImages.clear();
+    }
 
-        imageLinks.add(this.imageLink1);
-        imageLinks.add(this.imageLink2);
-        imageLinks.add(this.imageLink3);
-        imageLinks.add(this.imageLink4);
-        imageLinks.add(this.imageLink5);
-        imageLinks.removeAll(Collections.singletonList(null));
+    /**
+     * 상품에 상품태그를 추가하는 메서드입니다.
+     *
+     * @param tag 추가할 태그
+     */
+    public void addProductTag(Tag tag) {
+        productTags.add(new ProductTag(new ProductTag.Pk(no, tag.getTagNo()), this, tag));
+    }
 
-        return imageLinks;
+    /**
+     * 상품태그를 삭제하는 메서드입니다.
+     *
+     * @param tagNo 삭제할 태그번호
+     */
+    public void removeProductTag(Integer tagNo) {
+        productTags.removeIf(productTag -> productTag.getPk().getTagNo().equals(tagNo));
+    }
+
+    public void updateStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 }

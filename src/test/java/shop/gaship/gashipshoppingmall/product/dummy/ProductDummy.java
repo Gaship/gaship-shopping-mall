@@ -2,10 +2,10 @@ package shop.gaship.gashipshoppingmall.product.dummy;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 public class ProductDummy {
 
@@ -25,13 +25,24 @@ public class ProductDummy {
                 .stockQuantity(10)
                 .explanation("설명")
                 .code("A001")
+                .deliveryType( StatusCode.builder()
+                    .statusCodeName("시공")
+                    .groupCodeName("주문")
+                    .explanation("제품의 배송타입입니다.")
+                    .priority(1)
+                    .build())
                 .build();
-        dummy.updateImageLinks(List.of("이미지 링크"));
+        dummy.updateSalesStatus(StatusCode.builder()
+                .statusCodeName("판매중")
+                .groupCodeName("판매 상태")
+                .priority(1)
+                .build());
         return dummy;
     }
 
-    public static ProductCreateRequestDto createRequestDummy() {
-        return new ProductCreateRequestDto(
+    public static ProductRequestDto createRequestDummy() {
+        return new ProductRequestDto(
+                null,
                 1,
                 1,
                 "상품이름",
@@ -50,8 +61,8 @@ public class ProductDummy {
         );
     }
 
-    public static ProductModifyRequestDto modifyRequestDummy() {
-        return new ProductModifyRequestDto(
+    public static ProductRequestDto modifyRequestDummy() {
+        return new ProductRequestDto(
                 1,
                 1,
                 1,
@@ -69,5 +80,9 @@ public class ProductDummy {
                 List.of(),
                 "A001"
         );
+    }
+
+    public static void productDummyStockMakeZero(Product product){
+        product.updateStockQuantity(0);
     }
 }

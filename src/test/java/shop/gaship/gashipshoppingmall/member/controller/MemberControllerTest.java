@@ -3,14 +3,12 @@ package shop.gaship.gashipshoppingmall.member.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
@@ -23,17 +21,31 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import shop.gaship.gashipshoppingmall.member.dto.request.FindMemberEmailRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
-import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
+import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
+import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberBaseDummy;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.controller <br/>
@@ -71,8 +83,8 @@ class MemberControllerTest {
         doNothing().when(memberService).addMember(MemberCreationRequestDummy.dummy());
 
         mockMvc.perform(post("/api/members/sign-up")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(contentBody))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(contentBody))
             .andDo(print())
             .andExpect(status().isCreated());
     }
@@ -158,8 +170,11 @@ class MemberControllerTest {
     @Test
     @DisplayName("닉네임을 통한 추천할 회원의 고유번호 조회 : 성공 ")
     void retrieveMemberFromNicknameCaseSuccess() throws Exception {
+        Member memberDummy = MemberDummy.dummy();
+        ReflectionTestUtils.setField(memberDummy, "memberNo", 1);
+
         given(memberService.findMemberFromNickname(anyString()))
-            .willReturn(MemberDummy.dummy());
+            .willReturn(memberDummy);
 
         mockMvc.perform(get("/api/members/recommend-member")
                 .param("nickname", "example nickname"))
@@ -199,7 +214,6 @@ class MemberControllerTest {
             .andExpect(jsonPath("$.memberNo").value(dummy.getMemberNo()))
             .andExpect(jsonPath("$.email").value(dummy.getEmail()))
             .andExpect(jsonPath("$.hashedPassword").value(dummy.getHashedPassword()))
-            .andExpect(jsonPath("$.isSocial").value(false))
             .andExpect(jsonPath("$.authorities[0]")
                 .value(dummy.getAuthorities().toArray()[0]));
     }
@@ -311,5 +325,46 @@ class MemberControllerTest {
             .andExpect(jsonPath("$.message")
                 .value("해당 멤버를 찾을 수 없습니다"))
             .andDo(print());
+    }
+
+    @DisplayName("회원 정보 수정 테스트")
+    @Test
+    void modifyMemberTest() throws Exception {
+        String body = objectMapper.writeValueAsString(MemberBaseDummy.memberModifyRequestDtoDummy());
+        doNothing().when(memberService).modifyMember(MemberBaseDummy.memberModifyRequestDtoDummy());
+
+        mockMvc.perform(put("/api/members/{memberNo}", 1)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(memberService, times(1)).modifyMember(any());
+    }
+
+    @DisplayName("회원 삭제 테스트(실삭제(db 에서 삭제))")
+    @Test
+    void deleteMemberTest() throws Exception {
+        doNothing().when(memberService).removeMember(any(Integer.class));
+        mockMvc.perform(delete("/api/members/1").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+
+        verify(memberService).removeMember(any());
+    }
+
+
+    @DisplayName("회원 단건 조회 테스트")
+    @Test
+    void getMemberTest() throws Exception {
+        when(memberService.findMember(anyInt())).thenReturn(MemberBaseDummy.memberResponseDtoDummy());
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/members/1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(memberService).findMember(any());
     }
 }

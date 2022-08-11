@@ -1,9 +1,6 @@
 package shop.gaship.gashipshoppingmall.elastic.repositroy;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -11,7 +8,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
-import shop.gaship.gashipshoppingmall.elastic.repository.ElasticRepository;
+import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ElasticProductRepositoryTest {
     @Autowired
-    ElasticRepository repository;
+    ElasticProductRepository repository;
 
     private final Integer productNo = 100;
     private ElasticProduct elasticProduct;

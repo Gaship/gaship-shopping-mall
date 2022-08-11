@@ -9,5 +9,6 @@ import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
  * @author : 김세미
  * @since 1.0
  */
-public interface OrderProductRepository extends JpaRepository<OrderProduct, Integer> {
+public interface OrderProductRepository extends JpaRepository<OrderProduct, Integer>,
+    OrderProductRepositoryCustom {
 }

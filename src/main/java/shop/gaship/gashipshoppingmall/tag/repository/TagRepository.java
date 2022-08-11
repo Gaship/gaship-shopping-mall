@@ -10,7 +10,7 @@ import shop.gaship.gashipshoppingmall.tag.entity.Tag;
  * @author 최정우
  * @since 1.0
  */
-public interface TagRepository extends JpaRepository<Tag, Integer>, TagRepositoryCustom {
+public interface TagRepository extends JpaRepository<Tag, Integer> {
     /**
      * title 이라는 태그명이 있는지 판단하는 메서드입니다.
      *
@@ -26,5 +26,15 @@ public interface TagRepository extends JpaRepository<Tag, Integer>, TagRepositor
      * @return 아이디 값에 대응되는 태그리스트
      */
     List<Tag> findByTagNoIn(List<Integer> tagIds);
+
+    @Override
+    List<Tag> findAllById(Iterable<Integer> tagIds);
+
+    /**
+     * 모든 태그를 가져오는 메서드입니다.
+     *
+     * @return 아이디 값에 대응되는 태그리스트
+     */
+    List<Tag> findAll();
 
 }

@@ -1,21 +1,30 @@
 package shop.gaship.gashipshoppingmall.employee.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
+import shop.gaship.gashipshoppingmall.employee.exception.EmailAlreadyExistException;
 import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongStatusCodeException;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -37,6 +46,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final AddressLocalRepository localRepository;
 
+    private final Aes aes;
+
+    private final Sha512 sha512;
+
+
     /**
      * {@inheritDoc}
      *
@@ -54,10 +68,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         AddressLocal addressLocal = localRepository.findById(dto.getAddressNo())
             .orElseThrow(WrongAddressException::new);
 
-        Employee employee = new Employee();
-        employee.registerEmployee(dto);
-        employee.fixLocation(addressLocal);
-        employee.fixCode(statusCode);
+        if (Boolean.TRUE.equals(repository.existsByEncodedEmailForSearch(
+            sha512.encryptPlainText(dto.getEmail())))) {
+            throw new EmailAlreadyExistException();
+        }
+
+        Employee employee = Employee.builder()
+            .addressLocal(addressLocal)
+            .statusCode(statusCode)
+            .email(aes.aesEcbEncode(dto.getEmail()))
+            .name(aes.aesEcbEncode(dto.getName()))
+            .password((dto.getPassword()))
+            .encodedEmailForSearch(sha512.encryptPlainText(dto.getEmail()))
+            .phoneNo(aes.aesEcbEncode(dto.getPhoneNo()))
+            .build();
 
         repository.save(employee);
     }
@@ -72,9 +96,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void modifyEmployee(ModifyEmployeeRequestDto dto) {
-        Employee employee = repository.findById(1)
+        Employee employee = repository.findById(dto.getEmployeeNo())
             .orElseThrow(EmployeeNotFoundException::new);
-        employee.modifyEmployee(dto);
+
+        if (Boolean.TRUE.equals(repository.existsByEncodedEmailForSearch(
+            sha512.encryptPlainText(dto.getEmail())))) {
+            throw new EmailAlreadyExistException();
+        }
+
+        employee.modifyEmployee(
+            aes.aesEcbEncode(dto.getName()),
+            aes.aesEcbEncode(dto.getPhoneNo()));
     }
 
     /**
@@ -90,7 +122,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = repository.findById(employeeNo)
             .orElseThrow(EmployeeNotFoundException::new);
 
-        return new EmployeeInfoResponseDto(employee);
+        return new EmployeeInfoResponseDto(
+            aes.aesEcbDecode(employee.getName()),
+            aes.aesEcbDecode(employee.getEmail()),
+            employee.getPassword(),
+            employee.getAddressLocal().getAddressName());
     }
 
     /**
@@ -112,7 +148,35 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public SignInUserDetailsDto findSignInEmployeeFromEmail(String email) {
-        return repository.findSignInEmployeeUserDetail(email)
+        SignInUserDetailsDto result = repository
+            .findSignInEmployeeUserDetail(sha512.encryptPlainText(email))
             .orElseThrow(EmployeeNotFoundException::new);
+
+        result.setEmail(aes.aesEcbDecode(result.getEmail()));
+
+        return result;
     }
+
+    @Override
+    public Page<InstallOrderResponseDto> findInstallOrdersFromEmployeeLocation(
+        Pageable pageable, Integer employeeNo) {
+        Page<Order> orderPage = repository.findOrderBasedOnEmployeeLocation(pageable, employeeNo);
+        List<InstallOrderResponseDto> installOrders = orderPage.getContent().stream()
+            .map(order -> InstallOrderResponseDto.builder()
+                .orderNo(order.getNo())
+                .address(order.getAddressList()
+                            .getAddressLocal()
+                            .getUpperLocal()
+                            .getAddressName().concat(" ")
+                        .concat(order.getAddressList()
+                            .getAddressLocal()
+                            .getAddressName()).concat(" ")
+                        .concat(order.getAddressList().getAddress()))
+                .build())
+            .collect(Collectors.toUnmodifiableList());
+
+        return PageableExecutionUtils.getPage(installOrders, pageable, orderPage::getTotalPages);
+    }
+
+
 }

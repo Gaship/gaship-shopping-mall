@@ -18,11 +18,10 @@ public class SignInUserDetailDummy {
         Member dummyMember = MemberDummy.dummy();
 
         return SignInUserDetailsDto.builder()
-                .authorities(List.of(dummyMember.getMemberGrades().getName()))
-                .email(dummyMember.getEmail())
-                .memberNo(dummyMember.getMemberNo())
-                .hashedPassword(dummyMember.getPassword())
-                .isSocial(false)
-                .build();
+            .authorities(List.of(dummyMember.getMemberGrades().getName()))
+            .email(dummyMember.getEmail())
+            .memberNo(dummyMember.getMemberNo())
+            .hashedPassword(dummyMember.getPassword())
+            .build();
     }
 }

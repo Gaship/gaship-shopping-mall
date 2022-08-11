@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
+import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
+import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
@@ -23,7 +27,7 @@ import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewVie
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 import shop.gaship.gashipshoppingmall.productreview.event.ProductReviewDeleteEvent;
-import shop.gaship.gashipshoppingmall.productreview.event.ProductReviewSaveEvent;
+import shop.gaship.gashipshoppingmall.productreview.event.ProductReviewSaveUpdateEvent;
 import shop.gaship.gashipshoppingmall.productreview.exception.ProductReviewNotFoundException;
 import shop.gaship.gashipshoppingmall.productreview.repository.ProductReviewRepository;
 import shop.gaship.gashipshoppingmall.productreview.service.ProductReviewService;
@@ -44,6 +48,8 @@ public class ProductReviewServiceImpl implements ProductReviewService {
     private final OrderProductRepository orderProductRepository;
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
+    private final CommonFileRepository fileRepository;
+    private final CommonFileService fileService;
     private final FileUploadUtil fileUploadUtil;
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -60,7 +66,12 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .orElseThrow(OrderProductNotFoundException::new);
 
         ProductReview review = createProductReview(createRequest, orderProduct);
-        uploadProductReviewImage(review, file);
+
+        if (Objects.nonNull(file)) {
+            String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);
+            applicationEventPublisher.publishEvent(new ProductReviewSaveUpdateEvent(imagePath));
+            review.addProductReviewImage(fileService.createCommonFile(imagePath));
+        }
 
         productReviewRepository.save(review);
     }
@@ -76,11 +87,16 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         ProductReview review = productReviewRepository.findById(modifyRequest.getOrderProductNo())
                 .orElseThrow(ProductReviewNotFoundException::new);
 
-        if (!Objects.isNull(review.getImagePath())) {
-            fileUploadUtil.cleanUpFiles(List.of(review.getImagePath()));
-        }
+        ProductReviewSaveUpdateEvent event =
+                new ProductReviewSaveUpdateEvent(review.getReviewImages());
+        applicationEventPublisher.publishEvent(event);
+        review.removeAllProductReviewImages();
 
-        uploadProductReviewImage(review, file);
+        if (Objects.nonNull(file)) {
+            String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);
+            event.setImagePath(imagePath);
+            review.addProductReviewImage(fileService.createCommonFile(imagePath));
+        }
 
         review.updateProductReview(modifyRequest.getTitle(), modifyRequest.getContent(),
                 modifyRequest.getStarScore());
@@ -99,7 +115,10 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
         productReviewRepository.deleteById(orderProductNo);
 
-        applicationEventPublisher.publishEvent(new ProductReviewDeleteEvent(review.getImagePath()));
+        applicationEventPublisher.publishEvent(
+                new ProductReviewDeleteEvent(review.getReviewImages().stream()
+                        .map(CommonFile::getPath)
+                        .collect(Collectors.toList())));
     }
 
     /**
@@ -115,10 +134,13 @@ public class ProductReviewServiceImpl implements ProductReviewService {
             throw new OrderProductNotFoundException();
         }
 
-        return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
+        Page<ProductReviewResponseDto> reviewResponseDtos =
+                productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
                         .orderProductNo(orderProductNo)
-                        .build())
-                .getContent().stream()
+                        .build());
+        findFilePath(reviewResponseDtos);
+
+        return reviewResponseDtos.getContent().stream()
                 .findFirst()
                 .orElseThrow(ProductReviewNotFoundException::new);
     }
@@ -129,9 +151,12 @@ public class ProductReviewServiceImpl implements ProductReviewService {
     @Transactional(readOnly = true)
     @Override
     public Page<ProductReviewResponseDto> findReviews(Pageable pageable) {
-        return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
-                .pageable(pageable)
-                .build());
+        Page<ProductReviewResponseDto> reviewResponseDtos =
+                productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
+                        .pageable(pageable)
+                        .build());
+        findFilePath(reviewResponseDtos);
+        return reviewResponseDtos;
     }
 
     /**
@@ -147,10 +172,13 @@ public class ProductReviewServiceImpl implements ProductReviewService {
             throw new ProductNotFoundException();
         }
 
-        return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
+        Page<ProductReviewResponseDto> reviewResponseDtos =
+                productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
                         .productNo(productNo)
                         .pageable(pageable)
-                .build());
+                        .build());
+        findFilePath(reviewResponseDtos);
+        return reviewResponseDtos;
     }
 
     /**
@@ -166,10 +194,13 @@ public class ProductReviewServiceImpl implements ProductReviewService {
             throw new MemberNotFoundException();
         }
 
-        return productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
+        Page<ProductReviewResponseDto> reviewResponseDtos =
+                productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
                         .memberNo(memberNo)
                         .pageable(pageable)
-                .build());
+                        .build());
+        findFilePath(reviewResponseDtos);
+        return reviewResponseDtos;
     }
 
     /**
@@ -191,16 +222,13 @@ public class ProductReviewServiceImpl implements ProductReviewService {
     }
 
     /**
-     * 상품평 이미지가 있을 경우 해당 이미지를 업로드하는 메서드입니다.
+     * 상품평의 이미지경로를 찾아오는 메서드입니다.
      *
-     * @param review 상품평
-     * @param file 이미지 파일
+     * @param productReviews 이미지경로를 찾을 상품평
      */
-    private void uploadProductReviewImage(ProductReview review, MultipartFile file) {
-        if (Objects.nonNull(file)) {
-            String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);
-            review.updateImagePath(imagePath);
-            applicationEventPublisher.publishEvent(new ProductReviewSaveEvent(imagePath));
-        }
+    private void findFilePath(Page<ProductReviewResponseDto> productReviews) {
+        productReviews.getContent().forEach(review -> review.getFilePaths()
+                .addAll(fileRepository.findPaths(review.getOrderProductNo(),
+                        ProductReview.SERVICE)));
     }
 }
