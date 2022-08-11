@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.employee.repository.impl;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +17,7 @@ import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 
 /**
- * 쿼리DSL을 통해 직원에 관한 커스텀 쿼리를 구현시 사용하는 클래스입니다.
+ * 쿼리 DSL 을 통해 직원에 관한 커스텀 쿼리를 구현시 사용하는 클래스입니다.
  *
  * @author 김민수
  * @see QuerydslRepositorySupport
@@ -51,7 +50,6 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
                         employee.employeeNo,
                         employee.email,
                         employee.password.as("hashedPassword"),
-                        Expressions.asBoolean(false),
                         Projections.list(employee.statusCode.statusCodeName))
                 )
                 .fetchOne()

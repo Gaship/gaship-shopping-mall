@@ -20,6 +20,5 @@ public class SignInUserDetailsDto {
     @Setter
     private String email;
     private String hashedPassword;
-    private Boolean isSocial;
     private Collection<String> authorities;
 }
