@@ -365,7 +365,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(MemberNotFoundException::new);
         String decodedMemberName = aes.aesEcbDecode(member.getName());
         String requestMemberName = reissuePasswordRequest.getName();
-
         if (!Objects.equals(decodedMemberName, requestMemberName)) {
             throw new InvalidReissueQualificationException();
         }
