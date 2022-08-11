@@ -8,6 +8,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberStatus;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
@@ -60,19 +61,37 @@ public class MemberBaseDummy {
         return dummy;
     }
 
-    public static MemberResponseDto memberResponseDto() {
+    public static MemberResponseDto memberResponseDtoDummy() {
 
         return MemberResponseDto.builder()
                 .memberNo(memberNo)
+                .recommendMemberName(recommendMemberNickname)
                 .memberStatus(memberStatus)
+                .memberGrade("왕")
                 .email(email)
-                .authorities(authorities)
-                .password(password)
                 .phoneNumber(phoneNumber)
+                .nickname(nickname)
                 .name(name)
+                .gender(gender)
                 .birthDate(birthDate)
+                .accumulatePurchaseAmount(accumulatePurchaseAmount)
+                .nextRenewalGradeDate(nextRenewalGradeDate)
+                .registerDatetime(registerDatetime)
+                .build();
+    }
+
+    public static MemberResponseDtoByAdmin memberResponseDtoByAdminDummy() {
+
+        return MemberResponseDtoByAdmin.builder()
+                .memberNo(memberNo)
+                .recommendMemberName(recommendMemberNickname)
+                .memberStatus(memberStatus)
+                .memberGrade("왕")
+                .email(email)
+                .phoneNumber(phoneNumber)
                 .nickname(nickname)
                 .gender(gender)
+                .birthDate(birthDate)
                 .accumulatePurchaseAmount(accumulatePurchaseAmount)
                 .nextRenewalGradeDate(nextRenewalGradeDate)
                 .registerDatetime(registerDatetime)
@@ -81,19 +100,18 @@ public class MemberBaseDummy {
                 .build();
     }
 
-    public static List<MemberResponseDto> MemberResponseDtoDummy() {
-        List<MemberResponseDto> list = new ArrayList<>();
+    public static List<MemberResponseDtoByAdmin> MemberResponseDtoByAdminDummy() {
+        List<MemberResponseDtoByAdmin> list = new ArrayList<>();
         IntStream.rangeClosed(1, 100).forEach(i -> {
-            MemberResponseDto dto = MemberResponseDto.builder()
+            MemberResponseDtoByAdmin dto = MemberResponseDtoByAdmin.builder()
                     .memberNo(i + 1)
+                    .recommendMemberName(recommendMemberNickname)
                     .memberStatus(MemberStatus.ACTIVATION.getValue())
+                    .memberGrade("왕")
                     .email("jwoo1016" + i + "@naver.com")
-                    .authorities(List.of("1","2"))
-                    .password("qwer1234")
-                    .nickname(String.valueOf(i))
-                    .name("최정우")
-                    .gender("남")
                     .phoneNumber("010531783" + (i - 1) / 10 + (i - 1) % 10)
+                    .nickname(String.valueOf(i))
+                    .gender("남")
                     .birthDate(LocalDate.now())
                     .accumulatePurchaseAmount(0L)
                     .nextRenewalGradeDate(LocalDate.now())
@@ -107,10 +125,10 @@ public class MemberBaseDummy {
         return list;
     }
 
-    public static PageResponse<MemberResponseDto> createTestMemberPageResponseDto(){
+    public static PageResponse<MemberResponseDtoByAdmin> memberResponseDtoByAdminDtoPage(){
         Pageable pageable = PageRequest.of(0,10);
-        List<MemberResponseDto> dtoList = List.of(memberResponseDto(), memberResponseDto(), memberResponseDto());
-        Page<MemberResponseDto> page = new PageImpl<>(dtoList, pageable, 100);
+        List<MemberResponseDtoByAdmin> dtoList = List.of(memberResponseDtoByAdminDummy(),memberResponseDtoByAdminDummy());
+        Page<MemberResponseDtoByAdmin> page = new PageImpl<>(dtoList, pageable, 100);
 
         return new PageResponse<>(page);
     }
@@ -119,7 +137,7 @@ public class MemberBaseDummy {
 
         return Member.builder()
                 .memberNo(0)
-                .recommendMember(null)
+                .recommendMember(new Member())
                 .memberStatusCodes(StatusCodeDummy.dummy())
                 .memberGrades(MemberGradeDummy.dummy(
                         MemberGradeDtoDummy.requestDummy("일반", 0L),
