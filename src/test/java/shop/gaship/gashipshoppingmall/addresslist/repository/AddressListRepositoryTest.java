@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.addresslist.repository;
 
 import java.util.stream.IntStream;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author 최정우
  * @since 1.0
  */
+@Disabled
 @DataJpaTest
 class AddressListRepositoryTest {
 
