@@ -18,6 +18,7 @@ import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
@@ -294,6 +295,13 @@ public class MemberServiceImpl implements MemberService {
                 memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new), aes);
     }
 
+
+    @Override
+    public MemberResponseDtoByAdmin findMemberByAdmin(Integer memberNo) {
+        return entityToMemberResponseDtoByAdmin(
+                memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new), aes);
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -301,8 +309,8 @@ public class MemberServiceImpl implements MemberService {
      * @return 멤버들을 정보를 페이징 단위로 가지고있는 객체입니다.
      */
     @Override
-    public PageResponse<MemberResponseDto> findMembers(Pageable pageable) {
-        Page<MemberResponseDto> page = memberRepository.findMembers(pageable);
+    public PageResponse<MemberResponseDtoByAdmin> findMembers(Pageable pageable) {
+        Page<MemberResponseDtoByAdmin> page = memberRepository.findMembers(pageable);
         return new PageResponse<>(page);
     }
 
