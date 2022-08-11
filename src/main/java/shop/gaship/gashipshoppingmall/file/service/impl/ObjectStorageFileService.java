@@ -110,7 +110,7 @@ public class ObjectStorageFileService implements FileService {
         return FileRequestDto.builder()
                 .path(url)
                 .originalName(originalName)
-                .extension(originalName.substring(originalName.lastIndexOf(".")) + 1)
+                .extension(originalName.substring(originalName.lastIndexOf(".") + 1))
                 .build();
 
     }

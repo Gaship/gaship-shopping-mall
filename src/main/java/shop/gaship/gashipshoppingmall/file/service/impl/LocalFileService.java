@@ -96,7 +96,7 @@ public class LocalFileService implements FileService {
         return FileRequestDto.builder()
                 .path(PROTOCOL + url)
                 .originalName(originalName)
-                .extension(originalName.substring(originalName.lastIndexOf(".")) + 1)
+                .extension(originalName.substring(originalName.lastIndexOf(".") + 1))
                 .build();
 
     }
