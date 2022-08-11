@@ -129,7 +129,7 @@ public interface MemberService {
             .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
             .nextRenewalGradeDate(member.getNextRenewalGradeDate())
             .registerDatetime(member.getRegisterDatetime())
-            .modifyDatetime(member.getModifiedDatetime()).social(member.isSocial()).build();
+            .modifyDatetime(member.getModifyDatetime()).social(member.isSocial()).build();
     }
 
 

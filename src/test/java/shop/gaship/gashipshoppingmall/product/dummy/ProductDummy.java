@@ -3,8 +3,7 @@ package shop.gaship.gashipshoppingmall.product.dummy;
 import java.time.LocalDateTime;
 import java.util.List;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 
 public class ProductDummy {
@@ -26,12 +25,12 @@ public class ProductDummy {
                 .explanation("설명")
                 .code("A001")
                 .build();
-        dummy.updateImageLinks(List.of("이미지 링크"));
         return dummy;
     }
 
-    public static ProductCreateRequestDto createRequestDummy() {
-        return new ProductCreateRequestDto(
+    public static ProductRequestDto createRequestDummy() {
+        return new ProductRequestDto(
+                null,
                 1,
                 1,
                 "상품이름",
@@ -50,8 +49,8 @@ public class ProductDummy {
         );
     }
 
-    public static ProductModifyRequestDto modifyRequestDummy() {
-        return new ProductModifyRequestDto(
+    public static ProductRequestDto modifyRequestDummy() {
+        return new ProductRequestDto(
                 1,
                 1,
                 1,

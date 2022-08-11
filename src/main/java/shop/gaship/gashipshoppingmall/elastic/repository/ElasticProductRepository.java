@@ -11,7 +11,7 @@ import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
  * @author : 유호철
  * @since 1.0
  */
-public interface ElasticRepository extends ElasticsearchRepository<ElasticProduct, Integer> {
+public interface ElasticProductRepository extends ElasticsearchRepository<ElasticProduct, Integer> {
     @Query("{    \"multi_match\" : {\n"
         + "      \"query\":    \"?0\",\n"
         + "      \"fields\": [ \"name\", \"name.nori\" ] \n"

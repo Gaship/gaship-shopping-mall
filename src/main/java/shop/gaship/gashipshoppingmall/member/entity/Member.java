@@ -39,7 +39,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
  * @since 1.0
  */
 @Entity
-@AttributeOverride(name = "modifiedDatetime", column = @Column(name = "modify_datetime"))
 @Table(name = "members")
 @Getter
 @Builder

@@ -1,12 +1,19 @@
 package shop.gaship.gashipshoppingmall.productreview.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -14,6 +21,8 @@ import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 
 /**
@@ -40,17 +49,25 @@ public class ProductReview {
 
     private String content;
 
-    private String imagePath;
-
     @NotNull(message = "별점은 필수입력사항입니다.")
     @Min(value = 1, message = "별점은 1이상 5이하여야 합니다.")
     @Max(value = 5, message = "별점은 1이상 5이하여야 합니다.")
     private Integer starScore;
 
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime registerDatetime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime modifyDatetime;
+
+    @Transient
+    public static final String SERVICE = "productReview";
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "owner_no", referencedColumnName = "order_product_no")
+    @Where(clause = "service = 'productReview'")
+    private final List<CommonFile> reviewImages = new ArrayList<>();
 
     /**
      * 상품평 생성자입니다.
@@ -58,17 +75,15 @@ public class ProductReview {
      * @param orderProduct     주문상품
      * @param title            상품평 제목
      * @param content          상품평 내용
-     * @param imagePath        상품평 이미지 경로
      * @param starScore        별점
      * @param registerDatetime 상품평 등록 일시
      */
     @Builder
     public ProductReview(OrderProduct orderProduct, String title, String content,
-                         String imagePath, Integer starScore, LocalDateTime registerDatetime) {
+                         Integer starScore, LocalDateTime registerDatetime) {
         this.orderProduct = orderProduct;
         this.title = title;
         this.content = content;
-        this.imagePath = imagePath;
         this.starScore = starScore;
         this.registerDatetime = registerDatetime;
     }
@@ -88,11 +103,19 @@ public class ProductReview {
     }
 
     /**
-     * 상품평 이미지 경로 수정 메서드입니다.
+     * 상품평에 이미지파일을 추가하는 메서드입니다.
      *
-     * @param imagePath 이미지 경로
+     * @param commonFile 추가할 파일 엔티티입니다.
      */
-    public void updateImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void addProductReviewImage(CommonFile commonFile){
+        commonFile.updateCommonFile(orderProductNo, SERVICE);
+        reviewImages.add(commonFile);
+    }
+
+    /**
+     * 상품평의 모든 이미지파일을 제거하는 메서드입니다.
+     */
+    public void removeAllProductReviewImages() {
+        reviewImages.clear();
     }
 }

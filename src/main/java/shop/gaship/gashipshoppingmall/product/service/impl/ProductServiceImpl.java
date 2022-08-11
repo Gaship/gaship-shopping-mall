@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.product.service.impl;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +13,14 @@ import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
+import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
-import shop.gaship.gashipshoppingmall.elastic.repository.ElasticRepository;
+import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
 import shop.gaship.gashipshoppingmall.error.FileUploadFailureException;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductCreateRequestDto;
-import shop.gaship.gashipshoppingmall.product.dto.request.ProductModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
+import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
@@ -27,14 +28,12 @@ import shop.gaship.gashipshoppingmall.product.event.ProductSaveUpdateEvent;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
-import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.producttag.repository.ProductTagRepository;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
-import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.exception.TagNotFoundException;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
@@ -56,9 +55,11 @@ public class ProductServiceImpl implements ProductService {
     private final StatusCodeRepository statusCodeRepository;
     private final TagRepository tagRepository;
     private final ProductTagRepository productTagRepository;
+    private final CommonFileRepository fileRepository;
+    private final CommonFileService fileService;
     private final FileUploadUtil fileUploadUtil;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final ElasticRepository elasticRepository;
+    private final ElasticProductRepository elasticProductRepository;
 
     /**
      * {@inheritDoc}
@@ -69,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Transactional
     @Override
-    public void addProduct(List<MultipartFile> files, ProductCreateRequestDto createRequest) {
+    public void addProduct(List<MultipartFile> files, ProductRequestDto createRequest) {
         Category category = categoryRepository.findById(createRequest.getCategoryNo())
             .orElseThrow(CategoryNotFoundException::new);
         StatusCode deliveryType = statusCodeRepository.findById(createRequest.getDeliveryTypeNo())
@@ -78,18 +79,19 @@ public class ProductServiceImpl implements ProductService {
             .findByStatusCodeName(SalesStatus.SALE.getValue())
             .orElseThrow(StatusCodeNotFoundException::new);
 
-        Product product = Product.create(category, deliveryType, createRequest);
+        Product product = createProduct(category, deliveryType, createRequest);
         product.updateSalesStatus(salesStatus);
 
         List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
-        product.updateImageLinks(imageLinks);
 
-        applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks));
+        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(imageLinks, null);
+        applicationEventPublisher.publishEvent(event);
 
         Product savedProduct = repository.save(product);
-        addProductTags(product, createRequest.getTagNos());
-        elasticRepository.save(new ElasticProduct(
-            savedProduct.getNo(), savedProduct.getName(), savedProduct.getCode()));
+        addProductTags(savedProduct, createRequest.getTagNos());
+        addProductImages(savedProduct, imageLinks);
+
+        event.setSavedProduct(savedProduct);
     }
 
     /**
@@ -121,27 +123,25 @@ public class ProductServiceImpl implements ProductService {
      */
     @Transactional
     @Override
-    public void modifyProduct(List<MultipartFile> files, ProductModifyRequestDto modifyRequest) {
+    public void modifyProduct(List<MultipartFile> files, ProductRequestDto modifyRequest) {
         Product product = repository.findById(modifyRequest.getNo())
             .orElseThrow(ProductNotFoundException::new);
 
-        fileUploadUtil.cleanUpFiles(product.getImageLinkList());
+        List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
+        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(imageLinks, product);
+        event.updateBeforeImages(product.getProductImages());
+        applicationEventPublisher.publishEvent(event);
 
         Category category = categoryRepository.findById(modifyRequest.getCategoryNo())
-            .orElseThrow(CategoryNotFoundException::new);
+                .orElseThrow(CategoryNotFoundException::new);
         StatusCode deliveryType = statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo())
-            .orElseThrow(StatusCodeNotFoundException::new);
-        List<String> imageLinks = fileUploadUtil.uploadFile(PRODUCT_DIR, files);
+                .orElseThrow(StatusCodeNotFoundException::new);
 
-        applicationEventPublisher.publishEvent(new ProductSaveUpdateEvent(imageLinks));
-
-        product.updateImageLinks(imageLinks);
+        product.removeAllProductImages();
         product.updateProduct(category, deliveryType, modifyRequest);
 
-        productTagRepository.deleteAllByPkProductNo(product.getNo());
-        addProductTags(product, modifyRequest.getTagNos());
-        elasticRepository.save(
-            new ElasticProduct(product.getNo(), product.getName(), product.getCode()));
+        updateProductTags(product, modifyRequest.getTagNos());
+        addProductImages(product, imageLinks);
     }
 
     /**
@@ -150,14 +150,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductByCode(String productCode,
                                                                      Pageable pageable) {
-        List<ElasticProduct> elasticProducts = elasticRepository.findByCode(productCode);
+        List<ElasticProduct> elasticProducts = elasticProductRepository.findByCode(productCode);
 
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .pageable(pageable)
             .productNoList(getProductNoList(elasticProducts))
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -171,11 +172,12 @@ public class ProductServiceImpl implements ProductService {
         if (repository.findById(no).isEmpty()) {
             throw new ProductNotFoundException();
         }
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .productNo(no)
             .build();
         PageResponse<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
         findProductTagInfo(product);
+        findFilePath(product);
 
         return product.getContent().get(0);
     }
@@ -186,13 +188,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductByPrice(Long min, Long max,
                                                                       Pageable pageable) {
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .minAmount(min)
             .maxAmount(max)
             .pageable(pageable)
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -207,12 +210,13 @@ public class ProductServiceImpl implements ProductService {
         if (categoryRepository.findById(no).isEmpty()) {
             throw new CategoryNotFoundException();
         }
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .categoryNo(no)
             .pageable(pageable)
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -222,15 +226,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductByName(String name,
                                                                      Pageable pageable) {
-        List<ElasticProduct> elasticProducts = elasticRepository.findByProductName(name);
+        List<ElasticProduct> elasticProducts = elasticProductRepository.findByProductName(name);
 
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .pageable(pageable)
             .productNoList(getProductNoList(elasticProducts))
             .build();
 
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
 
         return products;
     }
@@ -241,11 +246,12 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductsInfo(Pageable pageable) {
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .pageable(pageable)
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -263,12 +269,13 @@ public class ProductServiceImpl implements ProductService {
         if (statusCodeRepository.findByStatusCodeName(statusName).isEmpty()) {
             throw new StatusCodeNotFoundException();
         }
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .statusName(statusName)
             .pageable(pageable)
             .build();
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -278,13 +285,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponse<ProductAllInfoResponseDto> findProductByProductNos(List<Integer> productNos,
                                                                            Pageable pageable) {
-        ProductRequestDto requestDto = ProductRequestDto.builder()
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .productNoList(productNos)
             .pageable(pageable)
             .build();
 
         PageResponse<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -296,16 +304,41 @@ public class ProductServiceImpl implements ProductService {
      * @author 김보민
      */
     private void addProductTags(Product product, List<Integer> tagNos) {
-        List<ProductTag> productTags = new ArrayList<>();
+        tagNos.forEach(tagNo -> product.addProductTag(
+                tagRepository.findById(tagNo).orElseThrow(TagNotFoundException::new)));
+    }
 
-        tagNos.forEach(tagNo -> {
-            Tag tag = tagRepository.findById(tagNo).orElseThrow(TagNotFoundException::new);
+    /**
+     * 하나의 상품에 다수의 이미지파일을 추가하는 메서드입니다.
+     *
+     * @param product 상품
+     * @param imageLinks 추가할 이미지파일 링크
+     */
+    private void addProductImages(Product product, List<String> imageLinks) {
+        imageLinks.forEach(imageLink -> product.addProductImage(
+                fileService.createCommonFile(imageLink)));
+    }
 
-            ProductTag.Pk pk = new ProductTag.Pk(product.getNo(), tagNo);
-            productTags.add(new ProductTag(pk, product, tag));
+    /**
+     * 상품 태그를 업데이트하는 메서드입니다.
+     *
+     * @param product 상품
+     * @param tagNos 수정할 태그 목록
+     */
+    private void updateProductTags(Product product, List<Integer> tagNos) {
+        List<Integer> productTagNos = product.getProductTags().stream()
+                .map(productTag -> productTag.getPk().getTagNo())
+                .collect(Collectors.toList());
+
+        productTagNos.forEach(productTagNo -> {
+            if (!tagNos.contains(productTagNo)) {
+                product.removeProductTag(productTagNo);
+            } else {
+                tagNos.remove(productTagNo);
+            }
         });
 
-        productTagRepository.saveAll(productTags);
+        addProductTags(product, tagNos);
     }
 
     /**
@@ -322,10 +355,55 @@ public class ProductServiceImpl implements ProductService {
         });
     }
 
+    /**
+     * 상품의 이미지 파일 경로를 찾아오는 메서드입니다.
+     *
+     * @param products 파일 경로를 찾을 상품 목록
+     */
+    private void findFilePath(PageResponse<ProductAllInfoResponseDto> products) {
+        products.getContent().forEach(product -> product.getFilePaths()
+                .addAll(fileRepository.findPaths(product.getProductNo(), Product.SERVICE)));
+    }
 
+    /**
+     * 엘라스틱서치로 검색한 결과에서 상품번호를 가져오는 메서드입니다.
+     *
+     * @param elasticProducts 엘라스틱서치 검색 결과 목록
+     * @return 상품번호 목록
+     */
     private List<Integer> getProductNoList(List<ElasticProduct> elasticProducts) {
         return elasticProducts.stream()
             .map(ElasticProduct::getId)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * 상품 생성 메서드입니다.
+     *
+     * @param category 상품의 카테고리
+     * @param deliveryType 상품의 배송형태
+     * @param createRequest 상품 생성 요청 dto
+     * @return product 생성 상품
+     * @author 김보민
+     */
+    private Product createProduct(Category category, StatusCode deliveryType,
+                                 ProductRequestDto createRequest) {
+        return Product.builder()
+                .category(category)
+                .deliveryType(deliveryType)
+                .name(createRequest.getName())
+                .amount(createRequest.getAmount())
+                .registerDatetime(LocalDateTime.now())
+                .manufacturer(createRequest.getManufacturer())
+                .manufacturerCountry(createRequest.getManufacturerCountry())
+                .seller(createRequest.getSeller())
+                .importer(createRequest.getImporter())
+                .shippingInstallationCost(createRequest.getShippingInstallationCost())
+                .qualityAssuranceStandard(createRequest.getQualityAssuranceStandard())
+                .color(createRequest.getColor())
+                .stockQuantity(createRequest.getStockQuantity())
+                .explanation(createRequest.getExplanation())
+                .code(createRequest.getCode())
+                .build();
     }
 }

@@ -108,7 +108,6 @@ public class NotNullDummy {
         ReflectionTestUtils.setField(member, "recommendMember", null);
         ReflectionTestUtils.setField(member, "memberStatusCodes", statusCode);
         ReflectionTestUtils.setField(member, "memberGrades", memberGrade);
-//        ReflectionTestUtils.setField(member, "userAuthorityNo", statusCode);
         ReflectionTestUtils.setField(member, "email", "jwoo1015@naver.com");
         ReflectionTestUtils.setField(member, "password", "1234567");
         ReflectionTestUtils.setField(member, "phoneNumber", "01012341234");
@@ -119,6 +118,7 @@ public class NotNullDummy {
         ReflectionTestUtils.setField(member, "accumulatePurchaseAmount", 0L);
         ReflectionTestUtils.setField(member, "nextRenewalGradeDate", LocalDate.now());
         ReflectionTestUtils.setField(member, "isSocial", false);
+        ReflectionTestUtils.setField(member, "encodedEmailForSearch", "???");
 
         return member;
     }
