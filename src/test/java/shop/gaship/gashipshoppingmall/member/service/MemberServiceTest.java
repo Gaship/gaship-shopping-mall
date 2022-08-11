@@ -38,6 +38,7 @@ import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
@@ -268,11 +269,11 @@ class MemberServiceTest {
     @Test
     void getListTest() {
         Pageable pageable = PageRequest.of(3, 10);
-        List<MemberResponseDto> memberList = MemberBaseDummy.MemberResponseDtoDummy();
-        Page<MemberResponseDto> dtoPage = new PageImpl<>(memberList, pageable, memberList.size());
+        List<MemberResponseDtoByAdmin> memberList = MemberBaseDummy.MemberResponseDtoByAdminDummy();
+        Page<MemberResponseDtoByAdmin> dtoPage = new PageImpl<>(memberList, pageable, memberList.size());
         when(memberRepository.findMembers(any(Pageable.class))).thenReturn(dtoPage);
 
-        PageResponse<MemberResponseDto> list = memberService.findMembers(pageable);
+        PageResponse<MemberResponseDtoByAdmin> list = memberService.findMembers(pageable);
         assertThat(list.getSize()).isEqualTo(10);
         assertThat(list.getTotalPage()).isEqualTo(10);
         assertThat(list.getPage()).isEqualTo(3);
