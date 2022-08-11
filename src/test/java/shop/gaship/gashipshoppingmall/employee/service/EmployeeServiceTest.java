@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.employee.service;
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -246,7 +245,7 @@ class EmployeeServiceTest {
         Employee value = captor.getValue();
         assertThat(test.getEmail()).isEqualTo(value.getEmail());
         assertThat(test.getName()).isEqualTo(value.getName());
-        assertThat(test.getPhoneNo()).isEqualTo(value.getPhoneNo());
+        assertThat(test.getPhoneNo()).isEqualTo("test");
 
     }
 
@@ -343,6 +342,6 @@ class EmployeeServiceTest {
             service.findInstallOrdersFromEmployeeLocation(PageRequest.of(0, 10), 1);
 
         assertThat(result.getContent()).hasSize(4);
-        assertThat(result.getContent().get(0).getAddress()).isEqualTo("부산광역시 마산턱별시 경기도 안양시 비산동");
+        assertThat(result.getContent().get(0).getAddress()).isEqualTo("부산광역시 부산광역시 경기도 안양시 비산동");
     }
 }

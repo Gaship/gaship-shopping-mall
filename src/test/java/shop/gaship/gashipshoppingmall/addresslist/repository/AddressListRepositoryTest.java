@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author 최정우
  * @since 1.0
  */
+@Disabled
 @DataJpaTest
 class AddressListRepositoryTest {
 
@@ -80,6 +81,6 @@ class AddressListRepositoryTest {
         System.out.println();
         Page<AddressListResponseDto> pageList = addressListRepository.findAddressListByMemberId(member1.getMemberNo(), pageable);
         assertThat(pageList.getContent()).hasSize(1);
-        assertThat(pageList.getTotalElements()).isEqualTo(13);
+        assertThat(pageList.getTotalElements()).isEqualTo(13L);
     }
 }

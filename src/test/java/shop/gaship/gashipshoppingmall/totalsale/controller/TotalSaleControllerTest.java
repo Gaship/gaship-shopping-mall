@@ -51,7 +51,7 @@ class TotalSaleControllerTest {
         LocalDateTime endDate = LocalDateTime.of(2022, 12, 30, 23, 59, 59);
 
         TotalSaleRequestDto dto = new TotalSaleRequestDto(startDate, endDate);
-        TotalSaleResponseDto responseDto = new TotalSaleResponseDto(startDate, 2L, 1L, 1L, 10000L, 1000, 9000L);
+        TotalSaleResponseDto responseDto = new TotalSaleResponseDto(startDate, 2, 1, 1, 10000L, 1000L, 9000L);
 
         //when
         when(service.findTotalSales(any())).thenReturn(List.of(responseDto));

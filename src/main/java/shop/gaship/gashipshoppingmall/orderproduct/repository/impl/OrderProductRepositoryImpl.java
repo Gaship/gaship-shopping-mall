@@ -51,18 +51,18 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
             .select(Projections.constructor(TotalSaleResponseDto.class,
                 order.orderDatetime.as("totalSaleDate"),
                 orderProduct.product.no.count().as("orderCnt"),
-                queryCase(orderProduct.orderStatusCode.statusCodeNo
+                queryCaseInteger(orderProduct.orderStatusCode.statusCodeNo
                     .between(1, 12), orderProduct.no)
                     .otherwise(0)
                     .count().as("orderCancelCnt"),
-                queryCase(orderProduct.orderStatusCode.statusCodeNo.eq(13),
+                queryCaseInteger(orderProduct.orderStatusCode.statusCodeNo.eq(13),
                     orderProduct.no)
                     .otherwise(0)
                     .count().as("orderSaleCnt"),
                 orderProduct.amount.sum().as("totalAmount"),
-                queryCase(orderProduct.orderStatusCode.statusCodeNo.between(7, 12),
+                queryCaseLong(orderProduct.orderStatusCode.statusCodeNo.between(7, 12),
                     orderProduct.cancellationAmount)
-                    .otherwise(0)
+                    .otherwise(0L)
                     .sum().as("cancelAmount"),
                 (new CaseBuilder()
                     .when(orderProduct.orderStatusCode.statusCodeNo.eq(13)
@@ -74,9 +74,17 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
             .fetch();
     }
 
-    private CaseBuilder.Cases<Integer, NumberExpression<Integer>> queryCase(
+    private CaseBuilder.Cases<Integer, NumberExpression<Integer>> queryCaseInteger(
         BooleanExpression statusCodeNo,
         NumberPath<Integer> orderProduct) {
+        return new CaseBuilder()
+            .when(statusCodeNo)
+            .then(orderProduct);
+    }
+
+    private CaseBuilder.Cases<Long, NumberExpression<Long>> queryCaseLong(
+        BooleanExpression statusCodeNo,
+        NumberPath<Long> orderProduct) {
         return new CaseBuilder()
             .when(statusCodeNo)
             .then(orderProduct);

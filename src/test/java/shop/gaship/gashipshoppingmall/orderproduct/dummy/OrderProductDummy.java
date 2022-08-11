@@ -26,12 +26,11 @@ public class OrderProductDummy {
     }
 
     public static StatusCode dummyStatus(){
-        return StatusCode.allBuilder()
+        return StatusCode.builder()
             .statusCodeName("배송준비중")
             .groupCodeName("주문")
             .explanation("제품의 배송타입입니다.")
             .priority(1)
-            .isUsed(true)
             .build();
     }
 
