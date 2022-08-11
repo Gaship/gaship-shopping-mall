@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import shop.gaship.gashipshoppingmall.member.dto.request.FindMemberEmailRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
-import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
+import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
@@ -35,6 +34,17 @@ import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificati
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberBaseDummy;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.controller <br/>
@@ -72,8 +82,8 @@ class MemberControllerTest {
         doNothing().when(memberService).addMember(MemberCreationRequestDummy.dummy());
 
         mockMvc.perform(post("/api/members/sign-up")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(contentBody))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(contentBody))
             .andDo(print())
             .andExpect(status().isCreated());
     }
@@ -200,7 +210,6 @@ class MemberControllerTest {
             .andExpect(jsonPath("$.memberNo").value(dummy.getMemberNo()))
             .andExpect(jsonPath("$.email").value(dummy.getEmail()))
             .andExpect(jsonPath("$.hashedPassword").value(dummy.getHashedPassword()))
-            .andExpect(jsonPath("$.isSocial").value(false))
             .andExpect(jsonPath("$.authorities[0]")
                 .value(dummy.getAuthorities().toArray()[0]));
     }

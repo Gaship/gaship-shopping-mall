@@ -20,6 +20,6 @@ public class ModifyEmployeeDtoDummy {
     }
 
     public static ModifyEmployeeRequestDto dummy() {
-        return new ModifyEmployeeRequestDto("test", "test@naver.com", "10000");
+        return new ModifyEmployeeRequestDto(1, "test", "test@naver.com", "10000");
     }
 }
