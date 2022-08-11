@@ -24,9 +24,11 @@ import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
+import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
@@ -103,6 +105,9 @@ class ProductServiceTest {
     MockMultipartFile multipartFile;
     PageResponse<ProductAllInfoResponseDto> pageResponse;
 
+    FileRequestDto fileRequest;
+    CommonFile commonFile;
+
     @BeforeEach
     void setUp() throws IOException {
         File file = new File("src/test/resources/sample.jpg");
@@ -121,6 +126,18 @@ class ProductServiceTest {
         page = new PageImpl<>(List.of(response), pageRequest, 1);
         pageResponse = new PageResponse<>(page);
         productTag = new ProductTag(new ProductTag.Pk(1, 1), product, tag);
+
+        fileRequest = FileRequestDto.builder()
+                .path(file.getAbsolutePath())
+                .originalName(multipartFile.getOriginalFilename())
+                .extension("jpg")
+                .build();
+
+        commonFile = CommonFile.builder()
+                .path(fileRequest.getPath())
+                .originalName(fileRequest.getOriginalName())
+                .extension(fileRequest.getExtension())
+                .build();
     }
 
     @DisplayName("상품 등록 성공")
@@ -128,7 +145,6 @@ class ProductServiceTest {
     void addProduct() {
         ProductRequestDto createRequest = ProductDummy.createRequestDummy();
         List<MultipartFile> files = List.of(multipartFile);
-        String uploadDir = File.separator + "products";
         ReflectionTestUtils.setField(product, "no", 1);
         when(repository.save(any(Product.class))).thenReturn(product);
         when(categoryRepository.findById(createRequest.getCategoryNo()))
@@ -140,15 +156,16 @@ class ProductServiceTest {
             .thenReturn(Optional.of(new StatusCode("판매중", 2, "판매상태", "")));
         when(tagRepository.findById(createRequest.getTagNos().get(0)))
             .thenReturn(Optional.of(new Tag(1, "태그")));
-//        when(fileUploadUtil.uploadFile(uploadDir, files))
-//            .thenReturn(List.of());
+        when(commonFileService.uploadMultipartFile(any())).thenReturn(fileRequest);
+        when(commonFileService.createCommonFile(any())).thenReturn(commonFile);
 
         service.addProduct(files, createRequest);
 
         verify(categoryRepository).findById(createRequest.getCategoryNo());
         verify(statusCodeRepository).findById(createRequest.getDeliveryTypeNo());
         verify(statusCodeRepository).findByStatusCodeName(SalesStatus.SALE.getValue());
-//        verify(fileUploadUtil).uploadFile(uploadDir, files);
+        verify(commonFileService).uploadMultipartFile(any());
+        verify(commonFileService).createCommonFile(any());
     }
 
     @DisplayName("상품 수정 성공")
@@ -157,8 +174,6 @@ class ProductServiceTest {
         ProductRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
         Product product = ProductDummy.dummy();
         ReflectionTestUtils.setField(product, "no", modifyRequest.getNo());
-        List<MultipartFile> files = List.of(multipartFile);
-        String uploadDir = File.separator + "products";
 
         when(repository.findById(modifyRequest.getNo()))
             .thenReturn(Optional.of(product));
@@ -167,15 +182,16 @@ class ProductServiceTest {
         when(statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo()))
             .thenReturn(Optional.of(
                 new StatusCode("설치", modifyRequest.getDeliveryTypeNo(), "배송형태", "")));
-//        when(fileUploadUtil.uploadFile(uploadDir, files))
-//            .thenReturn(List.of());
+        when(commonFileService.uploadMultipartFile(any())).thenReturn(fileRequest);
+        when(commonFileService.createCommonFile(any())).thenReturn(commonFile);
 
         service.modifyProduct(List.of(multipartFile), modifyRequest);
 
         verify(repository).findById(modifyRequest.getNo());
         verify(categoryRepository).findById(modifyRequest.getCategoryNo());
         verify(statusCodeRepository).findById(modifyRequest.getDeliveryTypeNo());
-//        verify(fileUploadUtil).uploadFile(uploadDir, files);
+        verify(commonFileService).uploadMultipartFile(any());
+        verify(commonFileService).createCommonFile(any());
     }
 
     @DisplayName("상품 수정 실패 - 해당 상품 찾기 불가")

@@ -115,7 +115,7 @@ class ProductControllerTest {
         MockMultipartFile multipartModifyRequest = new MockMultipartFile("modifyRequest", "modifyRequest",
             "application/json", objectMapper.writeValueAsString(modifyRequest).getBytes(StandardCharsets.UTF_8));
 
-        mvc.perform(multipartPutBuilder("/api/products")
+        mvc.perform(multipartPutBuilder("/api/products/{productNo}", modifyRequest.getNo())
                 .file(multipartFile)
                 .file(multipartModifyRequest)
                 .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -133,7 +133,7 @@ class ProductControllerTest {
 
         doNothing().when(service).modifyProductSalesStatus(salesStatusModifyRequest);
 
-        mvc.perform(put("/api/products/salesStatus")
+        mvc.perform(put("/api/products/{productNo}/sales-status", salesStatusModifyRequest.getProductNo())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(salesStatusModifyRequest)))
             .andExpect(status().isOk())
@@ -143,8 +143,8 @@ class ProductControllerTest {
         verify(service).modifyProductSalesStatus(salesStatusModifyRequest);
     }
 
-    private MockMultipartHttpServletRequestBuilder multipartPutBuilder(String url) {
-        final MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart(url);
+    private MockMultipartHttpServletRequestBuilder multipartPutBuilder(String url, Integer productNo) {
+        final MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart(url, productNo);
         builder.with(request1 -> {
             request1.setMethod(HttpMethod.PUT.name());
             return request1;

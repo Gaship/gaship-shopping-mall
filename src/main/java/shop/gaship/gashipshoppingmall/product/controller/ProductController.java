@@ -64,9 +64,10 @@ public class ProductController {
      * @author 김보민
      */
     @AdminAuthority
-    @PutMapping
+    @PutMapping("/{productNo}")
     public ResponseEntity<Void> productModify(@RequestPart("image") List<MultipartFile> files,
-                                              @RequestPart ProductRequestDto modifyRequest) {
+                                              @RequestPart ProductRequestDto modifyRequest,
+                                              @PathVariable("productNo") Integer productNo) {
         service.modifyProduct(files, modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -81,9 +82,10 @@ public class ProductController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-    @PutMapping("/salesStatus")
+    @PutMapping("/{productNo}/sales-status")
     public ResponseEntity<Void> salesStatusModify(
-        @RequestBody SalesStatusModifyRequestDto salesStatusModifyRequest) {
+        @RequestBody SalesStatusModifyRequestDto salesStatusModifyRequest,
+        @PathVariable("productNo") Integer productNo) {
         service.modifyProductSalesStatus(salesStatusModifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)

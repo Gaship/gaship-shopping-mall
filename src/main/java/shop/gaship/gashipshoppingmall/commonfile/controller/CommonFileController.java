@@ -39,13 +39,7 @@ public class CommonFileController {
                                                  HttpServletRequest request) {
         Resource resource = commonFileService.loadResource(fileNo);
 
-        String contentType = "application/octet-stream";
-        try {
-            contentType = request.getServletContext()
-                    .getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException ex) {
-            log.info("파일 타입을 지정할 수 없습니다.");
-        }
+        String contentType = request.getServletContext().getMimeType(resource.getFilename());
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
