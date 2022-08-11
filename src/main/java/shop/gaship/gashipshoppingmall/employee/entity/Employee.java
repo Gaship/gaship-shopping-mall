@@ -9,11 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
-import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 
@@ -54,6 +54,8 @@ public class Employee {
     @Column(name = "phone_number", unique = true)
     private String phoneNo;
 
+    private String encodedEmailForSearch;
+
     /**
      * 직원에대한 지역을 수정하기위한 메서드입니다.
      *
@@ -64,16 +66,17 @@ public class Employee {
         this.addressLocal = addressLocal;
     }
 
+
     /**
-     * 직원자체의 정보를 수정하기위한 메서드입니다.
+     * 직원 정보를 수정하기위한 메서드입니다.
      *
-     * @param dto 수정하기위한 기본정보들이 담겨져있습니다
-     * @author 유호철
+     * @param name    암호화된 이름
+     * @param phoneNo 암호화된 번호
      */
-    public void modifyEmployee(ModifyEmployeeRequestDto dto) {
-        this.name = dto.getName();
-        this.email = dto.getEmail();
-        this.phoneNo = dto.getPhoneNo();
+    public void modifyEmployee(String name,
+                               String phoneNo) {
+        this.name = name;
+        this.phoneNo = phoneNo;
     }
 
     /**
@@ -97,5 +100,31 @@ public class Employee {
         this.phoneNo = dto.getPhoneNo();
         this.email = dto.getEmail();
         this.password = dto.getPassword();
+    }
+
+    /**
+     * 직원을 생성하기위한 builder 입니다.
+     *
+     * @param statusCode            the status code
+     * @param addressLocal          the address local
+     * @param name                  the name
+     * @param email                 the email
+     * @param password              the password
+     * @param phoneNo               the phone no
+     * @param encodedEmailForSearch the encoded email for search
+     */
+    @Builder
+    public Employee(StatusCode statusCode,
+                    AddressLocal addressLocal,
+                    String name, String email,
+                    String password, String phoneNo,
+                    String encodedEmailForSearch) {
+        this.statusCode = statusCode;
+        this.addressLocal = addressLocal;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNo = phoneNo;
+        this.encodedEmailForSearch = encodedEmailForSearch;
     }
 }

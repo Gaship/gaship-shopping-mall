@@ -7,9 +7,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
+import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
@@ -21,6 +24,8 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.employee.repository
@@ -43,6 +48,10 @@ class EmployeeRepositoryTest {
     StatusCodeRepository codeRepository;
     @Autowired
     DayLaborRepository laborRepository;
+    @MockBean
+    Sha512 sha512;
+    @MockBean
+    Aes aes;
     private Employee employee;
     private AddressLocal addressLocal;
     private StatusCode code;
@@ -75,6 +84,7 @@ class EmployeeRepositoryTest {
         localRepository.save(addressLocal);
         codeRepository.save(code);
         repository.save(employee);
+        given(sha512.encryptPlainText(anyString())).willReturn("test@naver.com");
         //when & then
         Employee employee1 = repository.findByEmail("test@naver.com").orElse(null);
 
@@ -93,10 +103,17 @@ class EmployeeRepositoryTest {
         codeRepository.save(code);
         repository.save(employee);
 
-        SignInUserDetailsDto loginEmployee =
-            repository.findSignInEmployeeUserDetail("test@naver.com").orElse(null);
+        given(sha512.encryptPlainText(anyString()))
+            .willReturn(employee.getEmail());
+        given(aes.aesEcbDecode(anyString()))
+            .willReturn(employee.getEmail());
 
-        assertThat(Objects.requireNonNull(loginEmployee).getMemberNo()).isEqualTo(employee.getEmployeeNo());
+        SignInUserDetailsDto loginEmployee =
+            repository.findSignInEmployeeUserDetail((employee.getEmail())).orElse(null);
+
+        assert loginEmployee != null;
+        assertThat(Objects.requireNonNull(loginEmployee.getMemberNo()))
+            .isEqualTo(employee.getEmployeeNo());
         assertThat(loginEmployee.getEmail()).isEqualTo("test@naver.com");
         assertThat(loginEmployee.getAuthorities()).isEqualTo(List.of(code.getStatusCodeName()));
         assertThat(loginEmployee.getHashedPassword()).isEqualTo(employee.getPassword());
