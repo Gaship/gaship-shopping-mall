@@ -24,6 +24,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
+import shop.gaship.gashipshoppingmall.commonfile.exception.CommonFileNotFoundException;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.commonfile.service.impl.CommonFileServiceImpl;
 import shop.gaship.gashipshoppingmall.error.FileUploadFailureException;
@@ -88,6 +89,15 @@ class CommonFileServiceTest {
         assertThat(result.getFilename()).isEqualTo(resource.getFilename());
 
         verify(commonFileRepository).findById(fileNo);
+    }
+
+    @DisplayName("리소스 로드 실패 테스트")
+    @Test
+    void loadResourceFail() {
+        when(commonFileRepository.findById(1)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> commonFileService.loadResource(1))
+                .isInstanceOf(CommonFileNotFoundException.class);
     }
 
     @DisplayName("멀티파트파일 업로드 테스트")
