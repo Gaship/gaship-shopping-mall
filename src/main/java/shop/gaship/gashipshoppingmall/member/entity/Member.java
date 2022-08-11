@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.member.entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -22,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.gaship.gashipshoppingmall.gradehistory.entity.GradeHistory;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
@@ -61,8 +61,11 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "member_grade_no", nullable = false)
     private MemberGrade memberGrades;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<MemberTag> memberTags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<GradeHistory> gradeHistories = new ArrayList<>();
 
     @Column(unique = true)
     @NotNull
