@@ -156,6 +156,29 @@ public class MemberBaseDummy {
                 .build();
     }
 
+    public static Member member2() {
+
+        return Member.builder()
+                .memberNo(0)
+                .recommendMember(null)
+                .memberStatusCodes(StatusCodeDummy.dummy())
+                .memberGrades(MemberGradeDummy.dummy(
+                        MemberGradeDtoDummy.requestDummy("일반", 0L),
+                        StatusCodeDummy.dummy()
+                ))
+                .roleSet(List.of(MembersRole.ROLE_USER))
+                .email(email)
+                .password(password)
+                .phoneNumber(phoneNumber)
+                .name(name)
+                .birthDate(birthDate)
+                .nickname(nickname)
+                .gender(gender)
+                .accumulatePurchaseAmount(accumulatePurchaseAmount)
+                .nextRenewalGradeDate(nextRenewalGradeDate)
+                .build();
+    }
+
     public static Member memberEntityNotFlushed() {
 
         return Member.builder()

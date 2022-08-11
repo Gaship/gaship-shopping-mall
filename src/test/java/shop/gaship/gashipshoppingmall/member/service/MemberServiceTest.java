@@ -265,6 +265,26 @@ class MemberServiceTest {
         verify(memberRepository).findById(1);
     }
 
+    @DisplayName("memberRepository getByAdmin Test")
+    @Test
+    void getByAdminTest() {
+        when(memberRepository.findById(1)).thenReturn(Optional.of(MemberBaseDummy.member1()));
+
+        memberService.findMemberByAdmin(1);
+
+        verify(memberRepository).findById(1);
+    }
+
+    @DisplayName("memberRepository getByAdmin Test2")
+    @Test
+    void getByAdminTest2() {
+        when(memberRepository.findById(1)).thenReturn(Optional.of(MemberBaseDummy.member2()));
+
+        memberService.findMemberByAdmin(1);
+
+        verify(memberRepository).findById(1);
+    }
+
     @DisplayName("memberRepository getList Test")
     @Test
     void getListTest() {
