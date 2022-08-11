@@ -324,7 +324,7 @@ class InquiryRepositoryTest {
 
         assertThat(content).hasSize(3);
         assertThat(content.get(0).getMemberNickname())
-            .isEqualTo("example nickname");
+            .isEqualTo("examplenickname");
         assertThat(content.get(0).getProcessStatus())
             .isEqualTo("답변완료");
 
@@ -333,7 +333,7 @@ class InquiryRepositoryTest {
 
         for (int i = 1; i < 3; i++) {
             assertThat(content.get(i).getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(content.get(i).getProcessStatus())
                 .isEqualTo("답변대기");
             assertThat(content.get(i).getTitle())
@@ -413,7 +413,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getProcessStatus())
                 .isEqualTo("답변완료");
             assertThat(inquiryDto.getTitle())
@@ -463,7 +463,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getProcessStatus())
                 .isEqualTo("답변대기");
 
@@ -517,7 +517,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getTitle())
                 .isEqualTo("1번째 고객문의제목");
         });
@@ -591,7 +591,7 @@ class InquiryRepositoryTest {
         assertThat(content)
             .hasSize(3);
         assertThat(content.get(0).getMemberNickname())
-            .isEqualTo("example nickname");
+            .isEqualTo("examplenickname");
         assertThat(content.get(0).getProcessStatus())
             .isEqualTo("답변완료");
         assertThat(content.get(0).getTitle())
@@ -599,7 +599,7 @@ class InquiryRepositoryTest {
 
         for (int i = 1; i < 3; i++) {
             assertThat(content.get(i).getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(content.get(i).getProcessStatus())
                 .isEqualTo("답변대기");
             assertThat(content.get(i).getTitle())
@@ -679,7 +679,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getProcessStatus())
                 .isEqualTo("답변완료");
             assertThat(inquiryDto.getTitle())
@@ -729,7 +729,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getProcessStatus())
                 .isEqualTo("답변대기");
 
@@ -783,7 +783,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getTitle())
                 .isEqualTo("2번째 상품문의제목");
         });
@@ -835,7 +835,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getTitle())
                 .isEqualTo("2번째 상품문의제목");
         });

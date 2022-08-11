@@ -8,6 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
@@ -129,5 +133,20 @@ class MemberRepositoryTest {
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getNextRenewalGradeDate())
                 .isEqualTo(LocalDate.of(2022, 9, 16));
+    }
+
+    @Test
+    @DisplayName("custom query findMembers 테스트")
+    void findMembersTest() {
+        entityManager.persist(memberDummy.getMemberGrades().getRenewalPeriodStatusCode());
+        entityManager.persist(memberDummy.getMemberStatusCodes());
+        entityManager.persist(memberDummy.getMemberGrades());
+
+        memberRepository.save(memberDummy);
+        Pageable pageable = PageRequest.of(1, 10);
+        Page<MemberResponseDtoByAdmin> members = memberRepository.findMembers(pageable);
+
+        assertThat(members.getTotalPages()).isEqualTo(1);
+        assertThat(members.getTotalElements()).isEqualTo(1);
     }
 }

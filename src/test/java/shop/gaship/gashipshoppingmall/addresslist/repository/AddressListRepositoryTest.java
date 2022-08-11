@@ -27,8 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author 최정우
  * @since 1.0
  */
-@Disabled
 @DataJpaTest
+@Disabled
 class AddressListRepositoryTest {
 
     @Autowired
