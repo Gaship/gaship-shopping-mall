@@ -47,6 +47,7 @@ public class CommonFileServiceImpl implements CommonFileService {
         return new InputStreamResource(fileService.download(commonFile.getPath()));
     }
 
+    @Override
     public FileRequestDto uploadMultipartFile(MultipartFile file) {
         try {
             return objectMapper.readValue(fileService.upload(getUUIDName(
