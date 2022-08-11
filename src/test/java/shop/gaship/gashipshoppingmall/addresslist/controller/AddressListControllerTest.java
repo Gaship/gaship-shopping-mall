@@ -53,7 +53,7 @@ class AddressListControllerTest {
     @Test
     void addressListModify() throws Exception {
         String body = objectMapper.writeValueAsString(AddressListDummy.addressListModifyRequestDtoDummy(1, 1, 1, "경기", "안양", "12345"));
-        mockMvc.perform(put("/api/members/1/addressLists")
+        mockMvc.perform(put("/api/members/1/addressLists/1")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
