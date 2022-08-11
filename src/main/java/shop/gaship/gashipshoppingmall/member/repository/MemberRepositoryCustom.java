@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
+import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.AdvancementTargetResponseDto;
@@ -29,5 +29,5 @@ public interface MemberRepositoryCustom {
     List<AdvancementTargetResponseDto>
         findMembersByNextRenewalGradeDate(LocalDate nextRenewalGradeDate);
 
-    Page<MemberResponseDto> findMembers(Pageable pageable);
+    Page<MemberResponseDtoByAdmin> findMembers(Pageable pageable);
 }
