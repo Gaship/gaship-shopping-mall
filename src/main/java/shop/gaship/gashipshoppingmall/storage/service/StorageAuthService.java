@@ -25,7 +25,6 @@ public class StorageAuthService {
     private final RestTemplate restTemplate;
     private static final String AUTH_URL =
             "https://api-identity.infrastructure.cloud.toast.com/v2.0";
-    private static final String USERNAME = "qnt012@naver.com";
 
     public String requestToken() {
         String identityUrl = AUTH_URL + "/tokens";
@@ -48,7 +47,7 @@ public class StorageAuthService {
     private AuthTokenRequestDto createTokenRequest() {
         AuthTokenRequestDto tokenRequest = new AuthTokenRequestDto();
         tokenRequest.getAuth().setTenantId(config.getTenantId());
-        tokenRequest.getAuth().getPasswordCredentials().setUsername(USERNAME);
+        tokenRequest.getAuth().getPasswordCredentials().setUsername(config.getUsername());
         tokenRequest.getAuth().getPasswordCredentials().setPassword(config.getPassword());
         return tokenRequest;
     }

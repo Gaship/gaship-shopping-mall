@@ -20,6 +20,7 @@ public class ObjectStorageConfig {
     private String tenantId;
     private String password;
     private String account;
+    private String username;
 
 
     public String getTenantId() {
@@ -34,6 +35,10 @@ public class ObjectStorageConfig {
         return dataProtectionConfig.findSecretDataFromSecureKeyManager(account);
     }
 
+    public String getUsername() {
+        return dataProtectionConfig.findSecretDataFromSecureKeyManager(username);
+    }
+
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
@@ -44,6 +49,10 @@ public class ObjectStorageConfig {
 
     public void setAccount(String account) {
         this.account = account;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Bean
