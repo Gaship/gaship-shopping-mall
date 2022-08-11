@@ -44,10 +44,21 @@ public class ObjectStorageFileService implements FileService {
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
 
+    /**
+     * 오브젝트 스토리지 Url 입니다.
+     *
+     * @param objectName 오브젝트 이름
+     * @return string 오브젝트 스토리지 url
+     */
     private String getUrl(@NonNull String objectName) {
         return STORAGE_URL + config.getAccount() + "/" + CONTAINER_NAME + "/" + objectName;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws JsonParseException Json 파싱에 실패할 시 던질 예외입니다.
+     */
     @Override
     public String upload(String objectName, InputStream inputStream) {
         String url = this.getUrl(objectName);
@@ -77,6 +88,9 @@ public class ObjectStorageFileService implements FileService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public InputStream download(String path) {
         // 헤더 생성
@@ -94,6 +108,9 @@ public class ObjectStorageFileService implements FileService {
         return new ByteArrayInputStream(Objects.requireNonNull(response.getBody()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void delete(String path) {
         // 헤더 생성
@@ -105,6 +122,12 @@ public class ObjectStorageFileService implements FileService {
         restTemplate.exchange(path, HttpMethod.DELETE, requestHttpEntity, String.class);
     }
 
+    /**
+     * url을 FileRequestDto로 파싱합니다.
+     *
+     * @param url 파일을 업로드한 url
+     * @return fileRequestDto 파일 요청 dto
+     */
     private FileRequestDto parse(String url) {
         String originalName = url.substring(url.lastIndexOf("/") + 1);
         return FileRequestDto.builder()

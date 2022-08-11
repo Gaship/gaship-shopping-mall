@@ -36,6 +36,11 @@ public class LocalFileService implements FileService {
     private final ObjectMapper objectMapper;
     private static final String PROTOCOL = "file:";
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws JsonParseException json 파싱이 실패할 시 발생하는 예외입니다.
+     */
     @Override
     public String upload(String objectName, InputStream inputStream) {
         String date = File.separator + LocalDate.now();
@@ -60,6 +65,11 @@ public class LocalFileService implements FileService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws ResourceLoadFailureException 파일을 불러오는데 실패했을 때 던질 예외입니다.
+     */
     @Override
     public InputStream download(String path) {
         try {
@@ -69,6 +79,11 @@ public class LocalFileService implements FileService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws FileDeleteFailureException 파일을 삭제하는데 실패했을 때 던질 예외입니다.
+     */
     @Override
     public void delete(String path) {
         try {
@@ -91,6 +106,12 @@ public class LocalFileService implements FileService {
         }
     }
 
+    /**
+     * url을 FileRequestDto로 파싱합니다.
+     *
+     * @param url 파일을 업로드한 url
+     * @return fileRequestDto 파일 요청 dto
+     */
     private FileRequestDto parse(String url) {
         String originalName = url.substring(url.lastIndexOf(File.separator) + 1);
         return FileRequestDto.builder()

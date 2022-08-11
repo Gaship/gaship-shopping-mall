@@ -20,6 +20,12 @@ public interface CommonFileService {
      */
     Resource loadResource(Integer fileNo);
 
+    /**
+     * 멀티파트파일을 업로드하는 메서드입니다.
+     *
+     * @param file 멀티파트파일
+     * @return fileRequestDto 파일 요청 dto
+     */
     FileRequestDto uploadMultipartFile(MultipartFile file);
 
     /**

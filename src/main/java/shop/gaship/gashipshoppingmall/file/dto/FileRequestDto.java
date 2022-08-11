@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * 설명작성란
+ * 파일 요청 dto 입니다.
  *
  * @author : 김보민
  * @since 1.0

@@ -53,6 +53,11 @@ public class CommonFileServiceImpl implements CommonFileService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws FileUploadFailureException 파일 업로드가 실패할 시 발생하는 예외입니다.
+     */
     @Override
     public FileRequestDto uploadMultipartFile(MultipartFile file) {
         try {
@@ -77,6 +82,12 @@ public class CommonFileServiceImpl implements CommonFileService {
                 .build();
     }
 
+    /**
+     * UUID 이름을 생성하는 메서드입니다.
+     *
+     * @param originalFileName 파일의 이름
+     * @return string UUID 형태로 변환된 이름
+     */
     private String getUUIDName(String originalFileName) {
         String fileExtension =
                 originalFileName.substring(originalFileName.lastIndexOf("."));

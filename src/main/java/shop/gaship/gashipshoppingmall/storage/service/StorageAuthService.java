@@ -13,7 +13,7 @@ import shop.gaship.gashipshoppingmall.storage.dto.request.AuthTokenRequestDto;
 import shop.gaship.gashipshoppingmall.storage.dto.response.AuthTokenResponseDto;
 
 /**
- * 설명작성란
+ * 오브젝트 스토리지의 인증정보를 받아오는 서비스입니다.
  *
  * @author : 김보민
  * @since 1.0
@@ -26,6 +26,11 @@ public class StorageAuthService {
     private static final String AUTH_URL =
             "https://api-identity.infrastructure.cloud.toast.com/v2.0";
 
+    /**
+     * 요청 토큰을 발급하는 메서드입니다.
+     *
+     * @return 인증토큰의 토큰 id
+     */
     public String requestToken() {
         String identityUrl = AUTH_URL + "/tokens";
 
@@ -44,6 +49,11 @@ public class StorageAuthService {
         return Objects.requireNonNull(response.getBody()).getAccess().getToken().getId();
     }
 
+    /**
+     * 토큰요청 생성 메서드 입니다.
+     * 
+     * @return tokenRequest 토큰 요청 객체
+     */
     private AuthTokenRequestDto createTokenRequest() {
         AuthTokenRequestDto tokenRequest = new AuthTokenRequestDto();
         tokenRequest.getAuth().setTenantId(config.getTenantId());
