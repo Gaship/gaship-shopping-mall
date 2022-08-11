@@ -30,6 +30,7 @@ import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
+import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberBaseDummy;
@@ -169,8 +170,11 @@ class MemberControllerTest {
     @Test
     @DisplayName("닉네임을 통한 추천할 회원의 고유번호 조회 : 성공 ")
     void retrieveMemberFromNicknameCaseSuccess() throws Exception {
+        Member memberDummy = MemberDummy.dummy();
+        ReflectionTestUtils.setField(memberDummy, "memberNo", 1);
+
         given(memberService.findMemberFromNickname(anyString()))
-            .willReturn(MemberDummy.dummy());
+            .willReturn(memberDummy);
 
         mockMvc.perform(get("/api/members/recommend-member")
                 .param("nickname", "example nickname"))

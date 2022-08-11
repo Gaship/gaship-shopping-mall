@@ -2,9 +2,10 @@ package shop.gaship.gashipshoppingmall.product.dummy;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
+import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 public class ProductDummy {
 
@@ -24,7 +25,18 @@ public class ProductDummy {
                 .stockQuantity(10)
                 .explanation("설명")
                 .code("A001")
+                .deliveryType( StatusCode.builder()
+                    .statusCodeName("시공")
+                    .groupCodeName("주문")
+                    .explanation("제품의 배송타입입니다.")
+                    .priority(1)
+                    .build())
                 .build();
+        dummy.updateSalesStatus(StatusCode.builder()
+                .statusCodeName("판매중")
+                .groupCodeName("판매 상태")
+                .priority(1)
+                .build());
         return dummy;
     }
 
@@ -68,5 +80,9 @@ public class ProductDummy {
                 List.of(),
                 "A001"
         );
+    }
+
+    public static void productDummyStockMakeZero(Product product){
+        product.updateStockQuantity(0);
     }
 }

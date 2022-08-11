@@ -11,9 +11,12 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
@@ -24,6 +27,7 @@ import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dummy.CreateEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.dummy.GetEmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.dummy.ModifyEmployeeDtoDummy;
@@ -34,6 +38,8 @@ import shop.gaship.gashipshoppingmall.employee.exception.WrongStatusCodeExceptio
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.employee.service.impl.EmployeeServiceImpl;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
+import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -42,6 +48,7 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.timeout;
@@ -107,7 +114,8 @@ class EmployeeServiceTest {
 
         captor = ArgumentCaptor.forClass(Employee.class);
 
-        getEmployee = new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(), employee.getPhoneNo(), "마산");
+        getEmployee = new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(),
+            employee.getPhoneNo(), "마산");
         labor = DayLaboyDummy.dummy1();
 
         addressLocal = AddressLocalDummy.dummy1();
@@ -237,6 +245,7 @@ class EmployeeServiceTest {
         Employee value = captor.getValue();
         assertThat(test.getEmail()).isEqualTo(value.getEmail());
         assertThat(test.getName()).isEqualTo(value.getName());
+        assertThat(test.getPhoneNo()).isEqualTo("test");
 
     }
 
@@ -298,12 +307,41 @@ class EmployeeServiceTest {
     @Test
     @DisplayName("로그인하는 직원의 계정 정보를 얻어온다. : 실패")
     void findSignInEmployeeFromEmailCaseFailure() {
-        given(repository.findSignInEmployeeUserDetail(anyString()))
-            .willThrow(new EmployeeNotFoundException());
+        given(repository.findSignInEmployeeUserDetail(anyString())).willThrow(
+            new EmployeeNotFoundException());
 
 
         assertThatThrownBy(() -> repository.findSignInEmployeeUserDetail("exam@nhn.com"))
             .isInstanceOf(EmployeeNotFoundException.class)
             .hasMessage("직원이 존재하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("직원들의 위치를 기반으로 설치형 주문 검색")
+    void findOrderBasedOnEmployeeLocationTest() {
+        List<Order> orders = new ArrayList<>();
+
+        Order order = OrderDummy.createOrderDummy();
+
+        orders.add(order);
+        orders.add(order);
+        orders.add(order);
+        orders.add(order);
+
+        ReflectionTestUtils.setField(
+            order.getAddressList().getAddressLocal(),
+            "upperLocal",
+            AddressLocalDummy.dummy1());
+
+        Page<Order> response = new PageImpl<>(orders, PageRequest.of(0, 10), 1);
+
+        given(repository.findOrderBasedOnEmployeeLocation(any(Pageable.class), anyInt()))
+            .willReturn(response);
+
+        Page<InstallOrderResponseDto> result =
+            service.findInstallOrdersFromEmployeeLocation(PageRequest.of(0, 10), 1);
+
+        assertThat(result.getContent()).hasSize(4);
+        assertThat(result.getContent().get(0).getAddress()).isEqualTo("부산광역시 부산광역시 경기도 안양시 비산동");
     }
 }

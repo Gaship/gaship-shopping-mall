@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,8 +40,8 @@ import static org.mockito.BDDMockito.given;
  * 생성
  */
 @DataJpaTest
+@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class EmployeeRepositoryTest {
-
     @Autowired
     EmployeeRepository repository;
     @Autowired
@@ -76,6 +78,7 @@ class EmployeeRepositoryTest {
 
     @DisplayName("이메일 중복검증을 위한 테스트")
     @Test
+    @org.junit.jupiter.api.Order(4)
     void findByEmail() {
         //given
         employee.fixCode(code);
@@ -84,7 +87,6 @@ class EmployeeRepositoryTest {
         localRepository.save(addressLocal);
         codeRepository.save(code);
         repository.save(employee);
-        given(sha512.encryptPlainText(anyString())).willReturn("test@naver.com");
         //when & then
         Employee employee1 = repository.findByEmail("test@naver.com").orElse(null);
 
@@ -95,6 +97,7 @@ class EmployeeRepositoryTest {
 
     @Test
     @DisplayName("직원의 이메일을 통해서 직원 계정 정보를 가져옵니다. : 성공")
+    @org.junit.jupiter.api.Order(2)
     void findSignInEmployeeUserDetailCaseSuccess() {
         employee.fixCode(code);
         employee.fixLocation(addressLocal);
@@ -121,6 +124,7 @@ class EmployeeRepositoryTest {
 
     @Test
     @DisplayName("직원의 이메일을 통해서 직원 계정 정보를 가져옵니다. : 실패")
+    @org.junit.jupiter.api.Order(3)
     void findSignInEmployeeUserDetailCaseFailure() {
         SignInUserDetailsDto loginEmployee =
             repository.findSignInEmployeeUserDetail("test@naver.com").orElse(null);

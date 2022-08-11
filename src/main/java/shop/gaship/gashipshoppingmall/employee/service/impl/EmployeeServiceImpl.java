@@ -1,8 +1,12 @@
 package shop.gaship.gashipshoppingmall.employee.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
@@ -11,6 +15,7 @@ import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
+import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.exception.EmailAlreadyExistException;
 import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
@@ -19,6 +24,7 @@ import shop.gaship.gashipshoppingmall.employee.exception.WrongStatusCodeExceptio
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
+import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -150,4 +156,27 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return result;
     }
+
+    @Override
+    public Page<InstallOrderResponseDto> findInstallOrdersFromEmployeeLocation(
+        Pageable pageable, Integer employeeNo) {
+        Page<Order> orderPage = repository.findOrderBasedOnEmployeeLocation(pageable, employeeNo);
+        List<InstallOrderResponseDto> installOrders = orderPage.getContent().stream()
+            .map(order -> InstallOrderResponseDto.builder()
+                .orderNo(order.getNo())
+                .address(order.getAddressList()
+                            .getAddressLocal()
+                            .getUpperLocal()
+                            .getAddressName().concat(" ")
+                        .concat(order.getAddressList()
+                            .getAddressLocal()
+                            .getAddressName()).concat(" ")
+                        .concat(order.getAddressList().getAddress()))
+                .build())
+            .collect(Collectors.toUnmodifiableList());
+
+        return PageableExecutionUtils.getPage(installOrders, pageable, orderPage::getTotalPages);
+    }
+
+
 }

@@ -16,13 +16,12 @@ public class MemberDummy extends Member {
 
     public static Member dummy() {
         StatusCode status = StatusCode.builder()
-            .statusCodeName("ex")
-            .groupCodeName("ex")
+            .statusCodeName("ACTIVE")
+            .groupCodeName("member_status")
             .priority(1)
             .build();
 
         return MemberDummy.builder()
-            .memberNo(1)
             .recommendMember(null)
             .memberStatusCodes(status)
             .memberGrades(MemberGradeDummy.dummy(

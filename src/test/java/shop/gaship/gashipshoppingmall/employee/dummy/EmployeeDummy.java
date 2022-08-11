@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.employee.dummy;
 
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 
 /**
@@ -17,7 +18,7 @@ public class EmployeeDummy {
     public static Employee dummy() {
         Employee dummy = new Employee();
         ReflectionTestUtils.setField(dummy, "statusCode", null);
-        ReflectionTestUtils.setField(dummy, "addressLocal", null);
+        ReflectionTestUtils.setField(dummy, "addressLocal", AddressLocalDummy.dummy1());
         ReflectionTestUtils.setField(dummy, "name", "잠온다");
         ReflectionTestUtils.setField(dummy, "email", "test@naver.com");
         ReflectionTestUtils.setField(dummy, "password", "password");
