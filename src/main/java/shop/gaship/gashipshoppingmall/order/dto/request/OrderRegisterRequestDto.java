@@ -40,7 +40,7 @@ public class OrderRegisterRequestDto {
     @Pattern(regexp = "(^$)|^010(\\d{7,8})$", message = "전화번호를 정확히 입력하십시오.")
     private String receiverSubPhoneNo;
 
-    @Length(max = 255, message = "")
+    @Length(max = 255, message = "요청사항은 255자를 넘길 수 없습니다.")
     private String deliveryRequest;
 
     @Min(value = 0, message = "총 주문 금액은 0원 이상이어야 합니다.")

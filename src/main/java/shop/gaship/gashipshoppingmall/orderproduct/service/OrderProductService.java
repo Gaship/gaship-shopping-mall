@@ -22,8 +22,21 @@ public interface OrderProductService {
      */
     void registerOrderProduct(Order order, List<OrderProductSpecificDto> orderProductSpecifics);
 
+    /**
+     * 주문 상품의 주문 상태를 변경합니다.
+     *
+     * @param orderProduct 상태를 바꿀 주문 상품입니다.
+     * @param statusCode 바꿀 상태입니다.
+     */
     void updateOrderStatus(OrderProduct orderProduct, StatusCode statusCode);
 
+    /**
+     * 주문 상품의 고유번호를 통해서 주문 상품의 상태 적용 및 취소금액을 적용합니다.
+     *
+     * @param orderProduct 주문 상품의 고유번호입니다.
+     * @param statusCode 변경할 상태입니다.
+     * @param cancellationAmount 취소금액입니다.
+     */
     void updateOrderStatusByOrderProductNo(Integer orderProduct, OrderStatus statusCode,
                                            Long cancellationAmount);
 }

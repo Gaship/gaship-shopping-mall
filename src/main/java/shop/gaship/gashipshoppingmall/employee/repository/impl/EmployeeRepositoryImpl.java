@@ -102,6 +102,13 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
                 .size()));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param pageable   페이징 객체입니다.
+     * @param employeeNo 직원의 고유번호입니다.
+     * @return {@inheritDoc}
+     */
     @Override
     public Page<Order> findOrderBasedOnEmployeeLocation(Pageable pageable,
                                                         Integer employeeNo) {

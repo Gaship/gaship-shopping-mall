@@ -81,6 +81,14 @@ public class OrderProductServiceImpl implements OrderProductService {
         applicationEventPublisher.publishEvent(new OrderProductCancelEvent(savedOrderProducts));
     }
 
+    /**
+     * 주문 상품을 생성합니다.
+     *
+     * @param order                 주문상품의 주문입니다.
+     * @param statusCode            주문 초기 상태입니다.
+     * @param orderProductSpecific  주문 상품에 등록될 정보입니다.
+     * @return 새로 생성할 주문 상품입니다.
+     */
     private OrderProduct makeOrderProduct(Order order, StatusCode statusCode,
                                           OrderProductSpecificDto orderProductSpecific) {
         Integer additionalWarrantyPeriod = orderProductSpecific.getAdditionalWarrantyPeriod();
@@ -102,6 +110,11 @@ public class OrderProductServiceImpl implements OrderProductService {
             .build();
     }
 
+    /**
+     * 주문시 주문 상품의 재고를 감소시킵니다.
+     *
+     * @param savedOrderProducts 생성된 주문 상품들입니다.
+     */
     private void decreaseProductStock(List<OrderProduct> savedOrderProducts) {
         savedOrderProducts.forEach(orderProduct -> {
             Product product = orderProduct.getProduct();
@@ -113,17 +126,36 @@ public class OrderProductServiceImpl implements OrderProductService {
         });
     }
 
+    /**
+     * 주문 상품의 품질보증기간을 계산하는 메서드입니다.
+     *
+     * @param additionalWarrantyPeriod 구매한 고객이 추가한 추가 보증기간입니다.
+     * @return 추가보증기간이 적용된 뒤의 날짜 객체입니다.
+     */
     private LocalDate calculateWarrantyDate(Integer additionalWarrantyPeriod) {
         return LocalDate.now().plusYears(1L)
             .plusMonths(additionalWarrantyPeriod);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderProduct 상태를 바꿀 주문 상품입니다.
+     * @param statusCode   바꿀 상태입니다.
+     */
     @Transactional
     @Override
     public void updateOrderStatus(OrderProduct orderProduct, StatusCode statusCode) {
         orderProduct.updateOrderProductStatus(statusCode);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderProductNo     주문 상품의 고유번호입니다.
+     * @param statusCode         변경할 상태입니다.
+     * @param cancellationAmount 취소금액입니다.
+     */
     @Transactional
     @Override
     public void updateOrderStatusByOrderProductNo(Integer orderProductNo, OrderStatus statusCode,

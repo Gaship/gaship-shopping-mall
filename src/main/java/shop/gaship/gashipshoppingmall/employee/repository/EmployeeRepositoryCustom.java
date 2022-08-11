@@ -31,5 +31,12 @@ public interface EmployeeRepositoryCustom {
      */
     PageResponse<EmployeeInfoResponseDto> findAllEmployees(Pageable pageable);
 
+    /**
+     * 주문을 기반으로 직원이 설치배송해야하는 주문건수들을 가입시 지정되었던 지역과 같은 주문들을 조회합니다.
+     *
+     * @param pageable 페이징 객체입니다.
+     * @param employeeNo 직원의 고유번호입니다.
+     * @return 직원의 위치로 부터 같은 지역의 설치 배송 주문건수 페이지객체가 반환됩니다.
+     */
     Page<Order> findOrderBasedOnEmployeeLocation(Pageable pageable, Integer employeeNo);
 }

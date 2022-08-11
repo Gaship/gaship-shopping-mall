@@ -48,8 +48,7 @@ public class EmployeeController {
     @PostMapping
     public ResponseEntity<Void> addEmployee(@Valid @RequestBody CreateEmployeeRequestDto dto) {
         employeeService.addEmployee(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
-            .build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
@@ -63,7 +62,7 @@ public class EmployeeController {
                                                @Valid @RequestBody ModifyEmployeeRequestDto dto) {
 
         employeeService.modifyEmployee(dto);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
