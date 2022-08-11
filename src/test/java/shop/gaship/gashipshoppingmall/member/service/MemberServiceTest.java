@@ -56,8 +56,8 @@ import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
-import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
 import shop.gaship.gashipshoppingmall.statuscode.status.UserAuthority;
+import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.service <br/>
