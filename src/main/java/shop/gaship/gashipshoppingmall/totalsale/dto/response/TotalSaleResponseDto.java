@@ -15,9 +15,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TotalSaleResponseDto {
     private LocalDateTime totalSaleDate;
-    private Integer orderCnt;
-    private Integer orderCancelCnt;
-    private Integer orderSaleCnt;
+    private Long orderCnt;
+    private Long orderCancelCnt;
+    private Long orderSaleCnt;
     private Long totalAmount;
     private Long cancelAmount;
     private Long orderSaleAmount;
