@@ -73,6 +73,8 @@ public class OrderProduct {
 
     private String employeeName;
 
+    private String trackingNo;
+
     @OneToOne(mappedBy = "orderProduct", fetch = FetchType.LAZY)
     private ProductReview review;
 
@@ -93,5 +95,9 @@ public class OrderProduct {
         this.orderStatusCode = orderStatusCode;
         this.warrantyExpirationDate = warrantyExpirationDate;
         this.amount = amount;
+    }
+
+    public void addTrackingNo(String trackingNo) {
+        this.trackingNo = trackingNo;
     }
 }

@@ -7,7 +7,9 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import shop.gaship.gashipshoppingmall.delivery.dto.DeliveryDto;
 import shop.gaship.gashipshoppingmall.order.entity.QOrder;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.QOrderProduct;
@@ -66,7 +68,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                     .sum().as("cancelAmount"),
                 (new CaseBuilder()
                     .when(orderProduct.orderStatusCode.statusCodeNo.eq(13)
-                        .or(orderProduct.orderStatusCode.statusCodeNo.eq(4)))
+                                                                   .or(orderProduct.orderStatusCode.statusCodeNo.eq(4)))
                     .then(orderProduct.amount)
                     .otherwise(0L))
                     .sum().as("orderSaleAmount")))
@@ -80,5 +82,22 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
         return new CaseBuilder()
             .when(statusCodeNo)
             .then(orderProduct);
+    }
+
+    @Override
+    public Optional<DeliveryDto> findOrderInfo(Integer orderProductNo) {
+        QOrderProduct orderProduct = QOrderProduct.orderProduct;
+        QOrder order = QOrder.order;
+
+        DeliveryDto deliveryDto = from(orderProduct)
+            .innerJoin(orderProduct.order, order)
+            .where(orderProduct.no.eq(orderProductNo))
+            .select(Projections.constructor(DeliveryDto.class,
+                order.receiptName,
+                order.addressList.address,
+                order.receiptPhoneNumber,
+                order.no)).fetchOne();
+
+        return Optional.of(deliveryDto);
     }
 }
