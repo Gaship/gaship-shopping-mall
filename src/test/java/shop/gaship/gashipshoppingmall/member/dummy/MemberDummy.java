@@ -23,7 +23,7 @@ public class MemberDummy extends Member {
 
         return MemberDummy.builder()
             .memberNo(1)
-            .recommendMember(null)
+            .recommendMember(new Member())
             .memberStatusCodes(status)
             .memberGrades(MemberGradeDummy.dummy(
                 MemberGradeDtoDummy.requestDummy("name", 0L),
