@@ -69,7 +69,7 @@ public class OrderProduct {
 
     private LocalDateTime cancellationDatetime;
 
-    private Integer cancellationAmount;
+    private Integer cancellationAmount = 0;
 
     private String employeeName;
 
