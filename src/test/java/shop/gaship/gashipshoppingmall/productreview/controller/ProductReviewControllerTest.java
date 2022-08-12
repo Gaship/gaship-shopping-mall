@@ -176,7 +176,7 @@ class ProductReviewControllerTest {
 
         when(productReviewService.findReviewsByProductNo(productNo, pageable)).thenReturn(page);
 
-        mockMvc.perform(get("/api/reviews/product/{productNo}", productNo)
+        mockMvc.perform(get("/api/products/{productNo}/reviews", productNo)
                         .queryParam("page", objectMapper.writeValueAsString(pageable.getPageNumber()))
                         .queryParam("size", objectMapper.writeValueAsString(pageable.getPageSize())))
                 .andExpect(status().isOk())
@@ -200,7 +200,7 @@ class ProductReviewControllerTest {
 
         when(productReviewService.findReviewsByMemberNo(memberNo, pageable)).thenReturn(page);
 
-        mockMvc.perform(get("/api/reviews/member/{memberNo}", memberNo)
+        mockMvc.perform(get("/api/members/{memberNo}/reviews", memberNo)
                         .queryParam("page", objectMapper.writeValueAsString(pageable.getPageNumber()))
                         .queryParam("size", objectMapper.writeValueAsString(pageable.getPageSize())))
                 .andExpect(status().isOk())
