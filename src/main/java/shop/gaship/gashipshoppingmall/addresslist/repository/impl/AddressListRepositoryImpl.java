@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.addresslist.repository.Impl;
+package shop.gaship.gashipshoppingmall.addresslist.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import java.util.List;

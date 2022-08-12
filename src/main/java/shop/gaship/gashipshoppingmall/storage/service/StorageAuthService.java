@@ -50,9 +50,9 @@ public class StorageAuthService {
     }
 
     /**
-     * 토큰요청 생성 메서드 입니다.
-     * 
-     * @return tokenRequest 토큰 요청 객체
+     * 인증토큰요청을 생성하는 메서드입니다.
+     *
+     * @return authTokenRequestDto 인증토큰 요청 dto
      */
     private AuthTokenRequestDto createTokenRequest() {
         AuthTokenRequestDto tokenRequest = new AuthTokenRequestDto();

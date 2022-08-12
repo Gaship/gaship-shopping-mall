@@ -7,7 +7,7 @@ import shop.gaship.gashipshoppingmall.commonfile.entity.QCommonFile;
 import shop.gaship.gashipshoppingmall.commonfile.repository.custom.CommonFileRepositoryCustom;
 
 /**
- * 공통파일 레퍼지토리 구현체
+ * 공통파일 레퍼지토리 구현체입니다.
  *
  * @see QuerydslRepositorySupport
  * @see CommonFileRepositoryCustom

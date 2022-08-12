@@ -129,11 +129,11 @@ public class ObjectStorageFileService implements FileService {
      * @return fileRequestDto 파일 요청 dto
      */
     private FileRequestDto parse(String url) {
-        String originalName = url.substring(url.lastIndexOf("/") + 1);
+        String originalName = url.substring(url.lastIndexOf('/') + 1);
         return FileRequestDto.builder()
                 .path(url)
                 .originalName(originalName)
-                .extension(originalName.substring(originalName.lastIndexOf(".") + 1))
+                .extension(originalName.substring(originalName.lastIndexOf('.') + 1))
                 .build();
 
     }
