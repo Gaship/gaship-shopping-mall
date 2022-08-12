@@ -96,7 +96,8 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 order.receiptName,
                 order.addressList.address,
                 order.receiptPhoneNumber,
-                order.no)).fetchOne();
+                orderProduct.no))
+            .fetchOne();
 
         return Optional.of(deliveryDto);
     }
