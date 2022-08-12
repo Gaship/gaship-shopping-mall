@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.file.service;
 import java.io.InputStream;
 
 /**
- * 설명작성란
+ * 파일 서비스 인터페이스 입니다.
  *
  * @author : 김보민
  * @since 1.0

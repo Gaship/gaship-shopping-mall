@@ -123,8 +123,8 @@ class InquiryRepositoryTest {
             .isEqualTo(customerInquiry.getInquiryNo());
         assertThat(inquiry.getInquiryContent())
             .isEqualTo(customerInquiry.getInquiryContent());
-        assertThat(inquiry.getProcessStatusCode())
-            .isEqualTo(customerInquiry.getProcessStatusCode());
+        assertThat(inquiry.getProcessStatusCode().getStatusCodeNo())
+            .isEqualTo(customerInquiry.getProcessStatusCode().getStatusCodeNo());
     }
 
     @DisplayName("기존 등록된 번호에 맞게 상품문의를 잘 찾아온다.")
@@ -138,8 +138,8 @@ class InquiryRepositoryTest {
             .isEqualTo(productInquiry.getInquiryNo());
         assertThat(inquiry.getInquiryContent())
             .isEqualTo(productInquiry.getInquiryContent());
-        assertThat(inquiry.getProcessStatusCode())
-            .isEqualTo(productInquiry.getProcessStatusCode());
+        assertThat(inquiry.getProcessStatusCode().getStatusCodeNo())
+            .isEqualTo(productInquiry.getProcessStatusCode().getStatusCodeNo());
         assertThat(inquiry.getProduct().getNo())
             .isEqualTo(productInquiry.getProduct().getNo());
     }
@@ -158,8 +158,8 @@ class InquiryRepositoryTest {
                 .isEqualTo(codes[i].getInquiryNo());
             assertThat(inquiryList.get(i).getInquiryContent())
                 .isEqualTo(codes[i].getInquiryContent());
-            assertThat(inquiryList.get(i).getProcessStatusCode())
-                .isEqualTo(codes[i].getProcessStatusCode());
+            assertThat(inquiryList.get(i).getProcessStatusCode().getStatusCodeNo())
+                .isEqualTo(codes[i].getProcessStatusCode().getStatusCodeNo());
         }
     }
 
@@ -226,8 +226,8 @@ class InquiryRepositoryTest {
         assertThat(result.getTitle())
             .isEqualTo(customerInquiry.getTitle());
 
-        assertThat(result.getProcessStatusCode())
-            .isEqualTo(statusCodeHolder);
+        assertThat(result.getProcessStatusCode().getStatusCodeNo())
+            .isEqualTo(statusCodeHolder.getStatusCodeNo());
 
         ReflectionTestUtils.setField(result, "title", "변경된제목");
         ReflectionTestUtils.setField(result, "processStatusCode", statusCodeComplete);

@@ -140,7 +140,7 @@ class ProductControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andDo(print());
 
-        verify(service).modifyProductSalesStatus(salesStatusModifyRequest);
+        verify(service).modifyProductSalesStatus(any(SalesStatusModifyRequestDto.class));
     }
 
     private MockMultipartHttpServletRequestBuilder multipartPutBuilder(String url, Integer productNo) {

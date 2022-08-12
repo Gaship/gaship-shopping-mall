@@ -71,7 +71,7 @@ class RepairScheduleControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        verify(service, times(1)).addRepairSchedule(dto);
+        verify(service, times(1)).addRepairSchedule(any(CreateScheduleRequestDto.class));
     }
 
     @DisplayName("스케줄 생성실패 테스트")
