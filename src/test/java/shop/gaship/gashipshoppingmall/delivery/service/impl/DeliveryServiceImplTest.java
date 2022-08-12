@@ -22,6 +22,8 @@ import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoun
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 
 /**
+ * 배송 관련 service test 클래스 입니다.
+ *
  * @author : 조재철
  * @since 1.0
  */

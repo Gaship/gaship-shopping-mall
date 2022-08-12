@@ -99,6 +99,6 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 orderProduct.no))
             .fetchOne();
 
-        return Optional.of(deliveryDto);
+        return Optional.ofNullable(deliveryDto);
     }
 }
