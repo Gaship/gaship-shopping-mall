@@ -337,8 +337,8 @@ public class MemberServiceImpl implements MemberService {
                 memberRepository.findByNickname(nickname).orElseThrow(MemberNotFoundException::new)
                         .getEmail();
 
-        String emailIdPart = memberEmail.substring(0, memberEmail.indexOf("@"));
-        String emailDomainPart = memberEmail.substring(memberEmail.indexOf("@"));
+        String emailIdPart = memberEmail.substring(0, memberEmail.indexOf('@'));
+        String emailDomainPart = memberEmail.substring(memberEmail.indexOf('@'));
 
         double idPartHalfLength = emailIdPart.length() / 2.0;
         String obscuredEmail = emailIdPart.substring(0, (int) Math.ceil(idPartHalfLength))

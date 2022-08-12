@@ -12,6 +12,9 @@ import lombok.Getter;
 public class AuthTokenResponseDto {
     private Access access;
 
+    /**
+     * 오브젝트 스토리지 접근 정보 객체입니다.
+     */
     @Getter
     public class Access {
         private Token token;

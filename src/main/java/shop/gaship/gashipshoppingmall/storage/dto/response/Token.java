@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.storage.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,5 +16,6 @@ public class Token {
     private String expires;
     private String id;
     private Tenant tenant;
-    private String issued_at;
+    @JsonProperty(value = "issued_at")
+    private String issuedAt;
 }

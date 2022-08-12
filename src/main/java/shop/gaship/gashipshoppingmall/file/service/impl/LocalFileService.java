@@ -22,7 +22,7 @@ import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 import shop.gaship.gashipshoppingmall.file.service.FileService;
 
 /**
- * 설명작성란
+ * 로컬 파일 서비스입니다.
  *
  * @author : 김보민
  * @since 1.0
@@ -117,7 +117,7 @@ public class LocalFileService implements FileService {
         return FileRequestDto.builder()
                 .path(PROTOCOL + url)
                 .originalName(originalName)
-                .extension(originalName.substring(originalName.lastIndexOf(".") + 1))
+                .extension(originalName.substring(originalName.lastIndexOf('.') + 1))
                 .build();
 
     }

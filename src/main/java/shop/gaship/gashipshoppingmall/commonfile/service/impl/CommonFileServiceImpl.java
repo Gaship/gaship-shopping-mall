@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -61,7 +60,7 @@ public class CommonFileServiceImpl implements CommonFileService {
     @Override
     public FileRequestDto uploadMultipartFile(MultipartFile file) {
         try {
-            return objectMapper.readValue(fileService.upload(getUUIDName(
+            return objectMapper.readValue(fileService.upload(getUuidName(
                             Objects.requireNonNull(file.getOriginalFilename())),
                             file.getInputStream()),
                     FileRequestDto.class);
@@ -88,9 +87,9 @@ public class CommonFileServiceImpl implements CommonFileService {
      * @param originalFileName 파일의 이름
      * @return string UUID 형태로 변환된 이름
      */
-    private String getUUIDName(String originalFileName) {
+    private String getUuidName(String originalFileName) {
         String fileExtension =
-                originalFileName.substring(originalFileName.lastIndexOf("."));
+                originalFileName.substring(originalFileName.lastIndexOf('.'));
         return UUID.randomUUID().toString().replace("-", "") + fileExtension;
     }
 }

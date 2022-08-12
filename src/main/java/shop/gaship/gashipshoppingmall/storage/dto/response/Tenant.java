@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.storage.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ public class Tenant {
     private String id;
     private String name;
     private String groupId;
-    private String project_domain;
+    @JsonProperty(value = "project_domain")
+    private String projectDomain;
     private Boolean swift;
 }
