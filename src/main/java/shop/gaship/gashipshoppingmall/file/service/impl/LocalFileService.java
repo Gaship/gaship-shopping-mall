@@ -55,7 +55,7 @@ public class LocalFileService implements FileService {
         try {
             Files.write(Path.of(url), inputStream.readAllBytes());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileUploadFailureException();
         }
 
         try {
