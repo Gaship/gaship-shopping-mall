@@ -28,6 +28,7 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.AddressStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -200,14 +201,20 @@ class AddressListServiceImplTest {
     @DisplayName("AddressListService modifyAddressList 테스트")
     @Test
     void modifyAddressList() {
+        AddressLocal addressLocal = AddressLocalDummy.dummy1();
         when(addressListRepository.findById(any())).thenReturn(Optional.of(AddressListDummy.addressListEntity()));
-        when(statusCodeRepository.findByStatusCodeName(any())).thenReturn(Optional.of(StatusCodeDummy.AddressListDeleteStateDummy()));
+        when(statusCodeRepository.findByStatusCodeName(AddressStatus.DELETE.getValue())).thenReturn(Optional.of(StatusCodeDummy.AddressListDeleteStateDummy()));
+        when(addressLocalRepository.findById(any())).thenReturn(Optional.of(addressLocal));
+        when(memberRepository.findById(any())).thenReturn(Optional.of(MemberDummy.dummy()));
+        when(statusCodeRepository.findByStatusCodeName(AddressStatus.USE.getValue())).thenReturn(Optional.of(StatusCodeDummy.AddressListUseStateDummy()));
         when(addressListRepository.save(any())).thenReturn(AddressListDummy.addressListEntity());
 
-        addressListService.modifyAddressList(AddressListDummy.addressListModifyRequestDtoDummyFilled());
+        addressListService.modifyAndAddAddressList(AddressListDummy.addressListModifyRequestDtoDummyFilled());
 
         verify(addressListRepository, times(1)).findById(any());
-        verify(statusCodeRepository, times(1)).findByStatusCodeName(any());
+        verify(addressLocalRepository, times(1)).findById(any());
+        verify(memberRepository, times(1)).findById(any());
+        verify(statusCodeRepository, times(2)).findByStatusCodeName(any());
         verify(addressListRepository, times(1)).save(any());
     }
 
