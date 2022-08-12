@@ -1,10 +1,10 @@
 package shop.gaship.gashipshoppingmall.repairschedule.repository.custom;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import shop.gaship.gashipshoppingmall.repairschedule.dto.request.RepairScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairschedule.entity.RepairSchedule;
 
@@ -19,11 +19,12 @@ public interface RepairScheduleRepositoryCustom {
     /**
      * 일자를 통해 모든 스케줄을 조회하기위한 메서드입니다.
      *
-     * @param date 조회하기위한 일자가입력 됩니다.
+     * @param dto 조회하기위한 일자가입력 됩니다.
      * @return list 조회된 스케줄정보가 반환됩니다.
      * @author 유호철
      */
-    List<GetRepairScheduleResponseDto> findAllByDate(LocalDate date);
+    Page<GetRepairScheduleResponseDto> findAllByDate(
+        RepairScheduleRequestDto dto, Pageable pageable);
 
     /**
      * 페이지형태의 데이터로 모든 스케줄정보를 조회하기위한 메서드입니다.
