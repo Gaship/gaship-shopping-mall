@@ -45,13 +45,15 @@ class ObjectStorageFileServiceTest {
     @DisplayName("오브젝트 스토리지 파일 업로드 테스트")
     @Order(1)
     @Test
-    void upload() throws FileNotFoundException {
+    void upload() throws IOException {
         String objectName = file.getName();
         InputStream inputStream = new FileInputStream(file);
 
         String result = fileService.upload(objectName, inputStream);
 
         assertThat(result).contains(path, file.getName());
+
+        inputStream.close();
     }
 
     @DisplayName("오브젝트 스토리지 파일 다운로드 테스트")
@@ -63,6 +65,9 @@ class ObjectStorageFileServiceTest {
         InputStream result = fileService.download(path);
 
         assertThat(result.readAllBytes()).isEqualTo(inputStream.readAllBytes());
+
+        inputStream.close();
+        result.close();
     }
 
     @DisplayName("오브젝트 스토리지 파일 삭제 테스트")
