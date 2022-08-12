@@ -28,7 +28,7 @@ import shop.gaship.gashipshoppingmall.response.PageResponse;
  * @since 1.0
  */
 @RestController
-@RequestMapping("/api/reviews")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class ProductReviewController {
     private final ProductReviewService productReviewService;
@@ -41,7 +41,7 @@ public class ProductReviewController {
      * @return responseEntity 응답 바디는 없습니다.
      */
     @MemberAuthority
-    @PostMapping
+    @PostMapping("/reviews")
     public ResponseEntity<Void> productReviewAdd(
             @RequestPart(value = "image", required = false) MultipartFile file,
             @Valid @RequestPart ProductReviewRequestDto createRequest) {
@@ -61,7 +61,7 @@ public class ProductReviewController {
      * @return responseEntity 응답 바디는 없습니다.
      */
     @MemberAuthority
-    @PutMapping("/{orderProductNo}")
+    @PutMapping("/reviews/{orderProductNo}")
     public ResponseEntity<Void> productReviewModify(
             @RequestPart(value = "image", required = false) MultipartFile file,
             @Valid @RequestPart ProductReviewRequestDto modifyRequest,
@@ -80,7 +80,7 @@ public class ProductReviewController {
      * @return responseEntity 응답 바디는 없습니다.
      */
     @MemberAuthority
-    @DeleteMapping("/{orderProductNo}")
+    @DeleteMapping("/reviews/{orderProductNo}")
     public ResponseEntity<Void> productReviewRemove(
             @PathVariable("orderProductNo") Integer orderProductNo) {
         productReviewService.removeProductReview(orderProductNo);
@@ -96,7 +96,7 @@ public class ProductReviewController {
      * @param orderProductNo 조회할 상품평 번호
      * @return responseEntity 조회한 상품평 응답 dto를 포함하고 있습니다.
      */
-    @GetMapping("/{orderProductNo}")
+    @GetMapping("/reviews/{orderProductNo}")
     public ResponseEntity<ProductReviewResponseDto> productReviewDetails(
             @PathVariable("orderProductNo") Integer orderProductNo) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -110,7 +110,7 @@ public class ProductReviewController {
      * @param pageable 페이지 정보
      * @return responseEntity 조회한 상품평들의 페이지 응답 객체를 포함하고 있습니다.
      */
-    @GetMapping
+    @GetMapping("/reviews")
     public ResponseEntity<PageResponse<ProductReviewResponseDto>> productReviewList(
             Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -125,7 +125,7 @@ public class ProductReviewController {
      * @param pageable  페이지 정보
      * @return responseEntity 조회한 상품평들의 페이지 응답 객체를 포함하고 있습니다.
      */
-    @GetMapping("/product/{productNo}")
+    @GetMapping("/products/{productNo}/reviews")
     public ResponseEntity<PageResponse<ProductReviewResponseDto>> productReviewListByProduct(
             @PathVariable("productNo") Integer productNo,
             Pageable pageable) {
@@ -142,7 +142,7 @@ public class ProductReviewController {
      * @param pageable 페이지 정보
      * @return responseEntity 조회한 상품평들의 페이지 응답 객체를 포함하고 있습니다.
      */
-    @GetMapping("/member/{memberNo}")
+    @GetMapping("/members/{memberNo}/reviews")
     public ResponseEntity<PageResponse<ProductReviewResponseDto>> productReviewListByMember(
             @PathVariable("memberNo") Integer memberNo,
             Pageable pageable) {

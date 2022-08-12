@@ -9,6 +9,8 @@ import shop.gaship.gashipshoppingmall.commonfile.repository.custom.CommonFileRep
 /**
  * 공통파일 레퍼지토리 구현체
  *
+ * @see QuerydslRepositorySupport
+ * @see CommonFileRepositoryCustom
  * @author : 김보민
  * @since 1.0
  */
