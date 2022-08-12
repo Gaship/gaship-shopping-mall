@@ -86,14 +86,23 @@ public class AddressListServiceImpl implements AddressListService {
      */
     @Transactional
     @Override
-    public void modifyAddressList(AddressListModifyRequestDto request) {
+    public void modifyAndAddAddressList(AddressListModifyRequestDto request) {
         AddressList addressList = addressListRepository.findById(request.getAddressListNo())
             .orElseThrow(NotFoundAddressListException::new);
         StatusCode deleteStatus =
             statusCodeRepository.findByStatusCodeName(AddressStatus.DELETE.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
         addressList.modifyStatusToDelete(deleteStatus);
-        addressListRepository.save(addressList);
+
+        AddressLocal addressLocal = addressLocalRepository.findById(request.getAddressLocalNo())
+                .orElseThrow(NotExistAddressLocal::new);
+        Member member = memberRepository.findById(request.getMemberNo())
+                .orElseThrow(MemberNotFoundException::new);
+        StatusCode defaultStatus =
+                statusCodeRepository.findByStatusCodeName(AddressStatus.USE.getValue())
+                        .orElseThrow(StatusCodeNotFoundException::new);
+        addressListRepository.save(dtoToEntity(request, addressLocal, member, defaultStatus));
+
     }
 
     /**
