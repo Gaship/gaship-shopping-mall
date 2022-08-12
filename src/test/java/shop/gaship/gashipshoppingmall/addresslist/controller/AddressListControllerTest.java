@@ -41,7 +41,6 @@ class AddressListControllerTest {
     void addressListAdd() throws Exception {
         String body = objectMapper.writeValueAsString(AddressListDummy.addressListAddRequestDtoDummy(1, 1, "경기", "안양", "12345"));
         mockMvc.perform(post("/api/members/1/addressLists")
-                        .accept(MediaType.APPLICATION_JSON)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
@@ -59,8 +58,7 @@ class AddressListControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
-        verify(addressListService, times(1)).addAddressList(any(AddressListModifyRequestDto.class));
-        verify(addressListService, times(1)).modifyAddressList(any(AddressListModifyRequestDto.class));
+        verify(addressListService, times(1)).modifyAndAddAddressList(any(AddressListModifyRequestDto.class));
     }
 
     @DisplayName("배송지 목록 삭제 테스트")
