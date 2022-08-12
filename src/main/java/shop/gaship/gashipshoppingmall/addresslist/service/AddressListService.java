@@ -39,7 +39,7 @@ public interface AddressListService {
      * @param request 등록에 필요한 정보를 담는 dto 입니다. 타입은 modifyRequestDto 입니다.
      * @author 최정우
      */
-    void modifyAddressList(AddressListModifyRequestDto request);
+    void modifyAndAddAddressList(AddressListModifyRequestDto request);
 
 
     /**
