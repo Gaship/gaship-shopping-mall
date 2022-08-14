@@ -34,7 +34,6 @@ import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
 import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -161,7 +160,7 @@ class ProductControllerTest {
         PageRequest req = PageRequest.of(1, 10);
         Page<ProductAllInfoResponseDto> pages = new PageImpl<>(list, req, list.size());
         when(service.findProductByCode(response.getProductCode(), pageRequest))
-            .thenReturn(new PageResponse<>(pages));
+            .thenReturn(pages);
 
         mvc.perform(get("/api/products/code")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -232,7 +231,7 @@ class ProductControllerTest {
         Pageable pageRequest = PageRequest.of(0, 10);
         Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response), pageRequest, pageRequest.getPageSize());
         when(service.findProductByPrice(0L, 10000000L, pageRequest))
-            .thenReturn(new PageResponse<>(list));
+            .thenReturn(list);
 
         MvcResult mvcResult = mvc.perform(get("/api/products/price")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -271,7 +270,7 @@ class ProductControllerTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response), pageRequest, pageRequest.getPageSize());
         when(service.findProductByCategory(1, pageRequest))
-            .thenReturn(new PageResponse<>(list));
+            .thenReturn(list);
 
         //then
         mvc.perform(get("/api/products/category/{categoryNo}", 1)
@@ -308,7 +307,7 @@ class ProductControllerTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response), pageRequest, pageRequest.getPageSize());
         when(service.findProductByName(response.getProductName(), pageRequest))
-            .thenReturn(new PageResponse<>(list));
+            .thenReturn(list);
 
 
         //then
@@ -345,7 +344,7 @@ class ProductControllerTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response), pageRequest, pageRequest.getPageSize());
         when(service.findProductStatusCode("aa", pageRequest))
-            .thenReturn(new PageResponse<>(list));
+            .thenReturn(list);
 
         //then
         mvc.perform(get("/api/products/statusCode")
@@ -384,7 +383,7 @@ class ProductControllerTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response), pageRequest, pageRequest.getPageSize());
         when(service.findProductsInfo(pageRequest))
-            .thenReturn(new PageResponse<>(list));
+            .thenReturn(list);
 
         //then
         mvc.perform(get("/api/products")
@@ -425,54 +424,51 @@ class ProductControllerTest {
         responseDtoList.add(response);
         responseDtoList.add(dto);
 
-        Page<ProductAllInfoResponseDto> list = new PageImpl<>(responseDtoList, pageRequest, pageRequest.getPageSize());
-        when(service.findProductByProductNos(List.of(response.getProductNo(), dto.getProductNo()), pageRequest))
-            .thenReturn(new PageResponse<>(list));
-
+        PageRequest request = PageRequest.of(0, 2);
+        Page<ProductAllInfoResponseDto> list = new PageImpl<>(responseDtoList, request, request.getPageSize());
+        when(service.findProductByProductNos(any(), any())).thenReturn(list);
         mvc.perform(get("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .accept(MediaType.APPLICATION_JSON)
                 .queryParam("productNos", objectMapper.writeValueAsString(response.getProductNo()))
-                .queryParam("productNos", objectMapper.writeValueAsString(dto.getProductNo()))
-                .queryParam("page", objectMapper.writeValueAsString(pageRequest.getPageNumber()))
-                .queryParam("size", objectMapper.writeValueAsString(pageRequest.getPageSize())))
-            .andExpect(jsonPath("$.content[0].productName").value(response.getProductName()))
-            .andExpect(jsonPath("$.content[0].productNo").value(response.getProductNo()))
-            .andExpect(jsonPath("$.content[0].categoryName").value(response.getCategoryName()))
-            .andExpect(jsonPath("$.content[0].amount").value(response.getAmount()))
-            .andExpect(jsonPath("$.content[0].manufacturer").value(response.getManufacturer()))
-            .andExpect(jsonPath("$.content[0].country").value(response.getCountry()))
-            .andExpect(jsonPath("$.content[0].seller").value(response.getSeller()))
-            .andExpect(jsonPath("$.content[0].importer").value(response.getImporter()))
-            .andExpect(jsonPath("$.content[0].quality").value(response.getQuality()))
-            .andExpect(jsonPath("$.content[0].installationCost").value(response.getInstallationCost()))
-            .andExpect(jsonPath("$.content[0].color").value(response.getColor()))
-            .andExpect(jsonPath("$.content[0].quantity").value(response.getQuantity()))
-            .andExpect(jsonPath("$.content[0].explanation").value(response.getExplanation()))
-            .andExpect(jsonPath("$.content[0].level").value(response.getLevel()))
-            .andExpect(jsonPath("$.content[0].upperName").value(response.getUpperName()))
-            .andExpect(jsonPath("$.content[1].productName").value(dto.getProductName()))
-            .andExpect(jsonPath("$.content[1].productNo").value(dto.getProductNo()))
-            .andExpect(jsonPath("$.content[1].categoryName").value(dto.getCategoryName()))
-            .andExpect(jsonPath("$.content[1].amount").value(dto.getAmount()))
-            .andExpect(jsonPath("$.content[1].manufacturer").value(dto.getManufacturer()))
-            .andExpect(jsonPath("$.content[1].country").value(dto.getCountry()))
-            .andExpect(jsonPath("$.content[1].seller").value(dto.getSeller()))
-            .andExpect(jsonPath("$.content[1].importer").value(dto.getImporter()))
-            .andExpect(jsonPath("$.content[1].quality").value(dto.getQuality()))
-            .andExpect(jsonPath("$.content[1].installationCost").value(dto.getInstallationCost()))
-            .andExpect(jsonPath("$.content[1].color").value(dto.getColor()))
-            .andExpect(jsonPath("$.content[1].quantity").value(dto.getQuantity()))
-            .andExpect(jsonPath("$.content[1].explanation").value(dto.getExplanation()))
-            .andExpect(jsonPath("$.content[1].level").value(dto.getLevel()))
-            .andExpect(jsonPath("$.content[1].upperName").value(dto.getUpperName()))
+                .queryParam("productNos", objectMapper.writeValueAsString(dto.getProductNo())))
+            .andExpect(jsonPath("$.[0].productName").value(response.getProductName()))
+            .andExpect(jsonPath("$.[0].productNo").value(response.getProductNo()))
+            .andExpect(jsonPath("$.[0].categoryName").value(response.getCategoryName()))
+            .andExpect(jsonPath("$.[0].amount").value(response.getAmount()))
+            .andExpect(jsonPath("$.[0].manufacturer").value(response.getManufacturer()))
+            .andExpect(jsonPath("$.[0].country").value(response.getCountry()))
+            .andExpect(jsonPath("$.[0].seller").value(response.getSeller()))
+            .andExpect(jsonPath("$.[0].importer").value(response.getImporter()))
+            .andExpect(jsonPath("$.[0].quality").value(response.getQuality()))
+            .andExpect(jsonPath("$.[0].installationCost").value(response.getInstallationCost()))
+            .andExpect(jsonPath("$.[0].color").value(response.getColor()))
+            .andExpect(jsonPath("$.[0].quantity").value(response.getQuantity()))
+            .andExpect(jsonPath("$.[0].explanation").value(response.getExplanation()))
+            .andExpect(jsonPath("$.[0].level").value(response.getLevel()))
+            .andExpect(jsonPath("$.[0].upperName").value(response.getUpperName()))
+            .andExpect(jsonPath("$.[1].productName").value(dto.getProductName()))
+            .andExpect(jsonPath("$.[1].productNo").value(dto.getProductNo()))
+            .andExpect(jsonPath("$.[1].categoryName").value(dto.getCategoryName()))
+            .andExpect(jsonPath("$.[1].amount").value(dto.getAmount()))
+            .andExpect(jsonPath("$.[1].manufacturer").value(dto.getManufacturer()))
+            .andExpect(jsonPath("$.[1].country").value(dto.getCountry()))
+            .andExpect(jsonPath("$.[1].seller").value(dto.getSeller()))
+            .andExpect(jsonPath("$.[1].importer").value(dto.getImporter()))
+            .andExpect(jsonPath("$.[1].quality").value(dto.getQuality()))
+            .andExpect(jsonPath("$.[1].installationCost").value(dto.getInstallationCost()))
+            .andExpect(jsonPath("$.[1].color").value(dto.getColor()))
+            .andExpect(jsonPath("$.[1].quantity").value(dto.getQuantity()))
+            .andExpect(jsonPath("$.[1].explanation").value(dto.getExplanation()))
+            .andExpect(jsonPath("$.[1].level").value(dto.getLevel()))
+            .andExpect(jsonPath("$.[1].upperName").value(dto.getUpperName()))
             .andExpect(status().isOk())
 
             .andDo(print());
 
         verify(service, times(1))
-            .findProductByProductNos(List.of(response.getProductNo(), dto.getProductNo()), pageRequest);
+            .findProductByProductNos(List.of(response.getProductNo(), dto.getProductNo()), request);
 
     }
 }
