@@ -38,7 +38,6 @@ public class OrderDummy {
         OrderProductSpecificDto orderProductSpecific = new OrderProductSpecificDto();
         ReflectionTestUtils.setField(orderProductSpecific, "productNo", 1);
         ReflectionTestUtils.setField(orderProductSpecific, "amount", 10000000L);
-        ReflectionTestUtils.setField(orderProductSpecific, "additionalWarrantyPeriod", 1);
         ReflectionTestUtils.setField(orderProductSpecific, "couponNo", 2);
         ReflectionTestUtils.setField(orderProductSpecific, "couponAmount", 100000L);
         ReflectionTestUtils.setField(orderProductSpecific, "hopeDate", null);

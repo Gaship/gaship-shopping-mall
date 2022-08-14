@@ -34,6 +34,7 @@ import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 @Service
 @RequiredArgsConstructor
 public class OrderProductServiceImpl implements OrderProductService {
+    private static final Integer DEFAULT_WARRANTY = 12; // 1년 기본 보증
     private final ProductRepository productRepository;
     private final StatusCodeRepository statusCodeRepository;
     private final OrderProductRepository orderProductRepository;
@@ -91,7 +92,6 @@ public class OrderProductServiceImpl implements OrderProductService {
      */
     private OrderProduct makeOrderProduct(Order order, StatusCode statusCode,
                                           OrderProductSpecificDto orderProductSpecific) {
-        Integer additionalWarrantyPeriod = orderProductSpecific.getAdditionalWarrantyPeriod();
         Long amount = orderProductSpecific.getAmount();
         LocalDate hopeDate = orderProductSpecific.getHopeDate();
         Integer couponNo = orderProductSpecific.getCouponNo();
@@ -103,7 +103,7 @@ public class OrderProductServiceImpl implements OrderProductService {
             .order(order)
             .product(product)
             .amount(amount)
-            .warrantyExpirationDate(calculateWarrantyDate(additionalWarrantyPeriod))
+            .warrantyExpirationDate(LocalDate.now().plusMonths(DEFAULT_WARRANTY))
             .hopeDate(hopeDate)
             .memberCouponNo(couponNo)
             .orderStatusCode(statusCode)
@@ -124,17 +124,6 @@ public class OrderProductServiceImpl implements OrderProductService {
             }
             product.updateStockQuantity(afterStock);
         });
-    }
-
-    /**
-     * 주문 상품의 품질보증기간을 계산하는 메서드입니다.
-     *
-     * @param additionalWarrantyPeriod 구매한 고객이 추가한 추가 보증기간입니다.
-     * @return 추가보증기간이 적용된 뒤의 날짜 객체입니다.
-     */
-    private LocalDate calculateWarrantyDate(Integer additionalWarrantyPeriod) {
-        return LocalDate.now().plusYears(1L)
-            .plusMonths(additionalWarrantyPeriod);
     }
 
     /**

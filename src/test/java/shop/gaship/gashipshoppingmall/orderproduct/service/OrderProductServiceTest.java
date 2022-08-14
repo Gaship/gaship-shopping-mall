@@ -80,7 +80,6 @@ class OrderProductServiceTest {
         OrderProductSpecificDto orderProductSpecific = new OrderProductSpecificDto();
         ReflectionTestUtils.setField(orderProductSpecific, "productNo", 1);
         ReflectionTestUtils.setField(orderProductSpecific, "amount", 10000000L);
-        ReflectionTestUtils.setField(orderProductSpecific, "additionalWarrantyPeriod", 1);
         ReflectionTestUtils.setField(orderProductSpecific, "couponNo", null);
         ReflectionTestUtils.setField(orderProductSpecific, "couponAmount", 0L);
         ReflectionTestUtils.setField(orderProductSpecific, "hopeDate", null);
@@ -95,7 +94,7 @@ class OrderProductServiceTest {
                 .mapToObj(value -> OrderProductDummy.dummy())
                 .collect(Collectors.toUnmodifiableList()));
 
-        IntStream.range(0,5).forEach(i -> orderProductSpecifics.add(orderProductSpecific));
+        IntStream.range(0, 5).forEach(i -> orderProductSpecifics.add(orderProductSpecific));
         orderProductService.registerOrderProduct(order, orderProductSpecifics);
 
         then(statusCodeRepository)
@@ -125,12 +124,11 @@ class OrderProductServiceTest {
         OrderProductSpecificDto orderProductSpecific = new OrderProductSpecificDto();
         ReflectionTestUtils.setField(orderProductSpecific, "productNo", 1);
         ReflectionTestUtils.setField(orderProductSpecific, "amount", 10000000L);
-        ReflectionTestUtils.setField(orderProductSpecific, "additionalWarrantyPeriod", 1);
         ReflectionTestUtils.setField(orderProductSpecific, "couponNo", 1);
         ReflectionTestUtils.setField(orderProductSpecific, "couponAmount", 1000L);
         ReflectionTestUtils.setField(orderProductSpecific, "hopeDate", null);
 
-        IntStream.range(0,5).forEach(i -> orderProductSpecifics.add(orderProductSpecific));
+        IntStream.range(0, 5).forEach(i -> orderProductSpecifics.add(orderProductSpecific));
 
         given(statusCodeRepository.findByStatusCodeName(anyString()))
             .willReturn(Optional.of(StatusCodeDummy.dummy()));
@@ -163,25 +161,5 @@ class OrderProductServiceTest {
             .handle(any(CouponUseEvent.class));
 
         assertThat(order.getTotalOrderAmount()).isEqualTo(1000000L);
-    }
-
-    @Test
-    @DisplayName("주문 상품의 금액을 계산하는 테스트")
-    void calculateTotalAmount() {
-        long amount = 1000000L;
-        int additionalWarrantyPeriod = 12;
-        int couponWarrantyPeriod = 11;
-
-        double result1 = amount + (0.1 * amount) * (additionalWarrantyPeriod - couponWarrantyPeriod);
-        couponWarrantyPeriod = 0;
-        double result2 = amount + (0.1 * amount) * (additionalWarrantyPeriod - couponWarrantyPeriod);
-        double result3 = amount + (0.1 * amount) * 0;
-
-        assertThat(Double.valueOf(result1).longValue())
-            .isEqualTo(1000000L + 100000);
-        assertThat(Double.valueOf(result2).longValue())
-            .isEqualTo(1000000L + 1200000);
-        assertThat(Double.valueOf(result3).longValue())
-            .isEqualTo(1000000L);
     }
 }
