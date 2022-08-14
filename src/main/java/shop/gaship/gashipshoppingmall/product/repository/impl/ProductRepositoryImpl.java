@@ -7,8 +7,9 @@ import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
@@ -16,7 +17,6 @@ import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
 import shop.gaship.gashipshoppingmall.producttag.entity.QProductTag;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 
 
@@ -41,8 +41,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
      * {@inheritDoc}
      */
     @Override
-    public PageResponse<ProductAllInfoResponseDto> findProduct(ProductRequestViewDto requestDto) {
-
+    public Page<ProductAllInfoResponseDto> findProduct(ProductRequestViewDto requestDto) {
         QCategory upper = new QCategory("upper");
         QCategory top = new QCategory("top");
 
@@ -73,14 +72,10 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     .where(upper.no.eq(category.upperCategory.no))
                     .from(upper)))
             .distinct()
-            .limit(requestDto.getPageable().getPageSize())
-            .offset(requestDto.getPageable().getOffset())
             .fetch();
 
-        return new PageResponse<>(PageableExecutionUtils.getPage(content, requestDto.getPageable(),
-            () -> productQuery(requestDto)
-                .fetch()
-                .size()));
+        return new PageImpl<>(content, requestDto.getPageable(), content.size());
+
     }
 
     private JPQLQuery<Product> productQuery(ProductRequestViewDto requestDto) {

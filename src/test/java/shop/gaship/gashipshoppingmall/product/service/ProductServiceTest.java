@@ -128,16 +128,16 @@ class ProductServiceTest {
         productTag = new ProductTag(new ProductTag.Pk(1, 1), product, tag);
 
         fileRequest = FileRequestDto.builder()
-                .path(file.getAbsolutePath())
-                .originalName(multipartFile.getOriginalFilename())
-                .extension("jpg")
-                .build();
+            .path(file.getAbsolutePath())
+            .originalName(multipartFile.getOriginalFilename())
+            .extension("jpg")
+            .build();
 
         commonFile = CommonFile.builder()
-                .path(fileRequest.getPath())
-                .originalName(fileRequest.getOriginalName())
-                .extension(fileRequest.getExtension())
-                .build();
+            .path(fileRequest.getPath())
+            .originalName(fileRequest.getOriginalName())
+            .extension(fileRequest.getExtension())
+            .build();
     }
 
     @DisplayName("상품 등록 성공")
@@ -243,13 +243,12 @@ class ProductServiceTest {
             .build();
 
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(productTag.getTag().getTitle()));
         //when
 
-        PageResponse<ProductAllInfoResponseDto> result =
-            service.findProductByCode("c1", pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductByCode("c1", pageRequest);
 
         //then
         verify(repository, times(1))
@@ -270,7 +269,7 @@ class ProductServiceTest {
         given(repository.findById(response.getProductNo()))
             .willReturn(Optional.of(product));
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(productTagRepository.findTagsByProductNo(response.getProductNo()))
             .willReturn(List.of(productTag.getTag().getTitle()));
         //when
@@ -322,7 +321,7 @@ class ProductServiceTest {
             .build();
 
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
 
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(tag.getTitle()));
@@ -362,15 +361,14 @@ class ProductServiceTest {
             .build();
 
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(tag.getTitle()));
         given(categoryRepository.findById(any()))
             .willReturn(Optional.of(category));
 
         //when
-        PageResponse<ProductAllInfoResponseDto> result =
-            service.findProductByCategory(1, pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductByCategory(1, pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(any());
@@ -389,13 +387,12 @@ class ProductServiceTest {
             .build();
 
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(productTag.getTag().getTitle()));
 
         //when
-        PageResponse<ProductAllInfoResponseDto> result =
-            service.findProductByName(response.getProductName(), pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductByName(response.getProductName(), pageRequest);
         //then
         verify(repository, times(1)).findProduct(any());
         verify(productTagRepository, times(1)).findTagsByProductNo((tag.getTagNo()));
@@ -409,11 +406,11 @@ class ProductServiceTest {
         //given
         ProductRequestViewDto requestDto = new ProductRequestViewDto();
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(productTag.getTag().getTitle()));
         //when
-        PageResponse<ProductAllInfoResponseDto> result = service.findProductsInfo(pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductsInfo(pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(requestDto);
@@ -443,11 +440,11 @@ class ProductServiceTest {
             .pageable(pageRequest)
             .build();
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(statusCodeRepository.findByStatusCodeName(requestDto.getStatusName()))
             .willReturn(Optional.of(d1));
         //when
-        PageResponse<ProductAllInfoResponseDto> result = service.findProductStatusCode(requestDto.getStatusName(), pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductStatusCode(requestDto.getStatusName(), pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(requestDto);
@@ -465,10 +462,10 @@ class ProductServiceTest {
             .productNoList(productNo)
             .build();
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
 
         //when
-        PageResponse<ProductAllInfoResponseDto> result = service.findProductByProductNos(productNo, pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductByProductNos(productNo, pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(requestDto);
@@ -476,7 +473,7 @@ class ProductServiceTest {
         checkContent(result);
     }
 
-    private void checkContent(PageResponse<ProductAllInfoResponseDto> result) {
+    private void checkContent(Page<ProductAllInfoResponseDto> result) {
         assertThat(result.getContent().get(0).getUpperName()).isEqualTo(response.getUpperName());
         assertThat(result.getContent().get(0).getProductNo()).isEqualTo(response.getProductNo());
         assertThat(result.getContent().get(0).getProductName()).isEqualTo(
