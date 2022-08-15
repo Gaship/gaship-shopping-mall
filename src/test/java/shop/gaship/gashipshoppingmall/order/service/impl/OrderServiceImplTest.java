@@ -2,14 +2,6 @@ package shop.gaship.gashipshoppingmall.order.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -41,8 +33,6 @@ import shop.gaship.gashipshoppingmall.order.service.OrderService;
 import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
 import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEventHandler;
-import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisterEvent;
-import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisterEventHandler;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,7 +60,7 @@ class OrderServiceImplTest {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @MockBean
-    private OrderProductRegisterEventHandler handler;
+    private OrderProductRegisteredEventHandler handler;
 
     @MockBean
     private OrderRepository orderRepository;
@@ -92,9 +82,9 @@ class OrderServiceImplTest {
         given(memberRepository.findById(anyInt())).willReturn(Optional.of(MemberDummy.dummy()));
         given(orderRepository.save(any(Order.class))).willReturn(orderDummy);
         willDoNothing().given(applicationEventPublisher)
-            .publishEvent(any(OrderProductRegisterEvent.class));
+            .publishEvent(any(Order.class));
         willDoNothing().given(handler)
-            .saveOrderProduct(any(OrderProductRegisterEvent.class));
+            .saveOrderProduct(any(OrderProductRegisteredEvent.class));
 
         orderService.insertOrder(orderRequestDtoDummy);
 
