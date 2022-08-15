@@ -21,6 +21,7 @@ import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.event.domain.SignedUpEvent;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -33,6 +34,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
+import shop.gaship.gashipshoppingmall.util.Events;
 
 /**
  * MemberService를 구현하는 클래스입니다.
@@ -82,6 +84,11 @@ public class MemberServiceImpl implements MemberService {
                         recommendMember, defaultStatus, defaultGrade);
 
         memberRepository.saveAndFlush(savedMember);
+
+        if (Objects.isNull(recommendMember)) {
+            return;
+        }
+        Events.raise(new SignedUpEvent(recommendMember.getMemberNo()));
     }
 
     /**

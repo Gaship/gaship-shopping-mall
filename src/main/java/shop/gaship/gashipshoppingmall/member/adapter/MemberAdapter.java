@@ -2,12 +2,16 @@ package shop.gaship.gashipshoppingmall.member.adapter;
 
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import shop.gaship.gashipshoppingmall.config.ServerConfig;
+import shop.gaship.gashipshoppingmall.error.ErrorResponse;
 import shop.gaship.gashipshoppingmall.error.NoResponseDataException;
+import shop.gaship.gashipshoppingmall.error.RequestFailureThrow;
 import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordReceiveEmailDto;
 import shop.gaship.gashipshoppingmall.member.dto.SuccessReissueResponse;
 
@@ -35,5 +39,16 @@ public class MemberAdapter {
             .bodyValue(reissuePasswordDto).accept(MediaType.APPLICATION_JSON).retrieve()
             .toEntity(SuccessReissueResponse.class).timeout(Duration.ofSeconds(5)).blockOptional()
             .orElseThrow(() -> new NoResponseDataException("Auth 서버로부터 응답이 없습니다."));
+    }
+
+    public void requestSendRecommendMemberCouponGenerationIssue(Integer recommendMemberNo) {
+        WebClient.create(serverConfig.getCouponUrl()).post()
+            .uri("/api/coupon-generations-issues/{recommendMemberNo}", recommendMemberNo)
+            .retrieve()
+            .onStatus(HttpStatus::isError, clientResponse ->
+                clientResponse.bodyToMono(ErrorResponse.class)
+                    .flatMap(errorResponse -> Mono.error(new RequestFailureThrow(errorResponse.getMessage(), clientResponse.statusCode()))))
+            .bodyToMono(void.class)
+            .block();
     }
 }
