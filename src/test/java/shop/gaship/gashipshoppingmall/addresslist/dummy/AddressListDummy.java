@@ -122,6 +122,7 @@ public class AddressListDummy {
         List<AddressList> list = new ArrayList<>();
 
         IntStream.rangeClosed(1, 103).forEach(i -> list.add(AddressList.builder()
+            .addressListsNo(i)
             .addressLocal(AddressLocalDummy.dummy1())
             .member(MemberDummy.dummy())
             .statusCode(StatusCodeDummy.dummy())

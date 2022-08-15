@@ -123,8 +123,8 @@ class InquiryRepositoryTest {
             .isEqualTo(customerInquiry.getInquiryNo());
         assertThat(inquiry.getInquiryContent())
             .isEqualTo(customerInquiry.getInquiryContent());
-        assertThat(inquiry.getProcessStatusCode())
-            .isEqualTo(customerInquiry.getProcessStatusCode());
+        assertThat(inquiry.getProcessStatusCode().getStatusCodeNo())
+            .isEqualTo(customerInquiry.getProcessStatusCode().getStatusCodeNo());
     }
 
     @DisplayName("기존 등록된 번호에 맞게 상품문의를 잘 찾아온다.")
@@ -138,8 +138,8 @@ class InquiryRepositoryTest {
             .isEqualTo(productInquiry.getInquiryNo());
         assertThat(inquiry.getInquiryContent())
             .isEqualTo(productInquiry.getInquiryContent());
-        assertThat(inquiry.getProcessStatusCode())
-            .isEqualTo(productInquiry.getProcessStatusCode());
+        assertThat(inquiry.getProcessStatusCode().getStatusCodeNo())
+            .isEqualTo(productInquiry.getProcessStatusCode().getStatusCodeNo());
         assertThat(inquiry.getProduct().getNo())
             .isEqualTo(productInquiry.getProduct().getNo());
     }
@@ -158,8 +158,8 @@ class InquiryRepositoryTest {
                 .isEqualTo(codes[i].getInquiryNo());
             assertThat(inquiryList.get(i).getInquiryContent())
                 .isEqualTo(codes[i].getInquiryContent());
-            assertThat(inquiryList.get(i).getProcessStatusCode())
-                .isEqualTo(codes[i].getProcessStatusCode());
+            assertThat(inquiryList.get(i).getProcessStatusCode().getStatusCodeNo())
+                .isEqualTo(codes[i].getProcessStatusCode().getStatusCodeNo());
         }
     }
 
@@ -226,8 +226,8 @@ class InquiryRepositoryTest {
         assertThat(result.getTitle())
             .isEqualTo(customerInquiry.getTitle());
 
-        assertThat(result.getProcessStatusCode())
-            .isEqualTo(statusCodeHolder);
+        assertThat(result.getProcessStatusCode().getStatusCodeNo())
+            .isEqualTo(statusCodeHolder.getStatusCodeNo());
 
         ReflectionTestUtils.setField(result, "title", "변경된제목");
         ReflectionTestUtils.setField(result, "processStatusCode", statusCodeComplete);
@@ -324,7 +324,7 @@ class InquiryRepositoryTest {
 
         assertThat(content).hasSize(3);
         assertThat(content.get(0).getMemberNickname())
-            .isEqualTo("example nickname");
+            .isEqualTo("examplenickname");
         assertThat(content.get(0).getProcessStatus())
             .isEqualTo("답변완료");
 
@@ -333,7 +333,7 @@ class InquiryRepositoryTest {
 
         for (int i = 1; i < 3; i++) {
             assertThat(content.get(i).getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(content.get(i).getProcessStatus())
                 .isEqualTo("답변대기");
             assertThat(content.get(i).getTitle())
@@ -413,7 +413,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getProcessStatus())
                 .isEqualTo("답변완료");
             assertThat(inquiryDto.getTitle())
@@ -463,7 +463,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getProcessStatus())
                 .isEqualTo("답변대기");
 
@@ -517,7 +517,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getTitle())
                 .isEqualTo("1번째 고객문의제목");
         });
@@ -591,7 +591,7 @@ class InquiryRepositoryTest {
         assertThat(content)
             .hasSize(3);
         assertThat(content.get(0).getMemberNickname())
-            .isEqualTo("example nickname");
+            .isEqualTo("examplenickname");
         assertThat(content.get(0).getProcessStatus())
             .isEqualTo("답변완료");
         assertThat(content.get(0).getTitle())
@@ -599,7 +599,7 @@ class InquiryRepositoryTest {
 
         for (int i = 1; i < 3; i++) {
             assertThat(content.get(i).getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(content.get(i).getProcessStatus())
                 .isEqualTo("답변대기");
             assertThat(content.get(i).getTitle())
@@ -679,7 +679,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getProcessStatus())
                 .isEqualTo("답변완료");
             assertThat(inquiryDto.getTitle())
@@ -729,7 +729,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getProcessStatus())
                 .isEqualTo("답변대기");
 
@@ -783,7 +783,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getTitle())
                 .isEqualTo("2번째 상품문의제목");
         });
@@ -835,7 +835,7 @@ class InquiryRepositoryTest {
 
         content.stream().forEach(inquiryDto -> {
             assertThat(inquiryDto.getMemberNickname())
-                .isEqualTo("example nickname");
+                .isEqualTo("examplenickname");
             assertThat(inquiryDto.getTitle())
                 .isEqualTo("2번째 상품문의제목");
         });

@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.daylabor.exception;
  * @since 1.0
  */
 public class NotExistDayLabor extends RuntimeException {
-    private static final String MESSAGE = "관련 지역물량이 존재하지않습니다";
+    public static final String MESSAGE = "관련 지역물량이 존재하지않습니다";
 
     public NotExistDayLabor() {
         super(MESSAGE);

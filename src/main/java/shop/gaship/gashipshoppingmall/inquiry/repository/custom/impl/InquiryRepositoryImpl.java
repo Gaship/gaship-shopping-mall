@@ -37,8 +37,8 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Page<InquiryListResponseDto> findAllThroughSearchDto(
-        Pageable pageable, InquiryListSearch inquirySearchRequestDto) {
+    public Page<InquiryListResponseDto> findAllThroughSearchDto(Pageable pageable,
+            InquiryListSearch inquirySearchRequestDto) {
         QInquiry inquiry = QInquiry.inquiry;
         QMember member = QMember.member;
         QStatusCode statusCode = QStatusCode.statusCode;

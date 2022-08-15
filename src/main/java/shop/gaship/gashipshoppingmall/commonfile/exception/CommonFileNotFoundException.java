@@ -6,7 +6,7 @@ package shop.gaship.gashipshoppingmall.commonfile.exception;
  * @author : 김보민
  * @since 1.0
  */
-public class CommonFileNotFoundException extends RuntimeException{
+public class CommonFileNotFoundException extends RuntimeException {
     public static final String MESSAGE = "해당 파일을 찾을 수 없습니다.";
 
     public CommonFileNotFoundException() {

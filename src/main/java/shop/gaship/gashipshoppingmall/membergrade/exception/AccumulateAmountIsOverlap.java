@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.membergrade.exception;
  * @since 1.0
  */
 public class AccumulateAmountIsOverlap extends RuntimeException {
-    private static final String MESSAGE = "동일한 기준누적금액에 해당하는 등급이 존재합니다. 기준누적금액 : ";
+    public static final String MESSAGE = "동일한 기준누적금액에 해당하는 등급이 존재합니다. 기준누적금액 : ";
 
     /**
      * Instantiates a new Accumulate amount is overlap.

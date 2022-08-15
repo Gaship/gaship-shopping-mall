@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
-import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
+import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberBaseDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membertag.dto.request.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dummy.MemberTagDummy;
 import shop.gaship.gashipshoppingmall.membertag.exception.IllegalTagSelectionException;
 import shop.gaship.gashipshoppingmall.membertag.repository.MemberTagRepository;
-import shop.gaship.gashipshoppingmall.membertag.service.Impl.MemberTagServiceImpl;
+import shop.gaship.gashipshoppingmall.membertag.service.impl.MemberTagServiceImpl;
 import shop.gaship.gashipshoppingmall.tag.dummy.TagDummy;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
@@ -60,7 +60,7 @@ class MemberTagServiceImplTest {
     @DisplayName("회원이 미리 설정해놓은 태그를 전부 삭제 후 다시 설정하기 원하는 태그를 등록한다.(Success)")
     @Test
     void deleteAllAndAddAllMemberTags() {
-        Member member = MemberTestDummy.member1();
+        Member member = MemberBaseDummy.member1();
         List<Tag> tagList = TagDummy.TagDummyListPersist();
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());
@@ -103,7 +103,7 @@ class MemberTagServiceImplTest {
     @Test
     void deleteAllAndAddAllMemberTagsIllegalTagSelectionExceptionFail() {
         MemberTagRequestDto memberTagRequestDto = MemberTagDummy.memberTagRequestDtoDummy(1,tagIds);
-        Member member = MemberTestDummy.member1();
+        Member member = MemberBaseDummy.member1();
         List<Tag> tagList = TagDummy.TagListDummyPersist();
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         doNothing().when(memberTagRepository).deleteAllByMember_MemberNo(any());

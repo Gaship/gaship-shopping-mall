@@ -43,4 +43,16 @@ public class MemberModifyRequestDto {
     @Length(max = 1)
     @Pattern(regexp = "^[남|녀]$", message = "성별을 정확히 작성해여주십시오.")
     private String gender;
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
+    public void changePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
 }

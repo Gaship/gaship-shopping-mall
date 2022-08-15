@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.member.dto.request.FindMemberEmailRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
-import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
 import shop.gaship.gashipshoppingmall.member.dto.response.EmailPresence;
 import shop.gaship.gashipshoppingmall.member.dto.response.FindMemberEmailResponse;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberNumberPresence;
-import shop.gaship.gashipshoppingmall.member.dto.response.MemberPageResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.NicknamePresence;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
-import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
@@ -56,9 +52,9 @@ public class MemberController {
      */
     @PostMapping("/sign-up")
     public ResponseEntity<Void> memberAdd(
-        @Valid @RequestBody MemberCreationRequest memberCreationRequest) {
+            @Valid @RequestBody MemberCreationRequest memberCreationRequest) {
         if (memberCreationRequest.getIsUniqueEmail()
-            && memberCreationRequest.getIsVerifiedEmail()) {
+                && memberCreationRequest.getIsVerifiedEmail()) {
             memberService.addMember(memberCreationRequest);
             return ResponseEntity.created(URI.create("/api/members")).build();
         }
@@ -73,7 +69,7 @@ public class MemberController {
      */
     @PostMapping(value = "/sign-up/oauth")
     public ResponseEntity<Void> memberAdd(
-        @RequestBody MemberCreationRequestOauth memberCreationRequestOauth) {
+            @RequestBody MemberCreationRequestOauth memberCreationRequestOauth) {
         memberService.addMemberByOauth(memberCreationRequestOauth);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -108,9 +104,12 @@ public class MemberController {
      */
     @GetMapping(value = "/recommend-member", params = "nickname")
     public ResponseEntity<MemberNumberPresence> retrieveFromNickname(
-        @RequestParam String nickname) {
+            @RequestParam String nickname) {
         return ResponseEntity.ok(
-            new MemberNumberPresence(memberService.findMemberFromNickname(nickname).getMemberNo()));
+                new MemberNumberPresence(
+                        memberService
+                                .findMemberFromNickname(nickname)
+                                .getMemberNo()));
     }
 
     /**
@@ -132,7 +131,7 @@ public class MemberController {
     @GetMapping("/members/last-no")
     public ResponseEntity<Integer> retrieveLastNo() {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-            .body(memberService.findLastNo());
+                .body(memberService.findLastNo());
     }
 
     /**
@@ -143,9 +142,11 @@ public class MemberController {
      */
     @PutMapping("/{memberNo}")
     public ResponseEntity<Void> memberModify(
-        @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
+            @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
         memberService.modifyMember(memberModifyRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
@@ -160,6 +161,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
     }
 
+
     /**
      * 멤버의 상세정보를 조회하는 메서드입니다.
      *
@@ -170,7 +172,7 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable Integer memberNo) {
         MemberResponseDto memberResponseDto = memberService.findMember(memberNo);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-            .body(memberResponseDto);
+                .body(memberResponseDto);
     }
 
     /**
@@ -183,32 +185,7 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable String email) {
         MemberResponseDto memberResponseDto = memberService.findMemberFromEmail(email);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-            .body(memberResponseDto);
-    }
-
-    /**
-     * 멤버 다건조회를 위한 메서드입니다.
-     *
-     * @param pageable page와 size가 쿼리 파라미터로 담긴 객체입니다.
-     * @return body는 조회된 멤버들의 정보, 응답 상태는 200을 반환합니다.
-     */
-    @GetMapping
-    public ResponseEntity<MemberPageResponseDto<MemberResponseDto, Member>> memberList(
-        Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-            .body(memberService.findMembers(pageable));
-    }
-
-    /**
-     * 관리자가 멤버의 활성상태정보를 수정하기위한 매서드입니다.
-     *
-     * @param request 변경하고싶은 회원의 상태, 닉네임 정보가있는 객체입니다.
-     * @return body 데이터는 없고, 응답 상태는 200을 반환합니다.
-     */
-    @PutMapping("/{memberNo}/role")
-    public ResponseEntity<Void> memberModifyByAdmin(MemberModifyByAdminDto request) {
-        memberService.modifyMemberByAdmin(request);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+                .body(memberResponseDto);
     }
 
     /**
@@ -219,10 +196,10 @@ public class MemberController {
      */
     @PostMapping("/find-email")
     public ResponseEntity<FindMemberEmailResponse> memberEmailFromNicknameFind(
-        @Valid @RequestBody FindMemberEmailRequest findMemberEmailRequest) {
+            @Valid @RequestBody FindMemberEmailRequest findMemberEmailRequest) {
 
         return ResponseEntity.ok(
-            memberService.findMemberEmailFromNickname(findMemberEmailRequest.getNickname()));
+                memberService.findMemberEmailFromNickname(findMemberEmailRequest.getNickname()));
     }
 
     /**
@@ -233,7 +210,7 @@ public class MemberController {
      */
     @PostMapping("/find-password")
     public ResponseEntity<Map<String, Boolean>> reissuePasswordCheck(
-        @Valid @RequestBody ReissuePasswordRequest reissuePasswordRequest) {
+            @Valid @RequestBody ReissuePasswordRequest reissuePasswordRequest) {
         Boolean result = memberService.reissuePassword(reissuePasswordRequest);
         return ResponseEntity.ok(Map.of("changed", result));
     }

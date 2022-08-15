@@ -17,8 +17,8 @@ import shop.gaship.gashipshoppingmall.dataprotection.exception.EncodeFailureExce
  */
 @Component
 public class Aes {
-    private static final String ENCODE_ERROR_MESSAGE = "정보 암호화에 실패했습니다.";
-    private static final String DECODE_ERROR_MESSAGE = "정보 복호화에 실패했습니다.";
+    public static final String ENCODE_ERROR_MESSAGE = "정보 암호화에 실패했습니다.";
+    public static final String DECODE_ERROR_MESSAGE = "정보 복호화에 실패했습니다.";
     private final SecretKeySpec secretKeySpec;
     private final String transformation;
 

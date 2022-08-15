@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.membergrade.exception;
  * @since 1.0
  */
 public class MemberGradeInUseException extends RuntimeException {
-    private static final String MESSAGE = "사용중인 회원등급 입니다.";
+    public static final String MESSAGE = "사용중인 회원등급 입니다.";
 
     /**
      * Instantiates a new MemberGradeInUseException.

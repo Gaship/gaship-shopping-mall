@@ -1,9 +1,9 @@
 package shop.gaship.gashipshoppingmall.product.repository.custom;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * QueryDsl 을 하기위한 인터페이스 클래스입니다.
@@ -21,5 +21,6 @@ public interface ProductRepositoryCustom {
      * @return list 조회된 상품들의 정보가들어있습니다.
      * @author 유호철
      */
-    PageResponse<ProductAllInfoResponseDto> findProduct(ProductRequestViewDto requestDto);
+    Page<ProductAllInfoResponseDto> findProduct(ProductRequestViewDto requestDto);
+
 }

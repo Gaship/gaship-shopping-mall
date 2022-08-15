@@ -26,7 +26,6 @@ import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Table(name = "product_tags")
 public class ProductTag {
     @EmbeddedId

@@ -19,6 +19,6 @@ public class TotalSaleResponseDto {
     private Long orderCancelCnt;
     private Long orderSaleCnt;
     private Long totalAmount;
-    private Integer cancelAmount;
+    private Long cancelAmount;
     private Long orderSaleAmount;
 }

@@ -15,6 +15,7 @@ public class ServerConfig {
     private String authUrl;
     private String paymentsUrl;
     private String schedulerUrl;
+    private String couponUrl;
 
     public String getAuthUrl() {
         return authUrl;
@@ -28,6 +29,10 @@ public class ServerConfig {
         return schedulerUrl;
     }
 
+    public String getCouponUrl() {
+        return couponUrl;
+    }
+
     public void setAuthUrl(String authUrl) {
         this.authUrl = authUrl;
     }
@@ -38,5 +43,9 @@ public class ServerConfig {
 
     public void setSchedulerUrl(String schedulerUrl) {
         this.schedulerUrl = schedulerUrl;
+    }
+
+    public void setCouponUrl(String couponUrl) {
+        this.couponUrl = couponUrl;
     }
 }

@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.category.exception;
  * @since 1.0
  */
 public class CategoryRemainLowerCategoryException extends RuntimeException {
-    private static final String MESSAGE = "해당 카테고리에 속한 하위 카테고리가 있어 삭제할 수 없습니다.";
+    public static final String MESSAGE = "해당 카테고리에 속한 하위 카테고리가 있어 삭제할 수 없습니다.";
 
     public CategoryRemainLowerCategoryException() {
         super(MESSAGE);
