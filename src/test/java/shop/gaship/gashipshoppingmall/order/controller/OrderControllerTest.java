@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.order.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -165,6 +166,7 @@ class OrderControllerTest {
         mockMvc.perform(get("/api/orders/member/{memberNo}/status/{status}", 1, "배송")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
                 .queryParam("page", objectMapper.writeValueAsString(pageRequest.getPageNumber()))
                 .queryParam("size", objectMapper.writeValueAsString(pageRequest.getPageSize())))
             .andExpect(status().isOk())
