@@ -58,7 +58,7 @@ public class OrderController {
         @PathVariable("memberNo") Integer memberNo,
         Pageable pageable) {
         Page<OrderDetailResponseDto> content =
-            orderService.findOrderDetails(orderNo, memberNo, pageable);
+            orderService.findMemberOrderDetails(orderNo, memberNo, pageable);
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -81,7 +81,7 @@ public class OrderController {
         Pageable pageable) {
 
         Page<OrderListResponseDto> content =
-            orderService.findAllOrders(memberNo, pageable);
+            orderService.findAllMemberOrders(memberNo, pageable);
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -106,7 +106,7 @@ public class OrderController {
         Pageable pageable) {
 
         Page<OrderCancelResponseDto> content =
-            orderService.findCancelOrders(memberNo, statusName, pageable);
+            orderService.findMemberCancelOrders(memberNo, statusName, pageable);
 
         return ResponseEntity
             .status(HttpStatus.OK)

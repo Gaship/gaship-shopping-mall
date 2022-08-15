@@ -133,7 +133,7 @@ class OrderServiceImplTest {
         given(orderRepository.findAllOrders(anyInt(), any()))
             .willReturn(page);
 
-        Page<OrderListResponseDto> result = orderService.findAllOrders(1, pageRequest);
+        Page<OrderListResponseDto> result = orderService.findAllMemberOrders(1, pageRequest);
         assertThat(result.getContent().get(0).getOrderNo()).isEqualTo(dto.getOrderNo());
         assertThat(result.getContent().get(0).getOrderDatetime().getYear()).isEqualTo(dto.getOrderDatetime().getYear());
         assertThat(result.getContent().get(0).getAddress()).isEqualTo(dto.getAddress());
@@ -155,7 +155,7 @@ class OrderServiceImplTest {
         given(orderRepository.findCancelOrders(anyInt(), anyString(), any(Pageable.class)))
             .willReturn(page);
 
-        Page<OrderCancelResponseDto> result = orderService.findCancelOrders(1, "취소", PageRequest.of(0, 10));
+        Page<OrderCancelResponseDto> result = orderService.findMemberCancelOrders(1, "취소", PageRequest.of(0, 10));
 
         assertThat(result.getContent().get(0).getAddress()).isEqualTo(dto.getAddress());
         assertThat(result.getContent().get(0).getOrderNo()).isEqualTo(dto.getOrderNo());
@@ -183,7 +183,7 @@ class OrderServiceImplTest {
         given(orderRepository.findOrderDetails(anyInt(), anyInt(), any(Pageable.class)))
             .willReturn(page);
 
-        Page<OrderDetailResponseDto> result = orderService.findOrderDetails(1, 1, PageRequest.of(1, 10));
+        Page<OrderDetailResponseDto> result = orderService.findMemberOrderDetails(1, 1, PageRequest.of(1, 10));
 
         assertThat(result.getContent().get(0).getAddress()).isEqualTo(dto.getAddress());
         assertThat(result.getContent().get(0).getOrderDatetime()).isEqualTo(dto.getOrderDatetime());

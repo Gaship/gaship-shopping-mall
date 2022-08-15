@@ -94,7 +94,7 @@ class OrderControllerTest {
             new OrderDetailResponseDto("status", LocalDateTime.now(), "Hochul", "00",
                 "집앞에", 100L, "마산", "11105", 10L, 1, LocalDate.now());
         PageImpl<OrderDetailResponseDto> page = new PageImpl<>(List.of(dto), pageRequest, 1);
-        when(orderService.findOrderDetails(anyInt(), anyInt(), any(Pageable.class)))
+        when(orderService.findMemberOrderDetails(anyInt(), anyInt(), any(Pageable.class)))
             .thenReturn(page);
 
         mockMvc.perform(get("/api/orders/{orderNo}/member/{memberNo}", 1, 1)
@@ -122,7 +122,7 @@ class OrderControllerTest {
             LocalDateTime.now(), "유유", "010", "요청", 100L);
         PageImpl<OrderListResponseDto> page = new PageImpl<>(List.of(dto), pageRequest, 1);
 
-        when(orderService.findAllOrders(anyInt(), any(Pageable.class)))
+        when(orderService.findAllMemberOrders(anyInt(), any(Pageable.class)))
             .thenReturn(page);
 
         mockMvc.perform(get("/api/orders/member/{memberNo}", 1)
@@ -147,7 +147,7 @@ class OrderControllerTest {
             new OrderCancelResponseDto(1, "aa", LocalDateTime.now(), "호호처리", "011",
                 "배송", 1000L, 1, 1L, "취소", LocalDateTime.now().plusYears(2));
         PageImpl<OrderCancelResponseDto> page = new PageImpl<>(List.of(dto), pageRequest, 1);
-        when(orderService.findCancelOrders(anyInt(), any(String.class), any()))
+        when(orderService.findMemberCancelOrders(anyInt(), any(String.class), any()))
             .thenReturn(page);
 
         mockMvc.perform(get("/api/orders/member/{memberNo}/status/{status}", 1, "배송")

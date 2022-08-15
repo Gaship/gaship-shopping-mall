@@ -98,9 +98,9 @@ public class OrderServiceImpl implements OrderService {
      * @throws OrderNotFoundException  요청 주문번호가 없을경우 발생합니다.
      */
     @Override
-    public Page<OrderDetailResponseDto> findOrderDetails(Integer memberNo,
-                                                         Integer orderNo,
-                                                         Pageable pageable) {
+    public Page<OrderDetailResponseDto> findMemberOrderDetails(Integer memberNo,
+                                                               Integer orderNo,
+                                                               Pageable pageable) {
         if (memberRepository.findById(memberNo).isEmpty()) {
             throw new MemberNotFoundException();
         }
@@ -117,8 +117,8 @@ public class OrderServiceImpl implements OrderService {
      * @throws MemberNotFoundException 회원이 존재하지않을경우 발생합니다.
      */
     @Override
-    public Page<OrderListResponseDto> findAllOrders(Integer memberNo,
-                                                    Pageable pageable) {
+    public Page<OrderListResponseDto> findAllMemberOrders(Integer memberNo,
+                                                          Pageable pageable) {
         if (memberRepository.findById(memberNo).isEmpty()) {
             throw new MemberNotFoundException();
         }
@@ -132,9 +132,9 @@ public class OrderServiceImpl implements OrderService {
      * @throws MemberNotFoundException 회원이 존재하지않을경우 발생합니다.
      */
     @Override
-    public Page<OrderCancelResponseDto> findCancelOrders(Integer memberNo,
-                                                         String statusName,
-                                                         Pageable pageable) {
+    public Page<OrderCancelResponseDto> findMemberCancelOrders(Integer memberNo,
+                                                               String statusName,
+                                                               Pageable pageable) {
         if (memberRepository.findById(memberNo).isEmpty()) {
             throw new MemberNotFoundException();
         }

@@ -32,8 +32,8 @@ public interface OrderService {
      * @param pageable 관련 페이지객체.
      * @return the page 페이징 처리된 상세목록이 출력됩니다.
      */
-    Page<OrderDetailResponseDto> findOrderDetails(Integer memberNo,
-                                                  Integer orderNo, Pageable pageable);
+    Page<OrderDetailResponseDto> findMemberOrderDetails(Integer memberNo,
+                                                        Integer orderNo, Pageable pageable);
 
     /**
      * 회원의 모든 주문목록을 불러오기위한 메서드입니다.
@@ -42,7 +42,7 @@ public interface OrderService {
      * @param pageable 관련 페이지객체.
      * @return the page 페이징 처리된 전체 주문목록이 출력됩니다.
      */
-    Page<OrderListResponseDto> findAllOrders(Integer memberNo, Pageable pageable);
+    Page<OrderListResponseDto> findAllMemberOrders(Integer memberNo, Pageable pageable);
 
     /**
      * Find cancel orders page.
@@ -52,8 +52,8 @@ public interface OrderService {
      * @param pageable   관련 페지징객체
      * @return the page 페이징 처리된 취소주문내역들이 출력됩니다.
      */
-    Page<OrderCancelResponseDto> findCancelOrders(Integer memberNo,
-                                                  String statusName,
-                                                  Pageable pageable);
+    Page<OrderCancelResponseDto> findMemberCancelOrders(Integer memberNo,
+                                                        String statusName,
+                                                        Pageable pageable);
 
 }
