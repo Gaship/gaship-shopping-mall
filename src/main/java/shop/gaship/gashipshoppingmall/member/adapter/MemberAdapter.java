@@ -19,6 +19,7 @@ import shop.gaship.gashipshoppingmall.member.dto.SuccessReissueResponse;
  * 쇼핑몰 서버의 멤버 도메인에서 타 서비스 서버에 요청시 이용하는 클래스입니다.
  *
  * @author 김민수
+ * @author 최겸준
  * @since 1.0
  */
 @Component
@@ -31,6 +32,7 @@ public class MemberAdapter {
      *
      * @param reissuePasswordDto Auth 서버에서 이메일을 보낼 때 필요한 데이터를 담은 객체입니다.
      * @return 이메일 전송에 성공한 후 응답으로 임시비밀번호가 담긴 객체를 반환합니다.
+     * @author 김민수
      */
     public ResponseEntity<SuccessReissueResponse> requestSendReissuePassword(
         ReissuePasswordReceiveEmailDto reissuePasswordDto) {
@@ -41,6 +43,12 @@ public class MemberAdapter {
             .orElseThrow(() -> new NoResponseDataException("Auth 서버로부터 응답이 없습니다."));
     }
 
+    /**
+     * 쿠폰 서버에 추천한 회원에 대해 추천인쿠폰을 생성 및 발급해달라고 요청합니다.
+     *
+     * @param recommendMemberNo 추천한 회원의 번호입니다.
+     * @author 최겸준
+     */
     public void requestSendRecommendMemberCouponGenerationIssue(Integer recommendMemberNo) {
         WebClient.create(serverConfig.getCouponUrl()).post()
             .uri("/api/coupon-generations-issues/{recommendMemberNo}", recommendMemberNo)

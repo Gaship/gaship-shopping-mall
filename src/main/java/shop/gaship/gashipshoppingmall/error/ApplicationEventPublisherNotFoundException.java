@@ -1,6 +1,8 @@
 package shop.gaship.gashipshoppingmall.error;
 
 /**
+ * ApplicationEventPublisher가 초기화 되지 않았을시에 발생시킬 예외입니다.
+ *
  * @author : 최겸준
  * @since 1.0
  */
