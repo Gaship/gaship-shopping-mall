@@ -244,7 +244,7 @@ public class ProductController {
         @RequestParam("productNos") List<Integer> productNos) {
         List<ProductAllInfoResponseDto> result =
             service.findProductByProductNos(
-                productNos, PageRequest.of(0, productNos.size() + 1)).getContent();
+                productNos, PageRequest.of(0, productNos.size())).getContent();
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
