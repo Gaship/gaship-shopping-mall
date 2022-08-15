@@ -21,6 +21,7 @@ import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.event.domain.SignedUpEvent;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -33,6 +34,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
+import shop.gaship.gashipshoppingmall.util.Events;
 
 /**
  * MemberService를 구현하는 클래스입니다.
@@ -66,11 +68,11 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void addMember(MemberCreationRequest memberCreationRequest) {
         Member recommendMember =
-                memberRepository.findById(
-                        memberCreationRequest.getRecommendMemberNo()).orElse(null);
+            memberRepository.findById(
+                memberCreationRequest.getRecommendMemberNo()).orElse(null);
         StatusCode defaultStatus =
-                statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
-                        .orElseThrow(StatusCodeNotFoundException::new);
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
+                .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
 
         if (memberRepository.existsByNickname(memberCreationRequest.getNickName())) {
@@ -78,10 +80,15 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Member savedMember =
-                creationRequestToMemberEntity(encodePrivacyUserInformation(memberCreationRequest),
-                        recommendMember, defaultStatus, defaultGrade);
+            creationRequestToMemberEntity(encodePrivacyUserInformation(memberCreationRequest),
+                recommendMember, defaultStatus, defaultGrade);
 
         memberRepository.saveAndFlush(savedMember);
+
+        if (Objects.isNull(recommendMember)) {
+            return;
+        }
+        Events.raise(new SignedUpEvent(recommendMember.getMemberNo()));
     }
 
     /**
@@ -94,14 +101,14 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void addMemberByOauth(MemberCreationRequestOauth memberCreationRequestOauth) {
         StatusCode defaultStatus =
-                statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
-                        .orElseThrow(StatusCodeNotFoundException::new);
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
+                .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
 
         Member savedMember =
-                creationRequestToMemberEntity(
-                        encodePrivacyUserInformation(memberCreationRequestOauth),
-                        defaultStatus, defaultGrade);
+            creationRequestToMemberEntity(
+                encodePrivacyUserInformation(memberCreationRequestOauth),
+                defaultStatus, defaultGrade);
 
         memberRepository.saveAndFlush(savedMember);
     }
@@ -113,12 +120,12 @@ public class MemberServiceImpl implements MemberService {
      * @return 중요 정보가 암호화 된 회원정보 객체
      */
     private MemberCreationRequest encodePrivacyUserInformation(
-            MemberCreationRequest memberCreationRequest) {
+        MemberCreationRequest memberCreationRequest) {
         String email = memberCreationRequest.getEmail();
         memberCreationRequest.setEmail(aes.aesEcbEncode(memberCreationRequest.getEmail()));
         memberCreationRequest.setName(aes.aesEcbEncode(memberCreationRequest.getName()));
         memberCreationRequest.setPhoneNumber(
-                aes.aesEcbEncode(memberCreationRequest.getPhoneNumber()));
+            aes.aesEcbEncode(memberCreationRequest.getPhoneNumber()));
         memberCreationRequest.setPassword(memberCreationRequest.getPassword());
         memberCreationRequest.setEncodedEmailForSearch(sha512.encryptPlainText(email));
 
@@ -132,7 +139,7 @@ public class MemberServiceImpl implements MemberService {
      * @return 중요 정보가 암호화 된 회원정보 객체
      */
     private MemberModifyRequestDto encodePrivacyUserInformation(
-            MemberModifyRequestDto request) {
+        MemberModifyRequestDto request) {
         request.changePassword(aes.aesEcbEncode(request.getPassword()));
         request.changeName(aes.aesEcbEncode(request.getPassword()));
         request.changePhoneNumber(aes.aesEcbEncode(request.getPassword()));
@@ -147,7 +154,7 @@ public class MemberServiceImpl implements MemberService {
      * @return 중요 정보가 암호화 된 회원정보 객체
      */
     private MemberCreationRequestOauth encodePrivacyUserInformation(
-            MemberCreationRequestOauth memberCreationRequestOauth) {
+        MemberCreationRequestOauth memberCreationRequestOauth) {
         String email = memberCreationRequestOauth.getEmail();
         memberCreationRequestOauth.setEmail(aes.aesEcbEncode(email));
         memberCreationRequestOauth.setName(aes.aesEcbEncode(memberCreationRequestOauth.getName()));
@@ -155,7 +162,7 @@ public class MemberServiceImpl implements MemberService {
 
         if (!isNullOrEmpty(memberCreationRequestOauth.getPhoneNumber())) {
             memberCreationRequestOauth.setPhoneNumber(
-                    aes.aesEcbEncode(memberCreationRequestOauth.getPhoneNumber()));
+                aes.aesEcbEncode(memberCreationRequestOauth.getPhoneNumber()));
         }
 
         memberCreationRequestOauth.setPassword(memberCreationRequestOauth.getPassword());
@@ -216,7 +223,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberResponseDto findMemberFromEmail(String email) {
 
         Member member = memberRepository.findByEncodedEmailForSearch(sha512.encryptPlainText(email))
-                .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
         return entityToMemberResponseDto(member, aes);
     }
 
@@ -247,7 +254,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Member member = memberRepository.findById(request.getMemberNo())
-                .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
         MemberModifyRequestDto encodedRequest = encodePrivacyUserInformation(request);
         member.modifyMember(encodedRequest);
     }
@@ -263,10 +270,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void modifyMemberByAdmin(MemberModifyByAdminDto memberModifyByAdminDto) {
         Member member = memberRepository.findById(memberModifyByAdminDto.getMemberNo())
-                .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
         StatusCode statusCode =
-                statusCodeRepository.findByStatusCodeName(memberModifyByAdminDto.getStatus())
-                        .orElseThrow(StatusCodeNotFoundException::new);
+            statusCodeRepository.findByStatusCodeName(memberModifyByAdminDto.getStatus())
+                .orElseThrow(StatusCodeNotFoundException::new);
 
         member.modifyMemberByAdmin(member.getNickname(), statusCode);
     }
@@ -292,14 +299,14 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto findMember(Integer memberNo) {
         return entityToMemberResponseDto(
-                memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new), aes);
+            memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new), aes);
     }
 
 
     @Override
     public MemberResponseDtoByAdmin findMemberByAdmin(Integer memberNo) {
         return entityToMemberResponseDtoByAdmin(
-                memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new), aes);
+            memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new), aes);
     }
 
     /**
@@ -334,15 +341,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public FindMemberEmailResponse findMemberEmailFromNickname(String nickname) {
         String memberEmail =
-                memberRepository.findByNickname(nickname).orElseThrow(MemberNotFoundException::new)
-                        .getEmail();
+            memberRepository.findByNickname(nickname).orElseThrow(MemberNotFoundException::new)
+                .getEmail();
 
         String emailIdPart = memberEmail.substring(0, memberEmail.indexOf('@'));
         String emailDomainPart = memberEmail.substring(memberEmail.indexOf('@'));
 
         double idPartHalfLength = emailIdPart.length() / 2.0;
         String obscuredEmail = emailIdPart.substring(0, (int) Math.ceil(idPartHalfLength))
-                + "*".repeat((int) Math.floor(idPartHalfLength)) + emailDomainPart;
+            + "*".repeat((int) Math.floor(idPartHalfLength)) + emailDomainPart;
 
         return new FindMemberEmailResponse(obscuredEmail);
     }
@@ -362,7 +369,7 @@ public class MemberServiceImpl implements MemberService {
     public Boolean reissuePassword(ReissuePasswordRequest reissuePasswordRequest) {
         String email = reissuePasswordRequest.getEmail();
         Member member = memberRepository.findByEncodedEmailForSearch(sha512.encryptPlainText(email))
-                .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
         String decodedMemberName = aes.aesEcbDecode(member.getName());
         String requestMemberName = reissuePasswordRequest.getName();
         if (!Objects.equals(decodedMemberName, requestMemberName)) {
@@ -370,10 +377,10 @@ public class MemberServiceImpl implements MemberService {
         }
 
         String renewalPassword = Objects.requireNonNull(memberAdapter.requestSendReissuePassword(
-                new ReissuePasswordReceiveEmailDto(
+                    new ReissuePasswordReceiveEmailDto(
                         member.getEmail()))
                 .getBody())
-                .getReissuedPassword();
+            .getReissuedPassword();
         String hashedPassword = passwordEncoder.encode(renewalPassword);
 
         member.modifyMemberPassword(hashedPassword);
@@ -390,6 +397,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public SignInUserDetailsDto findSignInUserDetailFromEmail(String email) {
         return memberRepository.findSignInUserDetail(email)
-                .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
     }
 }

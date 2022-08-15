@@ -124,6 +124,7 @@ class MemberServiceTest {
                 .saveAndFlush(any(Member.class));
     }
 
+
     @Test
     @DisplayName("이메일을 통해 현존하는 회원의 존재여부 확인 : 존재하는 경우")
     void isAvailableEmailCaseFounded() {
