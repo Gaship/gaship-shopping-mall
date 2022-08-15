@@ -139,4 +139,9 @@ public class OrderProduct {
     public void addTrackingNo(String trackingNo) {
         this.trackingNo = trackingNo;
     }
+
+    public void acceptedInstallEmployee(Employee employee) {
+        this.employee = employee;
+        this.employeeName = employee.getName();
+    }
 }

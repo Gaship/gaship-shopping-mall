@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.employee.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.StandardCharsets;
@@ -18,23 +17,24 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.InstallOrderAcceptDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dummy.CreateEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.dummy.GetEmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
-import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
-import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -250,5 +250,23 @@ class EmployeeControllerTest {
             .andExpect(jsonPath("$.installOrders[0].phoneNumber").value(dto.getPhoneNumber()))
             .andDo(print())
             .andReturn();
+    }
+
+    @Test
+    void acceptInstallOrderTest() throws Exception {
+        InstallOrderAcceptDto installOrderAcceptDto = new InstallOrderAcceptDto();
+        ReflectionTestUtils.setField(installOrderAcceptDto, "employeeNo", 1);
+        ReflectionTestUtils.setField(installOrderAcceptDto, "orderNo", 1);
+
+        willDoNothing()
+            .given(service)
+            .acceptInstallOrder(1, 1);
+
+        mvc.perform(post("/api/employees/{employeeNo}/orders/{orderNo}", 1, 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(installOrderAcceptDto))
+                .accept(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isOk())
+            .andDo(print());
     }
 }

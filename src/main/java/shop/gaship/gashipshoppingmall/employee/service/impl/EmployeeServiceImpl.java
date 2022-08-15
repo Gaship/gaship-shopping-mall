@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.employee.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,14 @@ import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
+import shop.gaship.gashipshoppingmall.order.exception.OrderNotFoundException;
+import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
+import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
 
 /**
  * 서비스레이어에서 직원에대한 요청을 사용하기위한 구현체 클래스입니다.
@@ -45,6 +51,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final StatusCodeRepository statusCodeRepository;
 
     private final AddressLocalRepository localRepository;
+
+    private final OrderRepository orderRepository;
 
     private final Aes aes;
 
@@ -178,5 +186,39 @@ public class EmployeeServiceImpl implements EmployeeService {
         return PageableExecutionUtils.getPage(installOrders, pageable, orderPage::getTotalPages);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param employeeNo 직원 고유번호입니다.
+     * @param orderNo    요청을 받을 주문 고유번호입니다.
+     */
+    @Override
+    @Transactional
+    public void acceptInstallOrder(Integer employeeNo, Integer orderNo) {
+        Employee employee = repository.findById(employeeNo)
+            .orElseThrow(EmployeeNotFoundException::new);
+        Order order = orderRepository.findById(orderNo)
+            .orElseThrow(OrderNotFoundException::new);
+        StatusCode constructionStatusCode = statusCodeRepository
+            .findByStatusCodeName(DeliveryType.CONSTRUCTION.getValue())
+            .orElseThrow(StatusCodeNotFoundException::new);
 
+        order.getOrderProducts().forEach(orderProduct -> {
+            if (isEqualsDeliverType(constructionStatusCode, orderProduct)) {
+                orderProduct.acceptedInstallEmployee(employee);
+            }
+        });
+    }
+
+    /**
+     * 배송타입이 시공타입인지 비교연산하는 메서드입니다.
+     *
+     * @param constructionStatusCode 배송타입 상태코드입니다.
+     * @param orderProduct 배송타입인지 확인할 주문상세품입니다.
+     * @return 시공타입인지에 대한 결과를 반환합니다.
+     */
+    private boolean isEqualsDeliverType(
+        StatusCode constructionStatusCode, OrderProduct orderProduct) {
+        return Objects.equals(orderProduct.getProduct().getDeliveryType(), constructionStatusCode);
+    }
 }

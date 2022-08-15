@@ -29,6 +29,7 @@ import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequest
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dummy.CreateEmployeeDtoDummy;
+import shop.gaship.gashipshoppingmall.employee.dummy.EmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.dummy.GetEmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.dummy.ModifyEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
@@ -40,16 +41,21 @@ import shop.gaship.gashipshoppingmall.employee.service.impl.EmployeeServiceImpl;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
+import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
+import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
+import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
@@ -79,6 +85,9 @@ class EmployeeServiceTest {
 
     @MockBean
     AddressLocalRepository localRepository;
+
+    @MockBean
+    OrderRepository orderRepository;
 
     @MockBean
     Aes aes;
@@ -343,5 +352,26 @@ class EmployeeServiceTest {
 
         assertThat(result.getContent()).hasSize(4);
         assertThat(result.getContent().get(0).getAddress()).isEqualTo("부산광역시 부산광역시 경기도 안양시 비산동");
+    }
+
+    @Test
+    @DisplayName("직원의 시공 설치 제품들 배송 수락시 수행")
+    void acceptInstallOrder() {
+        Order orderDummy = OrderDummy.createOrderDummy();
+        OrderProduct orderProductDummy = OrderProductDummy.dummy();
+        ReflectionTestUtils.setField(orderDummy, "orderProducts", List.of(orderProductDummy));
+
+        given(repository.findById(anyInt()))
+            .willReturn(Optional.of(EmployeeDummy.dummy()));
+        given(orderRepository.findById(anyInt()))
+            .willReturn(Optional.of(orderDummy));
+        given(codeRepository.findByStatusCodeName(anyString()))
+            .willReturn(Optional.of(orderProductDummy.getProduct().getDeliveryType()));
+
+        service.acceptInstallOrder(1, 1);
+
+        then(repository).should(times(1)).findById(1);
+        then(orderRepository).should(times(1)).findById(1);
+        then(codeRepository).should(times(1)).findByStatusCodeName(DeliveryType.CONSTRUCTION.getValue());
     }
 }
