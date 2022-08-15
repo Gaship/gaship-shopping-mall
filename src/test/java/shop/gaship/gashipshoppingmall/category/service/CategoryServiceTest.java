@@ -157,13 +157,16 @@ class CategoryServiceTest {
     void findCategories() {
         CategoryResponseDto categoryResponseDto = CategoryDummy.upperDtoDummy();
 
-        when(categoryRepository.findAllCategories()).thenReturn(List.of(categoryResponseDto));
+        ReflectionTestUtils.setField(upperCategory, "no", 1);
+        when(categoryRepository.findByUpperCategoryNoIsNull()).thenReturn(List.of(upperCategory));
 
         List<CategoryResponseDto> categories = categoryService.findCategories();
 
-        assertThat(categories.get(0)).isEqualTo(categoryResponseDto);
+        assertThat(categories.get(0).getNo()).isEqualTo(categoryResponseDto.getNo());
+        assertThat(categories.get(0).getName()).isEqualTo(categoryResponseDto.getName());
+        assertThat(categories.get(0).getLevel()).isEqualTo(categoryResponseDto.getLevel());
 
-        verify(categoryRepository).findAllCategories();
+        verify(categoryRepository).findByUpperCategoryNoIsNull();
     }
 
     @Test

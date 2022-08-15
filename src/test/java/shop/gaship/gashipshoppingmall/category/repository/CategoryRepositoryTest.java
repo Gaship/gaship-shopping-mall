@@ -67,17 +67,15 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    @DisplayName("카테고리 전체 조회")
-    void findAllCategories() {
-        Category savedCategory = categoryRepository.save(category);
-        List<CategoryResponseDto> categories = categoryRepository.findAllCategories();
+    @DisplayName("부모 카테고리 조회")
+    void findByUpperCategoryNoIsNull() {
+        categoryRepository.save(category);
+        List<Category> categories = categoryRepository.findByUpperCategoryNoIsNull();
 
-        assertThat(categories).hasSize(2);
-        assertThat(categories.get(1).getNo()).isEqualTo(savedCategory.getNo());
-        assertThat(categories.get(1).getName()).isEqualTo(savedCategory.getName());
-        assertThat(categories.get(1).getLevel()).isEqualTo(savedCategory.getLevel());
-        assertThat(categories.get(1).getUpperCategoryNo()).isEqualTo(savedCategory.getUpperCategory().getNo());
-        assertThat(categories.get(1).getUpperCategoryName()).isEqualTo(savedCategory.getUpperCategory().getName());
+        assertThat(categories).hasSize(1);
+        assertThat(categories.get(0).getName()).isEqualTo(upperCategory.getName());
+        assertThat(categories.get(0).getLevel()).isEqualTo(upperCategory.getLevel());
+        assertThat(categories.get(0).getUpperCategory()).isNull();
     }
 
     @Test

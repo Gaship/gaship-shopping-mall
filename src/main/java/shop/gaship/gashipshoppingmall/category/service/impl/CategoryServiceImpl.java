@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.category.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,7 +95,9 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public List<CategoryResponseDto> findCategories() {
-        return categoryRepository.findAllCategories();
+        return categoryRepository.findByUpperCategoryNoIsNull().stream()
+                .map(CategoryResponseDto::of)
+                .collect(Collectors.toList());
     }
 
     /**
