@@ -39,6 +39,12 @@ public class OrderServiceImpl implements OrderService {
     private final AddressListRepository addressListRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderRequest 주문을 요청하기 위한 데이터가 담긴 객체입니다.
+     * @return 저장된 주문 고유번호입니다.
+     */
     @Transactional
     @Override
     public Integer insertOrder(OrderRegisterRequestDto orderRequest) {
@@ -65,6 +71,13 @@ public class OrderServiceImpl implements OrderService {
         return savedOrder.getNo();
     }
 
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNo 주문 번호입니다.
+     * @return 주문 등록이 완료되고 결제를 위한 정보가 담긴 객체입니다.
+     */
     @Override
     public OrderResponseDto findOrderForPayments(Integer orderNo) {
         Order order = orderRepository.findById(orderNo)
@@ -89,6 +102,22 @@ public class OrderServiceImpl implements OrderService {
             orderNameBuilder.toString(),
             order.getReceiptName()
         );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNo    주문 번호입니다.
+     * @param paymentKey 결제 번호입니다.
+     */
+    @Transactional
+    @Override
+    public void orderPaymentsSuccess(Integer orderNo, String paymentKey) {
+        Order order = orderRepository.findById(orderNo)
+            .orElseThrow(OrderProductNotFoundException::new);
+
+        order.updateOrderPaymentKey(paymentKey);
     }
 
     /**

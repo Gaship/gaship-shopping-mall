@@ -15,7 +15,7 @@ import shop.gaship.gashipshoppingmall.dataprotection.exception.EncodeFailureExce
  */
 @Component
 public class Sha512 {
-    private static final String ENCODE_ERROR_MESSAGE = "정보 암호화에 실패했습니다.";
+    public static final String ENCODE_ERROR_MESSAGE = "정보 암호화에 실패했습니다.";
 
     /**
      * SHA-512 암호화 알고리즘으로 평문을 암호화 시키는 메서드.

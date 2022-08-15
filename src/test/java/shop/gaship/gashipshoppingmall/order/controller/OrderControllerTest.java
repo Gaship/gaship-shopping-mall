@@ -1,11 +1,24 @@
 package shop.gaship.gashipshoppingmall.order.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,9 +33,13 @@ import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderListResponseDto;
+import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -46,12 +63,8 @@ class OrderControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
     @MockBean
     private OrderService orderService;
-
-    private final PageRequest pageRequest = PageRequest.of(1, 10);
 
     @Test
     void doOrder() throws Exception {
@@ -78,7 +91,7 @@ class OrderControllerTest {
         mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(content))
+            .content(content))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.amount").value(orderResponse.getAmount()))
             .andExpect(jsonPath("$.orderId").value(orderResponse.getOrderId()))
@@ -167,4 +180,81 @@ class OrderControllerTest {
             .andDo(print());
     }
 
+
+    @Test
+    void orderSuccess() throws Exception {
+        OrderSuccessRequestDto orderSuccessRequestDto = new OrderSuccessRequestDto();
+        ReflectionTestUtils.setField(orderSuccessRequestDto, "orderNo", 1);
+        ReflectionTestUtils.setField(orderSuccessRequestDto, "paymentKey", "1234");
+
+        willDoNothing()
+            .given(orderService)
+            .orderPaymentsSuccess(anyInt(), anyString());
+
+        mockMvc.perform(put("/api/orders/success")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(orderSuccessRequestDto)))
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @Test
+    void orderCancelRefundProduct() throws Exception {
+        OrderProductStatusCancelDto orderProductStatusCancelDto = new OrderProductStatusCancelDto(
+            1,
+            IntStream.range(0, 5).mapToObj(value ->
+                    new OrderProductStatusCancelDto.CancelOrderInfo(
+                        value,
+                        10000L))
+                .collect(Collectors.toUnmodifiableList()),
+                "단순 변심으로 인한 주문 취소"
+        );
+
+        willDoNothing()
+            .given(orderProductService)
+            .updateOrderProductStatusToCancel(any(OrderProductStatusCancelDto.class));
+
+        mockMvc.perform(put("/api/orders/cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(orderProductStatusCancelDto)))
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @Test
+    void orderChangeProduct() throws Exception {
+        OrderProductStatusChangeDto orderProductStatusChangeDto = new OrderProductStatusChangeDto();
+        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1,2,3,4,5));
+
+        willDoNothing()
+            .given(orderProductService)
+            .updateOrderProductStatusToChange(any(OrderProductStatusChangeDto.class));
+
+        mockMvc.perform(put("/api/orders/change")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(orderProductStatusChangeDto)))
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @Test
+    void orderRestoreProduct() throws Exception {
+        OrderProductCancellationFailDto orderProductCancellationFailDto = new OrderProductCancellationFailDto();
+        ReflectionTestUtils.setField(orderProductCancellationFailDto, "paymentCancelHistoryNo", 1);
+        ReflectionTestUtils.setField(orderProductCancellationFailDto, "restoreOrderProductNos", List.of(1,2,3,4,5));
+
+        willDoNothing()
+            .given(orderProductService)
+            .updateOrderProductStatusToChange(any(OrderProductStatusChangeDto.class));
+
+        mockMvc.perform(put("/api/orders/restore")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(orderProductCancellationFailDto)))
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
 }

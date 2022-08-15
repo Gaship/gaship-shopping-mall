@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.membergrade.exception;
  * @since 1.0
  */
 public class DefaultMemberGradeIsExist extends RuntimeException {
-    private static final String MESSAGE = "기본 회원등급이 이미 존재합니다.";
+    public static final String MESSAGE = "기본 회원등급이 이미 존재합니다.";
 
     /**
      * Instantiates a new DefaultMemberGradeIsExist Exception.
