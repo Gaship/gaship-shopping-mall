@@ -1,6 +1,11 @@
 package shop.gaship.gashipshoppingmall.order.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderListResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 
 /**
@@ -18,4 +23,14 @@ public interface OrderService {
     Integer insertOrder(OrderRegisterRequestDto orderRequest);
 
     OrderResponseDto findOrderForPayments(Integer orderNo);
+
+    Page<OrderDetailResponseDto> findOrderDetails(Integer memberNo,
+                                                  Integer orderNo, Pageable pageable);
+
+    Page<OrderListResponseDto> findAllOrders(Integer memberNo, Pageable pageable);
+
+    Page<OrderCancelResponseDto> findCancelOrders(Integer memberNo,
+                                                  String statusName,
+                                                  Pageable pageable);
+
 }
