@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.repairschedule.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,12 +22,12 @@ import shop.gaship.gashipshoppingmall.repairschedule.repository.RepairScheduleRe
 import shop.gaship.gashipshoppingmall.repairschedule.service.RepairScheduleService;
 
 /**
- * packageName    : shop.gaship.gashipshoppingmall.repairSechedule.service.impl fileName       :
- * * RepairSecheduleServiceImpl author         : 유호철 date           : 2022/07/13 description    :
- * * =========================================================== DATE              AUTHOR NOTE
- * * ----------------------------------------------------------- 2022/07/13       유호철       최초 생성
+ * 수리설치일자에대한 데이터 처리를 위한 서비스 클래스입니다.
+ *
+ * @author : 유호철
+ * @author : 김민수
+ * @since 1.0
  */
-
 @Service
 @RequiredArgsConstructor
 public class RepairScheduleServiceImpl implements RepairScheduleService {
@@ -35,6 +36,11 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
 
     private final DayLaborRepository dayLaborRepository;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param dto 생성할 스케줄에대한 정보들이 담겨있습니다.
+     */
     @Transactional
     @Override
     public void addRepairSchedule(CreateScheduleRequestDto dto) {
@@ -54,6 +60,11 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
         );
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param modify 수정할 스케줄에대한 정보들이 담겨있습니다.
+     */
     @Transactional
     @Override
     public void modifyRepairSchedule(ModifyScheduleRequestDto modify) {
@@ -73,5 +84,29 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
     public Page<GetRepairScheduleResponseDto> findRepairSchedules(int page, int size) {
 
         return repository.findAllSortDate(PageRequest.of(page, size));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public void initializeDailyRepairInstallSchedule() {
+        List<DayLabor> dayLabors = dayLaborRepository.findAll();
+
+        List<RepairSchedule> dailyRepairSchedules = dayLabors.stream()
+            .map(dayLabor -> {
+                RepairSchedulePk repairSchedulePk =
+                    new RepairSchedulePk(LocalDate.now(), dayLabor.getAddressNo());
+
+                return RepairSchedule.builder()
+                    .pk(repairSchedulePk)
+                    .labor(dayLabor.getMaxLabor())
+                    .dayLabor(dayLabor)
+                    .build();
+            })
+            .collect(Collectors.toUnmodifiableList());
+
+        repository.saveAll(dailyRepairSchedules);
     }
 }
