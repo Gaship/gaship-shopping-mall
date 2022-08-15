@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.totalsale.exception;
  * @since 1.0
  */
 public class LocalDateMaxYearException extends RuntimeException {
-    private static final String MESSAGE = "검색할 날짜는 1년을 넘을수 없습니다.";
+    public static final String MESSAGE = "검색할 날짜는 1년을 넘을수 없습니다.";
 
     public LocalDateMaxYearException() {
         super(MESSAGE);

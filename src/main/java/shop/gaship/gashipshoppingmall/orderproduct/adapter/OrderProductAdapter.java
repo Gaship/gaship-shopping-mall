@@ -26,11 +26,25 @@ public class OrderProductAdapter {
     public void useCouponRequest(List<Integer> couponNos) {
         WebClient.create(serverConfig.getCouponUrl())
             .post()
-            .uri("") // FIXME : 쿠폰의 서버가 더 개발이 되면 진행
-            .bodyValue(Map.of("couponNos", couponNos))
+            .uri("/api/coupon-generations-issues/used")
+            .bodyValue(Map.of("couponIssueNumbers", couponNos))
             .retrieve()
             .toEntity(void.class)
             .block();
+    }
 
+    /**
+     * 주문 취소 혹은 주문 반품에 대한 요청시 쿠폰을 사용가능하도록 다시 되돌리기 위한 요청을 수행하는 메서드입니다.
+     *
+     * @param couponNos 사용했던 쿠폰 번호들입니다.
+     */
+    public void useCancelCouponRequest(List<Integer> couponNos) {
+        WebClient.create(serverConfig.getCouponUrl())
+            .post()
+            .uri("/api/coupon-generations-issues/used-to-cancle")
+            .bodyValue(Map.of("couponIssueNumbers", couponNos))
+            .retrieve()
+            .toEntity(void.class)
+            .block();
     }
 }

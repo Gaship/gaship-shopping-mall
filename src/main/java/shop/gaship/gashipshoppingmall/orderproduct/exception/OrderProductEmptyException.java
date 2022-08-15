@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.orderproduct.exception;
  * @since 1.0
  */
 public class OrderProductEmptyException extends RuntimeException {
-    private static final String MESSAGE = "주문 제품이 비어있습니다.";
+    public static final String MESSAGE = "주문 제품이 비어있습니다.";
 
     public OrderProductEmptyException() {
         super(MESSAGE);

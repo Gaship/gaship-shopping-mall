@@ -126,9 +126,13 @@ public class OrderProduct {
      * @param orderProductStatusCode 바꾸어야하는 주문 상태
      * @param cancellationAmount 취소금액
      */
-    public void updateCancellation(StatusCode orderProductStatusCode, Long cancellationAmount) {
+    public void updateCancellation(StatusCode orderProductStatusCode, Long cancellationAmount,
+                                   String cancellationReason, Integer paymentCancelHistoryNo,
+                                   LocalDateTime cancellationDatetime) {
         this.orderStatusCode = orderProductStatusCode;
         this.cancellationAmount = cancellationAmount;
-        this.cancellationDatetime = LocalDateTime.now();
+        this.cancellationReason = cancellationReason;
+        this.paymentCancelHistoryNo = paymentCancelHistoryNo;
+        this.cancellationDatetime = cancellationDatetime;
     }
 }
