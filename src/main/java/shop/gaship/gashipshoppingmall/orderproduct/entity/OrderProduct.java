@@ -79,7 +79,7 @@ public class OrderProduct {
 
     private String employeeName;
 
-    private Integer trackingNo;
+    private String trackingNo;
 
     private Integer paymentCancelHistoryNo;
 
