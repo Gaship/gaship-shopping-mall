@@ -19,6 +19,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.addresslist.dummy.AddressListDummy;
 import shop.gaship.gashipshoppingmall.addresslist.repository.AddressListRepository;
+import shop.gaship.gashipshoppingmall.delivery.event.DeliveryEvent;
+import shop.gaship.gashipshoppingmall.delivery.event.DeliveryEventHandler;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
@@ -31,16 +33,22 @@ import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
 import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
+import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEventHandler;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
+import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -63,6 +71,9 @@ class OrderServiceImplTest {
     private OrderProductRegisteredEventHandler handler;
 
     @MockBean
+    private DeliveryEventHandler deliveryEventHandler;
+
+    @MockBean
     private OrderRepository orderRepository;
 
     @MockBean
@@ -70,6 +81,9 @@ class OrderServiceImplTest {
 
     @MockBean
     private AddressListRepository addressListRepository;
+
+    @MockBean
+    private StatusCodeRepository statusCodeRepository;
 
     @Test
     @DisplayName("주문 등록 테스트")
@@ -195,5 +209,28 @@ class OrderServiceImplTest {
         assertThat(result.getContent().get(0).getZipCode()).isEqualTo(dto.getZipCode());
         assertThat(result.getContent().get(0).getTrackingNo()).isEqualTo(dto.getTrackingNo());
         assertThat(result.getContent().get(0).getHopeDate()).isEqualTo(dto.getHopeDate());
+    }
+
+    @Test
+    void orderPaymentsSuccess() {
+        Order orderDummy = OrderDummy.createOrderDummy();
+        OrderProduct orderProductDummy = OrderProductDummy.dummy();
+        ReflectionTestUtils.setField(orderDummy, "orderProducts", List.of(orderProductDummy));
+        ReflectionTestUtils.setField(orderProductDummy, "no", 1);
+
+        given(orderRepository.findById(anyInt())).willReturn(Optional.of(orderDummy));
+        given(statusCodeRepository.findByStatusCodeName(DeliveryType.PARCEL.getValue()))
+            .willReturn(Optional.of(orderProductDummy.getProduct().getDeliveryType()));
+
+        willDoNothing().given(deliveryEventHandler).publishDeliveryRequest(any(DeliveryEvent.class));
+
+        orderService.orderPaymentsSuccess(1, "1234");
+
+        then(orderRepository).should(times(1)).findById(1);
+        then(statusCodeRepository).should(times(1))
+            .findByStatusCodeName(DeliveryType.PARCEL.getValue());
+        then(deliveryEventHandler).should(times(1))
+            .publishDeliveryRequest(any(DeliveryEvent.class));
+
     }
 }
