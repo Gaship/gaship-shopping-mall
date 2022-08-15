@@ -174,7 +174,7 @@ class OrderServiceImplTest {
     void findOrderDetailsTest() {
         OrderDetailResponseDto dto =
             new OrderDetailResponseDto("status", LocalDateTime.now(), "Hochul", "00",
-                "집앞에", 100L, "마산", "11105", 10L, 1, LocalDate.now());
+                "집앞에", 100L, "마산", "11105", 10L, "1", LocalDate.now());
         PageImpl<OrderDetailResponseDto> page = new PageImpl<>(List.of(dto), PageRequest.of(1, 10), 1);
         given(memberRepository.findById(anyInt()))
             .willReturn(Optional.of(MemberDummy.dummy()));

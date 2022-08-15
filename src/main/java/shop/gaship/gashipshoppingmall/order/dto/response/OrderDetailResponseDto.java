@@ -26,6 +26,6 @@ public class OrderDetailResponseDto {
     private String address;
     private String zipCode;
     private Long amount;
-    private Integer trackingNo;
+    private String trackingNo;
     private LocalDate hopeDate;
 }
