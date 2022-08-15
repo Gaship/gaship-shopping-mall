@@ -10,7 +10,7 @@ import lombok.Getter;
  * @since 1.0
  */
 @Getter
-public class InstallOrderAcceptDto {
+public class InstallOrderRequestDto {
     @Min(value = 1, message = "직원고유번호를 확인해주세요.")
     private Integer employeeNo;
     @Min(value = 1, message = "주문고유번호를 확인해주세요.")

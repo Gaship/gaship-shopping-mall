@@ -34,6 +34,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
+import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 
 /**
  * 서비스레이어에서 직원에대한 요청을 사용하기위한 구현체 클래스입니다.
@@ -210,6 +211,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         });
     }
 
+    @Override
+    public void completeDelivery(Integer employeeNo, Integer orderNo) {
+        Employee employee = repository.findById(employeeNo)
+            .orElseThrow(EmployeeNotFoundException::new);
+        Order order = orderRepository.findById(orderNo)
+            .orElseThrow(OrderNotFoundException::new);
+        StatusCode constructionStatusCode = statusCodeRepository
+            .findByStatusCodeName(DeliveryType.CONSTRUCTION.getValue())
+            .orElseThrow(StatusCodeNotFoundException::new);
+        StatusCode deliveryCompleteStatus = statusCodeRepository
+            .findByStatusCodeName(OrderStatus.DELIVERY_COMPLETE.getValue())
+            .orElseThrow(StatusCodeNotFoundException::new);
+
+        order.getOrderProducts().forEach(orderProduct -> {
+            if (isEqualsDeliverType(constructionStatusCode, orderProduct)
+                && isEqualDeliveredEmployee(employee, orderProduct)) {
+                orderProduct.updateOrderProductStatus(deliveryCompleteStatus);
+            }
+        });
+    }
+
     /**
      * 배송타입이 시공타입인지 비교연산하는 메서드입니다.
      *
@@ -220,5 +242,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     private boolean isEqualsDeliverType(
         StatusCode constructionStatusCode, OrderProduct orderProduct) {
         return Objects.equals(orderProduct.getProduct().getDeliveryType(), constructionStatusCode);
+    }
+
+    /**
+     * 배송완료할 물품에 대해 배송했던 직원이 같은 직원인지 비교하는 메서드입니다.
+     *
+     * @param employee 요청한 직원입니다.
+     * @param orderProduct 배송 수락했던 직원입니다.
+     * @return 같은 직원이면 true, 다르면 false를 반환합니다.
+     */
+    private boolean isEqualDeliveredEmployee(Employee employee, OrderProduct orderProduct) {
+        return Objects.equals(employee, orderProduct.getEmployee());
     }
 }

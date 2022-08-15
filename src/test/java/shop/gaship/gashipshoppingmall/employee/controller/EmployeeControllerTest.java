@@ -21,7 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
-import shop.gaship.gashipshoppingmall.employee.dto.request.InstallOrderAcceptDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.InstallOrderRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
@@ -254,9 +254,9 @@ class EmployeeControllerTest {
 
     @Test
     void acceptInstallOrderTest() throws Exception {
-        InstallOrderAcceptDto installOrderAcceptDto = new InstallOrderAcceptDto();
-        ReflectionTestUtils.setField(installOrderAcceptDto, "employeeNo", 1);
-        ReflectionTestUtils.setField(installOrderAcceptDto, "orderNo", 1);
+        InstallOrderRequestDto installOrderRequestDto = new InstallOrderRequestDto();
+        ReflectionTestUtils.setField(installOrderRequestDto, "employeeNo", 1);
+        ReflectionTestUtils.setField(installOrderRequestDto, "orderNo", 1);
 
         willDoNothing()
             .given(service)
@@ -264,7 +264,25 @@ class EmployeeControllerTest {
 
         mvc.perform(post("/api/employees/{employeeNo}/orders/{orderNo}", 1, 1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(installOrderAcceptDto))
+                .content(new ObjectMapper().writeValueAsString(installOrderRequestDto))
+                .accept(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @Test
+    void completeDeliveryTest() throws Exception {
+        InstallOrderRequestDto installOrderRequestDto = new InstallOrderRequestDto();
+        ReflectionTestUtils.setField(installOrderRequestDto, "employeeNo", 1);
+        ReflectionTestUtils.setField(installOrderRequestDto, "orderNo", 1);
+
+        willDoNothing()
+            .given(service)
+            .completeDelivery(1, 1);
+
+        mvc.perform(put("/api/employees/{employeeNo}/orders/{orderNo}", 1, 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(installOrderRequestDto))
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isOk())
             .andDo(print());

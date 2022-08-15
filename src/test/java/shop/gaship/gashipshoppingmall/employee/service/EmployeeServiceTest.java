@@ -49,6 +49,7 @@ import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
+import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -373,5 +374,33 @@ class EmployeeServiceTest {
         then(repository).should(times(1)).findById(1);
         then(orderRepository).should(times(1)).findById(1);
         then(codeRepository).should(times(1)).findByStatusCodeName(DeliveryType.CONSTRUCTION.getValue());
+    }
+
+    @Test
+    @DisplayName("직원의 시공 설치 배송 완료시 수행")
+    void completeDeliveryTest() {
+        Order orderDummy = OrderDummy.createOrderDummy();
+        OrderProduct orderProductDummy = OrderProductDummy.dummy();
+        ReflectionTestUtils.setField(orderDummy, "orderProducts", List.of(orderProductDummy));
+
+        given(repository.findById(anyInt()))
+            .willReturn(Optional.of(EmployeeDummy.dummy()));
+        given(orderRepository.findById(anyInt()))
+            .willReturn(Optional.of(orderDummy));
+        given(codeRepository.findByStatusCodeName(DeliveryType.CONSTRUCTION.getValue()))
+            .willReturn(Optional.of(orderProductDummy.getProduct().getDeliveryType()));
+        given(codeRepository.findByStatusCodeName(OrderStatus.DELIVERY_COMPLETE.getValue()))
+            .willReturn(Optional.of(StatusCode.builder()
+                    .statusCodeName("배송완료")
+                    .explanation("")
+                    .priority(1)
+                    .groupCodeName("배송")
+                .build()));
+
+        service.completeDelivery(1, 1);
+
+        then(repository).should(times(1)).findById(1);
+        then(orderRepository).should(times(1)).findById(1);
+        then(codeRepository).should(times(2)).findByStatusCodeName(anyString());
     }
 }

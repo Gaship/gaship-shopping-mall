@@ -20,7 +20,7 @@ import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.aspact.anntation.ManagerAuthority;
 import shop.gaship.gashipshoppingmall.aspact.anntation.ManagerOnlyAuthority;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
-import shop.gaship.gashipshoppingmall.employee.dto.request.InstallOrderAcceptDto;
+import shop.gaship.gashipshoppingmall.employee.dto.request.InstallOrderRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequestDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderPageableDto;
@@ -139,7 +139,7 @@ public class EmployeeController {
      *
      * @param employeeNo 직원의 고유번호입니다.
      * @param orderNo 주문 고유번호입니다.
-     * @param installOrderAcceptDto 설치할 주문과 설치 배송을 수락하는 직원의 정보가 담긴 객체입니다.
+     * @param installOrderRequestDto 설치할 주문과 설치 배송을 수락하는 직원의 정보가 담긴 객체입니다.
      * @return 200 상태이고 body는 비어있는 응답객체를 반환합니다.
      * @throws NotMatchRequestData path variable과 body 객체에 담긴 정보가 다를 경우 해당 예외를 던집니다.
      */
@@ -147,15 +147,49 @@ public class EmployeeController {
     @PostMapping("/{employeeNo}/orders/{orderNo}")
     public ResponseEntity<Void> acceptInstallOrder(
         @PathVariable Integer employeeNo, @PathVariable Integer orderNo,
-        @Valid @RequestBody InstallOrderAcceptDto installOrderAcceptDto) {
-        if (!Objects.equals(employeeNo, installOrderAcceptDto.getEmployeeNo())
-            || !Objects.equals(orderNo, installOrderAcceptDto.getOrderNo())) {
-            String message = "직원번호 또는 주문 번호가 요청과 일치하지않습니다.";
-            throw new NotMatchRequestData(message);
-        }
+        @Valid @RequestBody InstallOrderRequestDto installOrderRequestDto) {
+        checkSameRequestAndPathVariable(employeeNo, orderNo, installOrderRequestDto);
 
         employeeService.acceptInstallOrder(employeeNo, orderNo);
 
         return ResponseEntity.ok().build();
+    }
+
+
+    /**
+     * 설치 및 배송이 끝난 뒤 직원의 설치 및 배송완료 요청을 받는 메서드입니다.
+     *
+     * @param employeeNo 직원의 고유번호입니다.
+     * @param orderNo 주문 고유번호입니다.
+     * @param installOrderRequestDto 요청한 설치 주문 정보입니다.
+     * @return 요청이 완료되면 200 상태와 body는 비어있는 응답객체를 반환합니다.
+     */
+    @ManagerAuthority
+    @PutMapping("/{employeeNo}/orders/{orderNo}")
+    public ResponseEntity<Void> deliveryComplete(
+        @PathVariable Integer employeeNo, @PathVariable Integer orderNo,
+        @Valid @RequestBody InstallOrderRequestDto installOrderRequestDto) {
+        checkSameRequestAndPathVariable(employeeNo, orderNo, installOrderRequestDto);
+
+        employeeService.completeDelivery(employeeNo, orderNo);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    /**
+     * 요청한 정보와 url path variable과 같은지 비교합니다.
+     *
+     * @param employeeNo 직원의 고유번호입니다.
+     * @param orderNo 주문 고유번호입니다.
+     * @param installOrderRequestDto 요청한 설치 주문 정보입니다.
+     */
+    private void checkSameRequestAndPathVariable(Integer employeeNo, Integer orderNo,
+                                                 InstallOrderRequestDto installOrderRequestDto) {
+        if (!Objects.equals(employeeNo, installOrderRequestDto.getEmployeeNo())
+            || !Objects.equals(orderNo, installOrderRequestDto.getOrderNo())) {
+            String message = "직원번호 또는 주문 번호가 요청과 일치하지않습니다.";
+            throw new NotMatchRequestData(message);
+        }
     }
 }
