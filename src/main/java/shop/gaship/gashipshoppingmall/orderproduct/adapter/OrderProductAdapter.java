@@ -27,7 +27,7 @@ public class OrderProductAdapter {
         WebClient.create(serverConfig.getCouponUrl())
             .post()
             .uri("/api/coupon-generations-issues/used")
-            .bodyValue(Map.of("couponNos", couponNos))
+            .bodyValue(Map.of("couponIssueNumbers", couponNos))
             .retrieve()
             .toEntity(void.class)
             .block();
@@ -42,7 +42,7 @@ public class OrderProductAdapter {
         WebClient.create(serverConfig.getCouponUrl())
             .post()
             .uri("/api/coupon-generations-issues/used-to-cancle")
-            .bodyValue(Map.of("couponNos", couponNos))
+            .bodyValue(Map.of("couponIssueNumbers", couponNos))
             .retrieve()
             .toEntity(void.class)
             .block();

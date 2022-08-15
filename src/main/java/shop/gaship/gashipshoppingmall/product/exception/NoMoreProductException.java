@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.product.exception;
  * @since 1.0
  */
 public class NoMoreProductException extends RuntimeException {
-    private static final String MESSAGE = "재고가 더 이상 없습니다.";
+    public static final String MESSAGE = "재고가 더 이상 없습니다.";
 
     public NoMoreProductException() {
         super(MESSAGE);

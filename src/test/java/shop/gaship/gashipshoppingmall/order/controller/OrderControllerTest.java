@@ -24,7 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
-import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessDto;
+import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
@@ -87,9 +87,9 @@ class OrderControllerTest {
 
     @Test
     void orderSuccess() throws Exception {
-        OrderSuccessDto orderSuccessDto = new OrderSuccessDto();
-        ReflectionTestUtils.setField(orderSuccessDto, "orderNo", 1);
-        ReflectionTestUtils.setField(orderSuccessDto, "paymentKey", "1234");
+        OrderSuccessRequestDto orderSuccessRequestDto = new OrderSuccessRequestDto();
+        ReflectionTestUtils.setField(orderSuccessRequestDto, "orderNo", 1);
+        ReflectionTestUtils.setField(orderSuccessRequestDto, "paymentKey", "1234");
 
         willDoNothing()
             .given(orderService)
@@ -98,7 +98,7 @@ class OrderControllerTest {
         mockMvc.perform(put("/api/orders/success")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(orderSuccessDto)))
+                .content(new ObjectMapper().writeValueAsString(orderSuccessRequestDto)))
             .andExpect(status().isOk())
             .andDo(print());
     }
@@ -110,9 +110,10 @@ class OrderControllerTest {
             IntStream.range(0, 5).mapToObj(value ->
                     new OrderProductStatusCancelDto.CancelOrderInfo(
                         value,
-                        10000L,
-                        "배송준비중"))
-                .collect(Collectors.toUnmodifiableList()));
+                        10000L))
+                .collect(Collectors.toUnmodifiableList()),
+                "단순 변심으로 인한 주문 취소"
+        );
 
         willDoNothing()
             .given(orderProductService)

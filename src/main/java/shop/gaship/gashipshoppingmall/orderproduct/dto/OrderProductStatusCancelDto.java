@@ -15,6 +15,7 @@ import lombok.Getter;
 public class OrderProductStatusCancelDto {
     private Integer paymentCancelHistoryNo;
     private List<CancelOrderInfo> cancelOrderInfos;
+    private String cancelReason;
 
     /**
      * 주문 제품 취소 요청 상세정보입니다.
@@ -27,6 +28,5 @@ public class OrderProductStatusCancelDto {
     public static class CancelOrderInfo {
         private Integer cancelOrderProductNo;
         private Long cancelAmount;
-        private String cancelReason;
     }
 }

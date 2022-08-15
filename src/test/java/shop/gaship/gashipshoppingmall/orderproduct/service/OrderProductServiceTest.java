@@ -177,9 +177,9 @@ class OrderProductServiceTest {
             IntStream.range(0, 5).mapToObj(value ->
                     new OrderProductStatusCancelDto.CancelOrderInfo(
                         value,
-                        10000L,
-                        "배송준비중"))
-                .collect(Collectors.toUnmodifiableList()));
+                        10000L))
+                .collect(Collectors.toUnmodifiableList()),
+            "단순 변심으로 인한 주문 취소요청");
 
         given(orderProductRepository.findById(0))
             .willReturn(Optional.of(OrderProductDummy.dummy()));
@@ -230,9 +230,9 @@ class OrderProductServiceTest {
             IntStream.range(0, 5).mapToObj(value ->
                     new OrderProductStatusCancelDto.CancelOrderInfo(
                         value,
-                        10000L,
-                        "배송준비중"))
-                .collect(Collectors.toUnmodifiableList()));
+                        10000L))
+                .collect(Collectors.toUnmodifiableList()),
+            "단순 변심으로 인한 주문 취소요청");
 
         OrderProduct dummy = OrderProductDummy.dummy();
         StatusCode testCancelStatus = StatusCode.builder()

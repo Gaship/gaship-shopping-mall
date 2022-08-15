@@ -9,7 +9,7 @@ import lombok.Getter;
  * @since 1.0
  */
 @Getter
-public class OrderSuccessDto {
+public class OrderSuccessRequestDto {
     private Integer orderNo;
     private String paymentKey;
 }

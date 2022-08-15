@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.member.exception;
  * @since 1.0
  */
 public class InvalidReissueQualificationException extends RuntimeException {
-    private static final String ERROR_MESSAGE = "유효하지 않은 접근으로 인해 요청을 취하합니다.";
+    public static final String ERROR_MESSAGE = "유효하지 않은 접근으로 인해 요청을 취하합니다.";
     
     public InvalidReissueQualificationException() {
         super(ERROR_MESSAGE);

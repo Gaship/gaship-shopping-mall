@@ -27,6 +27,7 @@ import shop.gaship.gashipshoppingmall.product.exception.NoMoreProductException;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.exception.InvalidOrderStatusException;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
@@ -41,7 +42,7 @@ import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 @Service
 @RequiredArgsConstructor
 public class OrderProductServiceImpl implements OrderProductService {
-    private static final Integer DEFAULT_WARRANTY = 12; // 1년 기본 보증
+    public static final Integer DEFAULT_WARRANTY = 12; // 1년 기본 보증
     private final ProductRepository productRepository;
     private final StatusCodeRepository statusCodeRepository;
     private final OrderProductRepository orderProductRepository;
@@ -134,6 +135,7 @@ public class OrderProductServiceImpl implements OrderProductService {
      * {@inheritDoc}
      *
      * @param orderProductStatusChangeDto 주문 상태를 교환상태로 바꿀 주문 상품입니다.
+     * @throws InvalidOrderStatusException 주문 상태가 배송중, 배송완료가 아닌 경우 예외를 던집니다.
      */
     @Transactional
     @Override
@@ -157,6 +159,7 @@ public class OrderProductServiceImpl implements OrderProductService {
      * {@inheritDoc}
      *
      * @param orderProductStatusCancelDto   주문 취소, 반품 상품의 정보입니다.
+     * @throws InvalidOrderStatusException 주문 상태가 배송준비, 배송중, 배송완료가 아닌 경우 예외를 던집니다.
      */
     @Transactional
     @Override
@@ -177,7 +180,7 @@ public class OrderProductServiceImpl implements OrderProductService {
                 orderProduct.updateCancellation(
                     cancellationCode,
                     cancelOrderInfo.getCancelAmount(),
-                    cancelOrderInfo.getCancelReason(),
+                    orderProductStatusCancelDto.getCancelReason(),
                     orderProductStatusCancelDto.getPaymentCancelHistoryNo(),
                     LocalDateTime.now()
                 );
@@ -216,6 +219,7 @@ public class OrderProductServiceImpl implements OrderProductService {
      * {@inheritDoc}
      *
      * @param orderProductCancellationFailDto 주문 취소 상품들의 정보입니다.
+     * @throws InvalidOrderStatusException 주문 상태가 취소가 아닌 경우 예외를 던집니다.
      */
     @Transactional
     @Override

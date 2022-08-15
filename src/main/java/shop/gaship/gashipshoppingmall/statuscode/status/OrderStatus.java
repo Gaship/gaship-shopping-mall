@@ -61,8 +61,7 @@ public enum OrderStatus {
      * @param currentOrder 체크할 현재 주문상품의 상태입니다.
      */
     public static void checkRecoverableOrder(String currentOrder) {
-        if (!Objects.equals(CANCEL_COMPLETE.value, currentOrder)
-            && !Objects.equals(DELIVERY_COMPLETE.value, currentOrder)) {
+        if (!Objects.equals(CANCEL_COMPLETE.value, currentOrder)) {
             String serviceStatus = "취소 복구 상태";
 
             throw new InvalidOrderStatusException(serviceStatus);

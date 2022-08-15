@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.category.exception;
  * @since 1.0
  */
 public class CategoryRemainProductException extends RuntimeException {
-    private static final String MESSAGE = "카테고리에 속한 상품이 있어 삭제할 수 없습니다.";
+    public static final String MESSAGE = "카테고리에 속한 상품이 있어 삭제할 수 없습니다.";
 
     public CategoryRemainProductException() {
         super(MESSAGE);

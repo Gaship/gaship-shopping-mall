@@ -7,8 +7,8 @@ package shop.gaship.gashipshoppingmall.statuscode.exception;
  * @since 1.0
  */
 public class InvalidOrderStatusException extends RuntimeException {
-    private static final String HEAD_MESSAGE = "해당 주문 상태로는 ";
-    private static final String TAIL_MESSAGE = "로 변경이 불가능합니다.";
+    public static final String HEAD_MESSAGE = "해당 주문 상태로는 ";
+    public static final String TAIL_MESSAGE = "로 변경이 불가능합니다.";
 
     public InvalidOrderStatusException(String serviceStatus) {
         super(HEAD_MESSAGE + serviceStatus + TAIL_MESSAGE);

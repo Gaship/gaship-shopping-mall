@@ -7,7 +7,7 @@ package shop.gaship.gashipshoppingmall.orderproduct.exception;
  * @since 1.0
  */
 public class InvalidOrderCancellationHistoryNo extends RuntimeException {
-    private static final String MESSAGE = "일치하지않는 취소이력번호입니다.";
+    public static final String MESSAGE = "일치하지않는 취소이력번호입니다.";
 
     public InvalidOrderCancellationHistoryNo() {
         super(MESSAGE);

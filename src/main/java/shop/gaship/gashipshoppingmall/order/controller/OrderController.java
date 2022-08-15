@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
 import shop.gaship.gashipshoppingmall.aspact.anntation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
-import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessDto;
+import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
@@ -49,15 +49,15 @@ public class OrderController {
     /**
      * 주문 결제가 성공적으로 수행되었을 시 요청을 받는 메서드입니다.
      *
-     * @param orderSuccessDto 주문 성공시 결제 이력번호, 주문번호가 담긴 객체입니다.
+     * @param orderSuccessRequestDto 주문 성공시 결제 이력번호, 주문번호가 담긴 객체입니다.
      * @return 응답 Body객체가 없고 200 상태를 반환합니다.
      */
     @MemberAuthority
     @PutMapping("/success")
-    public ResponseEntity<Void> orderSuccess(OrderSuccessDto orderSuccessDto) {
+    public ResponseEntity<Void> orderSuccess(OrderSuccessRequestDto orderSuccessRequestDto) {
         orderService.orderPaymentsSuccess(
-            orderSuccessDto.getOrderNo(),
-            orderSuccessDto.getPaymentKey());
+            orderSuccessRequestDto.getOrderNo(),
+            orderSuccessRequestDto.getPaymentKey());
 
         return ResponseEntity.ok().build();
     }
