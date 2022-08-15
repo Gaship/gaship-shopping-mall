@@ -51,7 +51,7 @@ public class OrderController {
     @MemberOnlyAuthority
     @PostMapping
     public ResponseEntity<OrderResponseDto> doOrder(@Valid @RequestBody
-                                                    OrderRegisterRequestDto orderRequest) {
+                                                        OrderRegisterRequestDto orderRequest) {
         Integer orderNo = orderService.insertOrder(orderRequest);
         return ResponseEntity.ok(orderService.findOrderForPayments(orderNo));
     }

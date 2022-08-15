@@ -16,8 +16,8 @@ import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelD
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto.CancelOrderInfo;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
-import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCancelEvent;
-import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseEvent;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEvent;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.InvalidOrderCancellationHistoryNo;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
@@ -83,7 +83,7 @@ public class OrderProductServiceImpl implements OrderProductService {
                 .map(OrderProductSpecificDto::getCouponNo)
                 .collect(Collectors.toUnmodifiableList());
 
-            applicationEventPublisher.publishEvent(new CouponUseEvent(couponNos));
+            applicationEventPublisher.publishEvent(new CouponUsedEvent(couponNos));
         }
     }
 
@@ -198,7 +198,7 @@ public class OrderProductServiceImpl implements OrderProductService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableList());
 
-            applicationEventPublisher.publishEvent(new CouponUseCancelEvent(couponNos));
+            applicationEventPublisher.publishEvent(new CouponUseCanceledEvent(couponNos));
         }
     }
 
@@ -258,7 +258,7 @@ public class OrderProductServiceImpl implements OrderProductService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableList());
 
-            applicationEventPublisher.publishEvent(new CouponUseEvent(couponNos));
+            applicationEventPublisher.publishEvent(new CouponUsedEvent(couponNos));
         }
     }
 }

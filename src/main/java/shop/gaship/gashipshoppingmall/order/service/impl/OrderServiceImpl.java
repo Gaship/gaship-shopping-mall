@@ -21,7 +21,7 @@ import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.exception.OrderNotFoundException;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
-import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisterEvent;
+import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductEmptyException;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
 
@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
         // 주문 등록
         Order savedOrder = orderRepository.save(order);
         applicationEventPublisher.publishEvent(
-            new OrderProductRegisterEvent(savedOrder, orderRequest.getOrderProducts()));
+            new OrderProductRegisteredEvent(savedOrder, orderRequest.getOrderProducts()));
 
         return savedOrder.getNo();
     }
