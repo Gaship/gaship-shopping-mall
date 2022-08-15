@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.membertag.dummy;
 import java.time.LocalDate;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
-import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberTestDummy;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membertag.dto.request.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dto.response.MemberTagResponseDto;

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -16,7 +15,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@EqualsAndHashCode
 public class CreateScheduleRequestDto {
 
     @NotNull(message = "일자를 기입해주세요")

@@ -73,7 +73,6 @@ class ProductTagRepositoryTest {
         List<ProductTag> savedProductTags = productTagRepository.saveAll(List.of(productTag));
 
         assertThat(savedProductTags).hasSize(1);
-        assertThat(savedProductTags.get(0)).isEqualTo(productTag);
         assertThat(savedProductTags.get(0).getPk().getProductNo()).isEqualTo(productTag.getProduct().getNo());
         assertThat(savedProductTags.get(0).getPk().getTagNo()).isEqualTo(productTag.getTag().getTagNo());
     }

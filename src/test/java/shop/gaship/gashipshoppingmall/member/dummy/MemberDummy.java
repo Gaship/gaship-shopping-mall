@@ -30,9 +30,9 @@ public class MemberDummy extends Member {
             )
             .roleSet(List.of(MembersRole.ROLE_USER))
             .email("example@nhn.com") // TODO : 해당 email을 AES로 encoding을 해야함
-            .password("password")
-            .name("example")
-            .nickname("example nickname")
+            .password("password1!")
+            .name("예시이름")
+            .nickname("examplenickname")
             .birthDate(LocalDate.now())
             .phoneNumber("01012341234")
             .gender("남")

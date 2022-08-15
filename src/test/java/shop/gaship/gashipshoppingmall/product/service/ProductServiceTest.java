@@ -24,9 +24,11 @@ import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundException;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
+import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
+import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
@@ -46,7 +48,6 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
-import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -84,9 +85,6 @@ class ProductServiceTest {
     ProductTagRepository productTagRepository;
 
     @MockBean
-    FileUploadUtil fileUploadUtil;
-
-    @MockBean
     ElasticProductRepository elasticProductRepository;
 
     @MockBean
@@ -107,6 +105,9 @@ class ProductServiceTest {
     MockMultipartFile multipartFile;
     PageResponse<ProductAllInfoResponseDto> pageResponse;
 
+    FileRequestDto fileRequest;
+    CommonFile commonFile;
+
     @BeforeEach
     void setUp() throws IOException {
         File file = new File("src/test/resources/sample.jpg");
@@ -125,6 +126,18 @@ class ProductServiceTest {
         page = new PageImpl<>(List.of(response), pageRequest, 1);
         pageResponse = new PageResponse<>(page);
         productTag = new ProductTag(new ProductTag.Pk(1, 1), product, tag);
+
+        fileRequest = FileRequestDto.builder()
+            .path(file.getAbsolutePath())
+            .originalName(multipartFile.getOriginalFilename())
+            .extension("jpg")
+            .build();
+
+        commonFile = CommonFile.builder()
+            .path(fileRequest.getPath())
+            .originalName(fileRequest.getOriginalName())
+            .extension(fileRequest.getExtension())
+            .build();
     }
 
     @DisplayName("상품 등록 성공")
@@ -132,7 +145,6 @@ class ProductServiceTest {
     void addProduct() {
         ProductRequestDto createRequest = ProductDummy.createRequestDummy();
         List<MultipartFile> files = List.of(multipartFile);
-        String uploadDir = File.separator + "products";
         ReflectionTestUtils.setField(product, "no", 1);
         when(repository.save(any(Product.class))).thenReturn(product);
         when(categoryRepository.findById(createRequest.getCategoryNo()))
@@ -144,15 +156,16 @@ class ProductServiceTest {
             .thenReturn(Optional.of(new StatusCode("판매중", 2, "판매상태", "")));
         when(tagRepository.findById(createRequest.getTagNos().get(0)))
             .thenReturn(Optional.of(new Tag(1, "태그")));
-        when(fileUploadUtil.uploadFile(uploadDir, files))
-            .thenReturn(List.of());
+        when(commonFileService.uploadMultipartFile(any())).thenReturn(fileRequest);
+        when(commonFileService.createCommonFile(any())).thenReturn(commonFile);
 
         service.addProduct(files, createRequest);
 
         verify(categoryRepository).findById(createRequest.getCategoryNo());
         verify(statusCodeRepository).findById(createRequest.getDeliveryTypeNo());
         verify(statusCodeRepository).findByStatusCodeName(SalesStatus.SALE.getValue());
-        verify(fileUploadUtil).uploadFile(uploadDir, files);
+        verify(commonFileService).uploadMultipartFile(any());
+        verify(commonFileService).createCommonFile(any());
     }
 
     @DisplayName("상품 수정 성공")
@@ -161,8 +174,6 @@ class ProductServiceTest {
         ProductRequestDto modifyRequest = ProductDummy.modifyRequestDummy();
         Product product = ProductDummy.dummy();
         ReflectionTestUtils.setField(product, "no", modifyRequest.getNo());
-        List<MultipartFile> files = List.of(multipartFile);
-        String uploadDir = File.separator + "products";
 
         when(repository.findById(modifyRequest.getNo()))
             .thenReturn(Optional.of(product));
@@ -171,15 +182,16 @@ class ProductServiceTest {
         when(statusCodeRepository.findById(modifyRequest.getDeliveryTypeNo()))
             .thenReturn(Optional.of(
                 new StatusCode("설치", modifyRequest.getDeliveryTypeNo(), "배송형태", "")));
-        when(fileUploadUtil.uploadFile(uploadDir, files))
-            .thenReturn(List.of());
+        when(commonFileService.uploadMultipartFile(any())).thenReturn(fileRequest);
+        when(commonFileService.createCommonFile(any())).thenReturn(commonFile);
 
         service.modifyProduct(List.of(multipartFile), modifyRequest);
 
         verify(repository).findById(modifyRequest.getNo());
         verify(categoryRepository).findById(modifyRequest.getCategoryNo());
         verify(statusCodeRepository).findById(modifyRequest.getDeliveryTypeNo());
-        verify(fileUploadUtil).uploadFile(uploadDir, files);
+        verify(commonFileService).uploadMultipartFile(any());
+        verify(commonFileService).createCommonFile(any());
     }
 
     @DisplayName("상품 수정 실패 - 해당 상품 찾기 불가")
@@ -231,13 +243,12 @@ class ProductServiceTest {
             .build();
 
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(productTag.getTag().getTitle()));
         //when
 
-        PageResponse<ProductAllInfoResponseDto> result =
-            service.findProductByCode("c1", pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductByCode("c1", pageRequest);
 
         //then
         verify(repository, times(1))
@@ -258,7 +269,7 @@ class ProductServiceTest {
         given(repository.findById(response.getProductNo()))
             .willReturn(Optional.of(product));
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(productTagRepository.findTagsByProductNo(response.getProductNo()))
             .willReturn(List.of(productTag.getTag().getTitle()));
         //when
@@ -310,7 +321,7 @@ class ProductServiceTest {
             .build();
 
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
 
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(tag.getTitle()));
@@ -350,15 +361,14 @@ class ProductServiceTest {
             .build();
 
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(tag.getTitle()));
         given(categoryRepository.findById(any()))
             .willReturn(Optional.of(category));
 
         //when
-        PageResponse<ProductAllInfoResponseDto> result =
-            service.findProductByCategory(1, pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductByCategory(1, pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(any());
@@ -377,13 +387,12 @@ class ProductServiceTest {
             .build();
 
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(productTag.getTag().getTitle()));
 
         //when
-        PageResponse<ProductAllInfoResponseDto> result =
-            service.findProductByName(response.getProductName(), pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductByName(response.getProductName(), pageRequest);
         //then
         verify(repository, times(1)).findProduct(any());
         verify(productTagRepository, times(1)).findTagsByProductNo((tag.getTagNo()));
@@ -397,11 +406,11 @@ class ProductServiceTest {
         //given
         ProductRequestViewDto requestDto = new ProductRequestViewDto();
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(productTag.getTag().getTitle()));
         //when
-        PageResponse<ProductAllInfoResponseDto> result = service.findProductsInfo(pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductsInfo(pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(requestDto);
@@ -431,11 +440,11 @@ class ProductServiceTest {
             .pageable(pageRequest)
             .build();
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
         given(statusCodeRepository.findByStatusCodeName(requestDto.getStatusName()))
             .willReturn(Optional.of(d1));
         //when
-        PageResponse<ProductAllInfoResponseDto> result = service.findProductStatusCode(requestDto.getStatusName(), pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductStatusCode(requestDto.getStatusName(), pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(requestDto);
@@ -453,10 +462,10 @@ class ProductServiceTest {
             .productNoList(productNo)
             .build();
         given(repository.findProduct(requestDto))
-            .willReturn(pageResponse);
+            .willReturn(page);
 
         //when
-        PageResponse<ProductAllInfoResponseDto> result = service.findProductByProductNos(productNo, pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductByProductNos(productNo, pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(requestDto);
@@ -464,7 +473,7 @@ class ProductServiceTest {
         checkContent(result);
     }
 
-    private void checkContent(PageResponse<ProductAllInfoResponseDto> result) {
+    private void checkContent(Page<ProductAllInfoResponseDto> result) {
         assertThat(result.getContent().get(0).getUpperName()).isEqualTo(response.getUpperName());
         assertThat(result.getContent().get(0).getProductNo()).isEqualTo(response.getProductNo());
         assertThat(result.getContent().get(0).getProductName()).isEqualTo(

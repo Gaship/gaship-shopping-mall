@@ -1,5 +1,8 @@
 package shop.gaship.gashipshoppingmall.addresslist.dto.request;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 /**
@@ -10,9 +13,23 @@ import lombok.Getter;
  */
 @Getter
 public class AddressListAddRequestDto {
+    @NotNull
+    @Min(value = 1, message = "주소지역 id 값은 1 이상이어야합니다.")
     private Integer addressLocalNo;
+
+    @NotNull
+    @Min(value = 1, message = "회원 id 값은 1 이상이어야합니다.")
     private Integer memberNo;
+
+    @NotNull
+    @NotBlank(message = "주소를 입력해주세요.")
     private String address;
+
+    @NotNull
+    @NotBlank(message = "상세 주소를 입력해주세요.")
     private String addressDetail;
+
+    @NotNull
+    @NotBlank(message = "우편번호를 입력해주세요.")
     private String zipCode;
 }

@@ -1,12 +1,12 @@
 package shop.gaship.gashipshoppingmall.product.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 상품 서비스 인터페이스 입니다.
@@ -50,8 +50,8 @@ public interface ProductService {
      * @return list 제품의 코드를 통해 조회된 제품들이 반환됩니다.
      * @author 유호철
      */
-    PageResponse<ProductAllInfoResponseDto> findProductByCode(String productCode,
-                                                              Pageable pageable);
+    Page<ProductAllInfoResponseDto> findProductByCode(String productCode,
+                                                      Pageable pageable);
 
 
     /**
@@ -72,8 +72,8 @@ public interface ProductService {
      * @return list  최소금액과 최대금액사이의 제품들이 반환됩니다.
      * @author 유호철
      */
-    PageResponse<ProductAllInfoResponseDto> findProductByPrice(Long min, Long max,
-                                                               Pageable pageable);
+    Page<ProductAllInfoResponseDto> findProductByPrice(Long min, Long max,
+                                                       Pageable pageable);
 
     /**
      * 카테고리를 통해 알맞은 상품을 조회하는 메서드입니다.
@@ -83,7 +83,7 @@ public interface ProductService {
      * @return list 같은 카테고리의 no 를 가진 제품들이 반환된다.
      * @author 유호철
      */
-    PageResponse<ProductAllInfoResponseDto> findProductByCategory(Integer no, Pageable pageable);
+    Page<ProductAllInfoResponseDto> findProductByCategory(Integer no, Pageable pageable);
 
     /**
      * 이름을 통해 알맞은 상품을 조회하는 메서드입니다.
@@ -93,7 +93,7 @@ public interface ProductService {
      * @return list 같은 제품 이름을 가진 제품들이 반환된다.
      * @author 유호철
      */
-    PageResponse<ProductAllInfoResponseDto> findProductByName(String name, Pageable pageable);
+    Page<ProductAllInfoResponseDto> findProductByName(String name, Pageable pageable);
 
     /**
      * 알맞은 상품들의 정보들을 반환합니다.
@@ -102,7 +102,7 @@ public interface ProductService {
      * @return list 조회된 상품들의 정보들을 반환합니다.
      * @author 유호철
      */
-    PageResponse<ProductAllInfoResponseDto> findProductsInfo(Pageable pageable);
+    Page<ProductAllInfoResponseDto> findProductsInfo(Pageable pageable);
 
 
     /**
@@ -112,8 +112,8 @@ public interface ProductService {
      * @param pageable   페이징 정보
      * @return the page response
      */
-    PageResponse<ProductAllInfoResponseDto> findProductStatusCode(String statusName,
-                                                                  Pageable pageable);
+    Page<ProductAllInfoResponseDto> findProductStatusCode(String statusName,
+                                                          Pageable pageable);
 
 
     /**
@@ -122,6 +122,6 @@ public interface ProductService {
      * @param productNos 조회할 productNos 가 들어갑니다.
      * @return 조회된 상품들의 정보가 list 로 반환됩니다.
      */
-    PageResponse<ProductAllInfoResponseDto> findProductByProductNos(List<Integer> productNos,
-                                                                    Pageable pageable);
+    Page<ProductAllInfoResponseDto> findProductByProductNos(List<Integer> productNos,
+                                                            Pageable pageable);
 }

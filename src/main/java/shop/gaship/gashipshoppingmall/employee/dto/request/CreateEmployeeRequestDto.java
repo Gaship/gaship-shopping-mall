@@ -4,7 +4,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
@@ -16,7 +15,6 @@ import org.hibernate.validator.constraints.Length;
  */
 @Getter
 @AllArgsConstructor
-@EqualsAndHashCode
 public class CreateEmployeeRequestDto {
     @Min(1)
     @NotNull(message = "권한번호를 기입해주세요")

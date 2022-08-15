@@ -2,7 +2,6 @@ package shop.gaship.gashipshoppingmall.productreview.service.impl;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
+import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
@@ -31,7 +31,6 @@ import shop.gaship.gashipshoppingmall.productreview.event.ProductReviewSaveUpdat
 import shop.gaship.gashipshoppingmall.productreview.exception.ProductReviewNotFoundException;
 import shop.gaship.gashipshoppingmall.productreview.repository.ProductReviewRepository;
 import shop.gaship.gashipshoppingmall.productreview.service.ProductReviewService;
-import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 /**
  * 상품평 서비스 구현체입니다.
@@ -48,9 +47,8 @@ public class ProductReviewServiceImpl implements ProductReviewService {
     private final OrderProductRepository orderProductRepository;
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
-    private final CommonFileRepository fileRepository;
-    private final CommonFileService fileService;
-    private final FileUploadUtil fileUploadUtil;
+    private final CommonFileRepository commonFileRepository;
+    private final CommonFileService commonFileService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
@@ -68,9 +66,9 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         ProductReview review = createProductReview(createRequest, orderProduct);
 
         if (Objects.nonNull(file)) {
-            String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);
-            applicationEventPublisher.publishEvent(new ProductReviewSaveUpdateEvent(imagePath));
-            review.addProductReviewImage(fileService.createCommonFile(imagePath));
+            FileRequestDto fileRequest = commonFileService.uploadMultipartFile(file);
+            applicationEventPublisher.publishEvent(new ProductReviewSaveUpdateEvent(fileRequest));
+            review.addProductReviewImage(commonFileService.createCommonFile(fileRequest));
         }
 
         productReviewRepository.save(review);
@@ -93,9 +91,9 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         review.removeAllProductReviewImages();
 
         if (Objects.nonNull(file)) {
-            String imagePath = fileUploadUtil.uploadFile(REVIEW_DIR, List.of(file)).get(0);
-            event.setImagePath(imagePath);
-            review.addProductReviewImage(fileService.createCommonFile(imagePath));
+            FileRequestDto fileRequest = commonFileService.uploadMultipartFile(file);
+            event.setImagePath(fileRequest);
+            review.addProductReviewImage(commonFileService.createCommonFile(fileRequest));
         }
 
         review.updateProductReview(modifyRequest.getTitle(), modifyRequest.getContent(),
@@ -228,7 +226,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
      */
     private void findFilePath(Page<ProductReviewResponseDto> productReviews) {
         productReviews.getContent().forEach(review -> review.getFilePaths()
-                .addAll(fileRepository.findPaths(review.getOrderProductNo(),
+                .addAll(commonFileRepository.findPaths(review.getOrderProductNo(),
                         ProductReview.SERVICE)));
     }
 }

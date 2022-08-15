@@ -2,6 +2,8 @@ package shop.gaship.gashipshoppingmall.order.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
@@ -11,8 +13,12 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderListResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
+import shop.gaship.gashipshoppingmall.order.exception.OrderNotFoundException;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
 import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEvent;
@@ -89,6 +95,7 @@ public class OrderServiceImpl implements OrderService {
             orderNameBuilder.append("외 ").append(orderProductCount).append("건");
         }
 
+
         return new OrderResponseDto(
             order.getTotalOrderAmount(),
             order.getNo(),
@@ -111,5 +118,56 @@ public class OrderServiceImpl implements OrderService {
             .orElseThrow(OrderProductNotFoundException::new);
 
         order.updateOrderPaymentKey(paymentKey);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberNotFoundException 회원이 존재하지않을경우 발생합니다.
+     * @throws OrderNotFoundException  요청 주문번호가 없을경우 발생합니다.
+     */
+    @Override
+    public Page<OrderDetailResponseDto> findMemberOrderDetails(Integer memberNo,
+                                                               Integer orderNo,
+                                                               Pageable pageable) {
+        if (memberRepository.findById(memberNo).isEmpty()) {
+            throw new MemberNotFoundException();
+        }
+        if (orderRepository.findById(orderNo).isEmpty()) {
+            throw new OrderNotFoundException();
+        }
+
+        return orderRepository.findOrderDetails(memberNo, orderNo, pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberNotFoundException 회원이 존재하지않을경우 발생합니다.
+     */
+    @Override
+    public Page<OrderListResponseDto> findAllMemberOrders(Integer memberNo,
+                                                          Pageable pageable) {
+        if (memberRepository.findById(memberNo).isEmpty()) {
+            throw new MemberNotFoundException();
+        }
+
+        return orderRepository.findAllOrders(memberNo, pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberNotFoundException 회원이 존재하지않을경우 발생합니다.
+     */
+    @Override
+    public Page<OrderCancelResponseDto> findMemberCancelOrders(Integer memberNo,
+                                                               String statusName,
+                                                               Pageable pageable) {
+        if (memberRepository.findById(memberNo).isEmpty()) {
+            throw new MemberNotFoundException();
+        }
+
+        return orderRepository.findCancelOrders(memberNo, statusName, pageable);
     }
 }

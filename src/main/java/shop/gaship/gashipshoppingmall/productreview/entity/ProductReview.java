@@ -107,7 +107,7 @@ public class ProductReview {
      *
      * @param commonFile 추가할 파일 엔티티입니다.
      */
-    public void addProductReviewImage(CommonFile commonFile){
+    public void addProductReviewImage(CommonFile commonFile) {
         commonFile.updateCommonFile(orderProductNo, SERVICE);
         reviewImages.add(commonFile);
     }

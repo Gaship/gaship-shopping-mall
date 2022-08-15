@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +22,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "status_codes")
 @NoArgsConstructor
 @Getter
-@EqualsAndHashCode
 public class StatusCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

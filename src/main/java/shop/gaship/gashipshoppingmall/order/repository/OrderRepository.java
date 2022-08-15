@@ -9,5 +9,5 @@ import shop.gaship.gashipshoppingmall.order.entity.Order;
  * @author : 김세미
  * @since 1.0
  */
-public interface OrderRepository extends JpaRepository<Order, Integer> {
+public interface OrderRepository extends JpaRepository<Order, Integer>, OrderRepositoryCustom {
 }

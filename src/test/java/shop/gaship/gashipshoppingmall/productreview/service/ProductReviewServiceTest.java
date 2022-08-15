@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +48,6 @@ import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 import shop.gaship.gashipshoppingmall.productreview.exception.ProductReviewNotFoundException;
 import shop.gaship.gashipshoppingmall.productreview.repository.ProductReviewRepository;
 import shop.gaship.gashipshoppingmall.productreview.service.impl.ProductReviewServiceImpl;
-import shop.gaship.gashipshoppingmall.util.FileUploadUtil;
 
 /**
  * 상품평 서비스 테스트입니다.
@@ -78,9 +78,6 @@ class ProductReviewServiceTest {
 
     @MockBean
     CommonFileService fileService;
-
-    @MockBean
-    FileUploadUtil fileUploadUtil;
 
     ProductReview review;
     ProductReviewResponseDto responseDummy;
@@ -116,8 +113,8 @@ class ProductReviewServiceTest {
         when(orderProductRepository.findById(createRequest.getOrderProductNo()))
                 .thenReturn(Optional.of(orderProduct));
         when(fileService.createCommonFile(any())).thenReturn(new CommonFile());
-        when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
-                .thenReturn(List.of(multipartFile.getOriginalFilename()));
+//        when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
+//                .thenReturn(List.of(multipartFile.getOriginalFilename()));
         when(productReviewRepository.save(any(ProductReview.class)))
                 .thenReturn(review);
 
@@ -127,7 +124,7 @@ class ProductReviewServiceTest {
 
         verify(orderProductRepository).findById(createRequest.getOrderProductNo());
         verify(fileService).createCommonFile(any());
-        verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
+//        verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
         verify(productReviewRepository).save(any(ProductReview.class));
     }
 
@@ -151,16 +148,12 @@ class ProductReviewServiceTest {
         when(productReviewRepository.findById(modifyRequest.getOrderProductNo()))
                 .thenReturn(Optional.of(review));
         when(fileService.createCommonFile(any())).thenReturn(new CommonFile());
-        when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
-                .thenReturn(List.of(multipartFile.getOriginalFilename()));
-
         productReviewService.modifyProductReview(multipartFile, modifyRequest);
 
         assertProductReview(modifyRequest);
 
         verify(productReviewRepository).findById(modifyRequest.getOrderProductNo());
         verify(fileService).createCommonFile(any());
-        verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
     }
 
     @DisplayName("상품평 수정 실패 테스트 - 상품평을 찾을 수 없음")
@@ -209,19 +202,16 @@ class ProductReviewServiceTest {
     @Test
     void findReviewSuccess() {
         Integer orderProductNo = 1;
-        ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
-                .orderProductNo(orderProductNo)
-                .build();
 
         when(orderProductRepository.findById(orderProductNo)).thenReturn(Optional.of(orderProduct));
-        when(productReviewRepository.findProductReviews(viewRequest))
+        when(productReviewRepository.findProductReviews(any(ProductReviewViewRequestDto.class)))
                 .thenReturn(new PageImpl<>(List.of(responseDummy)));
 
         ProductReviewResponseDto responseDto = productReviewService.findReview(orderProductNo);
         assertProductReviewResponseDto(responseDto);
 
         verify(orderProductRepository).findById(orderProductNo);
-        verify(productReviewRepository).findProductReviews(viewRequest);
+        verify(productReviewRepository).findProductReviews(any(ProductReviewViewRequestDto.class));
     }
 
     @DisplayName("상품평 단건 조회 실패 테스트 - 주문상품이 없는 경우")
@@ -241,47 +231,38 @@ class ProductReviewServiceTest {
     @Test
     void findReviewFailure_notFoundProductReview() {
         Integer orderProductNo = 1;
-        ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
-                .orderProductNo(orderProductNo)
-                .build();
 
         when(orderProductRepository.findById(orderProductNo)).thenReturn(Optional.of(orderProduct));
-        when(productReviewRepository.findProductReviews(viewRequest))
+        when(productReviewRepository.findProductReviews(any(ProductReviewViewRequestDto.class)))
                 .thenReturn(new PageImpl<>(List.of()));
 
         assertThatThrownBy(() -> productReviewService.findReview(orderProductNo))
                 .isInstanceOf(ProductReviewNotFoundException.class);
 
         verify(orderProductRepository).findById(orderProductNo);
-        verify(productReviewRepository).findProductReviews(viewRequest);
+        verify(productReviewRepository).findProductReviews(any(ProductReviewViewRequestDto.class));
     }
 
     @DisplayName("상품평 전체 조회 성공 테스트")
     @Test
     void findReviewsTestSuccess() {
-        ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
-                .build();
-
-        when(productReviewRepository.findProductReviews(viewRequest))
+        when(productReviewRepository.findProductReviews(any(ProductReviewViewRequestDto.class)))
                 .thenReturn(new PageImpl<>(List.of(responseDummy)));
 
         Page<ProductReviewResponseDto> responseDtos = productReviewService.findReviews(pageable);
         assertThat(responseDtos).hasSize(1);
         assertProductReviewResponseDto(responseDtos.getContent().get(0));
 
-        verify(productReviewRepository).findProductReviews(viewRequest);
+        verify(productReviewRepository).findProductReviews(any(ProductReviewViewRequestDto.class));
     }
 
     @DisplayName("상품번호로 상품평 조회 성공 테스트")
     @Test
     void findReviewsByProductNoSuccess() {
         Integer productNo = 1;
-        ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
-                .productNo(productNo)
-                .build();
 
         when(productRepository.findById(productNo)).thenReturn(Optional.of(ProductDummy.dummy()));
-        when(productReviewRepository.findProductReviews(viewRequest))
+        when(productReviewRepository.findProductReviews(any(ProductReviewViewRequestDto.class)))
                 .thenReturn(new PageImpl<>(List.of(responseDummy)));
 
         Page<ProductReviewResponseDto> responseDtos = productReviewService.findReviewsByProductNo(productNo, pageable);
@@ -289,7 +270,7 @@ class ProductReviewServiceTest {
         assertProductReviewResponseDto(responseDtos.getContent().get(0));
 
         verify(productRepository).findById(productNo);
-        verify(productReviewRepository).findProductReviews(viewRequest);
+        verify(productReviewRepository).findProductReviews(any(ProductReviewViewRequestDto.class));
     }
 
     @DisplayName("상품번호로 상품평 조회 실패 테스트")
@@ -309,12 +290,9 @@ class ProductReviewServiceTest {
     @Test
     void findReviewsByMemberNoSuccess() {
         Integer memberNo = 1;
-        ProductReviewViewRequestDto viewRequest = ProductReviewViewRequestDto.builder()
-                .memberNo(memberNo)
-                .build();
 
         when(memberRepository.findById(memberNo)).thenReturn(Optional.of(MemberDummy.dummy()));
-        when(productReviewRepository.findProductReviews(viewRequest))
+        when(productReviewRepository.findProductReviews(any(ProductReviewViewRequestDto.class)))
                 .thenReturn(new PageImpl<>(List.of(responseDummy)));
 
         Page<ProductReviewResponseDto> responseDtos = productReviewService.findReviewsByMemberNo(memberNo, pageable);
@@ -322,7 +300,7 @@ class ProductReviewServiceTest {
         assertProductReviewResponseDto(responseDtos.getContent().get(0));
 
         verify(memberRepository).findById(memberNo);
-        verify(productReviewRepository).findProductReviews(viewRequest);
+        verify(productReviewRepository).findProductReviews(any(ProductReviewViewRequestDto.class));
     }
 
     @DisplayName("회원번호로 상품평 조회 실패 테스트")

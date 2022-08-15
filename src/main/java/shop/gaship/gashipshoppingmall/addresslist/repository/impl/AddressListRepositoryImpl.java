@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.addresslist.repository.Impl;
+package shop.gaship.gashipshoppingmall.addresslist.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import java.util.List;
@@ -12,6 +12,7 @@ import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
 import shop.gaship.gashipshoppingmall.addresslist.entity.QAddressList;
 import shop.gaship.gashipshoppingmall.addresslist.repository.AddressListRepositoryCustom;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.QAddressLocal;
+import shop.gaship.gashipshoppingmall.member.entity.QMember;
 import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.status.AddressStatus;
 
@@ -35,20 +36,22 @@ public class AddressListRepositoryImpl
         QAddressList addressList = QAddressList.addressList;
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
         QStatusCode statusCode = QStatusCode.statusCode;
+        QMember member = QMember.member;
         List<AddressListResponseDto> content =
                 from(addressList)
                         .innerJoin(addressList.addressLocal, addressLocal)
                         .innerJoin(addressList.statusCode, statusCode)
-                        .where(addressList.member.memberNo.eq(memberNo),
-                                addressList.statusCode.statusCodeName
-                                        .eq(AddressStatus.USE.getValue()))
+                        .innerJoin(addressList.member, member)
+                        .where(addressList.statusCode.statusCodeName
+                                .eq(AddressStatus.USE.getValue())
+                                .and(addressList.member.memberNo.eq(memberNo)))
                         .limit(Math.min(pageable.getPageSize(), 10))
                         .offset(pageable.getOffset())
                         .orderBy(addressList.addressListsNo.desc())
                         .select(Projections.constructor(AddressListResponseDto.class,
-                                addressList.addressListsNo,
-                                addressLocal.addressName,
-                                addressLocal.allowDelivery,
+                                addressList.addressListsNo.as("addressListNo"),
+                                addressList.addressLocal.addressName,
+                                addressList.addressLocal.allowDelivery,
                                 addressList.address,
                                 addressList.addressDetail,
                                 addressList.zipCode))

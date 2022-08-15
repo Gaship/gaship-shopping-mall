@@ -36,6 +36,13 @@ public class RepairSchedule {
     @ManyToOne(fetch = FetchType.LAZY)
     private DayLabor dayLabor;
 
+    /**
+     * 직원 스케줄 생성자 입니다.
+     *
+     * @param pk       엔티티 pk 객체
+     * @param labor    물량
+     * @param dayLabor 지역 일일 물량
+     */
     @Builder
     public RepairSchedule(RepairSchedulePk pk, Integer labor, DayLabor dayLabor) {
         this.pk = pk;

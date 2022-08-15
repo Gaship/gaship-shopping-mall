@@ -6,7 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListAddRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListModifyRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListResponseDto;
@@ -21,6 +28,7 @@ import shop.gaship.gashipshoppingmall.response.PageResponse;
  */
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(("/api/members/{memberId}/addressLists"))
 public class AddressListController {
     private final AddressListService addressListService;
 
@@ -31,9 +39,9 @@ public class AddressListController {
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
      * @author 최정우
      */
-    @PostMapping("/api/members/{memberId}/addressLists")
+    @PostMapping
     public ResponseEntity<Void> addressListAdd(
-            @Valid @RequestBody AddressListAddRequestDto request) {
+            @RequestBody @Valid AddressListAddRequestDto request) {
         addressListService.addAddressList(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
@@ -49,11 +57,10 @@ public class AddressListController {
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
      * @author 최정우
      */
-    @PutMapping("/api/members/{memberId}/addressLists/{addressListNo}")
-    public ResponseEntity<Void> addressListModify(
-            @Valid @RequestBody AddressListModifyRequestDto request) {
-        addressListService.modifyAddressList(request);
-        addressListService.addAddressList(request);
+    @PutMapping("/{addressListNo}")
+    public ResponseEntity<Void> addressListModifyAndAdd(
+            @RequestBody @Valid AddressListModifyRequestDto request) {
+        addressListService.modifyAndAddAddressList(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
                 .build();
@@ -65,7 +72,7 @@ public class AddressListController {
      * @param addressListId 배송지목록의 상태를 delete 로 만들 id 값입니다.
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 OK.
      */
-    @DeleteMapping("/api/members/{memberId}/addressLists/{addressListId}")
+    @DeleteMapping("/{addressListId}")
     public ResponseEntity<Void> addressListRemove(@PathVariable Integer addressListId) {
         addressListService.removeAddressList(addressListId);
 
@@ -78,7 +85,7 @@ public class AddressListController {
      * @param addressListId 배송지목록 중 조회하길 원하는 id 값입니다.
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 OK.
      */
-    @GetMapping("/api/members/{memberId}/addressLists/{addressListId}")
+    @GetMapping("/{addressListId}")
     public ResponseEntity<AddressListResponseDto> addressListDetails(
             @PathVariable Integer addressListId) {
         AddressListResponseDto addressListResponseDto =
@@ -94,7 +101,7 @@ public class AddressListController {
      * @param pageable 배송지목록 중 조회하길 원하는 페이지의 정보를 담고있는 매개변수입니다.
      * @return responseEntity body 는 조회하길 원하는 배송지목록 페이지정보를 담고있는 dto, 응답 status 는 OK.
      */
-    @GetMapping("/api/members/{memberId}/addressLists")
+    @GetMapping
     public ResponseEntity<PageResponse<AddressListResponseDto>> addressListList(
             @PathVariable Integer memberId, Pageable pageable) {
         PageResponse<AddressListResponseDto> pageResponse =
