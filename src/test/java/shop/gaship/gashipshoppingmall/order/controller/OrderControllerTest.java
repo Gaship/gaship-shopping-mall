@@ -1,24 +1,13 @@
 package shop.gaship.gashipshoppingmall.order.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -30,10 +19,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
+import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderListResponseDto;
-import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
@@ -41,13 +30,17 @@ import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationF
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
+import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,9 +55,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OrderControllerTest {
     @Autowired
     MockMvc mockMvc;
+    @Autowired
+    ObjectMapper objectMapper;
 
     @MockBean
+    private OrderProductService orderProductService;
+    @MockBean
     private OrderService orderService;
+
+    private final PageRequest pageRequest = PageRequest.of(0, 10);
 
     @Test
     void doOrder() throws Exception {
@@ -91,7 +90,7 @@ class OrderControllerTest {
         mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-            .content(content))
+                .content(content))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.amount").value(orderResponse.getAmount()))
             .andExpect(jsonPath("$.orderId").value(orderResponse.getOrderId()))
@@ -208,7 +207,7 @@ class OrderControllerTest {
                         value,
                         10000L))
                 .collect(Collectors.toUnmodifiableList()),
-                "단순 변심으로 인한 주문 취소"
+            "단순 변심으로 인한 주문 취소"
         );
 
         willDoNothing()
@@ -226,7 +225,7 @@ class OrderControllerTest {
     @Test
     void orderChangeProduct() throws Exception {
         OrderProductStatusChangeDto orderProductStatusChangeDto = new OrderProductStatusChangeDto();
-        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1,2,3,4,5));
+        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1, 2, 3, 4, 5));
 
         willDoNothing()
             .given(orderProductService)
@@ -244,7 +243,7 @@ class OrderControllerTest {
     void orderRestoreProduct() throws Exception {
         OrderProductCancellationFailDto orderProductCancellationFailDto = new OrderProductCancellationFailDto();
         ReflectionTestUtils.setField(orderProductCancellationFailDto, "paymentCancelHistoryNo", 1);
-        ReflectionTestUtils.setField(orderProductCancellationFailDto, "restoreOrderProductNos", List.of(1,2,3,4,5));
+        ReflectionTestUtils.setField(orderProductCancellationFailDto, "restoreOrderProductNos", List.of(1, 2, 3, 4, 5));
 
         willDoNothing()
             .given(orderProductService)
