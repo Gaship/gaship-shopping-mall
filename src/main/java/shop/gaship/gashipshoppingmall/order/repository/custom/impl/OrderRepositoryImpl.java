@@ -31,6 +31,9 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<OrderDetailResponseDto> findOrderDetails(Integer memberNo,
                                                          Integer orderNo,
@@ -72,6 +75,9 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<OrderListResponseDto> findAllOrders(Integer memberNo, Pageable pageable) {
         //내 order_no, 주소지(address_list), 주문일자, 실수령자명, 실주령자 전화번호, 배송요청사항(delivery request)
@@ -98,6 +104,9 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport
         return PageableExecutionUtils.getPage(content, pageable, content::size);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<OrderCancelResponseDto> findCancelOrders(Integer memberNo,
                                                          String statusName,

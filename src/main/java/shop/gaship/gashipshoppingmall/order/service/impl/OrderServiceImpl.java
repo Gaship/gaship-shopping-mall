@@ -91,6 +91,12 @@ public class OrderServiceImpl implements OrderService {
         );
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberNotFoundException 회원이 존재하지않을경우 발생합니다.
+     * @throws OrderNotFoundException  요청 주문번호가 없을경우 발생합니다.
+     */
     @Override
     public Page<OrderDetailResponseDto> findOrderDetails(Integer memberNo,
                                                          Integer orderNo,
@@ -105,6 +111,11 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findOrderDetails(memberNo, orderNo, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberNotFoundException 회원이 존재하지않을경우 발생합니다.
+     */
     @Override
     public Page<OrderListResponseDto> findAllOrders(Integer memberNo,
                                                     Pageable pageable) {
@@ -115,6 +126,11 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAllOrders(memberNo, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws MemberNotFoundException 회원이 존재하지않을경우 발생합니다.
+     */
     @Override
     public Page<OrderCancelResponseDto> findCancelOrders(Integer memberNo,
                                                          String statusName,
