@@ -13,7 +13,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.adapter.OrderProductAdapter;
  */
 @Component
 @RequiredArgsConstructor
-public class CouponUseCancelEventHandler {
+public class CouponUseCanceledEventHandler {
     private final OrderProductAdapter orderProductAdapter;
 
 
@@ -23,7 +23,7 @@ public class CouponUseCancelEventHandler {
      * @param event 쿠폰 사용이벤트입니다.
      */
     @TransactionalEventListener
-    public void handle(CouponUseCancelEvent event) {
+    public void handle(CouponUseCanceledEvent event) {
         orderProductAdapter.useCancelCouponRequest(event.getCouponNos());
     }
 }

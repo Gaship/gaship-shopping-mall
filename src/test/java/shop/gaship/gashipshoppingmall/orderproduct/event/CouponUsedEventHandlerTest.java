@@ -2,7 +2,6 @@ package shop.gaship.gashipshoppingmall.orderproduct.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
@@ -23,10 +22,10 @@ import shop.gaship.gashipshoppingmall.orderproduct.adapter.OrderProductAdapter;
  * @since 1.0
  */
 @ExtendWith(SpringExtension.class)
-@Import(CouponUseEventHandler.class)
-class CouponUseEventHandlerTest {
+@Import(CouponUsedEventHandler.class)
+class CouponUsedEventHandlerTest {
     @Autowired
-    private CouponUseEventHandler couponUseEventHandler;
+    private CouponUsedEventHandler couponUsedEventHandler;
 
     @MockBean
     private OrderProductAdapter orderProductAdapter;
@@ -37,7 +36,7 @@ class CouponUseEventHandlerTest {
             .given(orderProductAdapter)
             .useCouponRequest(anyList());
 
-        couponUseEventHandler.handle(new CouponUseEvent(List.of(1)));
+        couponUsedEventHandler.handle(new CouponUsedEvent(List.of(1)));
 
         then(orderProductAdapter)
             .should(times(1))

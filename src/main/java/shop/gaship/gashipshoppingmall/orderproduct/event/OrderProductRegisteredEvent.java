@@ -14,7 +14,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
  */
 @Getter
 @AllArgsConstructor
-public class OrderProductRegisterEvent {
+public class OrderProductRegisteredEvent {
     private Order order;
     private List<OrderProductSpecificDto> orderProducts;
 }

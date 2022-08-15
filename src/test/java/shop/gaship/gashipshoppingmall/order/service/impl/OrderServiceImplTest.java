@@ -3,13 +3,11 @@ package shop.gaship.gashipshoppingmall.order.service.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -33,11 +30,9 @@ import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
 import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
-import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisterEvent;
-import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisterEventHandler;
-import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
+import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEvent;
+import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEventHandler;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
-import shop.gaship.gashipshoppingmall.product.event.ProductSaveUpdateEvent;
 
 /**
  * 설명작성란
@@ -55,7 +50,7 @@ class OrderServiceImplTest {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @MockBean
-    private OrderProductRegisterEventHandler handler;
+    private OrderProductRegisteredEventHandler handler;
 
     @MockBean
     private OrderRepository orderRepository;
@@ -77,9 +72,9 @@ class OrderServiceImplTest {
         given(memberRepository.findById(anyInt())).willReturn(Optional.of(MemberDummy.dummy()));
         given(orderRepository.save(any(Order.class))).willReturn(orderDummy);
         willDoNothing().given(applicationEventPublisher)
-            .publishEvent(any(OrderProductRegisterEvent.class));
+            .publishEvent(any(OrderProductRegisteredEvent.class));
         willDoNothing().given(handler)
-                .saveOrderProduct(any(OrderProductRegisterEvent.class));
+                .saveOrderProduct(any(OrderProductRegisteredEvent.class));
 
         orderService.insertOrder(orderRequestDtoDummy);
 
