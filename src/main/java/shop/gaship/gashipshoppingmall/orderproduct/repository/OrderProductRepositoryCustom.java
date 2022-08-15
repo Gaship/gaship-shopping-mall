@@ -1,7 +1,9 @@
 package shop.gaship.gashipshoppingmall.orderproduct.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.gaship.gashipshoppingmall.delivery.dto.DeliveryDto;
 import shop.gaship.gashipshoppingmall.totalsale.dto.request.TotalSaleRequestDto;
 import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDto;
 
@@ -16,4 +18,6 @@ import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDt
 public interface OrderProductRepositoryCustom {
 
     List<TotalSaleResponseDto> findTotalSale(TotalSaleRequestDto dto);
+
+    Optional<DeliveryDto> findOrderInfo(Integer orderProductNo);
 }
