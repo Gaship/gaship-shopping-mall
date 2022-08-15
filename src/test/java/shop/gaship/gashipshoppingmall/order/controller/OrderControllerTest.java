@@ -1,10 +1,12 @@
 package shop.gaship.gashipshoppingmall.order.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,6 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,10 +24,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
+import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
+import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
 
 /**
  * 설명작성란
@@ -38,6 +47,9 @@ class OrderControllerTest {
 
     @MockBean
     private OrderService orderService;
+
+    @MockBean
+    private OrderProductService orderProductService;
 
     @Test
     void doOrder() throws Exception {
@@ -70,6 +82,82 @@ class OrderControllerTest {
             .andExpect(jsonPath("$.orderId").value(orderResponse.getOrderId()))
             .andExpect(jsonPath("$.orderName").value(orderResponse.getOrderName()))
             .andExpect(jsonPath("$.customerName").value(orderResponse.getCustomerName()))
+            .andDo(print());
+    }
+
+    @Test
+    void orderSuccess() throws Exception {
+        OrderSuccessDto orderSuccessDto = new OrderSuccessDto();
+        ReflectionTestUtils.setField(orderSuccessDto, "orderNo", 1);
+        ReflectionTestUtils.setField(orderSuccessDto, "paymentKey", "1234");
+
+        willDoNothing()
+            .given(orderService)
+            .orderPaymentsSuccess(anyInt(), anyString());
+
+        mockMvc.perform(put("/api/orders/success")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(orderSuccessDto)))
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @Test
+    void orderCancelRefundProduct() throws Exception {
+        OrderProductStatusCancelDto orderProductStatusCancelDto = new OrderProductStatusCancelDto(
+            1,
+            IntStream.range(0, 5).mapToObj(value ->
+                    new OrderProductStatusCancelDto.CancelOrderInfo(
+                        value,
+                        10000L,
+                        "배송준비중"))
+                .collect(Collectors.toUnmodifiableList()));
+
+        willDoNothing()
+            .given(orderProductService)
+            .updateOrderProductStatusToCancel(any(OrderProductStatusCancelDto.class));
+
+        mockMvc.perform(put("/api/orders/cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(orderProductStatusCancelDto)))
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @Test
+    void orderChangeProduct() throws Exception {
+        OrderProductStatusChangeDto orderProductStatusChangeDto = new OrderProductStatusChangeDto();
+        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1,2,3,4,5));
+
+        willDoNothing()
+            .given(orderProductService)
+            .updateOrderProductStatusToChange(any(OrderProductStatusChangeDto.class));
+
+        mockMvc.perform(put("/api/orders/change")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(orderProductStatusChangeDto)))
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @Test
+    void orderRestoreProduct() throws Exception {
+        OrderProductCancellationFailDto orderProductCancellationFailDto = new OrderProductCancellationFailDto();
+        ReflectionTestUtils.setField(orderProductCancellationFailDto, "paymentCancelHistoryNo", 1);
+        ReflectionTestUtils.setField(orderProductCancellationFailDto, "restoreOrderProductNos", List.of(1,2,3,4,5));
+
+        willDoNothing()
+            .given(orderProductService)
+            .updateOrderProductStatusToChange(any(OrderProductStatusChangeDto.class));
+
+        mockMvc.perform(put("/api/orders/restore")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(orderProductCancellationFailDto)))
+            .andExpect(status().isOk())
             .andDo(print());
     }
 }

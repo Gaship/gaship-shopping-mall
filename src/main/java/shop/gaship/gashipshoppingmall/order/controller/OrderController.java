@@ -88,7 +88,8 @@ public class OrderController {
     public ResponseEntity<Void> orderChangeProduct(
         OrderProductStatusChangeDto orderProductStatusChangeDto) {
         orderProductService.updateOrderProductStatusToChange(orderProductStatusChangeDto);
-        return null;
+
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -102,7 +103,8 @@ public class OrderController {
     public ResponseEntity<Void> orderRestoreProduct(
         OrderProductCancellationFailDto orderProductCancellationFailDto) {
         orderProductService.restoreOrderProduct(orderProductCancellationFailDto);
-        return null;
+
+        return ResponseEntity.ok().build();
     }
 
 }
