@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.repairschedule.repository;
 
 import java.time.LocalDate;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalReposi
 import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
+import shop.gaship.gashipshoppingmall.repairschedule.dto.request.RepairScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dummy.RepairScheduleDummy;
 import shop.gaship.gashipshoppingmall.repairschedule.entity.RepairSchedule;
@@ -57,7 +57,7 @@ class RepairScheduleRepositoryTest {
         addressLocalRepository.save(upper);
         dayLaborRepository.save(labor);
         repository.save(repairSchedule);
-        RepairSchedule schedule = repository.findById(pk).get();
+        RepairSchedule schedule = repository.findById(pk).orElse(new RepairSchedule());
 
         assertThat(schedule.getDayLabor()).isEqualTo(repairSchedule.getDayLabor());
         assertThat(schedule.getLabor()).isEqualTo(repairSchedule.getLabor());
@@ -97,9 +97,10 @@ class RepairScheduleRepositoryTest {
         repository.save(r1);
         repository.save(r2);
         //then
-        List<GetRepairScheduleResponseDto> allByDate = repository.findAllByDate(now);
+        RepairScheduleRequestDto dto = new RepairScheduleRequestDto(now.minusDays(2), now.plusDays(2));
+        Page<GetRepairScheduleResponseDto> result = repository.findAllByDate(dto, PageRequest.of(0, 10));
 
-        assertThat(allByDate.get(0).getLocalDate()).isEqualTo(now);
+        assertThat(result.getContent().get(0).getLocalDate()).isEqualTo(now);
 
     }
 
@@ -162,7 +163,7 @@ class RepairScheduleRepositoryTest {
 
         //then
         RepairSchedule result = repository.findByPk(
-            r1.pk.getAddressNo(), r1.pk.getDate()).get();
+            r1.pk.getAddressNo(), r1.pk.getDate()).orElse(new RepairSchedule());
 
         assertThat(result.getDayLabor()).isEqualTo(d1);
 

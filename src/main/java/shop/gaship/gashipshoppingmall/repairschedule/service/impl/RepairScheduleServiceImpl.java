@@ -6,13 +6,14 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.exception.NotExistDayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.ModifyScheduleRequestDto;
+import shop.gaship.gashipshoppingmall.repairschedule.dto.request.RepairScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairschedule.entity.RepairSchedule;
 import shop.gaship.gashipshoppingmall.repairschedule.entity.pk.RepairSchedulePk;
@@ -28,6 +29,7 @@ import shop.gaship.gashipshoppingmall.repairschedule.service.RepairScheduleServi
  * @author : 김민수
  * @since 1.0
  */
+
 @Service
 @RequiredArgsConstructor
 public class RepairScheduleServiceImpl implements RepairScheduleService {
@@ -75,15 +77,24 @@ public class RepairScheduleServiceImpl implements RepairScheduleService {
         repairSchedule.fixLabor(modify.getLabor());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     */
     @Override
-    public List<GetRepairScheduleResponseDto> findSchedulesByDate(LocalDate now) {
-        return repository.findAllByDate(now);
+    public Page<GetRepairScheduleResponseDto> findSchedulesByDate(
+        RepairScheduleRequestDto dto, Pageable pageable) {
+        return repository.findAllByDate(dto, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     */
     @Override
-    public Page<GetRepairScheduleResponseDto> findRepairSchedules(int page, int size) {
+    public Page<GetRepairScheduleResponseDto> findRepairSchedules(Pageable pageable) {
 
-        return repository.findAllSortDate(PageRequest.of(page, size));
+        return repository.findAllSortDate(pageable);
     }
 
     /**

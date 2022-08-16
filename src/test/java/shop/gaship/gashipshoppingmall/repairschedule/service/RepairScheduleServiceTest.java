@@ -24,6 +24,7 @@ import shop.gaship.gashipshoppingmall.daylabor.exception.NotExistDayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.ModifyScheduleRequestDto;
+import shop.gaship.gashipshoppingmall.repairschedule.dto.request.RepairScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dummy.CreateScheduleRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.repairschedule.dummy.GetRepairScheduleResponseDtoDummy;
@@ -170,19 +171,21 @@ class RepairScheduleServiceTest {
     void searchSchedule_date() {
         //given
         LocalDate now = LocalDate.now();
-
-        given(repository.findAllByDate(now))
-            .willReturn(list);
+        PageRequest page = PageRequest.of(1, 10);
+        RepairScheduleRequestDto requestDto = new RepairScheduleRequestDto(now, now.plusDays(2));
+        PageImpl<GetRepairScheduleResponseDto> result = new PageImpl<>(list, page, list.size());
+        given(repository.findAllByDate(requestDto, page))
+            .willReturn(result);
 
         //when
-        List<GetRepairScheduleResponseDto> test = service.findSchedulesByDate(now);
+        Page<GetRepairScheduleResponseDto> test = service.findSchedulesByDate(requestDto, page);
 
         //then
         verify(repository, times(1))
-            .findAllByDate(now);
+            .findAllByDate(requestDto, page);
 
-        assertThat(test.get(0)).isEqualTo(responseDto1);
-        assertThat(test.get(1)).isEqualTo(responseDto2);
+        assertThat(test.getContent().get(0)).isEqualTo(responseDto1);
+        assertThat(test.getContent().get(1)).isEqualTo(responseDto2);
     }
 
     @DisplayName("스케줄 일자별 조회 page")
@@ -197,7 +200,7 @@ class RepairScheduleServiceTest {
             .willReturn(pages);
 
         //when
-        Page<GetRepairScheduleResponseDto> test = service.findRepairSchedules(req.getPageNumber(), req.getPageSize());
+        Page<GetRepairScheduleResponseDto> test = service.findRepairSchedules(req);
 
         //then
         assertThat(test.getSize()).isEqualTo(pages.getSize());

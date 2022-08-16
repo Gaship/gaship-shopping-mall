@@ -1,10 +1,10 @@
 package shop.gaship.gashipshoppingmall.repairschedule.service;
 
-import java.time.LocalDate;
-import java.util.List;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.ModifyScheduleRequestDto;
+import shop.gaship.gashipshoppingmall.repairschedule.dto.request.RepairScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.response.GetRepairScheduleResponseDto;
 
 /**
@@ -34,21 +34,21 @@ public interface RepairScheduleService {
     /**
      * 날짜를 통해 스케줄들을 조회하기위한 메서드입니다.
      *
-     * @param now 조회할 일자가 입력됩니다.
+     * @param dto 조회할 일자가 입력됩니다.
      * @return list 조회된 스케줄정보들이 반환됩니다.
      * @author 유호철
      */
-    List<GetRepairScheduleResponseDto> findSchedulesByDate(LocalDate now);
+    Page<GetRepairScheduleResponseDto> findSchedulesByDate(
+        RepairScheduleRequestDto dto, Pageable pageable);
 
     /**
      * 페이징처리를 위한 스케줄정보가 담겨있습니다.
      *
-     * @param size 페이지사이즈 정보가 담겨있습니다.
-     * @param page 페이지정보가 담겨있습니다.
+     * @param pageable 요청 페이지 정보가들어갑니다.
      * @return page 페이지정보가 담긴 수리스케줄이 반환됩니다.
      * @author 유호철
      */
-    Page<GetRepairScheduleResponseDto> findRepairSchedules(int page, int size);
+    Page<GetRepairScheduleResponseDto> findRepairSchedules(Pageable pageable);
 
     /**
      * 매일 일일 수리 설치 분량을 채우기위한 메서드입니다.

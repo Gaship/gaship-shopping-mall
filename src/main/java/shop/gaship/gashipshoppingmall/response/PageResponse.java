@@ -59,7 +59,7 @@ public class PageResponse<T> {
         //temp end page
         int tempEnd = (int) (Math.ceil(Math.max(page, 1) / 10.0)) * 10;
 
-        start = tempEnd - 9;
+        start = tempEnd - 9; // 마이너스 페이지로 변환
 
         prev = start > 1;
 

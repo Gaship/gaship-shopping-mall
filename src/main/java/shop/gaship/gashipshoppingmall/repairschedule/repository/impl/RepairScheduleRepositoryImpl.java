@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.repairschedule.repository.impl;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -11,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.daylabor.entity.QDayLabor;
+import shop.gaship.gashipshoppingmall.repairschedule.dto.request.RepairScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairschedule.entity.QRepairSchedule;
 import shop.gaship.gashipshoppingmall.repairschedule.entity.RepairSchedule;
@@ -35,20 +35,23 @@ public class RepairScheduleRepositoryImpl extends QuerydslRepositorySupport impl
     /**
      * 날짜를 통해 스케줄정보를 얻는 메소드입니다.
      *
-     * @param date 입력될 날짜정보입니다.
+     * @param pageable 페이지 정보가 기입됩니다.
+     * @param dto      입력될 날짜정보입니다.
      * @return list 날짜정보를 통해 수리스케줄들이 반한됩니다.
      * @author 유호철
      */
     @Override
-    public List<GetRepairScheduleResponseDto> findAllByDate(LocalDate date) {
+    public Page<GetRepairScheduleResponseDto> findAllByDate(
+        RepairScheduleRequestDto dto, Pageable pageable) {
         QRepairSchedule repairSchedule = QRepairSchedule.repairSchedule;
         QDayLabor dayLabor = QDayLabor.dayLabor;
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
 
-        return from(repairSchedule)
+        QueryResults<GetRepairScheduleResponseDto> result = from(repairSchedule)
             .leftJoin(repairSchedule.dayLabor, dayLabor)
             .innerJoin(dayLabor.addressLocal, addressLocal)
-            .where(repairSchedule.pk.date.eq(date))
+            .where(repairSchedule.pk.date
+                .between(dto.getStartDate(), dto.getEndDate()))
             .select(
                 Projections.bean(GetRepairScheduleResponseDto.class,
                     addressLocal.addressName.as("localName"),
@@ -56,7 +59,12 @@ public class RepairScheduleRepositoryImpl extends QuerydslRepositorySupport impl
                     repairSchedule.labor.as("labor")
                 )
             )
-            .fetch();
+            .orderBy(repairSchedule.pk.date.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetchResults();
+
+        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
     }
 
     /**
