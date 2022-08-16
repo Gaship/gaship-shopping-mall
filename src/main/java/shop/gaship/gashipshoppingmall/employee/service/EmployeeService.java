@@ -60,4 +60,20 @@ public interface EmployeeService {
 
     Page<InstallOrderResponseDto> findInstallOrdersFromEmployeeLocation(Pageable pageable,
                                                                         Integer employeeNo);
+
+    /**
+     * 주문의 설치 배송요청을 받아들입니다.
+     *
+     * @param employeeNo 직원 고유번호입니다.
+     * @param orderNo 요청을 받을 주문 고유번호입니다.
+     */
+    void acceptInstallOrder(Integer employeeNo, Integer orderNo);
+
+    /**
+     * 시공배송이 끝난 후 배송완료 요청을 받습니다.
+     *
+     * @param employeeNo 직원 고유번호입니다.
+     * @param orderNo 배송완료 요청을 받을 주문 고유번호입니다.
+     */
+    void completeDelivery(Integer employeeNo, Integer orderNo);
 }

@@ -36,10 +36,10 @@ import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelD
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
-import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCancelEvent;
-import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCancelEventHandler;
-import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseEvent;
-import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseEventHandler;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEvent;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEventHandler;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEvent;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEventHandler;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.InvalidOrderCancellationHistoryNo;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.service.impl.OrderProductServiceImpl;
@@ -72,10 +72,10 @@ class OrderProductServiceTest {
     private OrderProductRepository orderProductRepository;
 
     @MockBean
-    private CouponUseEventHandler couponUseEventHandler;
+    private CouponUsedEventHandler couponUsedEventHandler;
 
     @MockBean
-    private CouponUseCancelEventHandler couponUseCancelEventHandler;
+    private CouponUseCanceledEventHandler couponUseCanceledEventHandler;
 
 
     @Test
@@ -115,9 +115,9 @@ class OrderProductServiceTest {
             .should(times(1))
             .saveAll(anyList());
 
-        then(couponUseEventHandler)
+        then(couponUsedEventHandler)
             .should(never())
-            .handle(any(CouponUseEvent.class));
+            .handle(any(CouponUsedEvent.class));
 
         assertThat(order.getTotalOrderAmount()).isEqualTo(1000000L);
     }
@@ -146,7 +146,7 @@ class OrderProductServiceTest {
                 .mapToObj(value -> OrderProductDummy.dummy())
                 .collect(Collectors.toUnmodifiableList()));
 
-        doNothing().when(couponUseEventHandler).handle(any(CouponUseEvent.class));
+        doNothing().when(couponUsedEventHandler).handle(any(CouponUsedEvent.class));
 
         orderProductService.registerOrderProduct(order, orderProductSpecifics);
 
@@ -162,9 +162,9 @@ class OrderProductServiceTest {
             .should(times(1))
             .saveAll(anyList());
 
-        then(couponUseEventHandler)
+        then(couponUsedEventHandler)
             .should(times(1))
-            .handle(any(CouponUseEvent.class));
+            .handle(any(CouponUsedEvent.class));
 
         assertThat(order.getTotalOrderAmount()).isEqualTo(1000000L);
     }
@@ -205,7 +205,7 @@ class OrderProductServiceTest {
                 .mapToObj(value -> OrderProductDummy.dummy())
                 .collect(Collectors.toUnmodifiableList()));
 
-        doNothing().when(couponUseCancelEventHandler).handle(any(CouponUseCancelEvent.class));
+        doNothing().when(couponUseCanceledEventHandler).handle(any(CouponUseCanceledEvent.class));
 
         orderProductService.updateOrderProductStatusToCancel(orderProductStatusCancelDto);
 
@@ -217,9 +217,9 @@ class OrderProductServiceTest {
             .should(times(1))
             .findByStatusCodeName(any());
 
-        then(couponUseCancelEventHandler)
+        then(couponUseCanceledEventHandler)
             .should(times(1))
-            .handle(any(CouponUseCancelEvent.class));
+            .handle(any(CouponUseCanceledEvent.class));
     }
 
     @Test
@@ -408,7 +408,7 @@ class OrderProductServiceTest {
                 .explanation("")
                 .build()));
 
-        willDoNothing().given(couponUseEventHandler).handle(any(CouponUseEvent.class));
+        willDoNothing().given(couponUsedEventHandler).handle(any(CouponUsedEvent.class));
 
         orderProductService.restoreOrderProduct(orderProductCancellationFailDto);
 
@@ -420,9 +420,9 @@ class OrderProductServiceTest {
             .should(times(1))
             .findByStatusCodeName(OrderStatus.DELIVERY_PREPARING.getValue());
 
-        then(couponUseEventHandler)
+        then(couponUsedEventHandler)
             .should(times(1))
-            .handle(any(CouponUseEvent.class));
+            .handle(any(CouponUsedEvent.class));
     }
 
     @Test
@@ -455,7 +455,7 @@ class OrderProductServiceTest {
                 .explanation("")
                 .build()));
 
-        willDoNothing().given(couponUseEventHandler).handle(any(CouponUseEvent.class));
+        willDoNothing().given(couponUsedEventHandler).handle(any(CouponUsedEvent.class));
 
         assertThatThrownBy(() ->
             orderProductService.restoreOrderProduct(orderProductCancellationFailDto))
@@ -483,7 +483,7 @@ class OrderProductServiceTest {
                 .explanation("")
                 .build()));
 
-        willDoNothing().given(couponUseEventHandler).handle(any(CouponUseEvent.class));
+        willDoNothing().given(couponUsedEventHandler).handle(any(CouponUsedEvent.class));
 
         assertThatThrownBy(() ->
             orderProductService.restoreOrderProduct(orderProductCancellationFailDto))

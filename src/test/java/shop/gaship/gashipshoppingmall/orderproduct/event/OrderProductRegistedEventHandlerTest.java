@@ -27,10 +27,10 @@ import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
  * @since 1.0
  */
 @ExtendWith(SpringExtension.class)
-@Import(OrderProductRegisterEventHandler.class)
-class OrderProductRegisterEventHandlerTest {
+@Import(OrderProductRegisteredEventHandler.class)
+class OrderProductRegistedEventHandlerTest {
     @Autowired
-    private OrderProductRegisterEventHandler orderProductRegisterEventHandler;
+    private OrderProductRegisteredEventHandler orderProductRegisteredEventHandler;
 
     @MockBean
     private OrderProductService orderProductService;
@@ -50,14 +50,14 @@ class OrderProductRegisterEventHandlerTest {
             .mapToObj(value -> orderProductSpecificDto)
             .collect(Collectors.toUnmodifiableList());
 
-        OrderProductRegisterEvent event =
-            new OrderProductRegisterEvent(orderDummy, orderProductSpecificDtos);
+        OrderProductRegisteredEvent event =
+            new OrderProductRegisteredEvent(orderDummy, orderProductSpecificDtos);
 
         willDoNothing()
             .given(orderProductService)
             .registerOrderProduct(orderDummy, orderProductSpecificDtos);
 
-        orderProductRegisterEventHandler.saveOrderProduct(event);
+        orderProductRegisteredEventHandler.saveOrderProduct(event);
 
         then(orderProductService)
             .should(times(1))

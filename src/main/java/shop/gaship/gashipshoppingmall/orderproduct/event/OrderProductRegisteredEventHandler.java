@@ -13,11 +13,11 @@ import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
  */
 @Component
 @RequiredArgsConstructor
-public class OrderProductRegisterEventHandler {
+public class OrderProductRegisteredEventHandler {
     private final OrderProductService orderProductService;
 
     @TransactionalEventListener
-    public void saveOrderProduct(OrderProductRegisterEvent event) {
+    public void saveOrderProduct(OrderProductRegisteredEvent event) {
         orderProductService.registerOrderProduct(event.getOrder(), event.getOrderProducts());
     }
 }

@@ -32,14 +32,14 @@ public class DeliveryAdaptorImpl implements DeliveryAdaptor {
      * @param deliveryDto 배송 요청 (운송장 번호 요청) 시에 필요한 정보가 저장된 dto 객체 입니다.
      */
     @Override
-    public void createTrackingNo(
-        DeliveryDto deliveryDto) {
+    public void createTrackingNo(DeliveryDto deliveryDto) {
         WebClient webClient = WebClient.builder().baseUrl(deliveryUrl).build();
 
-        webClient.post().uri(uriBuilder -> uriBuilder.path("/eggplant-delivery/tracking-no").build())
-                 .bodyValue(deliveryDto)
-                 .retrieve()
-                 .toEntity(Void.class)
-                 .block();
+        webClient.post()
+            .uri(uriBuilder -> uriBuilder.path("/eggplant-delivery/tracking-no").build())
+            .bodyValue(deliveryDto)
+            .retrieve()
+            .toEntity(Void.class)
+            .block();
     }
 }
