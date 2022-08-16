@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +39,9 @@ import shop.gaship.gashipshoppingmall.repairschedule.service.impl.RepairSchedule
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -203,5 +207,21 @@ class RepairScheduleServiceTest {
         assertThat(test.getPageable()).isEqualTo(req);
         assertThat(test.getSize()).isEqualTo(req.getPageSize());
         assertThat(req.getPageNumber()).isEqualTo(req.getPageNumber());
+    }
+
+    @Test
+    void name() {
+        given(dayLaborRepository.findAll())
+            .willReturn(List.of(DayLaboyDummy.dummy1(), DayLaboyDummy.dummy2()));
+
+        given(repository.saveAll(any()))
+            .willReturn(IntStream.range(0, 2)
+                .mapToObj(value -> RepairScheduleDummy.dummy())
+                .collect(Collectors.toUnmodifiableList()));
+
+        service.initializeDailyRepairInstallSchedule();
+
+        then(dayLaborRepository).should(times(1)).findAll();
+        then(repository).should(times(1)).saveAll(anyList());
     }
 }

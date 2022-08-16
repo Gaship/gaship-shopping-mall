@@ -6,7 +6,7 @@ package shop.gaship.gashipshoppingmall.commonfile.exception;
  * @author : 김보민
  * @since 1.0
  */
-public class ResourceLoadFailureException extends RuntimeException{
+public class ResourceLoadFailureException extends RuntimeException {
     public static final String MESSAGE = "리소스를 불러오는데 실패했습니다.";
 
     public ResourceLoadFailureException() {

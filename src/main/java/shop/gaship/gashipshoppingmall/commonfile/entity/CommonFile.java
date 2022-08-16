@@ -1,5 +1,7 @@
 package shop.gaship.gashipshoppingmall.commonfile.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,6 +37,10 @@ public class CommonFile {
 
     @NotNull
     private String extension;
+
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private final LocalDateTime registerDatetime = LocalDateTime.now();
 
     @Column(name = "owner_no")
     private Integer ownerNo;

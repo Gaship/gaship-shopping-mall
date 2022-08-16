@@ -2,7 +2,6 @@ package shop.gaship.gashipshoppingmall.productreview.dto.request;
 
 import javax.validation.constraints.Min;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Pageable;
  * @since 1.0
  */
 @Getter
-@EqualsAndHashCode
 @Builder
 public class ProductReviewViewRequestDto {
     @Min(value = 1, message = "주문상품번호는 0보다 커야합니다.")

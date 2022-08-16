@@ -1,5 +1,7 @@
 package shop.gaship.gashipshoppingmall.repairschedule.service;
 
+import java.time.LocalDate;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.CreateScheduleRequestDto;
@@ -49,4 +51,10 @@ public interface RepairScheduleService {
      * @author 유호철
      */
     Page<GetRepairScheduleResponseDto> findRepairSchedules(Pageable pageable);
+    Page<GetRepairScheduleResponseDto> findRepairSchedules(int page, int size);
+
+    /**
+     * 매일 일일 수리 설치 분량을 채우기위한 메서드입니다.
+     */
+    void initializeDailyRepairInstallSchedule();
 }

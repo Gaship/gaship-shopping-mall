@@ -81,7 +81,7 @@ class EmployeeControllerTest {
             .andExpect(status().isCreated())
             .andDo(print());
 
-        verify(service, times(1)).addEmployee(dto);
+        verify(service, times(1)).addEmployee(any(CreateEmployeeRequestDto.class));
     }
 
     @DisplayName("직원 생성 유효성 검사 실패 controller post test")

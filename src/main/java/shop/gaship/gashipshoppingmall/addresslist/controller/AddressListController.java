@@ -6,7 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListAddRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListModifyRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListResponseDto;
@@ -34,7 +41,7 @@ public class AddressListController {
      */
     @PostMapping
     public ResponseEntity<Void> addressListAdd(
-            @Valid @RequestBody AddressListAddRequestDto request) {
+            @RequestBody @Valid AddressListAddRequestDto request) {
         addressListService.addAddressList(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
@@ -51,10 +58,9 @@ public class AddressListController {
      * @author 최정우
      */
     @PutMapping("/{addressListNo}")
-    public ResponseEntity<Void> addressListModify(
-            @Valid @RequestBody AddressListModifyRequestDto request) {
-        addressListService.modifyAddressList(request);
-        addressListService.addAddressList(request);
+    public ResponseEntity<Void> addressListModifyAndAdd(
+            @RequestBody @Valid AddressListModifyRequestDto request) {
+        addressListService.modifyAndAddAddressList(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
                 .build();

@@ -41,14 +41,16 @@ public class CommonFileController {
 
         String contentType = "application/octet-stream";
         try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+            contentType = request.getServletContext()
+                    .getMimeType(resource.getURL().getPath());
         } catch (IOException ex) {
-            log.info("파일 타입을 지정할 수 없습니다.");
+            log.info("리소스 경로를 가져올 수 없습니다.");
         }
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename())
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=" + resource.getFilename())
                 .body(resource);
     }
 }

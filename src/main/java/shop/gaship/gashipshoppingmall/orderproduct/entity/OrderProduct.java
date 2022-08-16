@@ -56,7 +56,7 @@ public class OrderProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_status_no", nullable = false)
     private StatusCode orderStatusCode;
-    
+
     @OneToOne(mappedBy = "orderProduct", fetch = FetchType.LAZY)
     private ProductReview review;
 
@@ -79,7 +79,7 @@ public class OrderProduct {
 
     private String employeeName;
 
-    private Integer trackingNo;
+    private String trackingNo;
 
     private Integer paymentCancelHistoryNo;
 
@@ -126,9 +126,17 @@ public class OrderProduct {
      * @param orderProductStatusCode 바꾸어야하는 주문 상태
      * @param cancellationAmount 취소금액
      */
-    public void updateCancellation(StatusCode orderProductStatusCode, Long cancellationAmount) {
+    public void updateCancellation(StatusCode orderProductStatusCode, Long cancellationAmount,
+                                   String cancellationReason, Integer paymentCancelHistoryNo,
+                                   LocalDateTime cancellationDatetime) {
         this.orderStatusCode = orderProductStatusCode;
         this.cancellationAmount = cancellationAmount;
-        this.cancellationDatetime = LocalDateTime.now();
+        this.cancellationReason = cancellationReason;
+        this.paymentCancelHistoryNo = paymentCancelHistoryNo;
+        this.cancellationDatetime = cancellationDatetime;
+    }
+
+    public void addTrackingNo(String trackingNo) {
+        this.trackingNo = trackingNo;
     }
 }

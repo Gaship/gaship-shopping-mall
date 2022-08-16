@@ -19,13 +19,10 @@ public class OrderProductSpecificDto {
     @Min(value = 0, message = "주문 상품 금액은 0원보다 커야합니다.")
     private Long amount;
 
-    @Min(value = 0, message = "추가 보증기간을 다시 확인해주세요.")
-    private Integer additionalWarrantyPeriod;
-
     @Min(value = 0, message = "올바르지 못한 쿠폰입니다.")
     private Integer couponNo;
 
-    @Min(value = 0, message = "적용하는 쿠폰 보증기간 개월 수를 확인해주세요.")
+    @Min(value = 0, message = "쿠폰 적용 금액을 확인해주세요.")
     private Long couponAmount;
 
     @JsonFormat(pattern = "yyyy-MM-dd")

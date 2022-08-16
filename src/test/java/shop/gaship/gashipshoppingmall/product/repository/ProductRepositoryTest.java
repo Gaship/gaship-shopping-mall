@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.product.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
@@ -19,11 +18,12 @@ import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.producttag.repository.ProductTagRepository;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 상품 레퍼지토리 테스트 입니다.
@@ -99,7 +99,7 @@ class ProductRepositoryTest {
         Product savedProduct = repository.save(product);
 
         List<Product> foundProducts = repository
-                .findAllByCategoryNo(savedProduct.getCategory().getNo());
+            .findAllByCategoryNo(savedProduct.getCategory().getNo());
 
         assertThat(foundProducts).hasSize(1);
         assertThat(foundProducts.get(0)).isEqualTo(savedProduct);
@@ -113,16 +113,16 @@ class ProductRepositoryTest {
 
         Product savedProduct = repository.save(product);
         ProductTag productTag =
-                new ProductTag(new ProductTag.Pk(savedProduct.getNo(), savedTag.getTagNo()),
-                        savedProduct, savedTag);
+            new ProductTag(new ProductTag.Pk(savedProduct.getNo(), savedTag.getTagNo()),
+                savedProduct, savedTag);
         productTagRepository.save(productTag);
 
         ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
-                .productNo(savedProduct.getNo())
-                .build();
+            .productNo(savedProduct.getNo())
+            .build();
 
         List<ProductAllInfoResponseDto> result =
-                repository.findProduct(requestDto).getContent();
+            repository.findProduct(requestDto).getContent();
 
 
         assertThat(result.get(0).getProductNo()).isEqualTo(savedProduct.getNo());
@@ -150,13 +150,13 @@ class ProductRepositoryTest {
         Product savedProduct = repository.save(product);
 
         ProductTag productTag =
-                new ProductTag(new ProductTag.Pk(savedProduct.getNo(), savedTag.getTagNo()), savedProduct, savedTag);
+            new ProductTag(new ProductTag.Pk(savedProduct.getNo(), savedTag.getTagNo()), savedProduct, savedTag);
 
         productTagRepository.save(productTag);
 
         ProductRequestViewDto requestDto = new ProductRequestViewDto();
 
-        PageResponse<ProductAllInfoResponseDto> page = repository.findProduct(requestDto);
+        Page<ProductAllInfoResponseDto> page = repository.findProduct(requestDto);
         List<ProductAllInfoResponseDto> result = page.getContent();
 
         assertThat(page.getSize()).isEqualTo(pageRequest.getPageSize());

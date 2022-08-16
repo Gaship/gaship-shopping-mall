@@ -394,13 +394,13 @@ class InquiryServiceImplTest {
         given(statusCodeRepository.findByStatusCodeName(anyString()))
             .willReturn(Optional.ofNullable(InquiryDummy.statusCodeHolderDummy()));
 
-        assertThat(inquiry.getProcessStatusCode())
-            .isEqualTo(InquiryDummy.statusCodeCompleteDummy());
+        assertThat(inquiry.getProcessStatusCode().getStatusCodeNo())
+            .isEqualTo(InquiryDummy.statusCodeCompleteDummy().getStatusCodeNo());
 
         assertThatNoException().isThrownBy(() -> inquiryService.deleteInquiryAnswer(1));
 
-        assertThat(inquiry.getProcessStatusCode())
-            .isEqualTo(InquiryDummy.statusCodeHolderDummy());
+        assertThat(inquiry.getProcessStatusCode().getStatusCodeNo())
+            .isEqualTo(InquiryDummy.statusCodeHolderDummy().getStatusCodeNo());
 
         assertThat(inquiry.getAnswerContent())
             .isEmpty();

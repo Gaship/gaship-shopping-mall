@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.membertag.service.Impl;
+package shop.gaship.gashipshoppingmall.membertag.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;

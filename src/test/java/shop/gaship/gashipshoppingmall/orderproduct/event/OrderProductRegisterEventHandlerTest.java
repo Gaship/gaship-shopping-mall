@@ -42,7 +42,6 @@ class OrderProductRegisterEventHandlerTest {
         OrderProductSpecificDto orderProductSpecificDto = new OrderProductSpecificDto();
         ReflectionTestUtils.setField(orderProductSpecificDto, "productNo", 1);
         ReflectionTestUtils.setField(orderProductSpecificDto, "amount", 10000000L);
-        ReflectionTestUtils.setField(orderProductSpecificDto, "additionalWarrantyPeriod", 1);
         ReflectionTestUtils.setField(orderProductSpecificDto, "couponNo", null);
         ReflectionTestUtils.setField(orderProductSpecificDto, "couponAmount", 100000L);
         ReflectionTestUtils.setField(orderProductSpecificDto, "hopeDate", null);

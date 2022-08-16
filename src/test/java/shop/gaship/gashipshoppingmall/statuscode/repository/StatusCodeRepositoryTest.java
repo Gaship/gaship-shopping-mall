@@ -42,9 +42,9 @@ class StatusCodeRepositoryTest {
                 .findByGroupCodeName(SalesStatus.GROUP);
 
         assertThat(result).isPresent();
-        assertThat(result.get())
+        assertThat(result.get().getStatusCodeNo())
                 .isNotNull()
-                .isEqualTo(dummy);
+                .isEqualTo(dummy.getStatusCodeNo());
     }
 
     @DisplayName("상태코드 그룹명으로 상태코드 조회시 해당 상태코드가 없는 경우")
@@ -84,8 +84,8 @@ class StatusCodeRepositoryTest {
                 .findByStatusCodeName(SalesStatus.SALE.getValue());
 
         assertThat(result).isPresent();
-        assertThat(result.get())
+        assertThat(result.get().getStatusCodeNo())
                 .isNotNull()
-                .isEqualTo(dummy);
+                .isEqualTo(dummy.getStatusCodeNo());
     }
 }

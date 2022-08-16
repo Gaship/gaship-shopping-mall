@@ -2,6 +2,8 @@ package shop.gaship.gashipshoppingmall.product.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -64,9 +66,10 @@ public class ProductController {
      * @author 김보민
      */
     @AdminAuthority
-    @PutMapping
+    @PutMapping("/{productNo}")
     public ResponseEntity<Void> productModify(@RequestPart("image") List<MultipartFile> files,
-                                              @RequestPart ProductRequestDto modifyRequest) {
+                                              @RequestPart ProductRequestDto modifyRequest,
+                                              @PathVariable("productNo") Integer productNo) {
         service.modifyProduct(files, modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -81,9 +84,10 @@ public class ProductController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-    @PutMapping("/salesStatus")
+    @PutMapping("/{productNo}/sales-status")
     public ResponseEntity<Void> salesStatusModify(
-        @RequestBody SalesStatusModifyRequestDto salesStatusModifyRequest) {
+        @RequestBody SalesStatusModifyRequestDto salesStatusModifyRequest,
+        @PathVariable("productNo") Integer productNo) {
         service.modifyProductSalesStatus(salesStatusModifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -104,9 +108,11 @@ public class ProductController {
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListSearchCode(
         @RequestParam("code") String productCode,
         Pageable pageable) {
+        Page<ProductAllInfoResponseDto> page =
+            service.findProductByCode(productCode, pageable);
         return ResponseEntity.status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(service.findProductByCode(productCode, pageable));
+            .body(new PageResponse<>(page));
     }
 
     /**
@@ -138,11 +144,12 @@ public class ProductController {
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListSearchStatusCode(
         @RequestParam("statusName") String statusName,
         Pageable pageable) {
-
+        Page<ProductAllInfoResponseDto> page =
+            service.findProductStatusCode(statusName, pageable);
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(service.findProductStatusCode(statusName, pageable));
+            .body(new PageResponse<>(page));
     }
 
     /**
@@ -160,10 +167,12 @@ public class ProductController {
         @RequestParam("min") Long minAmount,
         @RequestParam("max") Long maxAmount,
         Pageable pageable) {
+        Page<ProductAllInfoResponseDto> page =
+            service.findProductByPrice(minAmount, maxAmount, pageable);
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(service.findProductByPrice(minAmount, maxAmount, pageable));
+            .body(new PageResponse<>(page));
     }
 
     /**
@@ -178,10 +187,12 @@ public class ProductController {
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productCategoryList(
         @PathVariable("categoryNo") Integer categoryNo,
         Pageable pageable) {
+        Page<ProductAllInfoResponseDto> page =
+            service.findProductByCategory(categoryNo, pageable);
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(service.findProductByCategory(categoryNo, pageable));
+            .body(new PageResponse<>(page));
 
     }
 
@@ -197,10 +208,11 @@ public class ProductController {
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productNameList(
         @RequestParam("name") String name,
         Pageable pageable) {
+        Page<ProductAllInfoResponseDto> page = service.findProductByName(name, pageable);
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(service.findProductByName(name, pageable));
+            .body(new PageResponse<>(page));
     }
 
     /**
@@ -213,29 +225,30 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListAll(
         Pageable pageable) {
+        Page<ProductAllInfoResponseDto> page = service.findProductsInfo(pageable);
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(service.findProductsInfo(pageable));
+            .body(new PageResponse<>(page));
     }
 
     /**
      * 상품 번호들로 전체상품을 조회하는 메서드입니다.
      *
      * @param productNos 조회할 상품번호들이 들어옵니다.
-     * @param pageable   페이징을 하기위한 값이들어갑니다.
      * @return productNos 가 들어온 상품들이 조회됩니다.
      * @author 유호철
      */
     @GetMapping(params = "productNos")
-    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productNosList(
-        @RequestParam("productNos") List<Integer> productNos,
-        Pageable pageable) {
-
+    public ResponseEntity<List<ProductAllInfoResponseDto>> productNosList(
+        @RequestParam("productNos") List<Integer> productNos) {
+        List<ProductAllInfoResponseDto> result =
+            service.findProductByProductNos(
+                productNos, PageRequest.of(0, productNos.size())).getContent();
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(service.findProductByProductNos(productNos, pageable));
+            .body(result);
     }
 
 }
