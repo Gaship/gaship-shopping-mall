@@ -299,6 +299,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductAllInfoResponseDto> findProductByTagNo(Integer tagNo, Pageable pageable) {
+        if (tagRepository.findById(tagNo).isEmpty()) {
+            throw new TagNotFoundException();
+        }
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
+            .tagNo(tagNo)
+            .pageable(pageable)
+            .build();
+        Page<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
+        findProductTagInfo(product);
+        findFilePath(product);
+        return product;
+    }
+
+    /**
      * 상품 태그 등록 메서드입니다.
      *
      * @param product 태그를 등록할 상품

@@ -124,4 +124,14 @@ public interface ProductService {
      */
     Page<ProductAllInfoResponseDto> findProductByProductNos(List<Integer> productNos,
                                                             Pageable pageable);
+
+
+    /**
+     * 태그 번호에 해당하는 상품들을에 대한 정보를 반환합니다.
+     *
+     * @param tagNo    조회할 상품의 태그번호가 기입됩니다.
+     * @param pageable 페이징값을 기입할 페이징객체가 기입됩니다.
+     * @return 조회된 상품들의 정보가 page 형태로 반환됩니다.
+     */
+    Page<ProductAllInfoResponseDto> findProductByTagNo(Integer tagNo, Pageable pageable);
 }
