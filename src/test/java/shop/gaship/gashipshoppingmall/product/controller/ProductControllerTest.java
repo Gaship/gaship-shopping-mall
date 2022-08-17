@@ -339,6 +339,45 @@ class ProductControllerTest {
 
     @DisplayName("제품다건조회 - statusCode")
     @Test
+    void findProductByTagNo() throws Exception {
+        //given & when
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response), pageRequest, pageRequest.getPageSize());
+        when(service.findProductByTagNo(1, pageRequest))
+            .thenReturn(list);
+
+        //then
+        mvc.perform(get("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .accept(MediaType.APPLICATION_JSON)
+                .queryParam("tagNo", objectMapper.writeValueAsString(1))
+                .queryParam("page", objectMapper.writeValueAsString(pageRequest.getPageNumber()))
+                .queryParam("size", objectMapper.writeValueAsString(pageRequest.getPageSize())))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].productName").value(response.getProductName()))
+            .andExpect(jsonPath("$.content[0].productNo").value(response.getProductNo()))
+            .andExpect(jsonPath("$.content[0].categoryName").value(response.getCategoryName()))
+            .andExpect(jsonPath("$.content[0].amount").value(response.getAmount()))
+            .andExpect(jsonPath("$.content[0].manufacturer").value(response.getManufacturer()))
+            .andExpect(jsonPath("$.content[0].country").value(response.getCountry()))
+            .andExpect(jsonPath("$.content[0].seller").value(response.getSeller()))
+            .andExpect(jsonPath("$.content[0].importer").value(response.getImporter()))
+            .andExpect(jsonPath("$.content[0].quality").value(response.getQuality()))
+            .andExpect(jsonPath("$.content[0].installationCost").value(response.getInstallationCost()))
+            .andExpect(jsonPath("$.content[0].color").value(response.getColor()))
+            .andExpect(jsonPath("$.content[0].quantity").value(response.getQuantity()))
+            .andExpect(jsonPath("$.content[0].explanation").value(response.getExplanation()))
+            .andExpect(jsonPath("$.content[0].level").value(response.getLevel()))
+            .andExpect(jsonPath("$.content[0].upperName").value(response.getUpperName()))
+            .andDo(print());
+
+        verify(service, times(1))
+            .findProductByTagNo(1, pageRequest);
+    }
+
+    @DisplayName("제품다건조회 - statusCode")
+    @Test
     void getProductsByStatusCodeName() throws Exception {
         //given & when
         PageRequest pageRequest = PageRequest.of(0, 10);

@@ -172,4 +172,39 @@ class ProductRepositoryTest {
         assertThat(result.get(0).getQuantity()).isEqualTo(product.getStockQuantity());
         assertThat(result.get(0).getLevel()).isEqualTo(product.getCategory().getLevel());
     }
+
+    @DisplayName("태그 번호로 조회 입니다.")
+    @Test
+    void productFindTagNo() {
+        Tag tag = new Tag(null, "title");
+        Tag savedTag = tagRepository.save(tag);
+
+        Product savedProduct = repository.save(product);
+        ProductTag productTag =
+            new ProductTag(new ProductTag.Pk(savedProduct.getNo(), savedTag.getTagNo()),
+                savedProduct, savedTag);
+        productTagRepository.save(productTag);
+
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
+            .tagNo(savedTag.getTagNo())
+            .build();
+
+        List<ProductAllInfoResponseDto> result =
+            repository.findProduct(requestDto).getContent();
+
+
+        assertThat(result.get(0).getProductNo()).isEqualTo(savedProduct.getNo());
+        assertThat(result.get(0).getProductName()).isEqualTo(product.getName());
+        assertThat(result.get(0).getProductCode()).isEqualTo(product.getCode());
+        assertThat(result.get(0).getCategoryName()).isEqualTo(product.getCategory().getName());
+        assertThat(result.get(0).getAmount()).isEqualTo(product.getAmount());
+        assertThat(result.get(0).getCountry()).isEqualTo(product.getManufacturerCountry());
+        assertThat(result.get(0).getManufacturer()).isEqualTo(product.getManufacturer());
+        assertThat(result.get(0).getColor()).isEqualTo(product.getColor());
+        assertThat(result.get(0).getQuality()).isEqualTo(product.getQualityAssuranceStandard());
+        assertThat(result.get(0).getQuantity()).isEqualTo(product.getStockQuantity());
+        assertThat(result.get(0).getLevel()).isEqualTo(product.getCategory().getLevel());
+
+
+    }
 }
