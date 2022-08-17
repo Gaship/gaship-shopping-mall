@@ -3,10 +3,8 @@ package shop.gaship.gashipshoppingmall.product.event;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
-import lombok.Setter;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
-import shop.gaship.gashipshoppingmall.product.entity.Product;
 
 /**
  * 상품 생성 및 수정 이벤트 입니다.
@@ -17,22 +15,15 @@ import shop.gaship.gashipshoppingmall.product.entity.Product;
 @Getter
 public class ProductSaveUpdateEvent {
     private final List<FileRequestDto> imageLinks;
-
-    @Setter
-    private Product savedProduct;
-
     private final List<CommonFile> beforeImages = new ArrayList<>();
 
     /**
      * 상품 생성, 수정 이벤트 생성자입니다.
      *
      * @param imageLinks   업로드할 이미지 링크
-     * @param savedProduct 저장된 상품
      */
-    public ProductSaveUpdateEvent(List<FileRequestDto> imageLinks,
-                                  Product savedProduct) {
+    public ProductSaveUpdateEvent(List<FileRequestDto> imageLinks) {
         this.imageLinks = imageLinks;
-        this.savedProduct = savedProduct;
     }
 
     /**

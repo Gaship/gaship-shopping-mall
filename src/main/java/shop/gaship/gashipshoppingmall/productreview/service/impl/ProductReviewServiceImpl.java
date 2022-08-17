@@ -136,7 +136,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
                         .orderProductNo(orderProductNo)
                         .build());
-        findFilePath(reviewResponseDtos);
+        findFileNo(reviewResponseDtos);
 
         return reviewResponseDtos.getContent().stream()
                 .findFirst()
@@ -153,7 +153,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
                         .pageable(pageable)
                         .build());
-        findFilePath(reviewResponseDtos);
+        findFileNo(reviewResponseDtos);
         return reviewResponseDtos;
     }
 
@@ -175,7 +175,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                         .productNo(productNo)
                         .pageable(pageable)
                         .build());
-        findFilePath(reviewResponseDtos);
+        findFileNo(reviewResponseDtos);
         return reviewResponseDtos;
     }
 
@@ -197,7 +197,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                         .memberNo(memberNo)
                         .pageable(pageable)
                         .build());
-        findFilePath(reviewResponseDtos);
+        findFileNo(reviewResponseDtos);
         return reviewResponseDtos;
     }
 
@@ -224,9 +224,9 @@ public class ProductReviewServiceImpl implements ProductReviewService {
      *
      * @param productReviews 이미지경로를 찾을 상품평
      */
-    private void findFilePath(Page<ProductReviewResponseDto> productReviews) {
-        productReviews.getContent().forEach(review -> review.getFilePaths()
-                .addAll(commonFileRepository.findPaths(review.getOrderProductNo(),
+    private void findFileNo(Page<ProductReviewResponseDto> productReviews) {
+        productReviews.getContent().forEach(review -> review.getFileNos()
+                .addAll(commonFileRepository.findNos(review.getOrderProductNo(),
                         ProductReview.SERVICE)));
     }
 }

@@ -2,16 +2,13 @@ package shop.gaship.gashipshoppingmall.product.event;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
-import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 import shop.gaship.gashipshoppingmall.error.FileDeleteFailureException;
 import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 import shop.gaship.gashipshoppingmall.file.service.FileService;
-import shop.gaship.gashipshoppingmall.product.entity.Product;
 
 /**
  * 상품 생성 및 수정 이벤트 핸들러 입니다.
@@ -32,7 +29,6 @@ public class ProductSaveUpdateEventHandler {
      * @throws FileDeleteFailureException 파일 삭제에 오류가 발생하였을 때 에외를 던집니다.
      * @author 김보민
      */
-    @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
     public void handleRollback(ProductSaveUpdateEvent event) {
         event.getImageLinks().stream().map(FileRequestDto::getPath).forEach(fileService::delete);
@@ -44,14 +40,9 @@ public class ProductSaveUpdateEventHandler {
      *
      * @param event 상품 생성 및 수정 이벤트
      */
-    @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommit(ProductSaveUpdateEvent event) {
         event.getBeforeImages().stream().map(CommonFile::getPath)
                 .forEach(fileService::delete);
-
-        Product savedProduct = event.getSavedProduct();
-        elasticProductRepository.save(new ElasticProduct(
-                savedProduct.getNo(), savedProduct.getName(), savedProduct.getCode()));
     }
 }
