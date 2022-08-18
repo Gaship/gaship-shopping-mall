@@ -83,14 +83,12 @@ public class ProductServiceImpl implements ProductService {
             .map(commonFileService::uploadMultipartFile)
             .collect(Collectors.toList());
 
-        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(fileRequests, null);
+        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(fileRequests);
         applicationEventPublisher.publishEvent(event);
 
         Product savedProduct = repository.save(product);
         addProductTags(savedProduct, createRequest.getTagNos());
         addProductImages(savedProduct, fileRequests);
-
-        event.setSavedProduct(savedProduct);
     }
 
     /**
@@ -130,7 +128,7 @@ public class ProductServiceImpl implements ProductService {
             .map(commonFileService::uploadMultipartFile)
             .collect(Collectors.toList());
 
-        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(fileRequests, product);
+        ProductSaveUpdateEvent event = new ProductSaveUpdateEvent(fileRequests);
         event.updateBeforeImages(product.getProductImages());
         applicationEventPublisher.publishEvent(event);
 
@@ -160,7 +158,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFilePath(products);
+        findFileNo(products);
         return products;
     }
 
@@ -179,7 +177,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
         findProductTagInfo(product);
-        findFilePath(product);
+        findFileNo(product);
 
         return product.getContent().get(0);
     }
@@ -197,7 +195,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFilePath(products);
+        findFileNo(products);
         return products;
     }
 
@@ -218,7 +216,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFilePath(products);
+        findFileNo(products);
         return products;
     }
 
@@ -237,7 +235,7 @@ public class ProductServiceImpl implements ProductService {
 
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFilePath(products);
+        findFileNo(products);
 
         return products;
     }
@@ -253,7 +251,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFilePath(products);
+        findFileNo(products);
         return products;
     }
 
@@ -277,7 +275,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFilePath(products);
+        findFileNo(products);
         return products;
     }
 
@@ -294,8 +292,26 @@ public class ProductServiceImpl implements ProductService {
 
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFilePath(products);
+        findFileNo(products);
         return products;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductAllInfoResponseDto> findProductByTagNo(Integer tagNo, Pageable pageable) {
+        if (tagRepository.findById(tagNo).isEmpty()) {
+            throw new TagNotFoundException();
+        }
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
+            .tagNo(tagNo)
+            .pageable(pageable)
+            .build();
+        Page<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
+        findProductTagInfo(product);
+        findFileNo(product);
+        return product;
     }
 
     /**
@@ -362,9 +378,9 @@ public class ProductServiceImpl implements ProductService {
      *
      * @param products 파일 경로를 찾을 상품 목록
      */
-    private void findFilePath(Page<ProductAllInfoResponseDto> products) {
-        products.getContent().forEach(product -> product.getFilePaths()
-            .addAll(commonFileRepository.findPaths(product.getProductNo(), Product.SERVICE)));
+    private void findFileNo(Page<ProductAllInfoResponseDto> products) {
+        products.getContent().forEach(product -> product.getFileNos()
+            .addAll(commonFileRepository.findNos(product.getProductNo(), Product.SERVICE)));
     }
 
     /**

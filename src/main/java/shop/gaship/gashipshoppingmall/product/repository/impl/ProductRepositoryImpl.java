@@ -125,7 +125,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         if (tagNo <= 0) {
             return null;
         }
-        return tag.tagNo.eq(tagNo);
+        return product.productTags.any().tag.tagNo.eq(tagNo);
     }
 
     private BooleanExpression eqStatus(String statusName) {

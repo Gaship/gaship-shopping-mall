@@ -251,4 +251,23 @@ public class ProductController {
             .body(result);
     }
 
+    /**
+     * TagNo 로 Get 요청시 상품정보들을 반환합니다.
+     *
+     * @param tagNo    the tag no
+     * @param pageable the pageable
+     * @return the response entity
+     */
+    @GetMapping(params = "tagNo")
+    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListByTag(
+        @RequestParam("tagNo") Integer tagNo,
+        Pageable pageable) {
+        Page<ProductAllInfoResponseDto> page = service.findProductByTagNo(tagNo, pageable);
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(new PageResponse<>(page));
+    }
+
 }
