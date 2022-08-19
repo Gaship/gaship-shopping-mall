@@ -33,7 +33,7 @@ public class CategoryDummy {
     public static CategoryResponseDto upperDtoDummy() {
         CategoryResponseDto dummy = new CategoryResponseDto();
         ReflectionTestUtils.setField(dummy, "no", 1);
-        ReflectionTestUtils.setField(dummy, "name", "카테고리");
+        ReflectionTestUtils.setField(dummy, "name", "상위 카테고리");
         ReflectionTestUtils.setField(dummy, "level", 1);
         ReflectionTestUtils.setField(dummy, "upperCategoryNo", null);
         ReflectionTestUtils.setField(dummy, "upperCategoryName", null);

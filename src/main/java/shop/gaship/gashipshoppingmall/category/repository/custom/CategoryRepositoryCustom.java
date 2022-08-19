@@ -24,14 +24,6 @@ public interface CategoryRepositoryCustom {
     Optional<CategoryResponseDto> findCategoryById(Integer categoryNo);
 
     /**
-     * 카테고리 전체 조회 메서드입니다.
-     *
-     * @return list 카테고리 목록 정보를 담은 list
-     * @author 김보민
-     */
-    List<CategoryResponseDto> findAllCategories();
-
-    /**
      * 하위 카테고리 조회 메서드입니다.
      *
      * @param categoryNo 하위 카테고리를 조회할 상위 카테고리 번호

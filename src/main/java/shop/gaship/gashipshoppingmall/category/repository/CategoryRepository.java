@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.repository;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.repository.custom.CategoryRepositoryCustom;
@@ -13,4 +14,5 @@ import shop.gaship.gashipshoppingmall.category.repository.custom.CategoryReposit
  */
 public interface CategoryRepository
         extends JpaRepository<Category, Integer>, CategoryRepositoryCustom {
+    List<Category> findByUpperCategoryNoIsNull();
 }
