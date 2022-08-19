@@ -96,7 +96,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponseDto> findCategories() {
         return categoryRepository.findByUpperCategoryNoIsNull().stream()
-                .map(CategoryResponseDto::dtoToEntity)
+                .map(CategoryResponseDto::entityToDto)
                 .collect(Collectors.toList());
     }
 
