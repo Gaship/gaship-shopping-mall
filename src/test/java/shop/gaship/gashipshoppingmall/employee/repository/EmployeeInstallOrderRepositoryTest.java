@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 
 /**
  * 설명작성란

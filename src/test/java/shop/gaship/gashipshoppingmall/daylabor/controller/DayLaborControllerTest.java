@@ -20,7 +20,7 @@ import shop.gaship.gashipshoppingmall.daylabor.dummy.CreateDayLaborRequestDtoDum
 import shop.gaship.gashipshoppingmall.daylabor.dummy.FixDayLaborRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.GetDayLaborResponseDtoDummy;
 import shop.gaship.gashipshoppingmall.daylabor.service.DayLaborService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;

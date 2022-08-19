@@ -16,7 +16,7 @@ import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdm
 import shop.gaship.gashipshoppingmall.member.dummy.MemberModifyByAdminDtoDummy;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberBaseDummy;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;

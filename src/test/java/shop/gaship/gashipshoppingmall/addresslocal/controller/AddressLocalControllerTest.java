@@ -18,7 +18,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalR
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.GetAddressLocalResponseDtoDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.ModifyAddressRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;

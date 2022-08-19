@@ -23,7 +23,7 @@ import shop.gaship.gashipshoppingmall.repairschedule.dto.response.GetRepairSched
 import shop.gaship.gashipshoppingmall.repairschedule.dummy.CreateScheduleRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.repairschedule.dummy.GetRepairScheduleResponseDtoDummy;
 import shop.gaship.gashipshoppingmall.repairschedule.service.RepairScheduleService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;

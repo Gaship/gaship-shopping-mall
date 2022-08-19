@@ -18,7 +18,7 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequ
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import java.util.List;
 
@@ -163,8 +163,7 @@ class MemberGradeRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.page", equalTo(page)))
-                .andExpect(jsonPath("$.size", equalTo(size)));
+                .andExpect(jsonPath("$.number", equalTo(page)));
     }
 
     @DisplayName("전체 회원등급 다건 조회")

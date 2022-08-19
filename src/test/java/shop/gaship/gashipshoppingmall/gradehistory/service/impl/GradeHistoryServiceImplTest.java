@@ -20,7 +20,7 @@ import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -103,8 +103,7 @@ class GradeHistoryServiceImplTest {
                 .findGradeHistories(requestDtoDummy);
 
         assertThat(result).isNotNull();
-        assertThat(result.getPage()).isEqualTo(page);
-        assertThat(result.getSize()).isEqualTo(size);
+        assertThat(result.getNumber()).isEqualTo(page);
         assertThat(result.getContent()).hasSize(1);
     }
 

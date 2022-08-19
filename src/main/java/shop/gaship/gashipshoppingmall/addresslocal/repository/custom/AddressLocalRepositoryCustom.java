@@ -2,7 +2,7 @@ package shop.gaship.gashipshoppingmall.addresslocal.repository.custom;
 
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 주소지에대한 QueryDsl 을 쓰기위한 인터페이스입니다.

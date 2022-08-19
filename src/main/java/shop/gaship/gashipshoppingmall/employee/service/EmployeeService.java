@@ -7,7 +7,7 @@ import shop.gaship.gashipshoppingmall.employee.dto.request.ModifyEmployeeRequest
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 직원을 서비스레이어에서 사용하기위한 인터페이스 클래스입니다.

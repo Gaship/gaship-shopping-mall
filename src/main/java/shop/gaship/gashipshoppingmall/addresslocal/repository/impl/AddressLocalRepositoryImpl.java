@@ -10,7 +10,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalR
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.custom.AddressLocalRepositoryCustom;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 
 /**

@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.addresslocal.service;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 
 /**

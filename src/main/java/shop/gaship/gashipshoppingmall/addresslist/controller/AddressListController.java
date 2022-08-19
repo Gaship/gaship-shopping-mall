@@ -18,7 +18,7 @@ import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListAddRequ
 import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListModifyRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.service.AddressListService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 배송지목록의 restController 입니다.

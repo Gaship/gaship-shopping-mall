@@ -16,7 +16,7 @@ import shop.gaship.gashipshoppingmall.daylabor.dto.request.CreateDayLaborRequest
 import shop.gaship.gashipshoppingmall.daylabor.dto.request.FixDayLaborRequestDto;
 import shop.gaship.gashipshoppingmall.daylabor.dto.response.GetDayLaborResponseDto;
 import shop.gaship.gashipshoppingmall.daylabor.service.DayLaborService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 지역별물량에대한 요청을 다루는 컨틀롤러입니다.
