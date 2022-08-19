@@ -10,7 +10,7 @@ import shop.gaship.gashipshoppingmall.daylabor.dto.response.GetDayLaborResponseD
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.entity.QDayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.custom.DayLaborRepositoryCustom;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 
 /**

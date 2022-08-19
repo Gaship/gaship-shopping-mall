@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.tag.dummy;
 
-import org.springframework.data.domain.*;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagAddRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.request.TagModifyRequestDto;
 import shop.gaship.gashipshoppingmall.tag.dto.response.TagResponseDto;

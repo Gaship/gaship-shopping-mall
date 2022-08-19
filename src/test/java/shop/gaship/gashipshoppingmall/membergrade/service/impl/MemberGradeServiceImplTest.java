@@ -24,8 +24,7 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.*;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
-import shop.gaship.gashipshoppingmall.membergrade.service.impl.MemberGradeServiceImpl;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -366,8 +365,7 @@ class MemberGradeServiceImplTest {
 
         PageResponse<MemberGradeResponseDto> result = memberGradeService.findMemberGrades(pageable);
 
-        assertThat(result.getPage()).isEqualTo(page);
-        assertThat(result.getSize()).isEqualTo(size);
+        assertThat(result.getNumber()).isEqualTo(page);
         assertThat(result.getContent()).hasSize(1);
 
         verify(memberGradeRepository).getMemberGrades(any());

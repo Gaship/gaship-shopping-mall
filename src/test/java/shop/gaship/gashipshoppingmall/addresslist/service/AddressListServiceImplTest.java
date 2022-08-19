@@ -25,7 +25,7 @@ import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.AddressStatus;
@@ -282,8 +282,7 @@ class AddressListServiceImplTest {
 
         PageResponse<AddressListResponseDto> result = addressListService.findAddressLists(1, pageable);
 
-        assertThat(result.getPage()).isEqualTo(page);
-        assertThat(result.getSize()).isEqualTo(size);
+        assertThat(result.getNumber()).isEqualTo(page);
         assertThat(result.getContent().get(0).getAddressListNo()).isEqualTo(1);
         verify(addressListRepository, times(1)).findAddressListByMemberId(any(), any(Pageable.class));
     }

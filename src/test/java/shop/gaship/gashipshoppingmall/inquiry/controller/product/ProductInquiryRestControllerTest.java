@@ -149,8 +149,7 @@ class ProductInquiryRestControllerTest {
             .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
             .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
             .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
-            .andExpect(jsonPath("$.page").value(0))
-            .andExpect(jsonPath("$.size").value(5));
+            .andExpect(jsonPath("$.number").value(0));
 
         verify(inquiryService).findInquiries(any(Pageable.class), eq(true));
     }
@@ -193,8 +192,7 @@ class ProductInquiryRestControllerTest {
             .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
             .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
             .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
-            .andExpect(jsonPath("$.page").value(0))
-            .andExpect(jsonPath("$.size").value(5));
+            .andExpect(jsonPath("$.number").value(0));
 
         verify(inquiryService).findInquiriesByStatusCodeNo(any(Pageable.class), eq(true),
             eq(ProcessStatus.WAITING.getValue()));
@@ -239,8 +237,7 @@ class ProductInquiryRestControllerTest {
             .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
             .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
             .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
-            .andExpect(jsonPath("$.page").value(0))
-            .andExpect(jsonPath("$.size").value(5));
+            .andExpect(jsonPath("$.number").value(0));
 
         verify(inquiryService).findInquiriesByMemberNo(any(Pageable.class), eq(Boolean.TRUE),
             eq(1));
@@ -285,8 +282,7 @@ class ProductInquiryRestControllerTest {
             .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
             .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
             .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
-            .andExpect(jsonPath("$.page").value(0))
-            .andExpect(jsonPath("$.size").value(5));
+            .andExpect(jsonPath("$.number").value(0));
 
         verify(inquiryService).findInquiriesByStatusCodeNo(any(Pageable.class), eq(true),
             eq(ProcessStatus.COMPLETE.getValue()));
@@ -331,8 +327,7 @@ class ProductInquiryRestControllerTest {
             .andExpect(jsonPath("$.content[1].memberNickname").value(customerInquiryBeautiful.getMemberNickname()))
             .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
             .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
-            .andExpect(jsonPath("$.page").value(0))
-            .andExpect(jsonPath("$.size").value(5));
+            .andExpect(jsonPath("$.number").value(0));
 
         verify(inquiryService).findInquiriesByProductNo(any(Pageable.class), eq(1));
     }

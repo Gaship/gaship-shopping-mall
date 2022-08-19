@@ -28,7 +28,7 @@ import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponse
 import shop.gaship.gashipshoppingmall.employee.exception.NotMatchRequestData;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 직원에대한 요청을 처리하기위한 컨트롤러 클래스입니다.

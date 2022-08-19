@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.daylabor.repository.custom;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.daylabor.dto.response.GetDayLaborResponseDto;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * QueryDsl 을 쓰기위한 인터페이스입니다.

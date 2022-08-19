@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.gradehistory.service;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.request.GradeHistoryAddRequestDto;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.request.GradeHistoryFindRequestDto;
 import shop.gaship.gashipshoppingmall.gradehistory.dto.response.GradeHistoryResponseDto;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 등급이력 Service Interface.

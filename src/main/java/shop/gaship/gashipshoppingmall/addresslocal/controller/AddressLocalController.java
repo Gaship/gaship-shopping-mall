@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 주소지정보를 위한 요청을 다루기 위한 컨트롤러입니다.

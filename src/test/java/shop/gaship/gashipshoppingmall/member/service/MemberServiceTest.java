@@ -43,7 +43,7 @@ import shop.gaship.gashipshoppingmall.member.service.impl.MemberServiceImpl;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.UserAuthority;
 import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
@@ -294,9 +294,8 @@ class MemberServiceTest {
         when(memberRepository.findMembers(any(Pageable.class))).thenReturn(dtoPage);
 
         PageResponse<MemberResponseDtoByAdmin> list = memberService.findMembers(pageable);
-        assertThat(list.getSize()).isEqualTo(10);
-        assertThat(list.getTotalPage()).isEqualTo(10);
-        assertThat(list.getPage()).isEqualTo(3);
+        assertThat(list.getTotalPages()).isEqualTo(10);
+        assertThat(list.getNumber()).isEqualTo(3);
         verify(memberRepository).findMembers(pageable);
     }
 
