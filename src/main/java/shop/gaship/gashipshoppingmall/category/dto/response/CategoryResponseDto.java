@@ -24,14 +24,14 @@ public class CategoryResponseDto {
     private String upperCategoryName;
     private List<CategoryResponseDto> lowerCategories;
 
-    public static CategoryResponseDto of(Category category) {
+    public static CategoryResponseDto dtoToEntity(Category category) {
         CategoryResponseDto response = new CategoryResponseDto();
 
         response.setNo(category.getNo());
         response.setName(category.getName());
         response.setLevel(category.getLevel());
         response.setLowerCategories(category.getLowerCategories().stream()
-                .map(CategoryResponseDto::of)
+                .map(CategoryResponseDto::dtoToEntity)
                 .collect(Collectors.toList()));
 
         return response;
