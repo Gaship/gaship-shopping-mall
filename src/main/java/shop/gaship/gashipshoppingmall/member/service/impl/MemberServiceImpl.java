@@ -318,6 +318,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public PageResponse<MemberResponseDtoByAdmin> findMembers(Pageable pageable) {
         Page<MemberResponseDtoByAdmin> page = memberRepository.findMembers(pageable);
+        page.getContent().stream().map(member -> entityToMemberResponseDtoByAdmin(member,aes));
         return new PageResponse<>(page);
     }
 

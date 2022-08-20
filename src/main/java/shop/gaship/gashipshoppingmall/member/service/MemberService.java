@@ -184,6 +184,25 @@ public interface MemberService {
                 .build();
     }
 
+    default MemberResponseDtoByAdmin entityToMemberResponseDtoByAdmin(MemberResponseDtoByAdmin member, Aes aes) {
+        return MemberResponseDtoByAdmin.builder()
+                .memberNo(member.getMemberNo())
+                .recommendMemberName(member.getRecommendMemberName())
+                .memberStatus(member.getMemberStatus())
+                .memberGrade(member.getMemberGrade())
+                .email(aes.aesEcbDecode(member.getEmail()))
+                .phoneNumber(aes.aesEcbDecode(member.getPhoneNumber()))
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .birthDate(member.getBirthDate())
+                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
+                .registerDatetime(member.getRegisterDatetime())
+                .modifyDatetime(member.getModifyDatetime())
+                .social(member.getSocial())
+                .build();
+    }
+
 
     /**
      * 필수정보를 받아 새로운 회원을 반환하는 메서드입니다.
