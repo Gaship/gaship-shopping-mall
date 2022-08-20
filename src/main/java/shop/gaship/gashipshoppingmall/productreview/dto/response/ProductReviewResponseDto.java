@@ -25,5 +25,5 @@ public class ProductReviewResponseDto {
     private Integer starScore;
     private LocalDateTime registerDateTime;
     private LocalDateTime modifyDateTime;
-    private final List<String> filePaths = new ArrayList<>();
+    private final List<Integer> fileNos = new ArrayList<>();
 }

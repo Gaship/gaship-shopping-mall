@@ -13,7 +13,7 @@ import shop.gaship.gashipshoppingmall.daylabor.exception.NotExistDayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.daylabor.service.DayLaborService;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 서비스레이어에서 지역별물량을 사용하기위한 구현체입니다.

@@ -16,7 +16,7 @@ import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdm
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**

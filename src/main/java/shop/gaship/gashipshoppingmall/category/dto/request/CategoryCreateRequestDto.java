@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.category.dto.request;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class CategoryCreateRequestDto {
     @Length(max = 20, message = "카테고리 이름은 20자 이하여야 합니다.")
     private String name;
 
-    @Min(1)
+    @Min(value = 1, message = "카테고리는 총 3종류입니다. (대분류, 중분류, 소분류)")
+    @Max(value = 2, message = "카테고리는 총 3종류입니다. (대분류, 중분류, 소분류)")
     private Integer upperCategoryNo;
 }

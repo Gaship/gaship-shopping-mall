@@ -46,7 +46,7 @@ public class Category {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "upper_category_no", referencedColumnName = "category_no")
-    private List<Category> lowerCategories = new ArrayList<>();
+    private final List<Category> lowerCategories = new ArrayList<>();
     
     public Category(String name, Integer level) {
         this.name = name;

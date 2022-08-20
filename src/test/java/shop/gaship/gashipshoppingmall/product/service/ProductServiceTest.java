@@ -41,7 +41,7 @@ import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
 import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.producttag.repository.ProductTagRepository;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -52,6 +52,7 @@ import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -471,6 +472,29 @@ class ProductServiceTest {
         verify(repository, times(1)).findProduct(requestDto);
 
         checkContent(result);
+    }
+
+    @DisplayName("tagNo를 통해서 상품들을 조회할 경우")
+    @Test
+    void productFindTag() {
+
+        ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
+            .tagNo(1)
+            .pageable(pageRequest)
+            .build();
+
+        given(repository.findProduct(requestDto))
+            .willReturn(page);
+        given(tagRepository.findById(anyInt()))
+            .willReturn(Optional.of(Tag.builder().tagNo(1).build()));
+        //when
+        Page<ProductAllInfoResponseDto> result = service.findProductByTagNo(1, pageRequest);
+
+        //then
+        verify(repository, times(1)).findProduct(any());
+
+        checkContent(result);
+
     }
 
     private void checkContent(Page<ProductAllInfoResponseDto> result) {

@@ -18,5 +18,5 @@ public interface CommonFileRepositoryCustom {
      * @param service 파일 주인의 서비스
      * @return 파일경로 목록
      */
-    List<String> findPaths(Integer ownerNo, String service);
+    List<Integer> findNos(Integer ownerNo, String service);
 }

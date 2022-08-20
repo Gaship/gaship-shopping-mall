@@ -51,24 +51,6 @@ public class CategoryRepositoryImpl
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryResponseDto> findAllCategories() {
-        QCategory category = QCategory.category;
-
-        return from(category)
-            .leftJoin(category.upperCategory)
-            .select(Projections.bean(CategoryResponseDto.class,
-                category.no,
-                category.name,
-                category.level,
-                category.upperCategory.no.as(UPPER_CATEGORY_NO),
-                category.upperCategory.name.as(UPPER_CATEGORY_NAME)))
-            .fetch();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<CategoryResponseDto> findAllLowerCategories(Integer categoryNo) {
         QCategory category = QCategory.category;
 

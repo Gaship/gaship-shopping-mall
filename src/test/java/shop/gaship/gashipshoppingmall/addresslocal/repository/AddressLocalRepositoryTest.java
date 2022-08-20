@@ -14,7 +14,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

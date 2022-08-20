@@ -29,7 +29,7 @@ import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.exception.OrderNotFoundException;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;

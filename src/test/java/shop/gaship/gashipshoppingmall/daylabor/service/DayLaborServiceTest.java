@@ -29,7 +29,7 @@ import shop.gaship.gashipshoppingmall.daylabor.exception.NotExistDayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
 import shop.gaship.gashipshoppingmall.daylabor.service.impl.DayLaborServiceImpl;
 import shop.gaship.gashipshoppingmall.employee.exception.WrongAddressException;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

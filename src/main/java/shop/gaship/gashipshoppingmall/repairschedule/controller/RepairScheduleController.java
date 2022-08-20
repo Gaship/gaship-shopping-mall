@@ -18,7 +18,7 @@ import shop.gaship.gashipshoppingmall.repairschedule.dto.request.ModifyScheduleR
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.RepairScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.response.GetRepairScheduleResponseDto;
 import shop.gaship.gashipshoppingmall.repairschedule.service.RepairScheduleService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 수리설치일자에대한 요청을 다루기위한 컨트롤러입니다.

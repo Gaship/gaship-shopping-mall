@@ -27,7 +27,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationF
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
 import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 주문을 실행하거나 취소, 환불, 교환등을 수행하는 주문 컨트롤러 클래스입니다.

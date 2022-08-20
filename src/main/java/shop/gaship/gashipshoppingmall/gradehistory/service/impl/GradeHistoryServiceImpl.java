@@ -12,7 +12,7 @@ import shop.gaship.gashipshoppingmall.gradehistory.service.GradeHistoryService;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 등급이력 Service Interface 구현체.

@@ -17,7 +17,7 @@ import shop.gaship.gashipshoppingmall.gradehistory.dto.response.GradeHistoryResp
 import shop.gaship.gashipshoppingmall.gradehistory.dummy.GradeHistoryDtoDummy;
 import shop.gaship.gashipshoppingmall.gradehistory.service.GradeHistoryService;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import java.util.List;
 
@@ -112,8 +112,7 @@ class GradeHistoryRestControllerTest {
                         .content(objectMapper.writeValueAsString(requestDtoDummy)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.page",equalTo(requestDtoDummy.getPage())))
-                .andExpect(jsonPath("$.size", equalTo(requestDtoDummy.getSize())))
+                .andExpect(jsonPath("$.number",equalTo(requestDtoDummy.getPage())))
                 .andDo(print());
     }
 }

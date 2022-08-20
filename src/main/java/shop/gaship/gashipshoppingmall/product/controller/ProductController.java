@@ -23,7 +23,7 @@ import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
-import shop.gaship.gashipshoppingmall.response.PageResponse;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 상품 컨트롤러 입니다.
@@ -249,6 +249,25 @@ public class ProductController {
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
             .body(result);
+    }
+
+    /**
+     * TagNo 로 Get 요청시 상품정보들을 반환합니다.
+     *
+     * @param tagNo    the tag no
+     * @param pageable the pageable
+     * @return the response entity
+     */
+    @GetMapping(params = "tagNo")
+    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListByTag(
+        @RequestParam("tagNo") Integer tagNo,
+        Pageable pageable) {
+        Page<ProductAllInfoResponseDto> page = service.findProductByTagNo(tagNo, pageable);
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(new PageResponse<>(page));
     }
 
 }
