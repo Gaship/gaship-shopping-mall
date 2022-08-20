@@ -19,7 +19,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 public interface InquiryService {
 
     /**
-     * 상품문의를 등록하기위해서 dto를 entity로 변환하는 작업을 처리합니다.
+     * 문의를 등록하기위해서 dto를 entity로 변환하는 작업을 처리합니다.
      *
      * @param inquiryAddRequestDto 상품문의 등록에 필요한 정보를 담고있는 DTO 객체입니다.
      * @author 최겸준
@@ -27,7 +27,7 @@ public interface InquiryService {
     void addInquiry(InquiryAddRequestDto inquiryAddRequestDto);
 
     /**
-     * 상품문의의 답변을 등록하기위해서 entity에 정보를 업데이트하는 작업을 처리합니다.
+     * 문의의 답변을 등록하기위해서 entity에 정보를 업데이트하는 작업을 처리합니다.
      *
      * @param inquiryAnswerRequestDto 상품문의 답변 등록에 필요한 정보를 담고 있는 DTO 객체입니다.
      * @author 최겸준
@@ -35,7 +35,7 @@ public interface InquiryService {
     void addInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto);
 
     /**
-     * 상품문의의 답변을 수정하기위해서 entity에 정보를 업데이트하는 작업을 처리합니다.
+     * 문의의 답변을 수정하기위해서 entity에 정보를 업데이트하는 작업을 처리합니다.
      *
      * @param inquiryAnswerRequestDto 상품문의 답변 수정에 필요한 정보를 담고 있는 DTO 객체입니다.
      * @author 최겸준

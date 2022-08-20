@@ -39,7 +39,7 @@ public class ProductInquiryRestController {
     public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryList(
         Pageable pageable) {
         Page<InquiryListResponseDto> inquiriesPage =
-            inquiryService.findInquiries(pageable, InquiryType.PRODUCT_INQUIRIES.getValue());
+            inquiryService.findInquiries(pageable, InquiryType.PRODUCT_INQUIRY.getValue());
 
         PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
 
@@ -58,7 +58,7 @@ public class ProductInquiryRestController {
         Pageable pageable) {
         Page<InquiryListResponseDto> inquiriesPage =
             inquiryService.findInquiriesByStatusCodeNo(pageable,
-                InquiryType.PRODUCT_INQUIRIES.getValue(), ProcessStatus.WAITING.getValue());
+                InquiryType.PRODUCT_INQUIRY.getValue(), ProcessStatus.WAITING.getValue());
 
         PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
 
@@ -77,7 +77,7 @@ public class ProductInquiryRestController {
         Pageable pageable) {
         Page<InquiryListResponseDto> inquiriesPage =
             inquiryService.findInquiriesByStatusCodeNo(pageable,
-                InquiryType.PRODUCT_INQUIRIES.getValue(), ProcessStatus.COMPLETE.getValue());
+                InquiryType.PRODUCT_INQUIRY.getValue(), ProcessStatus.COMPLETE.getValue());
 
         PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
 
@@ -99,7 +99,7 @@ public class ProductInquiryRestController {
 
         Page<InquiryListResponseDto> inquiriesPage =
             inquiryService.findInquiriesByMemberNo(pageable,
-                InquiryType.PRODUCT_INQUIRIES.getValue(), memberNo);
+                InquiryType.PRODUCT_INQUIRY.getValue(), memberNo);
 
         PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
 

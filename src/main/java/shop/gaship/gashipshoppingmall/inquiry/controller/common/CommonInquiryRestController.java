@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
+import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 
 /**
@@ -96,5 +98,19 @@ public class CommonInquiryRestController {
     public ResponseEntity<Void> inquiryAnswerDelete(@PathVariable Integer inquiryNo) {
         inquiryService.deleteInquiryAnswer(inquiryNo);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 문의 상세조회 요청을 처리하는 기능입니다.
+     *
+     * @param inquiryNo 조회의 기준이 되는 문의번호입니다.
+     * @return ResponseEntity body에 InquiryDetailsResponseDto라는 상세조회에 필요한 정보가 담긴 객체를 넣어서 반환합니다.
+     * @author 최겸준
+     */
+    @GetMapping(value = "/{inquiryNo}")
+    public ResponseEntity<InquiryDetailsResponseDto> inquiryDetails(
+        @PathVariable Integer inquiryNo) {
+
+        return ResponseEntity.ok(inquiryService.findInquiry(inquiryNo));
     }
 }
