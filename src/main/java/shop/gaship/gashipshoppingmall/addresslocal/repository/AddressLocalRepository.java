@@ -28,4 +28,13 @@ public interface AddressLocalRepository extends JpaRepository<AddressLocal, Inte
      */
     List<AddressLocal> findByLevel(Integer level);
 
+    /**
+     * 주소지가 조재하는지 확인하기 위한 메서드입니다.
+     *
+     * @param addressName 주소지가 기입됩니다.
+     * @return 맞으면 true 없으면 false 가 반환됩니다.
+     * @author 유호철
+     */
+    Boolean existsByAddressName(String addressName);
+
 }

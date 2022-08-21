@@ -1,9 +1,9 @@
 package shop.gaship.gashipshoppingmall.addresslocal.service;
 
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.repository.impl.AddressSubLocalResponseDto;
 
 
 /**
@@ -22,12 +22,7 @@ public interface AddressLocalService {
      */
     void modifyLocalDelivery(ModifyAddressRequestDto modifyDto);
 
-    /**
-     * 주소지를 검색하기위한 메서드입니다.
-     *
-     * @param address 검색을할 주소지가 입력되어있습니다.
-     * @return list : 검색된 주소지와 그 주소지의 하위주소지들이 들어있습니다.
-     * @author 유호철
-     */
-    PageResponse<GetAddressLocalResponseDto> findAddressLocals(String address, Pageable pageable);
+    List<AddressLocalResponseDto> findAddressLocals();
+
+    List<AddressSubLocalResponseDto> findSubLocals(String upperAddress);
 }

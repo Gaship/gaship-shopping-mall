@@ -18,6 +18,10 @@ public class GetAddressLocalResponseDto {
     private String upperAddressName;
     private String addressName;
 
+    private Integer addressNo;
+
+    private boolean isDelivery;
+
     public GetAddressLocalResponseDto(String upperAddressName, String addressName) {
         this.upperAddressName = upperAddressName;
         this.addressName = addressName;
