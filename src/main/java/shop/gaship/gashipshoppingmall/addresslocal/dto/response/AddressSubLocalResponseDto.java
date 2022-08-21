@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.addresslocal.repository.impl;
+package shop.gaship.gashipshoppingmall.addresslocal.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

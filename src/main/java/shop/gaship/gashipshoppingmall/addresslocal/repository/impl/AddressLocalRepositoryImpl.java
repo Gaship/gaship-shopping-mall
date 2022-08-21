@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.custom.AddressLocalRepositoryCustom;

@@ -3,7 +3,7 @@ package shop.gaship.gashipshoppingmall.addresslocal.service;
 import java.util.List;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
-import shop.gaship.gashipshoppingmall.addresslocal.repository.impl.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
 
 
 /**

@@ -2,7 +2,7 @@ package shop.gaship.gashipshoppingmall.addresslocal.repository.custom;
 
 import java.util.List;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
-import shop.gaship.gashipshoppingmall.addresslocal.repository.impl.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
 
 /**
  * 주소지에대한 QueryDsl 을 쓰기위한 인터페이스입니다.
