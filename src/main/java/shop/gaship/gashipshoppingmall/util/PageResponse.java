@@ -43,4 +43,8 @@ public class PageResponse<T> {
 
         this.next = result.hasNext();
     }
+
+    public void decodeContent(List<T> decodedMembers) {
+        this.content = decodedMembers;
+    }
 }
