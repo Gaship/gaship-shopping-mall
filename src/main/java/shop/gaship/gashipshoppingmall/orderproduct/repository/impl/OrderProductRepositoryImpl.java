@@ -103,6 +103,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
             .select(Projections.constructor(DeliveryDto.class,
                 order.receiptName,
                 order.addressList.address,
+                order.addressList.addressDetail,
                 order.receiptPhoneNumber,
                 orderProduct.no))
             .fetchOne();

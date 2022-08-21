@@ -1,14 +1,17 @@
 package shop.gaship.gashipshoppingmall.delivery.controller;
 
+import co.elastic.clients.elasticsearch.nodes.Http;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.delivery.dto.response.DeliveryInfoStatusResponseDto;
 import shop.gaship.gashipshoppingmall.delivery.dto.response.TrackingNoResponseDto;
 import shop.gaship.gashipshoppingmall.delivery.service.DeliveryService;
 
@@ -47,6 +50,13 @@ public class DeliveryController {
     @PostMapping(value = "/eggplant/tracking-no")
     public ResponseEntity<Void> addTrackingNo(@RequestBody TrackingNoResponseDto trackingNoResponseDto) {
         deliveryService.addTrackingNo(trackingNoResponseDto);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PatchMapping(value = "/eggplant/delivery-info")
+    public ResponseEntity<Void> changeDeliveryStatus(@RequestBody DeliveryInfoStatusResponseDto deliveryInfoStatusResponseDto) {
+        deliveryService.changeDeliveryStatus(deliveryInfoStatusResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
