@@ -1,6 +1,8 @@
 package shop.gaship.gashipshoppingmall.member.service.impl;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +31,12 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
 import shop.gaship.gashipshoppingmall.util.Events;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * MemberService를 구현하는 클래스입니다.
@@ -318,8 +320,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public PageResponse<MemberResponseDtoByAdmin> findMembers(Pageable pageable) {
         Page<MemberResponseDtoByAdmin> page = memberRepository.findMembers(pageable);
-        page.getContent().stream().map(member -> entityToMemberResponseDtoByAdmin(member,aes));
-        return new PageResponse<>(page);
+        PageResponse<MemberResponseDtoByAdmin> response = new PageResponse<>(page);
+        List<MemberResponseDtoByAdmin> decodedMembers = page.getContent().stream()
+                .map(member -> entityToMemberResponseDtoByAdmin(member, aes))
+                .collect(Collectors.toList());
+
+        response.decodeContent(decodedMembers);
+        return response;
     }
 
     /**
