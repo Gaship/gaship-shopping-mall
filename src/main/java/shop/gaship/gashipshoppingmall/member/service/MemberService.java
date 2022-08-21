@@ -16,8 +16,8 @@ import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdm
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 회원가입, member crud를 위해서 구현체에 필요한 메서드들을 정의한 인터페이스입니다.
@@ -128,7 +128,7 @@ public interface MemberService {
      * @return 변환된 MemberResponseDto객체입니다.
      */
     default MemberResponseDto entityToMemberResponseDto(Member member, Aes aes) {
-        String recommendMemberName = "";
+        String recommendMemberName;
         if (Objects.isNull(member.getRecommendMember())) {
             recommendMemberName = "추천인이없습니다";
         } else {
@@ -160,7 +160,7 @@ public interface MemberService {
      * @return 변환된 MemberResponseDtoByAdmin 객체입니다.
      */
     default MemberResponseDtoByAdmin entityToMemberResponseDtoByAdmin(Member member, Aes aes) {
-        String recommendMemberName = "";
+        String recommendMemberName;
         if (Objects.isNull(member.getRecommendMember())) {
             recommendMemberName = "추천인이없습니다";
         } else {
@@ -184,14 +184,28 @@ public interface MemberService {
                 .build();
     }
 
-    default MemberResponseDtoByAdmin entityToMemberResponseDtoByAdmin(MemberResponseDtoByAdmin member, Aes aes) {
+    /**
+     * 회원의 정보를 조회할 때 복호화하기 위한 빌더 입니다.
+     *
+     * @param member 멤버 객체
+     * @param aes 암,복호화
+     * @return 복호화된 dto
+     */
+    default MemberResponseDtoByAdmin entityToMemberResponseDtoByAdmin(
+            MemberResponseDtoByAdmin member, Aes aes) {
+        String phoneNumber;
+        if (Objects.isNull(member.getPhoneNumber())) {
+            phoneNumber = "";
+        } else {
+            phoneNumber = member.getPhoneNumber();
+        }
         return MemberResponseDtoByAdmin.builder()
                 .memberNo(member.getMemberNo())
                 .recommendMemberName(member.getRecommendMemberName())
                 .memberStatus(member.getMemberStatus())
                 .memberGrade(member.getMemberGrade())
                 .email(aes.aesEcbDecode(member.getEmail()))
-                .phoneNumber(aes.aesEcbDecode(member.getPhoneNumber()))
+                .phoneNumber(aes.aesEcbDecode(phoneNumber))
                 .nickname(member.getNickname())
                 .gender(member.getGender())
                 .birthDate(member.getBirthDate())
