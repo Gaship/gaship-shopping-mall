@@ -77,9 +77,6 @@ public class DeliveryServiceImpl implements DeliveryService {
                                   .orElseThrow(OrderProductNotFoundException::new);
 
         if (checkDeliveryStatus(deliveryInfoStatusResponseDto, DeliveryStatus.DELIVERING)) {
-            StatusCode statusCode = getStatusCode(OrderStatus.SHIPPING);
-            System.out.println(statusCode.getStatusCodeNo());
-            System.out.println(statusCode.getStatusCodeName());
             orderProduct.changeOrderStatusCode(getStatusCode(OrderStatus.SHIPPING));
         }
 

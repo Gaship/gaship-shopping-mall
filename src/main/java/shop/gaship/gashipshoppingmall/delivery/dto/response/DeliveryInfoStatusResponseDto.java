@@ -1,6 +1,8 @@
 package shop.gaship.gashipshoppingmall.delivery.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,6 +22,7 @@ public class DeliveryInfoStatusResponseDto {
     @NotNull(message = "배송 상태는 필수 사항 입니다.")
     private String status;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime arrivalTime;
 
 }
