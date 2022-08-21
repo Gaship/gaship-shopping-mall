@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
 
 /**
@@ -48,12 +48,13 @@ public class AddressLocalController {
     }
 
     /**
-     * get 요청시 최상우 주소지를 반환하는 메서드입니다.
+     * get 요청시 최상위 주소지를 반환하는 메서드입니다.
+     * level 1 인 주소지들이 반환된다. ex: 경상남도, 서울특별시 ...
      *
      * @return 상위 주소지들이 반환됩니다.
      */
     @GetMapping
-    public ResponseEntity<List<AddressLocalResponseDto>> addressLocalList() {
+    public ResponseEntity<List<AddressUpperLocalResponseDto>> addressLocalList() {
         return ResponseEntity.status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
             .body(service.findAddressLocals());

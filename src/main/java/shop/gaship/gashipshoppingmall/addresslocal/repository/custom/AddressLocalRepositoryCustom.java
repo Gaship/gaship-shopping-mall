@@ -1,8 +1,8 @@
 package shop.gaship.gashipshoppingmall.addresslocal.repository.custom;
 
 import java.util.List;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 
 /**
  * 주소지에대한 QueryDsl 을 쓰기위한 인터페이스입니다.
@@ -18,7 +18,7 @@ public interface AddressLocalRepositoryCustom {
      *
      * @return 주소지들의 정보가 반환됩니다.
      */
-    List<AddressLocalResponseDto> findAllAddress();
+    List<AddressUpperLocalResponseDto> findAllAddress();
 
     /**
      * 하위주소지들을 반환하기위한 메서드입니다.

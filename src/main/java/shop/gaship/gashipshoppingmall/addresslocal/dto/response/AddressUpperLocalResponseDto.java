@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressLocalResponseDto {
+public class AddressUpperLocalResponseDto {
     private Integer addressNo;
     private String addressName;
     private boolean allowDelivery;

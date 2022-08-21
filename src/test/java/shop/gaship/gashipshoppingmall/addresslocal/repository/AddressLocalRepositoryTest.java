@@ -7,10 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.PageRequest;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
@@ -90,7 +88,7 @@ class AddressLocalRepositoryTest {
         repository.save(upper);
         repository.save(child1);
 
-        List<AddressLocalResponseDto> result = repository.findAllAddress();
+        List<AddressUpperLocalResponseDto> result = repository.findAllAddress();
         assertThat(result.get(0).getAddressName()).isEqualTo(upper.getAddressName());
         assertThat(result.get(0).getAddressNo()).isEqualTo(upper.getAddressNo());
         assertThat(result.get(0).isAllowDelivery()).isEqualTo(upper.isAllowDelivery());
@@ -100,7 +98,6 @@ class AddressLocalRepositoryTest {
     @Test
     void address_searchTest() {
         //given
-        GetAddressLocalResponseDto d1 = new GetAddressLocalResponseDto(upper.getAddressName(), child1.getAddressName());
         List<AddressLocal> list = new ArrayList<>();
         list.add(child1);
         list.add(child2);
@@ -118,7 +115,6 @@ class AddressLocalRepositoryTest {
         repository.save(child1);
         repository.save(child2);
 
-        PageRequest pageRequest = PageRequest.of(0, 10);
         List<AddressSubLocalResponseDto> result = repository.findSubAddress(upper.getAddressName());
         assertThat(result.get(0).getAddressName()).isEqualTo(child1.getAddressName());
         assertThat(result.get(0).getAddressNo()).isEqualTo(child1.getAddressNo());

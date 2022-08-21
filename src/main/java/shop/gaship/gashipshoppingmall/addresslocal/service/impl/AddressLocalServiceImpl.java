@@ -5,8 +5,8 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.exception.NotExistAddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
@@ -23,7 +23,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
 @RequiredArgsConstructor
 public class AddressLocalServiceImpl implements AddressLocalService {
 
-    private final AddressLocalRepository repository;
+    private final AddressLocalRepository addressLocalRepository;
 
     /**
      * 배송여부를 수정하기위한 메소드입니다.
@@ -35,7 +35,7 @@ public class AddressLocalServiceImpl implements AddressLocalService {
     @Transactional
     @Override
     public void modifyLocalDelivery(ModifyAddressRequestDto modifyDto) {
-        AddressLocal addressLocal = repository.findById(modifyDto.getLocalNo())
+        AddressLocal addressLocal = addressLocalRepository.findById(modifyDto.getLocalNo())
             .orElseThrow(NotExistAddressLocal::new);
 
         addressLocal.allowDelivery(modifyDto.isDelivery());
@@ -45,8 +45,8 @@ public class AddressLocalServiceImpl implements AddressLocalService {
      * {@inheritDoc}
      */
     @Override
-    public List<AddressLocalResponseDto> findAddressLocals() {
-        return repository.findAllAddress();
+    public List<AddressUpperLocalResponseDto> findAddressLocals() {
+        return addressLocalRepository.findAllAddress();
     }
 
     /**
@@ -54,10 +54,10 @@ public class AddressLocalServiceImpl implements AddressLocalService {
      */
     @Override
     public List<AddressSubLocalResponseDto> findSubLocals(String upperAddress) {
-        if (Boolean.FALSE.equals(repository.existsByAddressName(upperAddress))) {
+        if (Boolean.FALSE.equals(addressLocalRepository.existsByAddressName(upperAddress))) {
             throw new NotExistAddressLocal();
         }
-        return repository.findSubAddress(upperAddress);
+        return addressLocalRepository.findSubAddress(upperAddress);
     }
 
 }

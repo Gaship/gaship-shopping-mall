@@ -35,6 +35,6 @@ public interface AddressLocalRepository extends JpaRepository<AddressLocal, Inte
      * @return 맞으면 true 없으면 false 가 반환됩니다.
      * @author 유호철
      */
-    Boolean existsByAddressName(String addressName);
+    boolean existsByAddressName(String addressName);
 
 }

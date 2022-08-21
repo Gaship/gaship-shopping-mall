@@ -12,8 +12,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.ModifyAddressRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
 
@@ -121,10 +121,9 @@ class AddressLocalControllerTest {
 
     @Test
     void findAllAddressLocal() throws Exception {
-        AddressLocalResponseDto dto = new AddressLocalResponseDto(1, "마산", true);
-        List<AddressLocalResponseDto> list = new ArrayList<>();
+        AddressUpperLocalResponseDto dto = new AddressUpperLocalResponseDto(1, "마산", true);
+        List<AddressUpperLocalResponseDto> list = new ArrayList<>();
         list.add(dto);
-
         when(service.findAddressLocals())
             .thenReturn(list);
 

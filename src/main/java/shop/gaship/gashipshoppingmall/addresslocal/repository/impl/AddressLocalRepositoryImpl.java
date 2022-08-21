@@ -3,8 +3,8 @@ package shop.gaship.gashipshoppingmall.addresslocal.repository.impl;
 import com.querydsl.core.types.Projections;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.custom.AddressLocalRepositoryCustom;
@@ -20,18 +20,19 @@ import shop.gaship.gashipshoppingmall.addresslocal.repository.custom.AddressLoca
  */
 public class AddressLocalRepositoryImpl extends QuerydslRepositorySupport
     implements AddressLocalRepositoryCustom {
-
+    public static final Integer HIGH_ADDRESS_NO = 1;
+    
     public AddressLocalRepositoryImpl() {
         super(AddressLocal.class);
     }
 
     @Override
-    public List<AddressLocalResponseDto> findAllAddress() {
+    public List<AddressUpperLocalResponseDto> findAllAddress() {
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
 
         return from(addressLocal)
-            .where(addressLocal.level.eq(1))
-            .select(Projections.constructor(AddressLocalResponseDto.class,
+            .where(addressLocal.level.eq(HIGH_ADDRESS_NO))
+            .select(Projections.constructor(AddressUpperLocalResponseDto.class,
                 addressLocal.addressNo,
                 addressLocal.addressName,
                 addressLocal.allowDelivery))

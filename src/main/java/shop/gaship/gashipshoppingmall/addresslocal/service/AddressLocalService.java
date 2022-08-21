@@ -2,8 +2,8 @@ package shop.gaship.gashipshoppingmall.addresslocal.service;
 
 import java.util.List;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 
 
 /**
@@ -22,7 +22,19 @@ public interface AddressLocalService {
      */
     void modifyLocalDelivery(ModifyAddressRequestDto modifyDto);
 
-    List<AddressLocalResponseDto> findAddressLocals();
+    /**
+     * 최상위 주소 "서울" 등을 뽑아오기위한 메서드입니다.
+     *
+     * @return 주소지 이름과 번호 배송가능여부가 반환됩니다.
+     */
+    List<AddressUpperLocalResponseDto> findAddressLocals();
 
+    /**
+     * level 1 미만의 주소지들이 반환됩니다.
+     * 기입된 주소를 기준으로 하위주소지들이 반환됩니다.
+     *
+     * @param upperAddress 상위주소가 기입됩니다.
+     * @return 주소지의 이름과 번호가 반환됩니다.
+     */
     List<AddressSubLocalResponseDto> findSubLocals(String upperAddress);
 }
