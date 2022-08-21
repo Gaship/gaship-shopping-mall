@@ -20,6 +20,7 @@ import shop.gaship.gashipshoppingmall.delivery.service.DeliveryService;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
+import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 
 /**
  * 배송 관련 service test 클래스 입니다.
@@ -40,6 +41,9 @@ class DeliveryServiceImplTest {
 
     @MockBean
     Aes aes;
+
+    @MockBean
+    StatusCodeRepository statusCodeRepository;
 
     @Autowired
     DeliveryService deliveryService;
