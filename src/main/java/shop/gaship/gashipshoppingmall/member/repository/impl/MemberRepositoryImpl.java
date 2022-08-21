@@ -59,7 +59,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
         QMember member = QMember.member;
 
         Member result = from(member)
-                .where(member.email.eq(email))
+                .where(member.encodedEmailForSearch.eq(email))
                 .select(member)
                 .fetchOne();
 
@@ -71,6 +71,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         .authorities(result.getRoleSet().stream()
                                 .map(String::valueOf)
                                 .collect(Collectors.toList()))
+                        .isSocial(result.isSocial())
                         .build()
         );
     }
