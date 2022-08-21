@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.config.DataProtectionConfig;
 import shop.gaship.gashipshoppingmall.config.DataSourceConfig;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
@@ -43,6 +44,8 @@ import shop.gaship.gashipshoppingmall.member.service.impl.MemberServiceImpl;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.status.RenewalPeriod;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.UserAuthority;
@@ -106,14 +109,19 @@ class MemberServiceTest {
 
         String plainEmailDummy = dummy.getEmail();
 
-        given(statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name()))
+        given(statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.getValue()))
                 .willReturn(Optional.of(StatusCodeDummy.dummy()));
+
+        StatusCode periodStatusCodeDummy = StatusCodeDummy.dummy();
+        ReflectionTestUtils.setField(periodStatusCodeDummy, "explanation", "12");
+        given(statusCodeRepository.findByStatusCodeName(RenewalPeriod.PERIOD.getValue()))
+            .willReturn(Optional.of(periodStatusCodeDummy));
         given(memberGradeRepository.findByDefaultGrade()).willReturn(
                 MemberGradeDummy.defaultDummy(
                         MemberGradeDtoDummy.requestDummy("일반", 0L),
                         StatusCodeDummy.dummy()
                 ));
-        given(statusCodeRepository.findByStatusCodeName(UserAuthority.MEMBER.name()))
+        given(statusCodeRepository.findByStatusCodeName(UserAuthority.MEMBER.getValue()))
                 .willReturn(Optional.of(StatusCodeDummy.dummy()));
 
         memberService.addMember(dummy);
@@ -314,11 +322,16 @@ class MemberServiceTest {
     @DisplayName("이메일을 통해서 로그인을 시도하는 회원의 정보를 조회합니다. : 존재하는 경우")
     void findSignInUserDetailCaseFounded() {
         Member dummy = shop.gaship.gashipshoppingmall.member.dummy.MemberDummy.dummy();
+        String email = "example@nhn.com";
+
+        given(sha512.encryptPlainText(anyString())).willReturn(email);
         given(memberRepository.findSignInUserDetail(anyString()))
                 .willReturn(Optional.of(SignInUserDetailDummy.dummy()));
+        given(aes.aesEcbDecode(anyString()))
+            .willReturn(email);
 
         SignInUserDetailsDto userDetailsDto =
-                memberService.findSignInUserDetailFromEmail("example@nhn.com");
+                memberService.findSignInUserDetailFromEmail(email);
 
 
         assertThat(userDetailsDto.getEmail()).isEqualTo(dummy.getEmail());

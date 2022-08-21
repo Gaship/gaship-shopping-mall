@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +32,8 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.RenewalPeriod;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -50,6 +53,7 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final StatusCodeRepository statusCodeRepository;
@@ -69,11 +73,17 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void addMember(MemberCreationRequest memberCreationRequest) {
-        Member recommendMember =
-            memberRepository.findById(
+        Member recommendMember = null;
+        if(Objects.nonNull(memberCreationRequest.getRecommendMemberNo())) {
+            recommendMember = memberRepository.findById(
                 memberCreationRequest.getRecommendMemberNo()).orElse(null);
+        }
+
         StatusCode defaultStatus =
-            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.getValue())
+                .orElseThrow(StatusCodeNotFoundException::new);
+        StatusCode renewalPeriod =
+            statusCodeRepository.findByStatusCodeName(RenewalPeriod.PERIOD.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
 
@@ -83,7 +93,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member savedMember =
             creationRequestToMemberEntity(encodePrivacyUserInformation(memberCreationRequest),
-                recommendMember, defaultStatus, defaultGrade);
+                recommendMember, defaultStatus, renewalPeriod, defaultGrade);
 
         memberRepository.saveAndFlush(savedMember);
 
@@ -404,7 +414,14 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public SignInUserDetailsDto findSignInUserDetailFromEmail(String email) {
-        return memberRepository.findSignInUserDetail(email)
-            .orElseThrow(MemberNotFoundException::new);
+        String encodedEmail = sha512.encryptPlainText(email);
+        log.debug("TEST DEBUG encoded Email : {}", encodedEmail);
+        SignInUserDetailsDto signInUserDetailsDto =
+            memberRepository.findSignInUserDetail(encodedEmail)
+                .orElseThrow(MemberNotFoundException::new);
+
+        signInUserDetailsDto.setEmail(aes.aesEcbDecode(signInUserDetailsDto.getEmail()));
+
+        return signInUserDetailsDto;
     }
 }
