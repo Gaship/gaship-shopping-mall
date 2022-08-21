@@ -13,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.GetAddressLocalResponseDtoDummy;
@@ -20,7 +22,6 @@ import shop.gaship.gashipshoppingmall.addresslocal.dummy.ModifyAddressRequestDto
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.exception.NotExistAddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
-import shop.gaship.gashipshoppingmall.addresslocal.repository.impl.AddressSubLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.service.impl.AddressLocalServiceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -113,6 +114,22 @@ class AddressLocalServiceTest {
         //then
         verify(addressLocalRepository, times(1))
             .findSubAddress(requestDto);
+    }
+
+    @DisplayName("전체조회 테스트")
+    @Test
+    void findAllAddress() {
+        List<AddressLocalResponseDto> list = new ArrayList<>();
+        AddressLocalResponseDto dto = new AddressLocalResponseDto(1, "마산", true);
+        list.add(dto);
+        given(addressLocalRepository.findAllAddress())
+            .willReturn(list);
+
+        List<AddressLocalResponseDto> result = service.findAddressLocals();
+
+        assertThat(result.get(0).getAddressName()).isEqualTo(dto.getAddressName());
+        assertThat(result.get(0).getAddressNo()).isEqualTo(dto.getAddressNo());
+        assertThat(result.get(0).isAllowDelivery()).isEqualTo(dto.isAllowDelivery());
     }
 
 }

@@ -12,8 +12,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.ModifyAddressRequestDtoDummy;
-import shop.gaship.gashipshoppingmall.addresslocal.repository.impl.AddressSubLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -116,5 +117,28 @@ class AddressLocalControllerTest {
         //then
         verify(service, times(1)).findSubLocals("경상남도");
 
+    }
+
+    @Test
+    void findAllAddressLocal() throws Exception {
+        AddressLocalResponseDto dto = new AddressLocalResponseDto(1, "마산", true);
+        List<AddressLocalResponseDto> list = new ArrayList<>();
+        list.add(dto);
+
+        when(service.findAddressLocals())
+            .thenReturn(list);
+
+        mvc.perform(get("/api/addressLocals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.[0].addressName").value(dto.getAddressName()))
+            .andExpect(jsonPath("$.[0].addressNo").value(dto.getAddressNo()))
+            .andExpect(jsonPath("$.[0].allowDelivery").value(dto.isAllowDelivery()))
+            .andDo(print());
+
+        //then
+        verify(service, times(1)).findAddressLocals();
     }
 }

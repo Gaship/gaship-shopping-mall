@@ -8,10 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
-import shop.gaship.gashipshoppingmall.addresslocal.repository.impl.AddressSubLocalResponseDto;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
@@ -70,6 +71,29 @@ class AddressLocalRepositoryTest {
         assertThat(test.isAllowDelivery()).isEqualTo(upper.isAllowDelivery());
         assertThat(test.getDayLabor()).isEqualTo(labor);
         assertThat(child1.getUpperLocal().getAddressName()).isEqualTo(upper.getAddressName());
+    }
+
+    @DisplayName("전체 조회 테스트")
+    @Test
+    void findAll() {
+        List<AddressLocal> list = new ArrayList<>();
+        list.add(child1);
+
+        labor.fixLocation(upper);
+        upper.registerDayLabor(labor);
+        upper.updateSubLocal(list);
+
+        child1.registerUpperLocal(upper);
+
+        //when
+        laborRepository.save(labor);
+        repository.save(upper);
+        repository.save(child1);
+
+        List<AddressLocalResponseDto> result = repository.findAllAddress();
+        assertThat(result.get(0).getAddressName()).isEqualTo(upper.getAddressName());
+        assertThat(result.get(0).getAddressNo()).isEqualTo(upper.getAddressNo());
+        assertThat(result.get(0).isAllowDelivery()).isEqualTo(upper.isAllowDelivery());
     }
 
     @DisplayName("지역 검색시 관련 하위 지역들 나오는지 테스트")
