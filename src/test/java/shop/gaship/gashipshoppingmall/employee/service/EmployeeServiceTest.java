@@ -298,6 +298,7 @@ class EmployeeServiceTest {
             new SignInUserDetailsDto(employee.getEmployeeNo(),
                 employee.getEmail(),
                 employee.getPassword(),
+                false,
                 List.of("ROLE_ADMIN")
             );
         given(sha512.encryptPlainText(anyString()))

@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.employee.repository.impl;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +63,7 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
                         employee.employeeNo,
                         employee.email,
                         employee.password.as("hashedPassword"),
+                        Expressions.FALSE.as("isSocial"),
                         Projections.list(employee.statusCode.statusCodeName))
                 )
                 .fetchOne()

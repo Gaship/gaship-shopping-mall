@@ -1,5 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.service;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,7 @@ import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
+import shop.gaship.gashipshoppingmall.member.entity.MembersRole;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -128,7 +131,7 @@ public interface MemberService {
      * @return 변환된 MemberResponseDto객체입니다.
      */
     default MemberResponseDto entityToMemberResponseDto(Member member, Aes aes) {
-        String recommendMemberName = "";
+        String recommendMemberName;
         if (Objects.isNull(member.getRecommendMember())) {
             recommendMemberName = "추천인이없습니다";
         } else {
@@ -160,7 +163,7 @@ public interface MemberService {
      * @return 변환된 MemberResponseDtoByAdmin 객체입니다.
      */
     default MemberResponseDtoByAdmin entityToMemberResponseDtoByAdmin(Member member, Aes aes) {
-        String recommendMemberName = "";
+        String recommendMemberName;
         if (Objects.isNull(member.getRecommendMember())) {
             recommendMemberName = "추천인이없습니다";
         } else {
@@ -197,17 +200,24 @@ public interface MemberService {
     default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest,
                                                  @Nullable Member recommendMember,
                                                  StatusCode defaultStatus,
+                                                 StatusCode defaultRenewalGradeDateStatus,
                                                  MemberGrade defaultGrade) {
-        return Member.builder().recommendMember(recommendMember).memberStatusCodes(defaultStatus)
-                .memberGrades(defaultGrade).email(memberCreationRequest.getEmail())
-                .nickname(memberCreationRequest.getNickName()).name(memberCreationRequest.getName())
-                .password(memberCreationRequest.getPassword())
-                .phoneNumber(memberCreationRequest.getPhoneNumber())
-                .birthDate(memberCreationRequest.getBirthDate())
-                .gender(memberCreationRequest.getGender())
-                .accumulatePurchaseAmount(0L)
-                .isSocial(false)
-                .build();
+        int renewalGradeDate = Integer.parseInt(defaultRenewalGradeDateStatus.getExplanation());
+
+        return Member.builder()
+            .recommendMember(recommendMember)
+            .memberStatusCodes(defaultStatus)
+            .memberGrades(defaultGrade).email(memberCreationRequest.getEmail())
+            .nickname(memberCreationRequest.getNickName()).name(memberCreationRequest.getName())
+            .password(memberCreationRequest.getPassword())
+            .phoneNumber(memberCreationRequest.getPhoneNumber())
+            .birthDate(memberCreationRequest.getBirthDate())
+            .gender(memberCreationRequest.getGender())
+            .encodedEmailForSearch(memberCreationRequest.getEncodedEmailForSearch())
+            .nextRenewalGradeDate(LocalDate.now().plusMonths(renewalGradeDate))
+            .accumulatePurchaseAmount(0L)
+            .isSocial(false)
+            .build();
     }
 
     /**
@@ -229,6 +239,7 @@ public interface MemberService {
                 .phoneNumber(memberCreationRequestOauth.getPhoneNumber())
                 .birthDate(memberCreationRequestOauth.getBirthDate())
                 .gender(memberCreationRequestOauth.getGender()).accumulatePurchaseAmount(0L)
+                .roleSet(List.of(MembersRole.ROLE_USER))
                 .isSocial(true).build();
     }
 
