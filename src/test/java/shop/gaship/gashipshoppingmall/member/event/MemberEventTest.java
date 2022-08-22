@@ -19,6 +19,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.member.adapter.MemberAdapter;
+import shop.gaship.gashipshoppingmall.member.dto.VerifiedCheckDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
@@ -65,6 +66,7 @@ class MemberEventTest {
     @MockBean
     StatusCodeRepository statusCodeRepository;
 
+    @MockBean
     MemberAdapter memberAdapter;
 
     @MockBean
@@ -80,6 +82,10 @@ class MemberEventTest {
             .willReturn(Optional.of(member));
         given(statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.getValue()))
             .willReturn(Optional.of(StatusCodeDummy.dummy()));
+
+        VerifiedCheckDto verifiedCheck = new VerifiedCheckDto(true);
+        given(memberAdapter.checkVerifiedEmail(any()))
+            .willReturn(verifiedCheck);
 
         StatusCode statusCodeDummy = StatusCodeDummy.dummy();
         ReflectionTestUtils.setField(statusCodeDummy, "explanation", "12");

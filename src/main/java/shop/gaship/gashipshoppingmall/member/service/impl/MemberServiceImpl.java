@@ -26,6 +26,7 @@ import shop.gaship.gashipshoppingmall.member.event.domain.SignedUpEvent;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
@@ -70,6 +71,22 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void addMember(MemberCreationRequest memberCreationRequest) {
+        String duplicateEmailTarget = memberCreationRequest.getEmail();
+        Member duplicatedMember = memberRepository.findByEncodedEmailForSearch(sha512.encryptPlainText(duplicateEmailTarget))
+            .orElse(null);
+
+        if (Objects.nonNull(duplicatedMember)) {
+            throw new SignUpDenyException("이메일 중복확인 또는 이메일 검증이 필요합니다.");
+        }
+
+        boolean status =
+            memberAdapter.checkVerifiedEmail(memberCreationRequest.getVerifyCode())
+                .getStatus();
+
+        if (!status) {
+            throw new SignUpDenyException("이메일 검증이 필요합니다.");
+        }
+
         Member recommendMember = null;
         if(Objects.nonNull(memberCreationRequest.getRecommendMemberNo())) {
             recommendMember = memberRepository.findById(

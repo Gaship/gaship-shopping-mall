@@ -14,6 +14,7 @@ import shop.gaship.gashipshoppingmall.error.NoResponseDataException;
 import shop.gaship.gashipshoppingmall.error.RequestFailureThrow;
 import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordReceiveEmailDto;
 import shop.gaship.gashipshoppingmall.member.dto.SuccessReissueResponse;
+import shop.gaship.gashipshoppingmall.member.dto.VerifiedCheckDto;
 
 /**
  * 쇼핑몰 서버의 멤버 도메인에서 타 서비스 서버에 요청시 이용하는 클래스입니다.
@@ -57,6 +58,24 @@ public class MemberAdapter {
                 clientResponse.bodyToMono(ErrorResponse.class)
                     .flatMap(errorResponse -> Mono.error(new RequestFailureThrow(errorResponse.getMessage(), clientResponse.statusCode()))))
             .bodyToMono(void.class)
+            .block();
+    }
+
+
+    /**
+     * 인증번호를 회원 가입 때 확인하는 메서드입니다.
+     *
+     * @param verifyCode 회원이 가입 당시 인증받았던 인증번호입니다.
+     * @author 최겸준
+     */
+    public VerifiedCheckDto checkVerifiedEmail(String verifyCode) {
+        return WebClient.create(serverConfig.getAuthUrl()).post()
+            .uri("/securities/verify/email/{verifyCode}", verifyCode)
+            .retrieve()
+            .onStatus(HttpStatus::isError, clientResponse ->
+                clientResponse.bodyToMono(ErrorResponse.class)
+                    .flatMap(errorResponse -> Mono.error(new RequestFailureThrow(errorResponse.getMessage(), clientResponse.statusCode()))))
+            .bodyToMono(VerifiedCheckDto.class)
             .block();
     }
 }
