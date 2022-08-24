@@ -144,4 +144,8 @@ public class OrderProduct {
         this.employee = employee;
         this.employeeName = employee.getName();
     }
+
+    public void changeOrderStatusCode(StatusCode orderStatusCode) {
+        this.orderStatusCode = orderStatusCode;
+    }
 }

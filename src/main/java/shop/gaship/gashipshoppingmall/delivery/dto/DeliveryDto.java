@@ -1,5 +1,9 @@
 package shop.gaship.gashipshoppingmall.delivery.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,11 +24,19 @@ public class DeliveryDto {
     @NotBlank(message = "수취인 주소는 필수 입니다.")
     private String receiverAddress;
 
+    @NotBlank(message = "수취인 상세주소는 필수 입니다.")
+    private String receiverDetailAddress;
+
     @NotBlank(message = "수취인 휴대번호는 필수 입니다.")
     private String receiverPhone;
 
-    @NotBlank(message = "해당 주문에 대한 주문 번호는 필수 입니다.")
+    @NotBlank(message = "해당 주문에 대한 주문 상품 번호는 필수 입니다.")
     private Integer orderProductNo;
+
+    @JsonGetter("orderNo")
+    public Integer getOrderProductNo() {
+        return orderProductNo;
+    }
 
     public void decodingReceiverName(String receiverName) {
         this.receiverName = receiverName;
@@ -32,6 +44,10 @@ public class DeliveryDto {
 
     public void decodingReceiverAddress(String receiverAddress) {
         this.receiverAddress = receiverAddress;
+    }
+
+    public void decodingReceiverDetailAddress(String receiverDetailAddress) {
+        this.receiverDetailAddress = receiverDetailAddress;
     }
 
     public void decodingReceiverPhone(String receiverPhone) {
