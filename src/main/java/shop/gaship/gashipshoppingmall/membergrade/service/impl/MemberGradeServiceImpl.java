@@ -10,11 +10,7 @@ import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequ
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.exception.AccumulateAmountIsOverlap;
-import shop.gaship.gashipshoppingmall.membergrade.exception.CannotDeleteDefaultMemberGrade;
-import shop.gaship.gashipshoppingmall.membergrade.exception.DefaultMemberGradeIsExist;
-import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeInUseException;
-import shop.gaship.gashipshoppingmall.membergrade.exception.MemberGradeNotFoundException;
+import shop.gaship.gashipshoppingmall.membergrade.exception.*;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
@@ -69,10 +65,15 @@ public class MemberGradeServiceImpl implements MemberGradeService {
      */
     @Transactional
     @Override
-    public void modifyMemberGrade(MemberGradeModifyRequestDto requestDto) {
+    public void modifyMemberGrade(Integer memberGradeNo,
+                                  MemberGradeModifyRequestDto requestDto) {
         MemberGrade memberGrade = memberGradeRepository
-            .findById(requestDto.getNo())
+            .findById(memberGradeNo)
             .orElseThrow(MemberGradeNotFoundException::new);
+
+        if (memberGrade.isDefault() && requestDto.getAccumulateAmount() > 0) {
+            throw new InvalidAccumulateAmountException();
+        }
 
         if (!memberGrade.getAccumulateAmount().equals(requestDto.getAccumulateAmount())) {
             checkOverlapAccumulateAmount(requestDto.getAccumulateAmount());

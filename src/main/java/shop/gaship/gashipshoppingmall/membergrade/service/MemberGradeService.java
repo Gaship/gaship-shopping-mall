@@ -37,7 +37,8 @@ public interface MemberGradeService {
      * @param requestDto MemberGradeModifyRequestDto
      * @author 김세미
      */
-    void modifyMemberGrade(MemberGradeModifyRequestDto requestDto);
+    void modifyMemberGrade(Integer memberGradeNo,
+                           MemberGradeModifyRequestDto requestDto);
 
     /**
      * 회원등급 삭제를 위한 메서드

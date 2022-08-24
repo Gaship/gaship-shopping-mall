@@ -65,7 +65,7 @@ public class MemberGradeRestController {
     public ResponseEntity<Void>
         memberGradeModify(@PathVariable Integer memberGradeNo,
                           @Valid @RequestBody MemberGradeModifyRequestDto requestDto) {
-        memberGradeService.modifyMemberGrade(requestDto);
+        memberGradeService.modifyMemberGrade(memberGradeNo, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .build();

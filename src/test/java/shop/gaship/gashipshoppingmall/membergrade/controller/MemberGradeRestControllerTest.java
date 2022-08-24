@@ -90,7 +90,7 @@ class MemberGradeRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(memberGradeService).modifyMemberGrade(any());
+        verify(memberGradeService).modifyMemberGrade(any(), any());
     }
 
     @DisplayName("회원등급 수정시 " +
@@ -106,7 +106,7 @@ class MemberGradeRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
 
-        verify(memberGradeService, never()).modifyMemberGrade(any());
+        verify(memberGradeService, never()).modifyMemberGrade(any(), any());
     }
 
     @DisplayName("회원등급 삭제하는 경우")
