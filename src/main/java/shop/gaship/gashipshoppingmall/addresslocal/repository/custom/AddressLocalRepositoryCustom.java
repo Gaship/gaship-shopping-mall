@@ -1,8 +1,8 @@
 package shop.gaship.gashipshoppingmall.addresslocal.repository.custom;
 
-import org.springframework.data.domain.Pageable;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
+import java.util.List;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 
 /**
  * 주소지에대한 QueryDsl 을 쓰기위한 인터페이스입니다.
@@ -12,12 +12,19 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
  */
 public interface AddressLocalRepositoryCustom {
 
+
     /**
-     * 입력된 주소를 통해 전체주소를 찾는 메서드입니다.
+     * 최상위 주소지들을 반환하기위한 메서드입니다.
      *
-     * @param address  : 찾기위한 주소입니다.
-     * @param pageable : page 에대한 정보가 담겨 있습니다.
-     * @return list : 입력된 정보를 통해 조회된 주소들이 반환됩니다.
+     * @return 주소지들의 정보가 반환됩니다.
      */
-    PageResponse<GetAddressLocalResponseDto> findAllAddress(String address, Pageable pageable);
+    List<AddressUpperLocalResponseDto> findAllAddress();
+
+    /**
+     * 하위주소지들을 반환하기위한 메서드입니다.
+     *
+     * @param upperAddress 상위주소지의 이름이 기입됩니다.
+     * @return the list
+     */
+    List<AddressSubLocalResponseDto> findSubAddress(String upperAddress);
 }

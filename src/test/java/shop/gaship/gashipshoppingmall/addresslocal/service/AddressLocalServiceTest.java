@@ -11,22 +11,21 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
-import shop.gaship.gashipshoppingmall.addresslocal.dummy.GetAddressLocalResponseDtoDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.ModifyAddressRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.exception.NotExistAddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.addresslocal.service.impl.AddressLocalServiceImpl;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
@@ -51,7 +50,6 @@ class AddressLocalServiceTest {
     AddressLocalService service;
     ModifyAddressRequestDto modifyDto;
     AddressLocal addressLocal;
-    GetAddressLocalResponseDto responseDto;
     String requestDto;
     ArgumentCaptor<AddressLocal> captor;
     @MockBean
@@ -60,7 +58,6 @@ class AddressLocalServiceTest {
     @BeforeEach
     void setUp() {
         requestDto = "마산턱별시";
-        responseDto = GetAddressLocalResponseDtoDummy.dummy();
         captor = ArgumentCaptor.forClass(AddressLocal.class);
         addressLocal = AddressLocalDummy.dummy1();
         modifyDto = ModifyAddressRequestDtoDummy.dummy();
@@ -97,20 +94,38 @@ class AddressLocalServiceTest {
     @Test
     void searchAddressLocal() {
         //given
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        List<GetAddressLocalResponseDto> list = new ArrayList<>();
-        list.add(responseDto);
+        List<AddressSubLocalResponseDto> list = new ArrayList<>();
+        AddressSubLocalResponseDto dto = new AddressSubLocalResponseDto(1, "마산");
+        list.add(dto);
 
-        PageImpl<GetAddressLocalResponseDto> page = new PageImpl<>(list, pageRequest, pageRequest.getOffset());
-        PageResponse<GetAddressLocalResponseDto> pages = new PageResponse<>(page);
-        given(addressLocalRepository.findAllAddress(requestDto, pageRequest))
-            .willReturn(pages);
-
+        given(addressLocalRepository.findSubAddress(requestDto))
+            .willReturn(list);
+        given(addressLocalRepository.existsByAddressName(anyString()))
+            .willReturn(true);
         //when & then
-        service.findAddressLocals(requestDto, pageRequest);
+        List<AddressSubLocalResponseDto> result = service.findSubLocals(requestDto);
+
+        assertThat(result.get(0).getAddressNo()).isEqualTo(dto.getAddressNo());
+        assertThat(result.get(0).getAddressName()).isEqualTo(dto.getAddressName());
         //then
         verify(addressLocalRepository, times(1))
-            .findAllAddress(requestDto, pageRequest);
+            .findSubAddress(requestDto);
+    }
+
+    @DisplayName("전체조회 테스트")
+    @Test
+    void findAllAddress() {
+        List<AddressUpperLocalResponseDto> list = new ArrayList<>();
+        AddressUpperLocalResponseDto dto = new AddressUpperLocalResponseDto(1, "마산", true);
+        list.add(dto);
+        given(addressLocalRepository.findAllAddress())
+            .willReturn(list);
+
+        List<AddressUpperLocalResponseDto> result = service.findAddressLocals();
+
+        assertThat(result.get(0).getAddressName()).isEqualTo(dto.getAddressName());
+        assertThat(result.get(0).getAddressNo()).isEqualTo(dto.getAddressNo());
+        assertThat(result.get(0).isAllowDelivery()).isEqualTo(dto.isAllowDelivery());
     }
 
 }

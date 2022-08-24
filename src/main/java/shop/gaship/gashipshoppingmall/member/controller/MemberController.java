@@ -27,7 +27,6 @@ import shop.gaship.gashipshoppingmall.member.dto.response.MemberNumberPresence;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.NicknamePresence;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
-import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
 /**
@@ -53,13 +52,9 @@ public class MemberController {
     @PostMapping("/sign-up")
     public ResponseEntity<Void> memberAdd(
             @Valid @RequestBody MemberCreationRequest memberCreationRequest) {
-        if (memberCreationRequest.getIsUniqueEmail()
-                && memberCreationRequest.getIsVerifiedEmail()) {
             memberService.addMember(memberCreationRequest);
-            return ResponseEntity.created(URI.create("/api/members")).build();
-        }
 
-        throw new SignUpDenyException("이메일 중복확인 또는 이메일 검증이 필요합니다.");
+            return ResponseEntity.created(URI.create("/api/members")).build();
     }
 
     /**
