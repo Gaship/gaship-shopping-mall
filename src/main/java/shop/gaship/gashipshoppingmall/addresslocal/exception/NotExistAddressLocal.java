@@ -7,8 +7,9 @@ package shop.gaship.gashipshoppingmall.addresslocal.exception;
  * @since 1.0
  */
 public class NotExistAddressLocal extends RuntimeException {
+    public static final String MESSAGE = "주소가 존재하지않습니다.";
 
     public NotExistAddressLocal() {
-        super("주소가 존재하지 않습니다");
+        super(MESSAGE);
     }
 }
