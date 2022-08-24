@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
@@ -59,11 +58,8 @@ public class MemberCreationRequest {
     )
     private String gender;
 
-    @NotNull(message = "이메일 인증을 완료해주세요.")
-    private Boolean isVerifiedEmail;
-
-    @NotNull(message = "이메일 중복확인을 진행 후 회원가입해주세요.")
-    private Boolean isUniqueEmail;
+    @NotBlank(message = "이메일 인증이 필요합니다.")
+    private String verifyCode;
 
     private String encodedEmailForSearch;
 }

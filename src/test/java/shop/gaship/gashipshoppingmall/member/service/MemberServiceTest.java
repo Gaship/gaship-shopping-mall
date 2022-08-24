@@ -25,6 +25,7 @@ import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.member.adapter.MemberAdapter;
 import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordReceiveEmailDto;
 import shop.gaship.gashipshoppingmall.member.dto.SuccessReissueResponse;
+import shop.gaship.gashipshoppingmall.member.dto.VerifiedCheckDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
@@ -123,6 +124,10 @@ class MemberServiceTest {
                 ));
         given(statusCodeRepository.findByStatusCodeName(UserAuthority.MEMBER.getValue()))
                 .willReturn(Optional.of(StatusCodeDummy.dummy()));
+
+        VerifiedCheckDto verifiedCheck = new VerifiedCheckDto(true);
+        given(memberAdapter.checkVerifiedEmail(any()))
+            .willReturn(verifiedCheck);
 
         memberService.addMember(dummy);
 
