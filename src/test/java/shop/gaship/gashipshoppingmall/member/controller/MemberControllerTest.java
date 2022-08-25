@@ -36,16 +36,9 @@ import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberBaseDummy;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * packageName    : shop.gaship.gashipshoppingmall.member.controller <br/>
@@ -90,16 +83,13 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입 실패 : 이메일 미인증 또는 이메일 중복확인을 하지않는 경우")
+    @DisplayName("회원가입 실패 : 이메일 미인증 할 경우")
     void signUpMemberFailureTest() throws Exception {
         MemberCreationRequest dummy = MemberCreationRequestDummy.dummy();
-        dummy.setIsUniqueEmail(false);
-
-        log.trace("dummy isUniqueEmail : {}", dummy.getIsUniqueEmail());
+        dummy.setVerifyCode(null);
 
         String contentBody = objectMapper.registerModule(new JavaTimeModule())
             .writeValueAsString(dummy);
-
 
         mockMvc.perform(post("/api/members/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -108,7 +98,7 @@ class MemberControllerTest {
             .andExpect(status().is4xxClientError())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message")
-                .value("이메일 중복확인 또는 이메일 검증이 필요합니다."));
+                .value("이메일 인증이 필요합니다."));
     }
 
     @Test

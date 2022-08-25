@@ -9,18 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dummy.GetAddressLocalResponseDtoDummy;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.ModifyAddressRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -98,31 +96,48 @@ class AddressLocalControllerTest {
     @Test
     void findAddressLocalTest() throws Exception {
         //given
-        GetAddressLocalResponseDto dto = GetAddressLocalResponseDtoDummy.dummy();
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        List<GetAddressLocalResponseDto> list = new ArrayList<>();
+        AddressSubLocalResponseDto dto = new AddressSubLocalResponseDto(1, "마산");
+        List<AddressSubLocalResponseDto> list = new ArrayList<>();
         list.add(dto);
 
-        PageImpl<GetAddressLocalResponseDto> page = new PageImpl<>(list, pageRequest, pageRequest.getPageSize());
-        PageResponse<GetAddressLocalResponseDto> pages = new PageResponse<>(page);
         //when
-        when(service.findAddressLocals(dto.getAddressName(), pageRequest))
-            .thenReturn(pages);
+        when(service.findSubLocals(anyString()))
+            .thenReturn(list);
 
         mvc.perform(get("/api/addressLocals")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
-                .queryParam("address", dto.getAddressName())
-                .queryParam("page", objectMapper.writeValueAsString(pageRequest.getPageNumber()))
-                .queryParam("size", objectMapper.writeValueAsString(pageRequest.getPageSize()))
+                .queryParam("address", "경상남도")
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content.[0].upperAddressName").value(dto.getUpperAddressName()))
-            .andExpect(jsonPath("$.content.[0].addressName").value(dto.getAddressName()))
+            .andExpect(jsonPath("$.[0].addressName").value(dto.getAddressName()))
+            .andExpect(jsonPath("$.[0].addressNo").value(dto.getAddressNo()))
             .andDo(print());
 
         //then
-        verify(service, times(1)).findAddressLocals(dto.getAddressName(), pageRequest);
+        verify(service, times(1)).findSubLocals("경상남도");
 
+    }
+
+    @Test
+    void findAllAddressLocal() throws Exception {
+        AddressUpperLocalResponseDto dto = new AddressUpperLocalResponseDto(1, "마산", true);
+        List<AddressUpperLocalResponseDto> list = new ArrayList<>();
+        list.add(dto);
+        when(service.findAddressLocals())
+            .thenReturn(list);
+
+        mvc.perform(get("/api/addressLocals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.[0].addressName").value(dto.getAddressName()))
+            .andExpect(jsonPath("$.[0].addressNo").value(dto.getAddressNo()))
+            .andExpect(jsonPath("$.[0].allowDelivery").value(dto.isAllowDelivery()))
+            .andDo(print());
+
+        //then
+        verify(service, times(1)).findAddressLocals();
     }
 }

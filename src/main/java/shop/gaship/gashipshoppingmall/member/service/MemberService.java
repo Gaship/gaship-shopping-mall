@@ -169,7 +169,7 @@ public interface MemberService {
      * @return 변환된 MemberResponseDtoByAdmin 객체입니다.
      */
     default MemberResponseDtoByAdmin entityToMemberResponseDtoByAdmin(Member member, Aes aes) {
-        String recommendMemberName = "";
+        String recommendMemberName;
         if (Objects.isNull(member.getRecommendMember())) {
             recommendMemberName = "추천인이없습니다";
         } else {

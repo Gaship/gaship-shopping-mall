@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.member.service.impl;
 
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,7 @@ import shop.gaship.gashipshoppingmall.member.event.domain.SignedUpEvent;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
@@ -49,6 +51,7 @@ import shop.gaship.gashipshoppingmall.util.Events;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final StatusCodeRepository statusCodeRepository;
@@ -68,11 +71,33 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void addMember(MemberCreationRequest memberCreationRequest) {
-        Member recommendMember =
-            memberRepository.findById(
+        String duplicateEmailTarget = memberCreationRequest.getEmail();
+        Member duplicatedMember = memberRepository.findByEncodedEmailForSearch(sha512.encryptPlainText(duplicateEmailTarget))
+            .orElse(null);
+
+        if (Objects.nonNull(duplicatedMember)) {
+            throw new SignUpDenyException("이메일 중복확인 또는 이메일 검증이 필요합니다.");
+        }
+
+        boolean status =
+            memberAdapter.checkVerifiedEmail(memberCreationRequest.getVerifyCode())
+                .getStatus();
+
+        if (!status) {
+            throw new SignUpDenyException("이메일 검증이 필요합니다.");
+        }
+
+        Member recommendMember = null;
+        if(Objects.nonNull(memberCreationRequest.getRecommendMemberNo())) {
+            recommendMember = memberRepository.findById(
                 memberCreationRequest.getRecommendMemberNo()).orElse(null);
+        }
+
         StatusCode defaultStatus =
-            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.getValue())
+                .orElseThrow(StatusCodeNotFoundException::new);
+        StatusCode renewalPeriod =
+            statusCodeRepository.findByStatusCodeName(RenewalPeriod.PERIOD.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
         StatusCode renewalPeriod =
@@ -403,7 +428,14 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public SignInUserDetailsDto findSignInUserDetailFromEmail(String email) {
-        return memberRepository.findSignInUserDetail(email)
-            .orElseThrow(MemberNotFoundException::new);
+        String encodedEmail = sha512.encryptPlainText(email);
+        log.debug("TEST DEBUG encoded Email : {}", encodedEmail);
+        SignInUserDetailsDto signInUserDetailsDto =
+            memberRepository.findSignInUserDetail(encodedEmail)
+                .orElseThrow(MemberNotFoundException::new);
+
+        signInUserDetailsDto.setEmail(aes.aesEcbDecode(signInUserDetailsDto.getEmail()));
+
+        return signInUserDetailsDto;
     }
 }

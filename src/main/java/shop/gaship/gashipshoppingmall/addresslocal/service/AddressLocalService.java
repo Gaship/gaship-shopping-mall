@@ -1,9 +1,9 @@
 package shop.gaship.gashipshoppingmall.addresslocal.service;
 
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 
 
 /**
@@ -23,11 +23,18 @@ public interface AddressLocalService {
     void modifyLocalDelivery(ModifyAddressRequestDto modifyDto);
 
     /**
-     * 주소지를 검색하기위한 메서드입니다.
+     * 최상위 주소 "서울" 등을 뽑아오기위한 메서드입니다.
      *
-     * @param address 검색을할 주소지가 입력되어있습니다.
-     * @return list : 검색된 주소지와 그 주소지의 하위주소지들이 들어있습니다.
-     * @author 유호철
+     * @return 주소지 이름과 번호 배송가능여부가 반환됩니다.
      */
-    PageResponse<GetAddressLocalResponseDto> findAddressLocals(String address, Pageable pageable);
+    List<AddressUpperLocalResponseDto> findAddressLocals();
+
+    /**
+     * level 1 미만의 주소지들이 반환됩니다.
+     * 기입된 주소를 기준으로 하위주소지들이 반환됩니다.
+     *
+     * @param upperAddress 상위주소가 기입됩니다.
+     * @return 주소지의 이름과 번호가 반환됩니다.
+     */
+    List<AddressSubLocalResponseDto> findSubLocals(String upperAddress);
 }

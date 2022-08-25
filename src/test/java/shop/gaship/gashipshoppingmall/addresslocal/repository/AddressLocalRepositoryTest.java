@@ -7,14 +7,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.PageRequest;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.AddressLocalDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.DayLaboyDummy;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 import shop.gaship.gashipshoppingmall.daylabor.repository.DayLaborRepository;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -60,7 +59,7 @@ class AddressLocalRepositoryTest {
         repository.save(child2);
 
         AddressLocal test = repository.findById(upper.getAddressNo()).get();
-        repository.findAll();
+        repository.findAllAddress();
 
         assertThat(repository.findByLevel(2)).hasSize(2);
         assertThat(repository.findByLevel(1).get(0)).isEqualTo(upper);
@@ -72,11 +71,33 @@ class AddressLocalRepositoryTest {
         assertThat(child1.getUpperLocal().getAddressName()).isEqualTo(upper.getAddressName());
     }
 
+    @DisplayName("전체 조회 테스트")
+    @Test
+    void findAll() {
+        List<AddressLocal> list = new ArrayList<>();
+        list.add(child1);
+
+        labor.fixLocation(upper);
+        upper.registerDayLabor(labor);
+        upper.updateSubLocal(list);
+
+        child1.registerUpperLocal(upper);
+
+        //when
+        laborRepository.save(labor);
+        repository.save(upper);
+        repository.save(child1);
+
+        List<AddressUpperLocalResponseDto> result = repository.findAllAddress();
+        assertThat(result.get(0).getAddressName()).isEqualTo(upper.getAddressName());
+        assertThat(result.get(0).getAddressNo()).isEqualTo(upper.getAddressNo());
+        assertThat(result.get(0).isAllowDelivery()).isEqualTo(upper.isAllowDelivery());
+    }
+
     @DisplayName("지역 검색시 관련 하위 지역들 나오는지 테스트")
     @Test
     void address_searchTest() {
         //given
-        GetAddressLocalResponseDto d1 = new GetAddressLocalResponseDto(upper.getAddressName(), child1.getAddressName());
         List<AddressLocal> list = new ArrayList<>();
         list.add(child1);
         list.add(child2);
@@ -94,12 +115,12 @@ class AddressLocalRepositoryTest {
         repository.save(child1);
         repository.save(child2);
 
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        PageResponse<GetAddressLocalResponseDto> result = repository.findAllAddress(upper.getAddressName(), pageRequest);
-        assertThat(result.getContent().get(0).getUpperAddressName()).isEqualTo(upper.getAddressName());
-        assertThat(result.getContent().get(0).getAddressName()).isEqualTo(child1.getAddressName());
-        assertThat(result.getContent().get(1).getUpperAddressName()).isEqualTo(upper.getAddressName());
-        assertThat(result.getContent().get(1).getAddressName()).isEqualTo(child2.getAddressName());
+        List<AddressSubLocalResponseDto> result = repository.findSubAddress(upper.getAddressName());
+        assertThat(result.get(0).getAddressName()).isEqualTo(child1.getAddressName());
+        assertThat(result.get(0).getAddressNo()).isEqualTo(child1.getAddressNo());
+        assertThat(result.get(1).getAddressName()).isEqualTo(child2.getAddressName());
+        assertThat(result.get(1).getAddressNo()).isEqualTo(child2.getAddressNo());
+
     }
 
 }
