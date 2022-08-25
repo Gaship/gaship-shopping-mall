@@ -69,7 +69,7 @@ public class MemberAdapter {
      * @author 최겸준
      */
     public VerifiedCheckDto checkVerifiedEmail(String verifyCode) {
-        return WebClient.create(serverConfig.getAuthUrl()).post()
+        return WebClient.create(serverConfig.getAuthUrl()).get()
             .uri("/securities/verify/email/{verifyCode}", verifyCode)
             .retrieve()
             .onStatus(HttpStatus::isError, clientResponse ->

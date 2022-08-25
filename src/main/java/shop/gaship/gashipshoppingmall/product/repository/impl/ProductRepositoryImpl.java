@@ -46,7 +46,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         QCategory top = new QCategory("top");
 
 
-        List<ProductAllInfoResponseDto> content = productQuery(requestDto)
+        JPQLQuery<ProductAllInfoResponseDto> productAllQuery = productQuery(requestDto)
             .select(Projections.constructor(ProductAllInfoResponseDto.class,
                 product.no.as("productNo"),
                 product.name.as("productName"),
@@ -71,11 +71,14 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     ).as("upperName"))
                     .where(upper.no.eq(category.upperCategory.no))
                     .from(upper)))
-            .distinct()
-            .fetch();
+            .distinct();
 
-        return new PageImpl<>(content, requestDto.getPageable(), content.size());
+        List<ProductAllInfoResponseDto> content = productAllQuery
+                .offset(requestDto.getPageable().getOffset())
+                .limit(requestDto.getPageable().getPageSize())
+                .fetch();
 
+        return new PageImpl<>(content, requestDto.getPageable(), productAllQuery.fetchCount());
     }
 
     private JPQLQuery<Product> productQuery(ProductRequestViewDto requestDto) {

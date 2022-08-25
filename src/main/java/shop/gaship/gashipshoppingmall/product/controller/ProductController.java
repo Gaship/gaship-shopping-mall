@@ -224,8 +224,11 @@ public class ProductController {
      */
     @GetMapping
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListAll(
-        Pageable pageable) {
-        Page<ProductAllInfoResponseDto> page = service.findProductsInfo(pageable);
+        Pageable pageable,
+        @RequestParam(required = false, value ="category") String category,
+        @RequestParam(required = false, value ="minAmount") String minAmount,
+        @RequestParam(required = false, value ="maxAmount") String maxAmount) {
+        Page<ProductAllInfoResponseDto> page = service.findProductsInfo(pageable, category, minAmount, maxAmount);
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)

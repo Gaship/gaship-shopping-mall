@@ -421,7 +421,7 @@ class ProductControllerTest {
         //given & when
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<ProductAllInfoResponseDto> list = new PageImpl<>(List.of(response), pageRequest, pageRequest.getPageSize());
-        when(service.findProductsInfo(pageRequest))
+        when(service.findProductsInfo(pageRequest, null, null, null))
             .thenReturn(list);
 
         //then
@@ -450,7 +450,7 @@ class ProductControllerTest {
             .andDo(print());
 
         verify(service, times(1))
-            .findProductsInfo(pageRequest);
+            .findProductsInfo(pageRequest, null, null, null);
     }
 
     @DisplayName("제품다건조회 - 상품번호들로 조회")
