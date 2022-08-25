@@ -47,55 +47,21 @@ class StatusCodeRestControllerTest {
                 .build();
     }
 
-    @DisplayName("회원등급 갱신기간 상태코드값 수정하는 경우")
-    @Test
-    void renewalPeriodModify() throws Exception {
-        String period = "12";
-
-        mockMvc.perform(put("/statuscodes/renewal/period")
-                        .param("period", period)
-                        .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                .andDo(print());
-
-        verify(statusCodeService).modifyRenewalPeriod(any());
-    }
-
     @DisplayName("상태코드 그룹명을 통해 상태코드 목록 조회하는 경우")
     @Test
-    void statusCodeList() throws Exception{
+    void statusCodeList() throws Exception {
         String groupCodeName = SalesStatus.GROUP;
         List<StatusCodeResponseDto> responseDummy = StatusCodeResponseDtoDummy.listDummy();
 
         when(statusCodeService.findStatusCodes(any()))
                 .thenReturn(responseDummy);
 
-        mockMvc.perform(get("/statuscodes/" + groupCodeName)
+        mockMvc.perform(get("/api/status-codes/" + groupCodeName)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.size()",equalTo(4)))
+                .andExpect(jsonPath("$.size()", equalTo(4)))
                 .andExpect(jsonPath("$[0].statusCodeName", equalTo(SalesStatus.SALE.getValue())))
                 .andExpect(jsonPath("$[0].priority", equalTo(1)));
-    }
-
-    @DisplayName("Exception Handler 테스트")
-    @Test
-    void exceptionHandler_whenThrowStatusCodeNotFoundException() throws Exception{
-        String period = "12";
-        StatusCodeNotFoundException statusCodeNotFoundException = new StatusCodeNotFoundException();
-        String errorMessage = statusCodeNotFoundException.getMessage();
-
-        willThrow(new StatusCodeNotFoundException()).given(statusCodeService).modifyRenewalPeriod(period);
-
-        mockMvc.perform(put("/statuscodes/renewal/period")
-                        .param("period", period)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message", equalTo(errorMessage)))
-                .andDo(print());
-
-        verify(statusCodeService).modifyRenewalPeriod(any());
     }
 }

@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
+
 /**
  * 상태코드 Repository.
  *

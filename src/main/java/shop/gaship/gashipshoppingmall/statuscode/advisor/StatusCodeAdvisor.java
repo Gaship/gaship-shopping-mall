@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.gaship.gashipshoppingmall.error.ErrorResponse;
+import shop.gaship.gashipshoppingmall.statuscode.controller.RenewalPeriodRestController;
 import shop.gaship.gashipshoppingmall.statuscode.controller.StatusCodeRestController;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 
@@ -14,7 +15,9 @@ import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundExc
  * @author : 김세미
  * @since 1.0
  */
-@RestControllerAdvice(basePackageClasses = {StatusCodeRestController.class})
+@RestControllerAdvice(basePackageClasses = {
+    StatusCodeRestController.class, RenewalPeriodRestController.class
+})
 public class StatusCodeAdvisor {
     /**
      * 예외처리 담당 ExceptionHandler.

@@ -50,29 +50,29 @@ class StatusCodeServiceImplTest {
     @DisplayName("회원등급 갱신기간을 수정하는 경우 - 성공하는 경우")
     @Test
     void modifyRenewalPeriod() {
-        String testPeriod = "12";
+        Integer testPeriod = 12;
 
-        when(statusCodeRepository.findByGroupCodeName(any()))
+        when(statusCodeRepository.findByStatusCodeName(any()))
                 .thenReturn(Optional.ofNullable(statusCodeDummy));
 
         assertThatNoException()
                 .isThrownBy(() -> statusCodeService.modifyRenewalPeriod(testPeriod));
 
-        verify(statusCodeRepository).findByGroupCodeName(any());
+        verify(statusCodeRepository).findByStatusCodeName(any());
     }
 
     @DisplayName("회원등급 갱신기간 수정시 해당 상태코드가 없는 경우")
     @Test
     void modifyRenewalPeriod_throwException() {
-        String testPeriod = "12";
+        Integer testPeriod = 12;
 
-        when(statusCodeRepository.findByGroupCodeName(any()))
+        when(statusCodeRepository.findByStatusCodeName(any()))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> statusCodeService.modifyRenewalPeriod(testPeriod))
                 .isInstanceOf(StatusCodeNotFoundException.class);
 
-        verify(statusCodeRepository).findByGroupCodeName(any());
+        verify(statusCodeRepository).findByStatusCodeName(any());
     }
 
     @DisplayName("특정 상태그룹에 속해있는 상태코드 목록 조회하는 경우")
