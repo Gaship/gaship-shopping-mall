@@ -31,6 +31,7 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
  * @since 1.0
  */
 public interface MemberService {
+
     /**
      * 회원을 등록하는 메서드입니다.
      *
@@ -143,23 +144,23 @@ public interface MemberService {
             aes.aesEcbDecode(phoneNumber);
         }
         return MemberResponseDto.builder()
-                .memberNo(member.getMemberNo())
-                .recommendMemberName(recommendMemberName)
-                .memberStatus(member.getMemberStatusCodes().getStatusCodeName())
-                .memberGrade(member.getMemberGrades().getName())
-                .email(aes.aesEcbDecode(member.getEmail()))
-                .authorities(member.getRoleSet().stream()
-                        .map(Enum::toString).collect(Collectors.toList()))
-                .phoneNumber(aes.aesEcbDecode(member.getPhoneNumber()))
-                .nickname(member.getNickname())
-                .name(aes.aesEcbDecode(member.getName()))
-                .gender(member.getGender())
-                .birthDate(member.getBirthDate())
-                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
-                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
-                .registerDatetime(member.getRegisterDatetime())
-                .social(member.isSocial())
-                .build();
+                                .memberNo(member.getMemberNo())
+                                .recommendMemberName(recommendMemberName)
+                                .memberStatus(member.getMemberStatusCodes().getStatusCodeName())
+                                .memberGrade(member.getMemberGrades().getName())
+                                .email(aes.aesEcbDecode(member.getEmail()))
+                                .authorities(member.getRoleSet().stream()
+                                                   .map(Enum::toString).collect(Collectors.toList()))
+                                .phoneNumber(member.getPhoneNumber())
+                                .nickname(member.getNickname())
+                                .name(aes.aesEcbDecode(member.getName()))
+                                .gender(member.getGender())
+                                .birthDate(member.getBirthDate())
+                                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+                                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
+                                .registerDatetime(member.getRegisterDatetime())
+                                .social(member.isSocial())
+                                .build();
     }
 
     /**
@@ -176,32 +177,32 @@ public interface MemberService {
             recommendMemberName = member.getRecommendMember().getName();
         }
         return MemberResponseDtoByAdmin.builder()
-                .memberNo(member.getMemberNo())
-                .recommendMemberName(recommendMemberName)
-                .memberStatus(member.getMemberStatusCodes().getStatusCodeName())
-                .memberGrade(member.getMemberGrades().getName())
-                .email(aes.aesEcbDecode(member.getEmail()))
-                .phoneNumber(aes.aesEcbDecode(member.getPhoneNumber()))
-                .nickname(member.getNickname())
-                .gender(member.getGender())
-                .birthDate(member.getBirthDate())
-                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
-                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
-                .registerDatetime(member.getRegisterDatetime())
-                .modifyDatetime(member.getModifyDatetime())
-                .social(member.isSocial())
-                .build();
+                                       .memberNo(member.getMemberNo())
+                                       .recommendMemberName(recommendMemberName)
+                                       .memberStatus(member.getMemberStatusCodes().getStatusCodeName())
+                                       .memberGrade(member.getMemberGrades().getName())
+                                       .email(aes.aesEcbDecode(member.getEmail()))
+                                       .phoneNumber(aes.aesEcbDecode(member.getPhoneNumber()))
+                                       .nickname(member.getNickname())
+                                       .gender(member.getGender())
+                                       .birthDate(member.getBirthDate())
+                                       .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+                                       .nextRenewalGradeDate(member.getNextRenewalGradeDate())
+                                       .registerDatetime(member.getRegisterDatetime())
+                                       .modifyDatetime(member.getModifyDatetime())
+                                       .social(member.isSocial())
+                                       .build();
     }
 
     /**
      * 회원의 정보를 조회할 때 복호화하기 위한 빌더 입니다.
      *
      * @param member 멤버 객체
-     * @param aes 암,복호화
+     * @param aes    암,복호화
      * @return 복호화된 dto
      */
     default MemberResponseDtoByAdmin entityToMemberResponseDtoByAdmin(
-            MemberResponseDtoByAdmin member, Aes aes) {
+        MemberResponseDtoByAdmin member, Aes aes) {
         String phoneNumber;
         if (Objects.isNull(member.getPhoneNumber())) {
             phoneNumber = "";
@@ -209,21 +210,21 @@ public interface MemberService {
             phoneNumber = member.getPhoneNumber();
         }
         return MemberResponseDtoByAdmin.builder()
-                .memberNo(member.getMemberNo())
-                .recommendMemberName(member.getRecommendMemberName())
-                .memberStatus(member.getMemberStatus())
-                .memberGrade(member.getMemberGrade())
-                .email(aes.aesEcbDecode(member.getEmail()))
-                .phoneNumber(aes.aesEcbDecode(phoneNumber))
-                .nickname(member.getNickname())
-                .gender(member.getGender())
-                .birthDate(member.getBirthDate())
-                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
-                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
-                .registerDatetime(member.getRegisterDatetime())
-                .modifyDatetime(member.getModifyDatetime())
-                .social(member.getSocial())
-                .build();
+                                       .memberNo(member.getMemberNo())
+                                       .recommendMemberName(member.getRecommendMemberName())
+                                       .memberStatus(member.getMemberStatus())
+                                       .memberGrade(member.getMemberGrade())
+                                       .email(aes.aesEcbDecode(member.getEmail()))
+                                       .phoneNumber(aes.aesEcbDecode(phoneNumber))
+                                       .nickname(member.getNickname())
+                                       .gender(member.getGender())
+                                       .birthDate(member.getBirthDate())
+                                       .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+                                       .nextRenewalGradeDate(member.getNextRenewalGradeDate())
+                                       .registerDatetime(member.getRegisterDatetime())
+                                       .modifyDatetime(member.getModifyDatetime())
+                                       .social(member.getSocial())
+                                       .build();
     }
 
 
@@ -237,30 +238,30 @@ public interface MemberService {
      * @return 신규 회원가입된 회원 객체를 반환합니다.
      */
     default Member creationRequestToMemberEntity(MemberCreationRequest memberCreationRequest,
-                                                 @Nullable Member recommendMember,
-                                                 StatusCode defaultStatus,
-                                                 MemberGrade defaultGrade,
-                                                 StatusCode defaultRenewalGradeDateStatus) {
+        @Nullable Member recommendMember,
+        StatusCode defaultStatus,
+        MemberGrade defaultGrade,
+        StatusCode defaultRenewalGradeDateStatus) {
 
         int renewalGradeDate = Integer.parseInt(defaultRenewalGradeDateStatus.getExplanation());
 
         return Member.builder()
-                .recommendMember(recommendMember)
-                .memberStatusCodes(defaultStatus)
-                .memberGrades(defaultGrade)
-                .email(memberCreationRequest.getEmail())
-                .nickname(memberCreationRequest.getNickName())
-                .name(memberCreationRequest.getName())
-                .password(memberCreationRequest.getPassword())
-                .phoneNumber(memberCreationRequest.getPhoneNumber())
-                .birthDate(memberCreationRequest.getBirthDate())
-                .gender(memberCreationRequest.getGender())
-                .encodedEmailForSearch(memberCreationRequest.getEncodedEmailForSearch())
-                .nextRenewalGradeDate(LocalDate.now().plusMonths(renewalGradeDate))
-                .roleSet(List.of(MembersRole.ROLE_USER))
-                .accumulatePurchaseAmount(0L)
-                .isSocial(false)
-                .build();
+                     .recommendMember(recommendMember)
+                     .memberStatusCodes(defaultStatus)
+                     .memberGrades(defaultGrade)
+                     .email(memberCreationRequest.getEmail())
+                     .nickname(memberCreationRequest.getNickName())
+                     .name(memberCreationRequest.getName())
+                     .password(memberCreationRequest.getPassword())
+                     .phoneNumber(memberCreationRequest.getPhoneNumber())
+                     .birthDate(memberCreationRequest.getBirthDate())
+                     .gender(memberCreationRequest.getGender())
+                     .encodedEmailForSearch(memberCreationRequest.getEncodedEmailForSearch())
+                     .nextRenewalGradeDate(LocalDate.now().plusMonths(renewalGradeDate))
+                     .roleSet(List.of(MembersRole.ROLE_USER))
+                     .accumulatePurchaseAmount(0L)
+                     .isSocial(false)
+                     .build();
     }
 
     /**
@@ -272,25 +273,25 @@ public interface MemberService {
      * @return 신규 회원가입된 회원 객체를 반환합니다.
      */
     default Member creationRequestToMemberEntity(
-            MemberCreationRequestOauth memberCreationRequestOauth, StatusCode defaultStatus,
-            MemberGrade defaultGrade, StatusCode defaultRenewalGradeDateStatus) {
+        MemberCreationRequestOauth memberCreationRequestOauth, StatusCode defaultStatus,
+        MemberGrade defaultGrade, StatusCode defaultRenewalGradeDateStatus) {
 
         int renewalGradeDate = Integer.parseInt(defaultRenewalGradeDateStatus.getExplanation());
 
         return Member.builder().memberStatusCodes(defaultStatus).memberGrades(defaultGrade)
-                .email(memberCreationRequestOauth.getEmail())
-                .encodedEmailForSearch(memberCreationRequestOauth.getEmail())
-                .nickname(memberCreationRequestOauth.getNickName())
-                .name(memberCreationRequestOauth.getName())
-                .password(memberCreationRequestOauth.getPassword())
-                .phoneNumber(memberCreationRequestOauth.getPhoneNumber())
-                .birthDate(memberCreationRequestOauth.getBirthDate())
-                .gender(memberCreationRequestOauth.getGender()).accumulatePurchaseAmount(0L)
-                .encodedEmailForSearch(memberCreationRequestOauth.getEncodedEmailForSearch())
-                .nextRenewalGradeDate(LocalDate.now().plusMonths(renewalGradeDate))
-                .roleSet(List.of(MembersRole.ROLE_USER))
-                .accumulatePurchaseAmount(0L)
-                .isSocial(true).build();
+                     .email(memberCreationRequestOauth.getEmail())
+                     .encodedEmailForSearch(memberCreationRequestOauth.getEmail())
+                     .nickname(memberCreationRequestOauth.getNickName())
+                     .name(memberCreationRequestOauth.getName())
+                     .password(memberCreationRequestOauth.getPassword())
+                     .phoneNumber(memberCreationRequestOauth.getPhoneNumber())
+                     .birthDate(memberCreationRequestOauth.getBirthDate())
+                     .gender(memberCreationRequestOauth.getGender()).accumulatePurchaseAmount(0L)
+                     .encodedEmailForSearch(memberCreationRequestOauth.getEncodedEmailForSearch())
+                     .nextRenewalGradeDate(LocalDate.now().plusMonths(renewalGradeDate))
+                     .roleSet(List.of(MembersRole.ROLE_USER))
+                     .accumulatePurchaseAmount(0L)
+                     .isSocial(true).build();
     }
 
     /**
