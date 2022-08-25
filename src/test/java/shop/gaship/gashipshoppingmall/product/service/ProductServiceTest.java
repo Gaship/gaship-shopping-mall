@@ -411,7 +411,7 @@ class ProductServiceTest {
         given(productTagRepository.findTagsByProductNo(any()))
             .willReturn(List.of(productTag.getTag().getTitle()));
         //when
-        Page<ProductAllInfoResponseDto> result = service.findProductsInfo(pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductsInfo(pageRequest, null, null, null);
 
         //then
         verify(repository, times(1)).findProduct(requestDto);

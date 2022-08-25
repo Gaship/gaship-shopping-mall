@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.product.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -245,8 +246,12 @@ public class ProductServiceImpl implements ProductService {
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductAllInfoResponseDto> findProductsInfo(Pageable pageable) {
+    public Page<ProductAllInfoResponseDto> findProductsInfo(Pageable pageable, String categoryNo,
+                                                            String minAmount, String maxAmount) {
         ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
+            .categoryNo(Objects.isNull(categoryNo) ? 0 : Integer.parseInt(categoryNo))
+            .minAmount(Objects.isNull(minAmount) ? 0L : Long.parseLong(minAmount))
+            .maxAmount(Objects.isNull(maxAmount) ? 0L : Long.parseLong(maxAmount))
             .pageable(pageable)
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);

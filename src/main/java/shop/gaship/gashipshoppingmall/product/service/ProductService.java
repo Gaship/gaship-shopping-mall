@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.product.service;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
@@ -102,7 +103,10 @@ public interface ProductService {
      * @return list 조회된 상품들의 정보들을 반환합니다.
      * @author 유호철
      */
-    Page<ProductAllInfoResponseDto> findProductsInfo(Pageable pageable);
+    Page<ProductAllInfoResponseDto> findProductsInfo(Pageable pageable,
+                                                     @Nullable String category,
+                                                     @Nullable String minAmount,
+                                                     @Nullable String maxAmount);
 
 
     /**
