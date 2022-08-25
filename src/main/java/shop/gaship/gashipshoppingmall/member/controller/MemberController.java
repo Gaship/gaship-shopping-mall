@@ -128,7 +128,7 @@ public class MemberController {
      *
      * @return 회원번호를 반환합니다.
      */
-    @GetMapping("/members/last-no")
+    @GetMapping("/last-no")
     public ResponseEntity<Integer> retrieveLastNo() {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(memberService.findLastNo());
@@ -181,7 +181,7 @@ public class MemberController {
      * @param email 요청받은 email 정보입니다.
      * @return 멤버의 전체정보가 있는 객체를 반환합니다.
      */
-    @GetMapping(value = "/members/email/{email}")
+    @GetMapping(value = "/email/{email}")
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable String email) {
         MemberResponseDto memberResponseDto = memberService.findMemberFromEmail(email);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)

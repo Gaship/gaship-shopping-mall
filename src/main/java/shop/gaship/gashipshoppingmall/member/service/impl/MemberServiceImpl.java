@@ -29,6 +29,7 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.RenewalPeriod;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
@@ -74,6 +75,9 @@ public class MemberServiceImpl implements MemberService {
             statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
                 .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
+        StatusCode renewalPeriod =
+            statusCodeRepository.findByStatusCodeName(RenewalPeriod.PERIOD.getValue())
+                .orElseThrow(StatusCodeNotFoundException::new);
 
         if (memberRepository.existsByNickname(memberCreationRequest.getNickName())) {
             throw new DuplicatedNicknameException();
@@ -81,7 +85,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member savedMember =
             creationRequestToMemberEntity(encodePrivacyUserInformation(memberCreationRequest),
-                recommendMember, defaultStatus, defaultGrade);
+                recommendMember, defaultStatus, defaultGrade, renewalPeriod);
 
         memberRepository.saveAndFlush(savedMember);
 
@@ -101,14 +105,17 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void addMemberByOauth(MemberCreationRequestOauth memberCreationRequestOauth) {
         StatusCode defaultStatus =
-            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
+        StatusCode renewalPeriod =
+            statusCodeRepository.findByStatusCodeName(RenewalPeriod.PERIOD.getValue())
+                .orElseThrow(StatusCodeNotFoundException::new);
 
         Member savedMember =
             creationRequestToMemberEntity(
                 encodePrivacyUserInformation(memberCreationRequestOauth),
-                defaultStatus, defaultGrade);
+                defaultStatus, defaultGrade, renewalPeriod);
 
         memberRepository.saveAndFlush(savedMember);
     }
