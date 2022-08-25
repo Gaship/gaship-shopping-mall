@@ -19,8 +19,8 @@ import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.entity.MembersRole;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 회원가입, member crud를 위해서 구현체에 필요한 메서드들을 정의한 인터페이스입니다.
@@ -150,7 +150,7 @@ public interface MemberService {
                 .email(aes.aesEcbDecode(member.getEmail()))
                 .authorities(member.getRoleSet().stream()
                         .map(Enum::toString).collect(Collectors.toList()))
-                .phoneNumber(phoneNumber)
+                .phoneNumber(aes.aesEcbDecode(member.getPhoneNumber()))
                 .nickname(member.getNickname())
                 .name(aes.aesEcbDecode(member.getName()))
                 .gender(member.getGender())
@@ -190,6 +190,39 @@ public interface MemberService {
                 .registerDatetime(member.getRegisterDatetime())
                 .modifyDatetime(member.getModifyDatetime())
                 .social(member.isSocial())
+                .build();
+    }
+
+    /**
+     * 회원의 정보를 조회할 때 복호화하기 위한 빌더 입니다.
+     *
+     * @param member 멤버 객체
+     * @param aes 암,복호화
+     * @return 복호화된 dto
+     */
+    default MemberResponseDtoByAdmin entityToMemberResponseDtoByAdmin(
+            MemberResponseDtoByAdmin member, Aes aes) {
+        String phoneNumber;
+        if (Objects.isNull(member.getPhoneNumber())) {
+            phoneNumber = "";
+        } else {
+            phoneNumber = member.getPhoneNumber();
+        }
+        return MemberResponseDtoByAdmin.builder()
+                .memberNo(member.getMemberNo())
+                .recommendMemberName(member.getRecommendMemberName())
+                .memberStatus(member.getMemberStatus())
+                .memberGrade(member.getMemberGrade())
+                .email(aes.aesEcbDecode(member.getEmail()))
+                .phoneNumber(aes.aesEcbDecode(phoneNumber))
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .birthDate(member.getBirthDate())
+                .accumulatePurchaseAmount(member.getAccumulatePurchaseAmount())
+                .nextRenewalGradeDate(member.getNextRenewalGradeDate())
+                .registerDatetime(member.getRegisterDatetime())
+                .modifyDatetime(member.getModifyDatetime())
+                .social(member.getSocial())
                 .build();
     }
 

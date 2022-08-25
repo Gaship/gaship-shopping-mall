@@ -25,6 +25,7 @@ import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.member.adapter.MemberAdapter;
 import shop.gaship.gashipshoppingmall.member.dto.ReissuePasswordReceiveEmailDto;
 import shop.gaship.gashipshoppingmall.member.dto.SuccessReissueResponse;
+import shop.gaship.gashipshoppingmall.member.dto.VerifiedCheckDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
@@ -110,26 +111,30 @@ class MemberServiceTest {
         String plainEmailDummy = dummy.getEmail();
 
         given(statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.getValue()))
-            .willReturn(Optional.of(StatusCodeDummy.dummy()));
+                .willReturn(Optional.of(StatusCodeDummy.dummy()));
 
         StatusCode periodStatusCodeDummy = StatusCodeDummy.dummy();
         ReflectionTestUtils.setField(periodStatusCodeDummy, "explanation", "12");
         given(statusCodeRepository.findByStatusCodeName(RenewalPeriod.PERIOD.getValue()))
             .willReturn(Optional.of(periodStatusCodeDummy));
         given(memberGradeRepository.findByDefaultGrade()).willReturn(
-            MemberGradeDummy.defaultDummy(
-                MemberGradeDtoDummy.requestDummy("일반", 0L),
-                StatusCodeDummy.dummy()
-            ));
+                MemberGradeDummy.defaultDummy(
+                        MemberGradeDtoDummy.requestDummy("일반", 0L),
+                        StatusCodeDummy.dummy()
+                ));
         given(statusCodeRepository.findByStatusCodeName(UserAuthority.MEMBER.getValue()))
-            .willReturn(Optional.of(StatusCodeDummy.dummy()));
+                .willReturn(Optional.of(StatusCodeDummy.dummy()));
+
+        VerifiedCheckDto verifiedCheck = new VerifiedCheckDto(true);
+        given(memberAdapter.checkVerifiedEmail(any()))
+            .willReturn(verifiedCheck);
 
         memberService.addMember(dummy);
 
         assertThat(dummy.getEmail()).isNotEqualTo(plainEmailDummy);
 
         verify(memberRepository, times(1))
-            .saveAndFlush(any(Member.class));
+                .saveAndFlush(any(Member.class));
     }
 
 
@@ -322,11 +327,16 @@ class MemberServiceTest {
     @DisplayName("이메일을 통해서 로그인을 시도하는 회원의 정보를 조회합니다. : 존재하는 경우")
     void findSignInUserDetailCaseFounded() {
         Member dummy = shop.gaship.gashipshoppingmall.member.dummy.MemberDummy.dummy();
+        String email = "example@nhn.com";
+
+        given(sha512.encryptPlainText(anyString())).willReturn(email);
         given(memberRepository.findSignInUserDetail(anyString()))
                 .willReturn(Optional.of(SignInUserDetailDummy.dummy()));
+        given(aes.aesEcbDecode(anyString()))
+            .willReturn(email);
 
         SignInUserDetailsDto userDetailsDto =
-                memberService.findSignInUserDetailFromEmail("example@nhn.com");
+                memberService.findSignInUserDetailFromEmail(email);
 
 
         assertThat(userDetailsDto.getEmail()).isEqualTo(dummy.getEmail());

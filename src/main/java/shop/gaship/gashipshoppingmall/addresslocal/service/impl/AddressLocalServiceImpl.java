@@ -1,16 +1,18 @@
 package shop.gaship.gashipshoppingmall.addresslocal.service.impl;
 
+import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.exception.NotExistAddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 주소를 서비스레이어에서 사용할수있게하는 구현 클래스입니다.
@@ -21,9 +23,10 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AddressLocalServiceImpl implements AddressLocalService {
 
-    private final AddressLocalRepository repository;
+    private final AddressLocalRepository addressLocalRepository;
 
     /**
      * 배송여부를 수정하기위한 메소드입니다.
@@ -33,24 +36,33 @@ public class AddressLocalServiceImpl implements AddressLocalService {
      * @author 유호철
      */
     @Transactional
+    @Modifying
     @Override
     public void modifyLocalDelivery(ModifyAddressRequestDto modifyDto) {
-        AddressLocal addressLocal = repository.findById(modifyDto.getLocalNo())
+        AddressLocal addressLocal = addressLocalRepository.findById(modifyDto.getLocalNo())
             .orElseThrow(NotExistAddressLocal::new);
+        log.error("{}", modifyDto.isDelivery());
+        addressLocal.allowDelivery(!modifyDto.isDelivery());
 
-        addressLocal.allowDelivery(modifyDto.isDelivery());
     }
 
     /**
-     * 배송지 정보를 찾기위한 메소드입니다.
-     *
-     * @param address 검색할 주소지가 기입되어있습니다.
-     * @return list : 검색된 주소지들이 반환됩니다.
-     * @author 유호철
+     * {@inheritDoc}
      */
     @Override
-    public PageResponse<GetAddressLocalResponseDto> findAddressLocals(
-        String address, Pageable pageable) {
-        return repository.findAllAddress(address, pageable);
+    public List<AddressUpperLocalResponseDto> findAddressLocals() {
+        return addressLocalRepository.findAllAddress();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<AddressSubLocalResponseDto> findSubLocals(String upperAddress) {
+        if (Boolean.FALSE.equals(addressLocalRepository.existsByAddressName(upperAddress))) {
+            throw new NotExistAddressLocal();
+        }
+        return addressLocalRepository.findSubAddress(upperAddress);
+    }
+
 }

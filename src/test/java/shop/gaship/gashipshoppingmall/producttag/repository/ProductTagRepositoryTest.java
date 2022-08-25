@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.producttag.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +19,8 @@ import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * 상품태그 레퍼지토리 테스트
  *
@@ -30,7 +30,7 @@ import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
 @DataJpaTest
 class ProductTagRepositoryTest {
     @Autowired
-    ProductTagRepository productTagRepository;
+    shop.gaship.gashipshoppingmall.producttag.repository.ProductTagRepository productTagRepository;
 
     @Autowired
     ProductRepository productRepository;
@@ -59,8 +59,8 @@ class ProductTagRepositoryTest {
         productRepository.save(product);
 
         Tag tag = Tag.builder()
-                .title("태그")
-                .build();
+            .title("태그")
+            .build();
         tagRepository.save(tag);
 
         ProductTag.Pk pk = new ProductTag.Pk(product.getNo(), tag.getTagNo());

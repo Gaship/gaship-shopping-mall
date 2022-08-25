@@ -1,16 +1,13 @@
 package shop.gaship.gashipshoppingmall.addresslocal.repository.impl;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.data.support.PageableExecutionUtils;
-import shop.gaship.gashipshoppingmall.addresslocal.dto.response.GetAddressLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
+import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.QAddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.custom.AddressLocalRepositoryCustom;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 
 /**
@@ -23,36 +20,36 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
  */
 public class AddressLocalRepositoryImpl extends QuerydslRepositorySupport
     implements AddressLocalRepositoryCustom {
+    public static final Integer HIGH_ADDRESS_NO = 1;
 
     public AddressLocalRepositoryImpl() {
         super(AddressLocal.class);
     }
 
-    /**
-     * 조회된 주소로 전체주소가 조회되는 메서드입니다.
-     *
-     * @param addressName 검색하고싶은 주소지가 입력됩니다.
-     * @return list : 조회된 상위주소, 하위주소들이 반환됩니다.
-     * @author 유호철
-     */
     @Override
-    public PageResponse<GetAddressLocalResponseDto> findAllAddress(
-        String addressName, Pageable pageable) {
+    public List<AddressUpperLocalResponseDto> findAllAddress() {
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
 
-        JPQLQuery<GetAddressLocalResponseDto> query = from(addressLocal)
-            .where(addressLocal.addressName.contains(addressName)
-                .and(addressLocal.level.eq(1)))
-            .select(Projections.bean(GetAddressLocalResponseDto.class,
-                addressLocal.addressName.as("upperAddressName"),
-                addressLocal.subLocal.any().addressName.as("addressName")));
-
-        List<GetAddressLocalResponseDto> content = query.offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
+        return from(addressLocal)
+            .where(addressLocal.level.eq(HIGH_ADDRESS_NO))
+            .select(Projections.constructor(AddressUpperLocalResponseDto.class,
+                addressLocal.addressNo,
+                addressLocal.addressName,
+                addressLocal.allowDelivery))
             .fetch();
+    }
 
-        return new PageResponse<>(PageableExecutionUtils.getPage(content, pageable,
-            () -> query.fetch()
-                .size()));
+    @Override
+    public List<AddressSubLocalResponseDto> findSubAddress(String addressName) {
+        QAddressLocal addressLocal = QAddressLocal.addressLocal;
+        QAddressLocal upperAddressLocal = new QAddressLocal("upper");
+        return from(addressLocal)
+            .innerJoin(addressLocal.upperLocal, upperAddressLocal)
+            .where(addressLocal.upperLocal.addressName.eq(addressName))
+            .select(Projections.constructor(AddressSubLocalResponseDto.class,
+                addressLocal.addressNo,
+                addressLocal.addressName,
+                addressLocal.allowDelivery))
+            .fetch();
     }
 }

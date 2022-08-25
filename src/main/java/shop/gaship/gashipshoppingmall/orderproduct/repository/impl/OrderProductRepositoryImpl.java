@@ -14,8 +14,21 @@ import shop.gaship.gashipshoppingmall.order.entity.QOrder;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.QOrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepositoryCustom;
+import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
 import shop.gaship.gashipshoppingmall.totalsale.dto.request.TotalSaleRequestDto;
 import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDto;
+
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.CANCELLATION;
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.CANCEL_COMPLETE;
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.DELIVERY_COMPLETE;
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.DELIVERY_PREPARING;
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.EXCHANGE_COMPLETE;
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.EXCHANGE_RECEPTION;
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.PURCHASE_CONFIRMATION;
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.RETURN_COMPLETE;
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.RETURN_RECEPTION;
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.SHIPPING;
+
 
 /**
  * 주문제품을 QueryDsl 을 통해 사용하기위한 클래스 구현체입니다.
@@ -36,6 +49,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
     public List<TotalSaleResponseDto> findTotalSale(TotalSaleRequestDto dto) {
         QOrderProduct orderProduct = QOrderProduct.orderProduct;
         QOrder order = QOrder.order;
+        QStatusCode statusCode = QStatusCode.statusCode;
 
         //커버링 인덱스 적용
         List<Integer> orderList = from(order)
@@ -49,26 +63,55 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
         return from(order)
             .innerJoin(orderProduct)
             .on(order.eq(orderProduct.order))
+            .innerJoin(orderProduct.orderStatusCode, statusCode)
             .where(order.no.in(orderList))
             .select(Projections.constructor(TotalSaleResponseDto.class,
                 order.orderDatetime.as("totalSaleDate"),
                 orderProduct.product.no.count().as("orderCnt"),
-                queryCaseInteger(orderProduct.orderStatusCode.statusCodeNo
-                    .between(1, 12), orderProduct.no)
-                    .otherwise(0)
-                    .count().as("orderCancelCnt"),
-                queryCaseInteger(orderProduct.orderStatusCode.statusCodeNo.eq(13),
+                queryCaseInteger(orderProduct.orderStatusCode.statusCodeName
+                        .eq(EXCHANGE_RECEPTION.getValue())
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .eq(CANCELLATION.getValue()))
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .eq(RETURN_RECEPTION.getValue()))
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .eq(EXCHANGE_COMPLETE.getValue()))
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .eq(CANCEL_COMPLETE.getValue()))
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .eq(RETURN_COMPLETE.getValue())),
                     orderProduct.no)
-                    .otherwise(0)
+                    .otherwise((Integer) null)
+                    .count().as("orderCancelCnt"),
+                queryCaseInteger(orderProduct.orderStatusCode.statusCodeName
+                        .eq(PURCHASE_CONFIRMATION.getValue())
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .eq(SHIPPING.getValue()))
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .eq(DELIVERY_COMPLETE.getValue()))
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .eq(DELIVERY_PREPARING.getValue())),
+                    orderProduct.no)
+                    .otherwise((Integer) null)
                     .count().as("orderSaleCnt"),
                 orderProduct.amount.sum().as("totalAmount"),
-                queryCaseLong(orderProduct.orderStatusCode.statusCodeNo.between(7, 12),
+                queryCaseLong(orderProduct.orderStatusCode.statusCodeName
+                        .ne(PURCHASE_CONFIRMATION.getValue())
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .ne(DELIVERY_PREPARING.getValue()))
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .ne(SHIPPING.getValue()))
+                        .or(orderProduct.orderStatusCode.statusCodeName
+                            .ne(DELIVERY_COMPLETE.getValue())),
                     orderProduct.cancellationAmount)
                     .otherwise(0L)
                     .sum().as("cancelAmount"),
                 (new CaseBuilder()
-                    .when(orderProduct.orderStatusCode.statusCodeNo.eq(13)
-                        .or(orderProduct.orderStatusCode.statusCodeNo.eq(4)))
+                    .when(orderProduct.orderStatusCode.statusCodeName
+                        .eq(DELIVERY_PREPARING.getValue())
+                        .or(orderProduct.orderStatusCode.statusCodeName.eq(PURCHASE_CONFIRMATION.getValue()))
+                        .or(orderProduct.orderStatusCode.statusCodeName.eq(DELIVERY_COMPLETE.getValue()))
+                        .or(orderProduct.orderStatusCode.statusCodeName.eq(SHIPPING.getValue())))
                     .then(orderProduct.amount)
                     .otherwise(0L))
                     .sum().as("orderSaleAmount")))
@@ -103,6 +146,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
             .select(Projections.constructor(DeliveryDto.class,
                 order.receiptName,
                 order.addressList.address,
+                order.addressList.addressDetail,
                 order.receiptPhoneNumber,
                 orderProduct.no))
             .fetchOne();

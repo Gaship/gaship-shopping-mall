@@ -4,27 +4,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
 import shop.gaship.gashipshoppingmall.member.adapter.MemberAdapter;
+import shop.gaship.gashipshoppingmall.member.dto.VerifiedCheckDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
@@ -33,7 +27,6 @@ import shop.gaship.gashipshoppingmall.member.event.domain.SignedUpEvent;
 import shop.gaship.gashipshoppingmall.member.memberTestDummy.MemberBaseDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
-import shop.gaship.gashipshoppingmall.member.service.impl.MemberServiceImpl;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDtoDummy;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.MemberGradeDummy;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
@@ -49,7 +42,7 @@ import shop.gaship.gashipshoppingmall.statuscode.status.UserAuthority;
  */
 @SpringBootTest
 @RecordApplicationEvents
-public class memberEventTest {
+class MemberEventTest {
 
     @Autowired
     private MemberService memberService;
@@ -72,6 +65,7 @@ public class memberEventTest {
     @MockBean
     StatusCodeRepository statusCodeRepository;
 
+    @MockBean
     MemberAdapter memberAdapter;
 
     @MockBean
@@ -87,6 +81,10 @@ public class memberEventTest {
             .willReturn(Optional.of(member));
         given(statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.getValue()))
             .willReturn(Optional.of(StatusCodeDummy.dummy()));
+
+        VerifiedCheckDto verifiedCheck = new VerifiedCheckDto(true);
+        given(memberAdapter.checkVerifiedEmail(any()))
+            .willReturn(verifiedCheck);
 
         StatusCode statusCodeDummy = StatusCodeDummy.dummy();
         ReflectionTestUtils.setField(statusCodeDummy, "explanation", "12");
