@@ -60,7 +60,7 @@ public class StatusCode {
         this.explanation = explanation;
     }
 
-    public void modifyRenewalPeriod(String period) {
-        this.statusCodeName = period;
+    public void modifyRenewalPeriod(Integer period) {
+        this.explanation = String.valueOf(period);
     }
 }

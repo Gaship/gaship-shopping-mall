@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.statuscode.service;
 
 import java.util.List;
+import shop.gaship.gashipshoppingmall.statuscode.dto.response.RenewalPeriodResponseDto;
 import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponseDto;
 
 /**
@@ -11,12 +12,12 @@ import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponse
  */
 public interface StatusCodeService {
     /**
-     * 갱신기간 상태코드 값 수정.
+     * 상태코드의 갱신기간 값 수정.
      *
      * @param period String
      * @author 김세미
      */
-    void modifyRenewalPeriod(String period);
+    void modifyRenewalPeriod(Integer period);
 
     /**
      * 상태코드 그룹코드를 통해 해당 그룹 코드에 속해있는 상태코드 목록 조회.
@@ -26,4 +27,6 @@ public interface StatusCodeService {
      * @author 김세미
      */
     List<StatusCodeResponseDto> findStatusCodes(String groupCodeName);
+
+    RenewalPeriodResponseDto findRenewalPeriod();
 }

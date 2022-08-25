@@ -1,7 +1,10 @@
 package shop.gaship.gashipshoppingmall.statuscode.repository;
 
 import java.util.List;
+import java.util.Optional;
+import shop.gaship.gashipshoppingmall.statuscode.dto.response.RenewalPeriodResponseDto;
 import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponseDto;
+
 
 /**
  * 상태코드 Custom Repository Interface.
@@ -11,4 +14,6 @@ import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponse
  */
 public interface StatusCodeRepositoryCustom {
     List<StatusCodeResponseDto> getStatusCodesByGroup(String groupCodeName);
+
+    Optional<RenewalPeriodResponseDto> getRenewalPeriod(String renewalPeriodCodeName);
 }

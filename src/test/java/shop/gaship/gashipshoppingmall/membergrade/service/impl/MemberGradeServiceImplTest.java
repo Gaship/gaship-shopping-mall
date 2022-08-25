@@ -198,7 +198,7 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.save(any()))
                 .thenReturn(modifyMemberGrade);
 
-        memberGradeService.modifyMemberGrade(modifyRequestDummy);
+        memberGradeService.modifyMemberGrade(memberGrade.getNo(), modifyRequestDummy);
 
         verify(memberGradeRepository).findById(any());
         verify(memberGradeRepository, never()).existsByAccumulateAmountEquals(any());
@@ -219,7 +219,7 @@ class MemberGradeServiceImplTest {
         when(memberGradeRepository.existsByAccumulateAmountEquals(any()))
                 .thenReturn(false);
 
-        memberGradeService.modifyMemberGrade(modifyRequestDummy);
+        memberGradeService.modifyMemberGrade(memberGrade.getNo(), modifyRequestDummy);
 
         verify(memberGradeRepository).findById(any());
         verify(memberGradeRepository).existsByAccumulateAmountEquals(any());
@@ -235,7 +235,7 @@ class MemberGradeServiceImplTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberGradeService
-                .modifyMemberGrade(modifyRequestDummy))
+                .modifyMemberGrade(1, modifyRequestDummy))
                 .isInstanceOf(MemberGradeNotFoundException.class);
 
         verify(memberGradeRepository).findById(any());

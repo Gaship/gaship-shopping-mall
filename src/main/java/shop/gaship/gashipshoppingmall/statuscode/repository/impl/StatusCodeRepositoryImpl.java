@@ -2,7 +2,9 @@ package shop.gaship.gashipshoppingmall.statuscode.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import shop.gaship.gashipshoppingmall.statuscode.dto.response.RenewalPeriodResponseDto;
 import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponseDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
@@ -32,5 +34,17 @@ public class StatusCodeRepositoryImpl extends QuerydslRepositorySupport
                         statusCode.statusCodeName,
                         statusCode.priority))
                 .fetch();
+    }
+
+    @Override
+    public Optional<RenewalPeriodResponseDto> getRenewalPeriod(String renewalPeriodCodeName) {
+        QStatusCode statusCode = QStatusCode.statusCode;
+
+        return Optional.ofNullable(from(statusCode)
+                .select(Projections.bean(RenewalPeriodResponseDto.class,
+                        statusCode.statusCodeNo,
+                        statusCode.explanation))
+                .where(statusCode.statusCodeName.eq(renewalPeriodCodeName))
+                .fetchOne());
     }
 }

@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.statuscode.service.impl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import shop.gaship.gashipshoppingmall.statuscode.dto.response.RenewalPeriodResponseDto;
 import shop.gaship.gashipshoppingmall.statuscode.dto.response.StatusCodeResponseDto;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
@@ -23,9 +24,9 @@ public class StatusCodeServiceImpl implements StatusCodeService {
     private final StatusCodeRepository statusCodeRepository;
 
     @Override
-    public void modifyRenewalPeriod(String period) {
+    public void modifyRenewalPeriod(Integer period) {
         StatusCode renewalPeriod = statusCodeRepository
-                .findByGroupCodeName(RenewalPeriod.GROUP)
+                .findByStatusCodeName(RenewalPeriod.PERIOD.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         renewalPeriod.modifyRenewalPeriod(period);
@@ -34,5 +35,11 @@ public class StatusCodeServiceImpl implements StatusCodeService {
     @Override
     public List<StatusCodeResponseDto> findStatusCodes(String groupCodeName) {
         return statusCodeRepository.getStatusCodesByGroup(groupCodeName);
+    }
+
+    @Override
+    public RenewalPeriodResponseDto findRenewalPeriod() {
+        return statusCodeRepository.getRenewalPeriod(RenewalPeriod.PERIOD.getValue())
+                .orElseThrow(StatusCodeNotFoundException::new);
     }
 }

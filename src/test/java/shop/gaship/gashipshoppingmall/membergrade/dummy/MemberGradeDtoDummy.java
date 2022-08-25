@@ -24,10 +24,8 @@ public class MemberGradeDtoDummy {
 
     public static MemberGradeModifyRequestDto modifyRequestDummy(Integer no, String name, Long accumulateAmount){
         MemberGradeModifyRequestDto dummy = new MemberGradeModifyRequestDto();
-        dummy.setNo(no);
         dummy.setName(name);
         dummy.setAccumulateAmount(accumulateAmount);
-        dummy.setIsDefault(false);
 
         return dummy;
     }
