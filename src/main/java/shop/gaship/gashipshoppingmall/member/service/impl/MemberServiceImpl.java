@@ -72,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
             memberRepository.findById(
                 memberCreationRequest.getRecommendMemberNo()).orElse(null);
         StatusCode defaultStatus =
-            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
         StatusCode renewalPeriod =
