@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.inquiry.controller;
+package shop.gaship.gashipshoppingmall.inquiry.controller.customer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -287,34 +287,5 @@ class CustomerInquiryRestControllerTest {
 
         verify(inquiryService).findInquiriesByMemberNo(any(Pageable.class), eq(Boolean.FALSE),
             eq(1));
-    }
-
-
-
-    @DisplayName("문의 단건조회요청을 잘 받고 service에 위임하여 반환된 InquiryDetailsResponseDto를 ResponseEntity의 body에 넣어서 반환한다. 상태코드 200")
-    @Test
-    void inquiryDetails() throws Exception {
-        InquiryDetailsResponseDto mockDto = new InquiryDetailsResponseDto(
-            1, 1, "memberNickName", "employeeName", "processStatus",
-            "productName", "title", "inquiryContent", LocalDateTime.now(), "answerContent",LocalDateTime.now(), null);
-
-        given(inquiryService.findInquiry(anyInt()))
-            .willReturn(mockDto);
-
-        MvcResult result = mvc.perform(get("/api/inquiries/{inquiryNo}", 1)
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.inquiryNo").value(mockDto.getInquiryNo()))
-            .andExpect(jsonPath("$.inquiryContent").value(mockDto.getInquiryContent()))
-            .andExpect(jsonPath("$.answerContent").value(mockDto.getAnswerContent()))
-            .andExpect(jsonPath("$.title").value(mockDto.getTitle()))
-            .andExpect(jsonPath("$.employeeName").value(mockDto.getEmployeeName()))
-            .andExpect(jsonPath("$.memberNickname").value(mockDto.getMemberNickname()))
-            .andExpect(jsonPath("$.productName").value(mockDto.getProductName()))
-            .andExpect(jsonPath("$.productNo").value(mockDto.getProductNo()))
-            .andExpect(jsonPath("$.processStatus").value(mockDto.getProcessStatus()))
-            .andReturn();
-
-        verify(inquiryService).findInquiry(1);
     }
 }

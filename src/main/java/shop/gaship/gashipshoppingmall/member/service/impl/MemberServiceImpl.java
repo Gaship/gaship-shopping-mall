@@ -110,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member savedMember =
             creationRequestToMemberEntity(encodePrivacyUserInformation(memberCreationRequest),
-                recommendMember, defaultStatus, renewalPeriod, defaultGrade);
+                recommendMember, defaultStatus, defaultGrade, renewalPeriod);
 
         memberRepository.saveAndFlush(savedMember);
 
@@ -130,14 +130,17 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void addMemberByOauth(MemberCreationRequestOauth memberCreationRequestOauth) {
         StatusCode defaultStatus =
-            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.name())
+            statusCodeRepository.findByStatusCodeName(MemberStatus.ACTIVATION.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
         MemberGrade defaultGrade = memberGradeRepository.findByDefaultGrade();
+        StatusCode renewalPeriod =
+            statusCodeRepository.findByStatusCodeName(RenewalPeriod.PERIOD.getValue())
+                .orElseThrow(StatusCodeNotFoundException::new);
 
         Member savedMember =
             creationRequestToMemberEntity(
                 encodePrivacyUserInformation(memberCreationRequestOauth),
-                defaultStatus, defaultGrade);
+                defaultStatus, defaultGrade, renewalPeriod);
 
         memberRepository.saveAndFlush(savedMember);
     }
