@@ -96,7 +96,7 @@ class AddressLocalControllerTest {
     @Test
     void findAddressLocalTest() throws Exception {
         //given
-        AddressSubLocalResponseDto dto = new AddressSubLocalResponseDto(1, "마산");
+        AddressSubLocalResponseDto dto = new AddressSubLocalResponseDto(1, "마산", true);
         List<AddressSubLocalResponseDto> list = new ArrayList<>();
         list.add(dto);
 

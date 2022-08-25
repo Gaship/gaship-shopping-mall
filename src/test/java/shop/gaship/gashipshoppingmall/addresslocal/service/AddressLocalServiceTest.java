@@ -95,7 +95,7 @@ class AddressLocalServiceTest {
     void searchAddressLocal() {
         //given
         List<AddressSubLocalResponseDto> list = new ArrayList<>();
-        AddressSubLocalResponseDto dto = new AddressSubLocalResponseDto(1, "마산");
+        AddressSubLocalResponseDto dto = new AddressSubLocalResponseDto(1, "마산", true);
         list.add(dto);
 
         given(addressLocalRepository.findSubAddress(requestDto))
