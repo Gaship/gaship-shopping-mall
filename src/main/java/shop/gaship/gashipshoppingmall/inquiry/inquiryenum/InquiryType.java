@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 public enum InquiryType {
-    PRODUCT_INQUIRIES(Boolean.TRUE), CUSTOMER_INQUIRIES(Boolean.FALSE);
+    PRODUCT_INQUIRY(Boolean.TRUE), CUSTOMER_INQUIRY(Boolean.FALSE);
 
     private final Boolean value;
 

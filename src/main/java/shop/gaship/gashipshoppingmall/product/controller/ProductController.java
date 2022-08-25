@@ -242,9 +242,13 @@ public class ProductController {
     @GetMapping(params = "productNos")
     public ResponseEntity<List<ProductAllInfoResponseDto>> productNosList(
         @RequestParam("productNos") List<Integer> productNos) {
-        List<ProductAllInfoResponseDto> result =
-            service.findProductByProductNos(
-                productNos, PageRequest.of(0, productNos.size())).getContent();
+        List<ProductAllInfoResponseDto> result;
+        if(productNos.size() > 0){
+            result = service.findProductByProductNos(
+                    productNos, PageRequest.of(0, productNos.size())).getContent();
+        }else{
+            result = List.of();
+        }
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)

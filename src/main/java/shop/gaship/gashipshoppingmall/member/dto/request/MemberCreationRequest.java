@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
@@ -29,12 +28,6 @@ public class MemberCreationRequest {
     private String email;
 
     @NotBlank(message = "비밀번호를 입력해주세요.")
-    @Length(max = 100, message = "비밀번호가 너무 깁니다.")
-    @Pattern(
-        // 첫글자는 대문자, 소문자, 숫자, @$!%*#?& 특수문자만 허용하여 8자리 이상 조합
-        regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$",
-        message = "영문, 숫자, 특수문자를 포함하여 8자리 이상이어야합니다."
-    )
     private String password;
 
     @NotBlank(message = "휴대전화번호를 입력해주세요.")
@@ -65,12 +58,8 @@ public class MemberCreationRequest {
     )
     private String gender;
 
-    @NotNull(message = "이메일 인증을 완료해주세요.")
-    private Boolean isVerifiedEmail;
+    @NotBlank(message = "이메일 인증이 필요합니다.")
+    private String verifyCode;
 
-    @NotNull(message = "이메일 중복확인을 진행 후 회원가입해주세요.")
-    private Boolean isUniqueEmail;
-
-    @NotNull
     private String encodedEmailForSearch;
 }

@@ -29,4 +29,5 @@ public class MemberResponseDto {
     private Long accumulatePurchaseAmount;
     private LocalDate nextRenewalGradeDate;
     private LocalDateTime registerDatetime;
+    private Boolean social;
 }

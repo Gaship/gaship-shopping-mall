@@ -214,7 +214,7 @@ public class InquiryServiceImpl implements InquiryService {
         }
 
         InquiryListSearch inquirySearchRequestDto =
-            new InquiryListSearch(InquiryType.PRODUCT_INQUIRIES.getValue(), null, null,
+            new InquiryListSearch(InquiryType.PRODUCT_INQUIRY.getValue(), null, null,
                 productNo);
 
         return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);

@@ -27,7 +27,6 @@ import shop.gaship.gashipshoppingmall.member.dto.response.MemberNumberPresence;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.NicknamePresence;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
-import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
 
 /**
@@ -53,13 +52,9 @@ public class MemberController {
     @PostMapping("/sign-up")
     public ResponseEntity<Void> memberAdd(
             @Valid @RequestBody MemberCreationRequest memberCreationRequest) {
-        if (memberCreationRequest.getIsUniqueEmail()
-                && memberCreationRequest.getIsVerifiedEmail()) {
             memberService.addMember(memberCreationRequest);
-            return ResponseEntity.created(URI.create("/api/members")).build();
-        }
 
-        throw new SignUpDenyException("이메일 중복확인 또는 이메일 검증이 필요합니다.");
+            return ResponseEntity.created(URI.create("/api/members")).build();
     }
 
     /**
@@ -128,7 +123,7 @@ public class MemberController {
      *
      * @return 회원번호를 반환합니다.
      */
-    @GetMapping("/members/last-no")
+    @GetMapping("/last-no")
     public ResponseEntity<Integer> retrieveLastNo() {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(memberService.findLastNo());
@@ -181,7 +176,7 @@ public class MemberController {
      * @param email 요청받은 email 정보입니다.
      * @return 멤버의 전체정보가 있는 객체를 반환합니다.
      */
-    @GetMapping(value = "/members/email/{email}")
+    @GetMapping(value = "/email/{email}")
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable String email) {
         MemberResponseDto memberResponseDto = memberService.findMemberFromEmail(email);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)

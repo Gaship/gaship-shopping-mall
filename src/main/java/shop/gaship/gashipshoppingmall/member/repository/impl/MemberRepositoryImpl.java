@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.member.repository.impl;
 import com.querydsl.core.types.Projections;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
@@ -59,7 +60,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
         QMember member = QMember.member;
 
         Member result = from(member)
-                .where(member.email.eq(email))
+                .where(member.encodedEmailForSearch.eq(email))
                 .select(member)
                 .fetchOne();
 
@@ -71,6 +72,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         .authorities(result.getRoleSet().stream()
                                 .map(String::valueOf)
                                 .collect(Collectors.toList()))
+                        .isSocial(result.isSocial())
                         .build()
         );
     }
@@ -94,33 +96,46 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     public Page<MemberResponseDtoByAdmin> findMembers(Pageable pageable) {
         QMember member = QMember.member;
 
-        List<MemberResponseDtoByAdmin> content =
+
+        List<Member> content =
                 from(member)
                         .limit(Math.min(pageable.getPageSize(), 30))
                         .offset(pageable.getOffset())
                         .orderBy(member.memberNo.desc())
-                        .select(Projections.constructor(MemberResponseDtoByAdmin.class,
-                                member.memberNo,
-                                member.recommendMember.name.as("recommendMemberName"),
-                                member.memberStatusCodes.statusCodeName.as("memberStatus"),
-                                member.memberGrades.name.as("memberGrade"),
-                                member.email,
-                                member.phoneNumber,
-                                member.nickname,
-                                member.gender,
-                                member.birthDate,
-                                member.accumulatePurchaseAmount,
-                                member.nextRenewalGradeDate,
-                                member.registerDatetime,
-                                member.modifyDatetime,
-                                member.isSocial.as("social")))
+                        .select(member)
                         .fetch();
 
-        return PageableExecutionUtils.getPage(content,
+        List<MemberResponseDtoByAdmin> members = content.stream().map(mem ->
+                        MemberResponseDtoByAdmin.builder()
+                                .memberNo(mem.getMemberNo())
+                                .recommendMemberName(getNickname(mem))
+                                .memberStatus(mem.getMemberStatusCodes().getStatusCodeName())
+                                .memberGrade(mem.getMemberGrades().getName())
+                                .email(mem.getEmail())
+                                .phoneNumber(mem.getPhoneNumber())
+                                .nickname(mem.getNickname())
+                                .gender(mem.getGender())
+                                .birthDate(mem.getBirthDate())
+                                .accumulatePurchaseAmount(mem.getAccumulatePurchaseAmount())
+                                .nextRenewalGradeDate(mem.getNextRenewalGradeDate())
+                                .registerDatetime(mem.getRegisterDatetime())
+                                .modifyDatetime(mem.getModifyDatetime())
+                                .social(mem.isSocial())
+                                .build())
+                .collect(Collectors.toList());
+
+        return PageableExecutionUtils.getPage(members,
                 pageable,
                 () -> from(member)
                         .fetch()
                         .size());
+    }
+
+    private String getNickname(Member mem) {
+        if (Objects.isNull(mem.getRecommendMember())) {
+            return "";
+        }
+        return mem.getRecommendMember().getNickname();
     }
 
 

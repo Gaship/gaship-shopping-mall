@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.delivery.service;
 
+import shop.gaship.gashipshoppingmall.delivery.dto.response.DeliveryInfoStatusResponseDto;
 import shop.gaship.gashipshoppingmall.delivery.dto.response.TrackingNoResponseDto;
 
 /**
@@ -23,4 +24,6 @@ public interface DeliveryService {
      * @param trackingNoResponseDto 배송 서버에서 운송장번호를 전달할때 보내는 정보가 담긴 dto 객체 입니다.
      */
     void addTrackingNo(TrackingNoResponseDto trackingNoResponseDto);
+
+    void changeDeliveryStatus(DeliveryInfoStatusResponseDto deliveryInfoStatusResponseDto);
 }
