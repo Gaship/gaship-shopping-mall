@@ -21,7 +21,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.repository.custom.AddressLoca
 public class AddressLocalRepositoryImpl extends QuerydslRepositorySupport
     implements AddressLocalRepositoryCustom {
     public static final Integer HIGH_ADDRESS_NO = 1;
-    
+
     public AddressLocalRepositoryImpl() {
         super(AddressLocal.class);
     }
@@ -48,7 +48,8 @@ public class AddressLocalRepositoryImpl extends QuerydslRepositorySupport
             .where(addressLocal.upperLocal.addressName.eq(addressName))
             .select(Projections.constructor(AddressSubLocalResponseDto.class,
                 addressLocal.addressNo,
-                addressLocal.addressName))
+                addressLocal.addressName,
+                addressLocal.allowDelivery))
             .fetch();
     }
 }

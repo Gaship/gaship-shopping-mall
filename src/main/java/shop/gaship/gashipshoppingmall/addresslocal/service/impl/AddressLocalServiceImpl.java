@@ -3,6 +3,8 @@ package shop.gaship.gashipshoppingmall.addresslocal.service.impl;
 import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
@@ -21,6 +23,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AddressLocalServiceImpl implements AddressLocalService {
 
     private final AddressLocalRepository addressLocalRepository;
@@ -33,12 +36,14 @@ public class AddressLocalServiceImpl implements AddressLocalService {
      * @author 유호철
      */
     @Transactional
+    @Modifying
     @Override
     public void modifyLocalDelivery(ModifyAddressRequestDto modifyDto) {
         AddressLocal addressLocal = addressLocalRepository.findById(modifyDto.getLocalNo())
             .orElseThrow(NotExistAddressLocal::new);
+        log.error("{}", modifyDto.isDelivery());
+        addressLocal.allowDelivery(!modifyDto.isDelivery());
 
-        addressLocal.allowDelivery(modifyDto.isDelivery());
     }
 
     /**
