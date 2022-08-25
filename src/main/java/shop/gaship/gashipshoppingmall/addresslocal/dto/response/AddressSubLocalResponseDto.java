@@ -17,4 +17,5 @@ import lombok.NoArgsConstructor;
 public class AddressSubLocalResponseDto {
     private Integer addressNo;
     private String addressName;
+    private Boolean isDelivery;
 }

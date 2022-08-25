@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
@@ -26,6 +27,7 @@ import shop.gaship.gashipshoppingmall.daylabor.entity.DayLabor;
 @Entity
 @Table(name = "address_locals")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class AddressLocal {
 
