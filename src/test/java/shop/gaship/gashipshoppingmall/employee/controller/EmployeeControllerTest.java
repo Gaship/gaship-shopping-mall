@@ -107,7 +107,7 @@ class EmployeeControllerTest {
     @Test
     void putEmployee() throws Exception {
         //given
-        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, "yhc", "test@mail.com", "000000");
+        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, "yhc", "000000");
 
         //when & then
         doNothing().when(service).modifyEmployee(dto);
@@ -127,7 +127,7 @@ class EmployeeControllerTest {
     @Test
     void putEmployeeFail() throws Exception {
         //given
-        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, null, "test@mail.com", "000000");
+        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, null, "000000");
 
         //when & then
         doNothing().when(service).modifyEmployee(dto);
@@ -224,8 +224,8 @@ class EmployeeControllerTest {
             .zipCode("12345")
             .build();
         List<InstallOrderResponseDto> orderList = IntStream.range(0, 25)
-                .mapToObj(value -> dto)
-                .collect(Collectors.toUnmodifiableList());
+            .mapToObj(value -> dto)
+            .collect(Collectors.toUnmodifiableList());
 
         given(service.findInstallOrdersFromEmployeeLocation(any(Pageable.class), anyInt()))
             .willReturn(new PageImpl<>(orderList, PageRequest.of(0, 10), 30));
