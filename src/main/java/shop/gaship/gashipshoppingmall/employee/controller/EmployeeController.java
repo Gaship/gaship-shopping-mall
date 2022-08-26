@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.aspact.anntation.ManagerAuthority;
 import shop.gaship.gashipshoppingmall.aspact.anntation.ManagerOnlyAuthority;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
@@ -48,7 +49,7 @@ public class EmployeeController {
      * @param dto 직원을 생성하기위한 기본정보들이 포함되어있습니다.
      * @author 유호철
      */
-//    @AdminAuthority
+    @AdminAuthority
     @PostMapping
     public ResponseEntity<Void> addEmployee(@Valid @RequestBody CreateEmployeeRequestDto dto) {
         employeeService.addEmployee(dto);
@@ -61,7 +62,7 @@ public class EmployeeController {
      * @param dto 직원을 수정하기위한 기본정보들이 포함되어있습니다.
      * @author 유호철
      */
-//    @ManagerAuthority
+    @ManagerAuthority
     @PutMapping("/{employeeNo}")
     public ResponseEntity<Void> modifyEmployee(@PathVariable("employeeNo") Integer employeeNo,
                                                @Valid @RequestBody ModifyEmployeeRequestDto dto) {
@@ -77,7 +78,7 @@ public class EmployeeController {
      * @return GetEmployee info response dto
      * @author 유호철
      */
-//    @ManagerAuthority
+    @ManagerAuthority
     @GetMapping("/{employeeNo}")
     public ResponseEntity<EmployeeInfoResponseDto> employeeDetails(
         @PathVariable("employeeNo") Integer employeeNo) {
@@ -91,7 +92,7 @@ public class EmployeeController {
      * @return 모든 직원에대한 정보들이 반환됩니다.
      * @author 유호철
      */
-//    @AdminAuthority
+    @AdminAuthority
     @GetMapping
     public ResponseEntity<PageResponse<EmployeeInfoResponseDto>> employeeList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
