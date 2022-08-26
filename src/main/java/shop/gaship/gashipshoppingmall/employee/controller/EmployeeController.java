@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.aspact.anntation.ManagerAuthority;
 import shop.gaship.gashipshoppingmall.aspact.anntation.ManagerOnlyAuthority;
 import shop.gaship.gashipshoppingmall.employee.dto.request.CreateEmployeeRequestDto;
@@ -49,7 +48,7 @@ public class EmployeeController {
      * @param dto 직원을 생성하기위한 기본정보들이 포함되어있습니다.
      * @author 유호철
      */
-    @AdminAuthority
+//    @AdminAuthority
     @PostMapping
     public ResponseEntity<Void> addEmployee(@Valid @RequestBody CreateEmployeeRequestDto dto) {
         employeeService.addEmployee(dto);
@@ -62,7 +61,7 @@ public class EmployeeController {
      * @param dto 직원을 수정하기위한 기본정보들이 포함되어있습니다.
      * @author 유호철
      */
-    @ManagerAuthority
+//    @ManagerAuthority
     @PutMapping("/{employeeNo}")
     public ResponseEntity<Void> modifyEmployee(@PathVariable("employeeNo") Integer employeeNo,
                                                @Valid @RequestBody ModifyEmployeeRequestDto dto) {
@@ -78,7 +77,7 @@ public class EmployeeController {
      * @return GetEmployee info response dto
      * @author 유호철
      */
-    @ManagerAuthority
+//    @ManagerAuthority
     @GetMapping("/{employeeNo}")
     public ResponseEntity<EmployeeInfoResponseDto> employeeDetails(
         @PathVariable("employeeNo") Integer employeeNo) {
@@ -92,7 +91,7 @@ public class EmployeeController {
      * @return 모든 직원에대한 정보들이 반환됩니다.
      * @author 유호철
      */
-    @AdminAuthority
+//    @AdminAuthority
     @GetMapping
     public ResponseEntity<PageResponse<EmployeeInfoResponseDto>> employeeList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
@@ -115,7 +114,7 @@ public class EmployeeController {
      * 배송준비중상태인 주문들을 조회 할 수 있는 메서드입니다.
      *
      * @param employeeNo 직원의 고유 번호입니다.
-     * @param pageable 페이징 객체입니다.
+     * @param pageable   페이징 객체입니다.
      * @return 지역의 상태는 배송준비중이자 설치주문들을 조회합니다. 주문일자를 기준, 오름차순으로 정렬합니다.
      */
     @ManagerOnlyAuthority
@@ -137,8 +136,8 @@ public class EmployeeController {
     /**
      * 직원이 시공 주문에 대해 수락을 하는 메서드입니다.
      *
-     * @param employeeNo 직원의 고유번호입니다.
-     * @param orderNo 주문 고유번호입니다.
+     * @param employeeNo             직원의 고유번호입니다.
+     * @param orderNo                주문 고유번호입니다.
      * @param installOrderRequestDto 설치할 주문과 설치 배송을 수락하는 직원의 정보가 담긴 객체입니다.
      * @return 200 상태이고 body는 비어있는 응답객체를 반환합니다.
      * @throws NotMatchRequestData path variable과 body 객체에 담긴 정보가 다를 경우 해당 예외를 던집니다.
@@ -159,8 +158,8 @@ public class EmployeeController {
     /**
      * 설치 및 배송이 끝난 뒤 직원의 설치 및 배송완료 요청을 받는 메서드입니다.
      *
-     * @param employeeNo 직원의 고유번호입니다.
-     * @param orderNo 주문 고유번호입니다.
+     * @param employeeNo             직원의 고유번호입니다.
+     * @param orderNo                주문 고유번호입니다.
      * @param installOrderRequestDto 요청한 설치 주문 정보입니다.
      * @return 요청이 완료되면 200 상태와 body는 비어있는 응답객체를 반환합니다.
      */
@@ -180,8 +179,8 @@ public class EmployeeController {
     /**
      * 요청한 정보와 url path variable과 같은지 비교합니다.
      *
-     * @param employeeNo 직원의 고유번호입니다.
-     * @param orderNo 주문 고유번호입니다.
+     * @param employeeNo             직원의 고유번호입니다.
+     * @param orderNo                주문 고유번호입니다.
      * @param installOrderRequestDto 요청한 설치 주문 정보입니다.
      */
     private void checkSameRequestAndPathVariable(Integer employeeNo, Integer orderNo,

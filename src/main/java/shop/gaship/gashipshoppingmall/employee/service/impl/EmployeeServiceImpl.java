@@ -29,12 +29,12 @@ import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.exception.OrderNotFoundException;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
 import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 서비스레이어에서 직원에대한 요청을 사용하기위한 구현체 클래스입니다.
@@ -107,12 +107,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void modifyEmployee(ModifyEmployeeRequestDto dto) {
         Employee employee = repository.findById(dto.getEmployeeNo())
             .orElseThrow(EmployeeNotFoundException::new);
-
-        if (Boolean.TRUE.equals(repository.existsByEncodedEmailForSearch(
-            sha512.encryptPlainText(dto.getEmail())))) {
-            throw new EmailAlreadyExistException();
-        }
-
         employee.modifyEmployee(
             aes.aesEcbEncode(dto.getName()),
             aes.aesEcbEncode(dto.getPhoneNo()));
@@ -135,7 +129,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             aes.aesEcbDecode(employee.getName()),
             aes.aesEcbDecode(employee.getEmail()),
             employee.getPassword(),
-            employee.getAddressLocal().getAddressName());
+            employee.getAddressLocal().getAddressName(), 1);
     }
 
     /**
@@ -174,13 +168,13 @@ public class EmployeeServiceImpl implements EmployeeService {
             .map(order -> InstallOrderResponseDto.builder()
                 .orderNo(order.getNo())
                 .address(order.getAddressList()
-                            .getAddressLocal()
-                            .getUpperLocal()
-                            .getAddressName().concat(" ")
-                        .concat(order.getAddressList()
-                            .getAddressLocal()
-                            .getAddressName()).concat(" ")
-                        .concat(order.getAddressList().getAddress()))
+                    .getAddressLocal()
+                    .getUpperLocal()
+                    .getAddressName().concat(" ")
+                    .concat(order.getAddressList()
+                        .getAddressLocal()
+                        .getAddressName()).concat(" ")
+                    .concat(order.getAddressList().getAddress()))
                 .build())
             .collect(Collectors.toUnmodifiableList());
 
@@ -236,7 +230,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 배송타입이 시공타입인지 비교연산하는 메서드입니다.
      *
      * @param constructionStatusCode 배송타입 상태코드입니다.
-     * @param orderProduct 배송타입인지 확인할 주문상세품입니다.
+     * @param orderProduct           배송타입인지 확인할 주문상세품입니다.
      * @return 시공타입인지에 대한 결과를 반환합니다.
      */
     private boolean isEqualsDeliverType(
@@ -247,7 +241,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     /**
      * 배송완료할 물품에 대해 배송했던 직원이 같은 직원인지 비교하는 메서드입니다.
      *
-     * @param employee 요청한 직원입니다.
+     * @param employee     요청한 직원입니다.
      * @param orderProduct 배송 수락했던 직원입니다.
      * @return 같은 직원이면 true, 다르면 false를 반환합니다.
      */
