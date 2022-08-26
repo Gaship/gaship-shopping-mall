@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.employee.dto.response;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
@@ -29,6 +30,10 @@ public class EmployeeInfoResponseDto {
     @NotBlank
     private final String address;
 
+    @Min(0)
+    @NotNull
+    private final Integer employeeNo;
+
 
     /**
      * 암호화된 직원정보를 입력받기위한 메서드입니다.
@@ -41,10 +46,12 @@ public class EmployeeInfoResponseDto {
     public EmployeeInfoResponseDto(String name,
                                    String email,
                                    String phoneNo,
-                                   String address) {
+                                   String address,
+                                   Integer employeeNo) {
         this.name = name;
         this.email = email;
         this.phoneNo = phoneNo;
         this.address = address;
+        this.employeeNo = employeeNo;
     }
 }
