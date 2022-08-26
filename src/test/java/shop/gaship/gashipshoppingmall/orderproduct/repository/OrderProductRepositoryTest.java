@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.orderproduct.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,6 +38,8 @@ import shop.gaship.gashipshoppingmall.statuscode.status.AddressStatus;
 import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 import shop.gaship.gashipshoppingmall.totalsale.dto.request.TotalSaleRequestDto;
 import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDto;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 주문 상품 repository 테스트.
@@ -84,17 +84,17 @@ class OrderProductRepositoryTest {
         LocalDateTime endDate = LocalDateTime.of(2022, 12, 30, 23, 59, 59);
         TotalSaleRequestDto requestDto = new TotalSaleRequestDto(startDate, endDate);
         List<TotalSaleResponseDto> totalSale = orderProductRepository.findTotalSale(requestDto);
-        assertThat(totalSale).hasSize(3);
+        assertThat(totalSale).isNotEmpty();
     }
 
     @Test
     void findOrderInfo() {
 
         StatusCode statusCode = StatusCode.builder()
-                                          .groupCodeName(OrderStatus.GROUP)
-                                          .statusCodeName(OrderStatus.DELIVERY_PREPARING.getValue())
-                                          .priority(1)
-                                          .build();
+            .groupCodeName(OrderStatus.GROUP)
+            .statusCodeName(OrderStatus.DELIVERY_PREPARING.getValue())
+            .priority(1)
+            .build();
 
         StatusCode savedStatusCode = statusCodeRepository.save(statusCode);
 
@@ -125,17 +125,17 @@ class OrderProductRepositoryTest {
         MemberGrade savedMemberGrade = memberGradeRepository.save(memberGrade);
 
         Member member = Member.builder()
-                              .memberNo(1)
-                              .name("유민철")
-                              .password("1234")
-                              .nickname("하하")
-                              .email("rhsnqk@daum.net")
-                              .accumulatePurchaseAmount(11111L)
-                              .nextRenewalGradeDate(LocalDate.now())
-                              .memberStatusCodes(savedMemberStatusCode)
-                              .encodedEmailForSearch("dasdfas@afasdf2f32edsffdsa")
-                              .memberGrades(savedMemberGrade)
-                              .build();
+            .memberNo(1)
+            .name("유민철")
+            .password("1234")
+            .nickname("하하")
+            .email("rhsnqk@daum.net")
+            .accumulatePurchaseAmount(11111L)
+            .nextRenewalGradeDate(LocalDate.now())
+            .memberStatusCodes(savedMemberStatusCode)
+            .encodedEmailForSearch("dasdfas@afasdf2f32edsffdsa")
+            .memberGrades(savedMemberGrade)
+            .build();
 
         Member savedMember = memberRepository.save(member);
 
@@ -144,43 +144,43 @@ class OrderProductRepositoryTest {
         AddressLocal savedAddressLocal = addressLocalRepository.save(addressLocal);
 
         StatusCode addressStatus = StatusCode.builder()
-                                             .statusCodeName(AddressStatus.USE.getValue())
-                                             .groupCodeName(AddressStatus.GROUP)
-                                             .priority(1)
-                                             .build();
+            .statusCodeName(AddressStatus.USE.getValue())
+            .groupCodeName(AddressStatus.GROUP)
+            .priority(1)
+            .build();
 
         StatusCode savedAddressStatus = statusCodeRepository.save(addressStatus);
 
 
         AddressList addressList = AddressList.builder()
-                                             .addressListsNo(1)
-                                             .address("창원")
-                                             .addressDetail("집")
-                                             .addressLocal(savedAddressLocal)
-                                             .member(savedMember)
-                                             .statusCode(savedAddressStatus)
-                                             .zipCode("123")
-                                             .build();
+            .addressListsNo(1)
+            .address("창원")
+            .addressDetail("집")
+            .addressLocal(savedAddressLocal)
+            .member(savedMember)
+            .statusCode(savedAddressStatus)
+            .zipCode("123")
+            .build();
 
         AddressList savedAddressList = addressListRepository.save(addressList);
 
         // given
         Order order = Order.builder()
-                           .receiptName("유민철")
-                           .receiptPhoneNumber("01000000000")
-                           .addressList(savedAddressList)
-                           .member(savedMember)
-                           .build();
+            .receiptName("유민철")
+            .receiptPhoneNumber("01000000000")
+            .addressList(savedAddressList)
+            .member(savedMember)
+            .build();
 
         Order savedOrder = orderRepository.save(order);
 
         OrderProduct orderProduct = OrderProduct.builder()
-                                                .order(savedOrder)
-                                                .warrantyExpirationDate(LocalDate.now())
-                                                .orderStatusCode(savedStatusCode)
-                                                .product(savedProduct)
-                                                .amount(1000L)
-                                                .build();
+            .order(savedOrder)
+            .warrantyExpirationDate(LocalDate.now())
+            .orderStatusCode(savedStatusCode)
+            .product(savedProduct)
+            .amount(1000L)
+            .build();
 
         OrderProduct savedOrderProduct = orderProductRepository.save(orderProduct);
 
