@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.CouponTargetMemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 
@@ -45,4 +46,6 @@ public interface MemberGradeRepositoryCustom {
      * @return List - MemberGradeResponseDto
      */
     List<MemberGradeResponseDto> getAll();
+
+    List<CouponTargetMemberGradeResponseDto> findCouponTargetGrade();
 }

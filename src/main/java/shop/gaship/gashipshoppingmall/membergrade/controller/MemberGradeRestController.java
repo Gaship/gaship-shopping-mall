@@ -19,6 +19,7 @@ import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.CouponTargetMemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
@@ -139,5 +140,12 @@ public class MemberGradeRestController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(memberGradeService.findMemberGrades());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CouponTargetMemberGradeResponseDto>> findCouponTargetGrade() {
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(memberGradeService.findCouponTargetGrade());
     }
 }

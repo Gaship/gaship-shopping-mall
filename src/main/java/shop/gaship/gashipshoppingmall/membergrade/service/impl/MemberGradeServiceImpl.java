@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.CouponTargetMemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.*;
@@ -158,5 +159,10 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         if (memberGradeRepository.existsByIsDefaultIsTrue()) {
             throw new DefaultMemberGradeIsExist();
         }
+    }
+
+    @Override
+    public List<CouponTargetMemberGradeResponseDto> findCouponTargetGrade() {
+        return memberGradeRepository.findCouponTargetGrade();
     }
 }

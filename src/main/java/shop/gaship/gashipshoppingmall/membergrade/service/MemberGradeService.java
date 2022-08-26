@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.CouponTargetMemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 
@@ -74,4 +75,6 @@ public interface MemberGradeService {
      * @author 김세미
      */
     List<MemberGradeResponseDto> findMemberGrades();
+
+    List<CouponTargetMemberGradeResponseDto> findCouponTargetGrade();
 }
