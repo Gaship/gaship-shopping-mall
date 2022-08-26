@@ -142,7 +142,7 @@ public class MemberGradeRestController {
                 .body(memberGradeService.findMemberGrades());
     }
 
-    @GetMapping
+    @GetMapping("/coupon-target")
     public ResponseEntity<List<CouponTargetMemberGradeResponseDto>> findCouponTargetGrade() {
 
         return ResponseEntity.status(HttpStatus.OK)
