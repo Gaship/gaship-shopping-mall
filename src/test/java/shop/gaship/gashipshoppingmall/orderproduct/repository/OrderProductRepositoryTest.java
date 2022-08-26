@@ -84,7 +84,7 @@ class OrderProductRepositoryTest {
         LocalDateTime endDate = LocalDateTime.of(2022, 12, 30, 23, 59, 59);
         TotalSaleRequestDto requestDto = new TotalSaleRequestDto(startDate, endDate);
         List<TotalSaleResponseDto> totalSale = orderProductRepository.findTotalSale(requestDto);
-        assertThat(totalSale).hasSize(3);
+        assertThat(totalSale).hasSize(4);
     }
 
     @Test

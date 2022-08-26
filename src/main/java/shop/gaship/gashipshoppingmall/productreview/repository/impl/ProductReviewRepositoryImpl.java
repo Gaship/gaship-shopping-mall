@@ -47,6 +47,7 @@ public class ProductReviewRepositoryImpl extends QuerydslRepositorySupport
         List<ProductReviewResponseDto> content = productReviewQuery(viewRequest)
                 .select(Projections.bean(ProductReviewResponseDto.class,
                         orderProduct.no.as("orderProductNo"),
+                        order.member.memberNo.as("writerNo"),
                         order.member.nickname.as("writerNickname"),
                         orderProduct.product.name.as("productName"),
                         review.title,

@@ -18,6 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductReviewResponseDto {
     private Integer orderProductNo;
+    private Integer writerNo;
     private String writerNickname;
     private String productName;
     private String title;
