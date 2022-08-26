@@ -1,7 +1,5 @@
 package shop.gaship.gashipshoppingmall.orderproduct.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,6 +38,8 @@ import shop.gaship.gashipshoppingmall.statuscode.status.AddressStatus;
 import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 import shop.gaship.gashipshoppingmall.totalsale.dto.request.TotalSaleRequestDto;
 import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDto;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 주문 상품 repository 테스트.
@@ -84,7 +84,7 @@ class OrderProductRepositoryTest {
         LocalDateTime endDate = LocalDateTime.of(2022, 12, 30, 23, 59, 59);
         TotalSaleRequestDto requestDto = new TotalSaleRequestDto(startDate, endDate);
         List<TotalSaleResponseDto> totalSale = orderProductRepository.findTotalSale(requestDto);
-        assertThat(totalSale).hasSize(4);
+        assertThat(totalSale).isNotEmpty();
     }
 
     @Test
