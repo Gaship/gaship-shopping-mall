@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,6 +40,8 @@ public class Category {
     private String name;
 
     @NotNull
+    @Min(value = 1, message = "카테고리는 총 3종류입니다. (대분류, 중분류, 소분류)")
+    @Max(value = 3, message = "카테고리는 총 3종류입니다. (대분류, 중분류, 소분류)")
     private Integer level;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
