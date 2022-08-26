@@ -63,7 +63,7 @@ class AddressLocalControllerTest {
         //when & then
         doNothing().when(service).modifyLocalDelivery(dto);
 
-        mvc.perform(put("/api/addressLocals")
+        mvc.perform(put("/api/address-locals")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .content(objectMapper.writeValueAsString(dto))
@@ -82,7 +82,7 @@ class AddressLocalControllerTest {
         ModifyAddressRequestDto dto = new ModifyAddressRequestDto(null, true);
 
         //when & then
-        mvc.perform(put("/api/addressLocals")
+        mvc.perform(put("/api/address-locals")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .content(objectMapper.writeValueAsString(dto))
@@ -104,7 +104,7 @@ class AddressLocalControllerTest {
         when(service.findSubLocals(anyString()))
             .thenReturn(list);
 
-        mvc.perform(get("/api/addressLocals")
+        mvc.perform(get("/api/address-locals")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .queryParam("address", "경상남도")
@@ -127,7 +127,7 @@ class AddressLocalControllerTest {
         when(service.findAddressLocals())
             .thenReturn(list);
 
-        mvc.perform(get("/api/addressLocals")
+        mvc.perform(get("/api/address-locals")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .accept(MediaType.APPLICATION_JSON))

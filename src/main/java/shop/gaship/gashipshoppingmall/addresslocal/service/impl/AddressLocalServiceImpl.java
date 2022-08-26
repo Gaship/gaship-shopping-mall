@@ -42,7 +42,7 @@ public class AddressLocalServiceImpl implements AddressLocalService {
         AddressLocal addressLocal = addressLocalRepository.findById(modifyDto.getLocalNo())
             .orElseThrow(NotExistAddressLocal::new);
         log.error("{}", modifyDto.isDelivery());
-        addressLocal.allowDelivery(!modifyDto.isDelivery());
+        addressLocal.allowDelivery(!addressLocal.isAllowDelivery());
 
     }
 

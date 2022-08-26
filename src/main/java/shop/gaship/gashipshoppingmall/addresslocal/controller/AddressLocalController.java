@@ -26,7 +26,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/addressLocals")
+@RequestMapping("/api/address-locals")
 public class AddressLocalController {
 
     private final AddressLocalService service;
