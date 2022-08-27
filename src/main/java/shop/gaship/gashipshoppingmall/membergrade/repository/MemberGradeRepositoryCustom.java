@@ -17,6 +17,7 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
  */
 @NoRepositoryBean
 public interface MemberGradeRepositoryCustom {
+
     /**
      * 회원등급 단건 조회.
      *
@@ -47,5 +48,10 @@ public interface MemberGradeRepositoryCustom {
      */
     List<MemberGradeResponseDto> getAll();
 
+    /**
+     * 쿠폰 타겟이 되는 회원 등급 전체 조회.
+     *
+     * @return 회원 등급 리스트.
+     */
     List<CouponTargetMemberGradeResponseDto> findCouponTargetGrade();
 }
