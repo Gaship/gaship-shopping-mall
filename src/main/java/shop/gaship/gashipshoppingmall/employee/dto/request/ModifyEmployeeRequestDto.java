@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.employee.dto.request;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -21,10 +20,6 @@ public class ModifyEmployeeRequestDto {
 
     @NotNull(message = "이름을 입력해주세요")
     private String name;
-
-    @Email
-    @NotNull(message = "이메일을 입력해주세요")
-    private String email;
 
     @NotNull(message = "휴대폰번호를 입력해주세요")
     private String phoneNo;

@@ -22,11 +22,11 @@ import shop.gaship.gashipshoppingmall.order.entity.QOrder;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.QOrderProduct;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
 import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 
 /**
@@ -88,7 +88,8 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
                     employee.name,
                     employee.email,
                     employee.phoneNo,
-                    employee.addressLocal.addressName)
+                    employee.addressLocal.addressName,
+                    employee.employeeNo)
             );
 
         List<EmployeeInfoResponseDto> content =
@@ -142,10 +143,10 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
 
         JPQLQuery<Order> employeeInstallWorkResult =
             installWorkResult.select(order)
-            .orderBy(order.orderDatetime.asc())
-            .distinct()
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize());
+                .orderBy(order.orderDatetime.asc())
+                .distinct()
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
 
         return PageableExecutionUtils.getPage(
             employeeInstallWorkResult.fetch(), pageable, installWorkResult::fetchCount);

@@ -44,12 +44,12 @@ import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.dummy.StatusCodeDummy;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
 import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -125,7 +125,7 @@ class EmployeeServiceTest {
         captor = ArgumentCaptor.forClass(Employee.class);
 
         getEmployee = new EmployeeInfoResponseDto(employee.getName(), employee.getEmail(),
-            employee.getPhoneNo(), "마산");
+            employee.getPhoneNo(), "마산", 1);
         labor = DayLaboyDummy.dummy1();
 
         addressLocal = AddressLocalDummy.dummy1();
@@ -392,10 +392,10 @@ class EmployeeServiceTest {
             .willReturn(Optional.of(orderProductDummy.getProduct().getDeliveryType()));
         given(codeRepository.findByStatusCodeName(OrderStatus.DELIVERY_COMPLETE.getValue()))
             .willReturn(Optional.of(StatusCode.builder()
-                    .statusCodeName("배송완료")
-                    .explanation("")
-                    .priority(1)
-                    .groupCodeName("배송")
+                .statusCodeName("배송완료")
+                .explanation("")
+                .priority(1)
+                .groupCodeName("배송")
                 .build()));
 
         service.completeDelivery(1, 1);

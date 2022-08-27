@@ -115,7 +115,7 @@ public class EmployeeController {
      * 배송준비중상태인 주문들을 조회 할 수 있는 메서드입니다.
      *
      * @param employeeNo 직원의 고유 번호입니다.
-     * @param pageable 페이징 객체입니다.
+     * @param pageable   페이징 객체입니다.
      * @return 지역의 상태는 배송준비중이자 설치주문들을 조회합니다. 주문일자를 기준, 오름차순으로 정렬합니다.
      */
     @ManagerOnlyAuthority
@@ -137,8 +137,8 @@ public class EmployeeController {
     /**
      * 직원이 시공 주문에 대해 수락을 하는 메서드입니다.
      *
-     * @param employeeNo 직원의 고유번호입니다.
-     * @param orderNo 주문 고유번호입니다.
+     * @param employeeNo             직원의 고유번호입니다.
+     * @param orderNo                주문 고유번호입니다.
      * @param installOrderRequestDto 설치할 주문과 설치 배송을 수락하는 직원의 정보가 담긴 객체입니다.
      * @return 200 상태이고 body는 비어있는 응답객체를 반환합니다.
      * @throws NotMatchRequestData path variable과 body 객체에 담긴 정보가 다를 경우 해당 예외를 던집니다.
@@ -159,8 +159,8 @@ public class EmployeeController {
     /**
      * 설치 및 배송이 끝난 뒤 직원의 설치 및 배송완료 요청을 받는 메서드입니다.
      *
-     * @param employeeNo 직원의 고유번호입니다.
-     * @param orderNo 주문 고유번호입니다.
+     * @param employeeNo             직원의 고유번호입니다.
+     * @param orderNo                주문 고유번호입니다.
      * @param installOrderRequestDto 요청한 설치 주문 정보입니다.
      * @return 요청이 완료되면 200 상태와 body는 비어있는 응답객체를 반환합니다.
      */
@@ -180,8 +180,8 @@ public class EmployeeController {
     /**
      * 요청한 정보와 url path variable과 같은지 비교합니다.
      *
-     * @param employeeNo 직원의 고유번호입니다.
-     * @param orderNo 주문 고유번호입니다.
+     * @param employeeNo             직원의 고유번호입니다.
+     * @param orderNo                주문 고유번호입니다.
      * @param installOrderRequestDto 요청한 설치 주문 정보입니다.
      */
     private void checkSameRequestAndPathVariable(Integer employeeNo, Integer orderNo,
