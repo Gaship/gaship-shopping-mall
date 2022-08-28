@@ -139,6 +139,7 @@ public class InquiryServiceImpl implements InquiryService {
         if (!inquiryRepository.existsById(inquiryNo)) {
             throw new InquiryNotFoundException();
         }
+        
 
         inquiryRepository.deleteById(inquiryNo);
     }

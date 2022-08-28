@@ -61,7 +61,7 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
                                                        QStatusCode statusCode) {
         return from(inquiry).innerJoin(inquiry.member, member)
             .innerJoin(inquiry.processStatusCode, statusCode)
-            .select(Projections.fields(InquiryListResponseDto.class, inquiry.inquiryNo,
+            .select(Projections.fields(InquiryListResponseDto.class, inquiry.inquiryNo, member.memberNo,
                 member.nickname.as("memberNickname"), statusCode.statusCodeName.as("processStatus"),
                 inquiry.title, inquiry.registerDatetime));
     }

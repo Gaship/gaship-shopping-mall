@@ -14,6 +14,7 @@ import lombok.Getter;
 public class InquiryListResponseDto {
 
     private Integer inquiryNo;
+    private Integer memberNo;
     private String memberNickname;
     private String processStatus;
     private String title;
