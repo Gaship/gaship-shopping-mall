@@ -10,6 +10,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLoca
  * 주소지를 Service 레이어에서 다루기위한 인터페이스 입니다.
  *
  * @author : 유호철
+ * @author : 김세미
  * @since 1.0
  */
 public interface AddressLocalService {
@@ -37,4 +38,6 @@ public interface AddressLocalService {
      * @return 주소지의 이름과 번호가 반환됩니다.
      */
     List<AddressSubLocalResponseDto> findSubLocals(String upperAddress);
+
+    AddressSubLocalResponseDto findAddressLocalSub(String sigungu);
 }

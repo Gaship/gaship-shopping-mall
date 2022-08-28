@@ -21,6 +21,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
  * 주소지정보를 위한 요청을 다루기 위한 컨트롤러입니다.
  *
  * @author : 유호철
+ * @author : 김세미
  * @since 1.0
  */
 
@@ -74,5 +75,13 @@ public class AddressLocalController {
         return ResponseEntity.status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
             .body(service.findSubLocals(address));
+    }
+
+    @GetMapping(params = "sigungu")
+    public ResponseEntity<AddressSubLocalResponseDto> addressLocalSubDetails(
+            @RequestParam("sigungu") String sigungu) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.findAddressLocalSub(sigungu));
     }
 }
