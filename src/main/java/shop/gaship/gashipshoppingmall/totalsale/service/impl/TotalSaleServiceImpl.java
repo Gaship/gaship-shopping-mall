@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.totalsale.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import shop.gaship.gashipshoppingmall.totalsale.service.TotalSaleService;
 @Service
 @RequiredArgsConstructor
 public class TotalSaleServiceImpl implements TotalSaleService {
+
     private final OrderProductRepository repository;
 
     /**
@@ -25,9 +27,15 @@ public class TotalSaleServiceImpl implements TotalSaleService {
      */
     @Override
     public List<TotalSaleResponseDto> findTotalSales(TotalSaleRequestDto dto) {
+
         if (dto.getEndDate().isAfter(dto.getStartDate().plusYears(1).plusMinutes(1))) {
             throw new LocalDateMaxYearException();
         }
+
+        System.out.println("여기 보세요!!!!!");
+        System.out.println(dto.getStartDate());
+        System.out.println(dto.getEndDate());
+
         return repository.findTotalSale(dto);
     }
 }
