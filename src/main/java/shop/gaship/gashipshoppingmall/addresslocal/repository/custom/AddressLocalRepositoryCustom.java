@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.addresslocal.repository.custom;
 
 import java.util.List;
+import java.util.Optional;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 
@@ -8,6 +9,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLoca
  * 주소지에대한 QueryDsl 을 쓰기위한 인터페이스입니다.
  *
  * @author : 유호철
+ * @author : 김세미
  * @since 1.0
  */
 public interface AddressLocalRepositoryCustom {
@@ -27,4 +29,6 @@ public interface AddressLocalRepositoryCustom {
      * @return the list
      */
     List<AddressSubLocalResponseDto> findSubAddress(String upperAddress);
+
+    Optional<AddressSubLocalResponseDto> findAddressLocalSub(String sigungu);
 }

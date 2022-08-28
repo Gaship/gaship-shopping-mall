@@ -18,6 +18,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
  * 주소를 서비스레이어에서 사용할수있게하는 구현 클래스입니다.
  *
  * @author : 유호철
+ * @author : 김세미
  * @see AddressLocalService
  * @since 1.0
  */
@@ -65,4 +66,9 @@ public class AddressLocalServiceImpl implements AddressLocalService {
         return addressLocalRepository.findSubAddress(upperAddress);
     }
 
+    @Override
+    public AddressSubLocalResponseDto findAddressLocalSub(String sigungu) {
+        return addressLocalRepository.findAddressLocalSub(sigungu)
+                .orElseThrow(NotExistAddressLocal::new);
+    }
 }
