@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.productreview.service.impl;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,7 +41,6 @@ import shop.gaship.gashipshoppingmall.productreview.service.ProductReviewService
 @Service
 @RequiredArgsConstructor
 public class ProductReviewServiceImpl implements ProductReviewService {
-    private static final String REVIEW_DIR = File.separator + "reviews";
     private final ProductReviewRepository productReviewRepository;
     private final OrderProductRepository orderProductRepository;
     private final ProductRepository productRepository;
@@ -136,7 +134,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
                         .orderProductNo(orderProductNo)
                         .build());
-        findFileNo(reviewResponseDtos);
+        findFilePath(reviewResponseDtos);
 
         return reviewResponseDtos.getContent().stream()
                 .findFirst()
@@ -153,7 +151,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 productReviewRepository.findProductReviews(ProductReviewViewRequestDto.builder()
                         .pageable(pageable)
                         .build());
-        findFileNo(reviewResponseDtos);
+        findFilePath(reviewResponseDtos);
         return reviewResponseDtos;
     }
 
@@ -175,7 +173,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                         .productNo(productNo)
                         .pageable(pageable)
                         .build());
-        findFileNo(reviewResponseDtos);
+        findFilePath(reviewResponseDtos);
         return reviewResponseDtos;
     }
 
@@ -197,7 +195,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                         .memberNo(memberNo)
                         .pageable(pageable)
                         .build());
-        findFileNo(reviewResponseDtos);
+        findFilePath(reviewResponseDtos);
         return reviewResponseDtos;
     }
 
@@ -224,9 +222,9 @@ public class ProductReviewServiceImpl implements ProductReviewService {
      *
      * @param productReviews 이미지경로를 찾을 상품평
      */
-    private void findFileNo(Page<ProductReviewResponseDto> productReviews) {
-        productReviews.getContent().forEach(review -> review.getFileNos()
-                .addAll(commonFileRepository.findNos(review.getOrderProductNo(),
+    private void findFilePath(Page<ProductReviewResponseDto> productReviews) {
+        productReviews.getContent().forEach(review -> review.getFilePaths()
+                .addAll(commonFileRepository.findPaths(review.getOrderProductNo(),
                         ProductReview.SERVICE)));
     }
 }
