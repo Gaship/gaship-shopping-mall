@@ -115,6 +115,7 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
             .select(Projections.constructor(InquiryDetailsResponseDto.class,
                 inquiry.inquiryNo,
                 product.no,
+                member.memberNo,
                 member.nickname,
                 employee.name,
                 statusCode.statusCodeName,

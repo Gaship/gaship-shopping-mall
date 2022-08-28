@@ -71,16 +71,30 @@ public class CommonInquiryRestController {
     }
 
     /**
-     * 문의를 삭제하는 기능 요청을 처리합니다.
+     * 본인이 본인의 문의를 삭제하는 기능 요청을 처리합니다.
      * 이때 삭제는 실삭제를 뜻합니다.
      *
      * @param inquiryNo 삭제할 문의의 번호입니다.
      * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
-    @DeleteMapping("/{inquiryNo}")
-    public ResponseEntity<Void> inquiryDelete(@PathVariable Integer inquiryNo) {
-        inquiryService.deleteInquiry(inquiryNo);
+    @DeleteMapping(value = "/{inquiryNo}", params = "memberNo")
+    public ResponseEntity<Void> inquiryDelete(@PathVariable Integer inquiryNo, Integer memberNo) {
+        inquiryService.deleteInquiry(inquiryNo, memberNo);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 직원 또는 관리자가 문의를 삭제하는 기능 요청을 처리합니다.
+     * 이때 삭제는 실삭제를 뜻합니다.
+     *
+     * @param inquiryNo 삭제할 문의의 번호입니다.
+     * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
+     * @author 최겸준
+     */
+    @DeleteMapping(value = "/{inquiryNo}/manager")
+    public ResponseEntity<Void> inquiryDeleteManager(@PathVariable Integer inquiryNo) {
+        inquiryService.deleteInquiryManager(inquiryNo);
         return ResponseEntity.ok().build();
     }
 

@@ -43,12 +43,21 @@ public interface InquiryService {
     void modifyInquiryAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto);
 
     /**
-     * 문의를 실삭제하도록 repository에 요청하는 기능입니다.
+     * 본인이 문의를 실삭제하도록 repository에 요청하는 기능입니다.
+     *
+     * @param inquiryNo 삭제대상 문의번호입니다.
+     * @param memberNo 삭제하려는 문의를 작성한 사람의 번호입니다.
+     * @author 최겸준
+     */
+    void deleteInquiry(Integer inquiryNo, Integer memberNo);
+
+    /**
+     * 관리자 또는 직원이 문의를 실삭제하도록 repository에 요청하는 기능입니다.
      *
      * @param inquiryNo 삭제대상 문의번호입니다.
      * @author 최겸준
      */
-    void deleteInquiry(Integer inquiryNo);
+    void deleteInquiryManager(Integer inquiryNo);
 
     /**
      * 문의답변을 삭제하도록 repository에 요청하는 기능입니다.
@@ -126,4 +135,6 @@ public interface InquiryService {
             .isProduct(inquiryAddRequestDto.getIsProduct()).registerDatetime(LocalDateTime.now())
             .build();
     }
+
+
 }

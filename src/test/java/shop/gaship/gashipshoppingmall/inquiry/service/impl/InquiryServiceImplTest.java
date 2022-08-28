@@ -367,7 +367,7 @@ class InquiryServiceImplTest {
         given(inquiryRepository.existsById(anyInt()))
             .willReturn(Boolean.TRUE);
 
-        assertThatNoException().isThrownBy(() -> inquiryService.deleteInquiry(1));
+        assertThatNoException().isThrownBy(() -> inquiryService.deleteInquiryManager(1));
         verify(inquiryRepository).deleteById(1);
     }
 
@@ -377,7 +377,7 @@ class InquiryServiceImplTest {
         given(inquiryRepository.existsById(anyInt()))
             .willReturn(Boolean.FALSE);
 
-        assertThatThrownBy(() -> inquiryService.deleteInquiry(1))
+        assertThatThrownBy(() -> inquiryService.deleteInquiryManager(1))
             .isInstanceOf(InquiryNotFoundException.class)
                 .hasMessageContaining(InquiryNotFoundException.MESSAGE);
     }
@@ -588,7 +588,7 @@ class InquiryServiceImplTest {
     void findInquiry() {
         // given
         InquiryDetailsResponseDto mockDto = new InquiryDetailsResponseDto(
-            1, 1, "memberNickName", "employeeName", "processStatus",
+            1, 1, 1,"memberNickName", "employeeName", "processStatus",
             "productName", "title", "inquiryContent", LocalDateTime.now(), "answerContent",LocalDateTime.now(), null);
 
         given(inquiryRepository.findDetailsById(anyInt()))
