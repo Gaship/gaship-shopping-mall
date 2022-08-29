@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.CouponTargetMemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 
@@ -16,12 +17,8 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
 public interface MemberGradeService {
 
     /**
-     * 회원등급 등록을 위한 메서드
-     * 모든 회원등급의 갱신기간은 동일하게 적용된다.
-     * 요청에 담겨있는 기준누적금액에 해당하는 기존의 다른 회원등급이 존재하면 등록 불가.
-     * 해당 회원등급 등록 요청의 isDefault 값이 true 일때 (기본회원등급 등록을 할때)
-     * 기존에 기본회원등급이 존재한다면 등록 불가.
-     * request 의 isDefault 값에 따라 기본회원등급 등록 / 이외의 회원등급 등록 으로 나뉜다.
+     * 회원등급 등록을 위한 메서드 모든 회원등급의 갱신기간은 동일하게 적용된다. 요청에 담겨있는 기준누적금액에 해당하는 기존의 다른 회원등급이 존재하면 등록 불가. 해당 회원등급 등록 요청의 isDefault
+     * 값이 true 일때 (기본회원등급 등록을 할때) 기존에 기본회원등급이 존재한다면 등록 불가. request 의 isDefault 값에 따라 기본회원등급 등록 / 이외의 회원등급 등록 으로 나뉜다.
      *
      * @param requestDto MemberGradeAddRequestDto.
      * @author 김세미
@@ -29,20 +26,17 @@ public interface MemberGradeService {
     void addMemberGrade(MemberGradeAddRequestDto requestDto);
 
     /**
-     * 회원등급 수정을 위한 메서드
-     * 기준누적금액을 수정하려고 하는 경우 해당 기준누적금액이 기존과 다를때
-     * 기준누적금액이 회원등급끼리 중복되는 부분을 방지하기 위해
-     * 해당 기준누적금액과 동일한 기준누적금액을 가지고 있는 다른 회원등급이 존재하면 수정 불가.
+     * 회원등급 수정을 위한 메서드 기준누적금액을 수정하려고 하는 경우 해당 기준누적금액이 기존과 다를때 기준누적금액이 회원등급끼리 중복되는 부분을 방지하기 위해 해당 기준누적금액과 동일한 기준누적금액을 가지고
+     * 있는 다른 회원등급이 존재하면 수정 불가.
      *
      * @param requestDto MemberGradeModifyRequestDto
      * @author 김세미
      */
     void modifyMemberGrade(Integer memberGradeNo,
-                           MemberGradeModifyRequestDto requestDto);
+        MemberGradeModifyRequestDto requestDto);
 
     /**
-     * 회원등급 삭제를 위한 메서드
-     * 기본 회원 등급은 삭제할 수 없으며 해당 회원등급을 사용중인 member 가 존재하면 삭제할 수 없다.
+     * 회원등급 삭제를 위한 메서드 기본 회원 등급은 삭제할 수 없으며 해당 회원등급을 사용중인 member 가 존재하면 삭제할 수 없다.
      *
      * @param memberGradeNo Integer
      * @author 김세미
@@ -74,4 +68,11 @@ public interface MemberGradeService {
      * @author 김세미
      */
     List<MemberGradeResponseDto> findMemberGrades();
+
+    /**
+     * 쿠폰 타겟이 될 회원 등급 전체 조회 하기 위한 비즈니스 로직을 처리하는 메서드.
+     *
+     * @return 회원 등급 전체 리스트.
+     */
+    List<CouponTargetMemberGradeResponseDto> findCouponTargetGrade();
 }
