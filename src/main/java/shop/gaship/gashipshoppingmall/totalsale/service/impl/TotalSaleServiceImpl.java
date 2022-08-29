@@ -18,6 +18,7 @@ import shop.gaship.gashipshoppingmall.totalsale.service.TotalSaleService;
 @Service
 @RequiredArgsConstructor
 public class TotalSaleServiceImpl implements TotalSaleService {
+
     private final OrderProductRepository repository;
 
     /**
@@ -25,9 +26,11 @@ public class TotalSaleServiceImpl implements TotalSaleService {
      */
     @Override
     public List<TotalSaleResponseDto> findTotalSales(TotalSaleRequestDto dto) {
+
         if (dto.getEndDate().isAfter(dto.getStartDate().plusYears(1).plusMinutes(1))) {
             throw new LocalDateMaxYearException();
         }
+
         return repository.findTotalSale(dto);
     }
 }

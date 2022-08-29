@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.RenewalMemberGradeRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.AdvancementTargetResponseDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.CouponTargetMemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.service.AdvancementService;
 
 

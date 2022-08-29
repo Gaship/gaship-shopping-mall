@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.CouponTargetMemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.entity.QMemberGrade;
@@ -85,5 +86,16 @@ public class MemberGradeRepositoryImpl extends QuerydslRepositorySupport
                         memberGrade.accumulateAmount,
                         memberGrade.renewalPeriodStatusCode.statusCodeName))
                 .fetch();
+    }
+
+    @Override
+    public List<CouponTargetMemberGradeResponseDto> findCouponTargetGrade() {
+        QMemberGrade memberGrade = QMemberGrade.memberGrade;
+
+        return from(memberGrade)
+            .select(Projections.constructor(CouponTargetMemberGradeResponseDto.class,
+                memberGrade.no,
+                memberGrade.name))
+            .fetch();
     }
 }

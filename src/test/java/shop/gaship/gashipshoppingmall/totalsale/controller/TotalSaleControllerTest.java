@@ -1,6 +1,8 @@
 package shop.gaship.gashipshoppingmall.totalsale.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * 설명작성란
  *
- * @author : 유호철
+ * @author : 유호철, 조재철
  * @since 1.0
  */
 
@@ -50,14 +53,17 @@ class TotalSaleControllerTest {
         LocalDateTime startDate = LocalDateTime.of(2022, 1, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2022, 12, 30, 23, 59, 59);
 
-        TotalSaleRequestDto dto = new TotalSaleRequestDto(startDate, endDate);
+        TotalSaleRequestDto requestDto = new TotalSaleRequestDto(startDate, endDate);
         TotalSaleResponseDto responseDto = new TotalSaleResponseDto(startDate, 2L, 1L, 1L, 10000L, 1000L, 9000L);
 
-        //when
         when(service.findTotalSales(any())).thenReturn(List.of(responseDto));
 
-        mvc.perform(get("/api/total-sale/date/{start}/end/{end}", startDate, endDate)
-                .contentType(MediaType.APPLICATION_JSON))
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        mvc.perform(post("/api/total-sale")
+                .contentType(MediaType.APPLICATION_JSON)
+               .content(objectMapper.writeValueAsString(requestDto)))
             .andExpect(status().isOk())
             // 날짜비교는 안됨..
 

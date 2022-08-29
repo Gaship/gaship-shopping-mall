@@ -24,4 +24,7 @@ public class ModifyEmployeeRequestDto {
     @NotNull(message = "휴대폰번호를 입력해주세요")
     private String phoneNo;
 
+    @NotNull
+    private Integer addressNo;
+
 }

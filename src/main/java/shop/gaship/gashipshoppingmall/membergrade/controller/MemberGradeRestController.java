@@ -19,6 +19,7 @@ import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.CouponTargetMemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.service.MemberGradeService;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
@@ -34,11 +35,11 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
 @RestController
 @RequestMapping("/api/member-grades")
 public class MemberGradeRestController {
+
     private final MemberGradeService memberGradeService;
 
     /**
-     * 회원등급 POST Mapping
-     * 회원등급 등록을 위한 RestController 메서드.
+     * 회원등급 POST Mapping 회원등급 등록을 위한 RestController 메서드.
      *
      * @param requestDto 등록할 회원등급 정보 (MemberGradeAddRequestDto)
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
@@ -56,19 +57,17 @@ public class MemberGradeRestController {
 
 
     /**
-     * 회원등급 PUT Mapping
-     * 회원등급 수정을 위한 RestController 메서드.
+     * 회원등급 PUT Mapping 회원등급 수정을 위한 RestController 메서드.
      *
      * @param memberGradeNo 수정할 회원등급 식별 번호 (Integer)
-     * @param requestDto 수정할 회원등급 정보 (MemberGradeModifyRequestDto)
+     * @param requestDto    수정할 회원등급 정보 (MemberGradeModifyRequestDto)
      * @return response entity
      * @author 김세미
      */
     @AdminAuthority
     @PutMapping("/{memberGradeNo}")
-    public ResponseEntity<Void>
-        memberGradeModify(@PathVariable Integer memberGradeNo,
-                          @Valid @RequestBody MemberGradeModifyRequestDto requestDto) {
+    public ResponseEntity<Void> memberGradeModify(@PathVariable Integer memberGradeNo,
+        @Valid @RequestBody MemberGradeModifyRequestDto requestDto) {
         memberGradeService.modifyMemberGrade(memberGradeNo, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -76,8 +75,7 @@ public class MemberGradeRestController {
     }
 
     /**
-     * 회원등급 DELETE Mapping
-     * 회원등급 삭제을 위한 RestController 메서드.
+     * 회원등급 DELETE Mapping 회원등급 삭제을 위한 RestController 메서드.
      *
      * @param memberGradeNo 삭제하려는 회원등급 식별 번호 (Integer)
      * @return responseEntity
@@ -93,8 +91,7 @@ public class MemberGradeRestController {
     }
 
     /**
-     * 회원등급 GET Mapping
-     * 회원등급 단건조회를 위한 RestController 메서드.
+     * 회원등급 GET Mapping 회원등급 단건조회를 위한 RestController 메서드.
      *
      * @param memberGradeNo 단건조회하려는 회원등급 식별 번호 (Integer)
      * @return responseEntity
@@ -111,8 +108,7 @@ public class MemberGradeRestController {
     }
 
     /**
-     * 회원등급 GET Mapping
-     * pagination 이 적용된 회원등급 다건 조회를 위한 RestController 메서드.
+     * 회원등급 GET Mapping pagination 이 적용된 회원등급 다건 조회를 위한 RestController 메서드.
      *
      * @param pageable page 와 size
      * @return responseEntity
@@ -139,5 +135,17 @@ public class MemberGradeRestController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(memberGradeService.findMemberGrades());
+    }
+
+    /**
+     * 존재하는 회원 등급 모두 조회 요청을 받는 메서드.
+     *
+     * @return 전체 회원등급 리스트.
+     */
+    @GetMapping("/coupon-target")
+    public ResponseEntity<List<CouponTargetMemberGradeResponseDto>> findCouponTargetGrade() {
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(memberGradeService.findCouponTargetGrade());
     }
 }

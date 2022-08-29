@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
+import shop.gaship.gashipshoppingmall.membergrade.dto.response.CouponTargetMemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.MemberGradeResponseDto;
 import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.exception.*;
@@ -158,5 +159,15 @@ public class MemberGradeServiceImpl implements MemberGradeService {
         if (memberGradeRepository.existsByIsDefaultIsTrue()) {
             throw new DefaultMemberGradeIsExist();
         }
+    }
+
+    /**
+     * 쿠폰 타겟이 될 회원 등급 전체 조회 하기 위한 비즈니스 로직을 처리하는 메서드.
+     *
+     * @return 회원 등급 전체 리스트.
+     */
+    @Override
+    public List<CouponTargetMemberGradeResponseDto> findCouponTargetGrade() {
+        return memberGradeRepository.findCouponTargetGrade();
     }
 }

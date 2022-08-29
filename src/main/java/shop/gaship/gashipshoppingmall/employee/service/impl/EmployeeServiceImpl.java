@@ -86,7 +86,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             .addressLocal(addressLocal)
             .statusCode(statusCode)
             .email(aes.aesEcbEncode(dto.getEmail()))
-            .name(aes.aesEcbEncode(dto.getName()))
+            .name(dto.getName())
             .password((dto.getPassword()))
             .encodedEmailForSearch(sha512.encryptPlainText(dto.getEmail()))
             .phoneNo(aes.aesEcbEncode(dto.getPhoneNo()))
