@@ -20,6 +20,6 @@ public class ModifyEmployeeDtoDummy {
     }
 
     public static ModifyEmployeeRequestDto dummy() {
-        return new ModifyEmployeeRequestDto(1, "test", "10000");
+        return new ModifyEmployeeRequestDto(1, "test", "10000", 1);
     }
 }
