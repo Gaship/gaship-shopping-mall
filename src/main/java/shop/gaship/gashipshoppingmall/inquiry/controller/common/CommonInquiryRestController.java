@@ -125,6 +125,7 @@ public class CommonInquiryRestController {
     public ResponseEntity<InquiryDetailsResponseDto> inquiryDetails(
         @PathVariable Integer inquiryNo) {
 
-        return ResponseEntity.ok(inquiryService.findInquiry(inquiryNo));
+        InquiryDetailsResponseDto inquiry = inquiryService.findInquiry(inquiryNo);
+        return ResponseEntity.ok(inquiry);
     }
 }

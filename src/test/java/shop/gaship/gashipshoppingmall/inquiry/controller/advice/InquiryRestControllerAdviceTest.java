@@ -97,10 +97,10 @@ class InquiryRestControllerAdviceTest {
     @DisplayName("AlreadyCompleteInquiryAnswerException 이 발생했을시에 ErrorResponse에 해당정보가 들어간뒤 responseEntity의 바디값으로 들어간다. 이때 status코드는 400이다.")
     @Test
     void AlreadyCompleteInquiryAnswerException() throws Exception {
-        given(commonInquiryRestController.inquiryDelete(anyInt(), anyInt())).willThrow(
+        given(commonInquiryRestController.inquiryDeleteManager(anyInt())).willThrow(
             new AlreadyCompleteInquiryAnswerException());
 
-        mvc.perform(delete("/api/inquiries/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/api/inquiries/1/manager").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(AlreadyCompleteInquiryAnswerException.MESSAGE));
     }
@@ -108,10 +108,10 @@ class InquiryRestControllerAdviceTest {
     @DisplayName("DifferentEmployeeWriterAboutInquiryAnswerException 이 발생했을시에 ErrorResponse에 해당정보가 들어간뒤 responseEntity의 바디값으로 들어간다. 이때 status코드는 400이다.")
     @Test
     void DifferentEmployeeWriterAboutInquiryAnswerException() throws Exception {
-        given(commonInquiryRestController.inquiryDelete(anyInt(), anyInt())).willThrow(
+        given(commonInquiryRestController.inquiryDeleteManager(anyInt())).willThrow(
             new DifferentEmployeeWriterAboutInquiryAnswerException());
 
-        mvc.perform(delete("/api/inquiries/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/api/inquiries/1/manager").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value(
                 DifferentEmployeeWriterAboutInquiryAnswerException.MESSAGE));
     }
@@ -119,10 +119,10 @@ class InquiryRestControllerAdviceTest {
     @DisplayName("InquiryNotFoundException 이 발생했을시에 ErrorResponse에 해당정보가 들어간뒤 responseEntity의 바디값으로 들어간다. 이때 status코드는 400이다.")
     @Test
     void InquiryNotFoundException() throws Exception {
-        given(commonInquiryRestController.inquiryDelete(anyInt(), anyInt())).willThrow(
+        given(commonInquiryRestController.inquiryDeleteManager(anyInt())).willThrow(
             new InquiryNotFoundException());
 
-        mvc.perform(delete("/api/inquiries/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/api/inquiries/1/manager").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(InquiryNotFoundException.MESSAGE));
     }
@@ -130,10 +130,10 @@ class InquiryRestControllerAdviceTest {
     @DisplayName("NoRegisteredAnswerException 이 발생했을시에 ErrorResponse에 해당정보가 들어간뒤 responseEntity의 바디값으로 들어간다. 이때 status코드는 400이다.")
     @Test
     void NoRegisteredAnswerException() throws Exception {
-        given(commonInquiryRestController.inquiryDelete(anyInt(), anyInt())).willThrow(
+        given(commonInquiryRestController.inquiryDeleteManager(anyInt())).willThrow(
             new NoRegisteredAnswerException());
 
-        mvc.perform(delete("/api/inquiries/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/api/inquiries/1/manager").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(NoRegisteredAnswerException.MESSAGE));
     }
@@ -141,10 +141,10 @@ class InquiryRestControllerAdviceTest {
     @DisplayName("DifferentInquiryException 이 발생했을시에 ErrorResponse에 해당정보가 들어간뒤 responseEntity의 바디값으로 들어간다. 이때 status코드는 400이다.")
     @Test
     void DifferentInquiryException() throws Exception {
-        given(commonInquiryRestController.inquiryDelete(anyInt(), anyInt())).willThrow(
+        given(commonInquiryRestController.inquiryDeleteManager(anyInt())).willThrow(
             new DifferentInquiryException());
 
-        mvc.perform(delete("/api/inquiries/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/api/inquiries/1/manager").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(DifferentInquiryException.MESSAGE));
     }
@@ -152,10 +152,10 @@ class InquiryRestControllerAdviceTest {
     @DisplayName("InquirySearchBadRequestException 이 발생했을시에 ErrorResponse에 해당정보가 들어간뒤 responseEntity의 바디값으로 들어간다. 이때 status코드는 400이다.")
     @Test
     void InquirySearchBadRequestException() throws Exception {
-        given(commonInquiryRestController.inquiryDelete(anyInt(), anyInt())).willThrow(
+        given(commonInquiryRestController.inquiryDeleteManager(anyInt())).willThrow(
             new InquirySearchBadRequestException());
 
-        mvc.perform(delete("/api/inquiries/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/api/inquiries/1/manager").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(InquirySearchBadRequestException.MESSAGE));
     }
@@ -163,10 +163,10 @@ class InquiryRestControllerAdviceTest {
     @DisplayName("어딘가에서 모종의 이유로 exception 이 발생할시에 ErrorResponse에 해당정보가 들어간뒤 responseEntity의 바디값으로 들어간다. 이때 status코드는 500이다.")
     @Test
     void exception() throws Exception {
-        given(commonInquiryRestController.inquiryDelete(anyInt(), anyInt())).willThrow(
+        given(commonInquiryRestController.inquiryDeleteManager(anyInt())).willThrow(
             new RuntimeException("알수 없는 에러"));
 
-        mvc.perform(delete("/api/inquiries/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/api/inquiries/1/manager").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isInternalServerError())
             .andExpect(jsonPath("$.message").value("알수 없는 에러"));
     }

@@ -373,7 +373,7 @@ class CommonInquiryControllerTest {
     @DisplayName("문의삭제시 service에 처리를 위임하고 200을 반환한다.")
     @Test
     void inquiryDelete() throws Exception {
-        mvc.perform(delete("/api/inquiries/1")
+        mvc.perform(delete("/api/inquiries/1/manager")
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
 
