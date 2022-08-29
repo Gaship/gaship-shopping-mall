@@ -87,7 +87,7 @@ class ProductControllerTest {
         product = ProductDummy.dummy();
         response = new ProductAllInfoResponseDto(1, "a", "d", "카테", 100L, LocalDateTime.now(),
             "아", "한국", "판매원", "가나다라", 100L, "w", "#RRRR",
-            1, "설명", 3, "카테");
+            1, "설명", 3, "카테", "");
     }
 
     @DisplayName("상품 생성 post 요청")
@@ -458,7 +458,7 @@ class ProductControllerTest {
     void getProductListByProductNos() throws Exception {
         ProductAllInfoResponseDto dto = new ProductAllInfoResponseDto(2, "a", "d", "카테", 100L, LocalDateTime.now(),
             "아", "한국", "판매원", "가나다라", 100L, "w", "#RRRR",
-            1, "설명", 3, "카테");
+            1, "설명", 3, "카테", "");
         List<ProductAllInfoResponseDto> responseDtoList = new ArrayList<>();
         responseDtoList.add(response);
         responseDtoList.add(dto);

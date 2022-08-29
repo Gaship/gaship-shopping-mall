@@ -137,7 +137,6 @@ class ProductRepositoryTest {
         assertThat(result.get(0).getQuantity()).isEqualTo(product.getStockQuantity());
         assertThat(result.get(0).getLevel()).isEqualTo(product.getCategory().getLevel());
 
-
     }
 
     @DisplayName("상품 전체 조회하기")

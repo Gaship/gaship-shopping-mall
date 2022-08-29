@@ -32,6 +32,7 @@ public class ProductAllInfoResponseDto {
     private final Integer quantity;
     private final String explanation;
     private final Integer level;
+    private final String deliveryType;
     private final String upperName;
     private final List<String> tags = new ArrayList<>();
     private final List<Integer> fileNos = new ArrayList<>();
