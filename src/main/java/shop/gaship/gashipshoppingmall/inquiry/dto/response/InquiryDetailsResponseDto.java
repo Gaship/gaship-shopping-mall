@@ -17,6 +17,7 @@ public class InquiryDetailsResponseDto {
     private final Integer inquiryNo;
     private final Integer productNo;
 
+    private final Integer memberNo;
     private final String memberNickname;
     private final String employeeName;
     private final String processStatus;

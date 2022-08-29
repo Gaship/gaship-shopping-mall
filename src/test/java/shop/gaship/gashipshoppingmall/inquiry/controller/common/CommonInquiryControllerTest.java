@@ -1,11 +1,8 @@
 package shop.gaship.gashipshoppingmall.inquiry.controller.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -19,31 +16,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import shop.gaship.gashipshoppingmall.inquiry.controller.customer.CustomerInquiryRestController;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
-import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
-import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
 
 /**
  * @author : 최겸준
@@ -387,11 +373,11 @@ class CommonInquiryControllerTest {
     @DisplayName("문의삭제시 service에 처리를 위임하고 200을 반환한다.")
     @Test
     void inquiryDelete() throws Exception {
-        mvc.perform(delete("/api/inquiries/1")
+        mvc.perform(delete("/api/inquiries/1/manager")
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
 
-        verify(inquiryService).deleteInquiry(anyInt());
+        verify(inquiryService).deleteInquiryManager(anyInt());
     }
 
     @DisplayName("문의답변삭제시 service에 처리를 위임하고 200을 반환한다.")
@@ -546,7 +532,7 @@ class CommonInquiryControllerTest {
     @Test
     void inquiryDetails() throws Exception {
         InquiryDetailsResponseDto mockDto = new InquiryDetailsResponseDto(
-            1, 1, "memberNickName", "employeeName", "processStatus",
+            1, 1, 1,"memberNickName", "employeeName", "processStatus",
             "productName", "title", "inquiryContent", LocalDateTime.now(), "answerContent",LocalDateTime.now(), null);
 
         given(inquiryService.findInquiry(anyInt()))

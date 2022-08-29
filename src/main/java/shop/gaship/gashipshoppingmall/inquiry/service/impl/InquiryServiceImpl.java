@@ -1,5 +1,7 @@
 package shop.gaship.gashipshoppingmall.inquiry.service.impl;
 
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
+import shop.gaship.gashipshoppingmall.error.MemberForbiddenException;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
@@ -135,7 +138,22 @@ public class InquiryServiceImpl implements InquiryService {
      */
     @Transactional
     @Override
-    public void deleteInquiry(Integer inquiryNo) {
+    public void deleteInquiry(Integer inquiryNo, Integer memberNo) {
+        InquiryDetailsResponseDto inquiry = inquiryRepository.findDetailsById(inquiryNo).orElseThrow(InquiryNotFoundException::new);
+
+        if (!Objects.equals(inquiry.getMemberNo(), memberNo)) {
+            throw new MemberForbiddenException();
+        }
+
+        inquiryRepository.deleteById(inquiryNo);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public void deleteInquiryManager(Integer inquiryNo) {
         if (!inquiryRepository.existsById(inquiryNo)) {
             throw new InquiryNotFoundException();
         }
