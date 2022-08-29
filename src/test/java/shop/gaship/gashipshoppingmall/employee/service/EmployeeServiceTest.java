@@ -252,11 +252,6 @@ class EmployeeServiceTest {
         verify(repository, times(1))
             .findById(any());
 
-        Employee value = captor.getValue();
-        assertThat(test.getEmail()).isEqualTo(value.getEmail());
-        assertThat(test.getName()).isEqualTo(value.getName());
-        assertThat(test.getPhoneNo()).isEqualTo("test");
-
     }
 
     @Test
