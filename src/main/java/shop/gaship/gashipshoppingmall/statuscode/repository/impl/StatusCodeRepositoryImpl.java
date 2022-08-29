@@ -31,6 +31,7 @@ public class StatusCodeRepositoryImpl extends QuerydslRepositorySupport
                 .where(statusCode.groupCodeName.eq(groupCodeName))
                 .orderBy(statusCode.priority.asc())
                 .select(Projections.bean(StatusCodeResponseDto.class,
+                        statusCode.statusCodeNo,
                         statusCode.statusCodeName,
                         statusCode.priority))
                 .fetch();

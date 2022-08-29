@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class StatusCodeResponseDto {
+    private Integer statusCodeNo;
     private String statusCodeName;
     private Integer priority;
 }
