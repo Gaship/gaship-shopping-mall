@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.addresslocal.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
@@ -14,6 +15,7 @@ import shop.gaship.gashipshoppingmall.addresslocal.repository.custom.AddressLoca
  * 주소지를 QueryDsl 을 통해 사용하는 클래스입니다.
  *
  * @author : 유호철
+ * @author : 김세미
  * @see QuerydslRepositorySupport
  * @see AddressLocalRepositoryCustom
  * @since 1.0
@@ -51,5 +53,17 @@ public class AddressLocalRepositoryImpl extends QuerydslRepositorySupport
                 addressLocal.addressName,
                 addressLocal.allowDelivery))
             .fetch();
+    }
+
+    @Override
+    public Optional<AddressSubLocalResponseDto> findAddressLocalSub(String sigungu) {
+        QAddressLocal addressLocal = QAddressLocal.addressLocal;
+        return Optional.ofNullable(from(addressLocal)
+                .where(addressLocal.addressName.eq(sigungu).and(addressLocal.level.eq(2)))
+                .select(Projections.constructor(AddressSubLocalResponseDto.class,
+                        addressLocal.addressNo,
+                        addressLocal.addressName,
+                        addressLocal.allowDelivery))
+                .fetchOne());
     }
 }
