@@ -159,7 +159,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFileNo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -178,7 +178,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
         findProductTagInfo(product);
-        findFileNo(product);
+        findFilePath(product);
 
         return product.getContent().get(0);
     }
@@ -196,7 +196,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFileNo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -217,7 +217,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFileNo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -236,7 +236,7 @@ public class ProductServiceImpl implements ProductService {
 
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFileNo(products);
+        findFilePath(products);
 
         return products;
     }
@@ -256,7 +256,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFileNo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -280,7 +280,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFileNo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -297,7 +297,7 @@ public class ProductServiceImpl implements ProductService {
 
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
         findProductTagInfo(products);
-        findFileNo(products);
+        findFilePath(products);
         return products;
     }
 
@@ -315,7 +315,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
         Page<ProductAllInfoResponseDto> product = repository.findProduct(requestDto);
         findProductTagInfo(product);
-        findFileNo(product);
+        findFilePath(product);
         return product;
     }
 
@@ -383,9 +383,9 @@ public class ProductServiceImpl implements ProductService {
      *
      * @param products 파일 경로를 찾을 상품 목록
      */
-    private void findFileNo(Page<ProductAllInfoResponseDto> products) {
-        products.getContent().forEach(product -> product.getFileNos()
-            .addAll(commonFileRepository.findNos(product.getProductNo(), Product.SERVICE)));
+    private void findFilePath(Page<ProductAllInfoResponseDto> products) {
+        products.getContent().forEach(product -> product.getFilePaths()
+            .addAll(commonFileRepository.findPaths(product.getProductNo(), Product.SERVICE)));
     }
 
     /**
