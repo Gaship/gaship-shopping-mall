@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.category.dummy.CategoryDummy;
 import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
@@ -28,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 1.0
  */
 @DataJpaTest
+@MockBean(JpaMetamodelMappingContext.class)
 class ProductTagRepositoryTest {
     @Autowired
     shop.gaship.gashipshoppingmall.producttag.repository.ProductTagRepository productTagRepository;
