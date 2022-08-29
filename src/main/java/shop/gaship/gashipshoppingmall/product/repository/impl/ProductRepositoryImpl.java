@@ -64,11 +64,13 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 product.stockQuantity.as("quantity"),
                 product.explanation,
                 category.level,
+                product.deliveryType.statusCodeName.as("deliveryType"),
                 JPAExpressions.select(upper.name.concat("-").concat(
                         JPAExpressions.select(top.name)
                             .where(top.no.eq(upper.upperCategory.no))
                             .from(top)
-                    ).as("upperName"))
+                    ).as("upperName")
+               )
                     .where(upper.no.eq(category.upperCategory.no))
                     .from(upper)))
             .distinct();
