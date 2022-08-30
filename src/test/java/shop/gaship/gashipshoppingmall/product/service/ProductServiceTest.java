@@ -119,7 +119,7 @@ class ProductServiceTest {
         product = ProductDummy.dummy();
         response = new ProductAllInfoResponseDto(1, "a", "d", "카테", 100L, LocalDateTime.now(), "아",
             "한국", "판매원", "가나다라", 100L, "w", "#RRRR", 1, "설명", 3,
-            "카테", "");
+            "카테", "판매중", "");
         tag = new Tag(1, "title");
         response.getTags().add(tag.getTitle());
 
