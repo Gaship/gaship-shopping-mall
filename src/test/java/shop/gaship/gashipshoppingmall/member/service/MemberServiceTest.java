@@ -31,6 +31,7 @@ import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyRequestDto;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
 
 import shop.gaship.gashipshoppingmall.member.dto.response.*;
+import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.dummy.SignInUserDetailDummy;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberCreationRequestDummy;
@@ -248,16 +249,18 @@ class MemberServiceTest {
     @Test
     void modifyFailWithDuplicatedNicknameTest() {
         MemberModifyRequestDto memberModifyRequestDto = MemberBaseDummy.memberModifyRequestDtoDummy();
+        Member memberDummy = MemberDummy.dummy();
+        ReflectionTestUtils.setField(memberDummy, "memberNo", 1);
 
-        when(memberRepository.findById(any())).thenReturn(Optional.empty());
+        when(memberRepository.findById(memberDummy.getMemberNo()))
+            .thenReturn(Optional.of(memberDummy));
         when(memberRepository.existsByNickname(any())).thenReturn(true);
         assertThatThrownBy(() -> memberService.modifyMember(memberModifyRequestDto))
                 .isInstanceOf(DuplicatedNicknameException.class)
                 .hasMessage("중복된 닉네임입니다");
 
         verify(memberRepository, times(1)).existsByNickname(any());
-        verify(memberRepository, never())
-                .findById(any());
+        verify(memberRepository, times(1)).findById(any());
     }
 
     @DisplayName("memberRepository delete Test")
