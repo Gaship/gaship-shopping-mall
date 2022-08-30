@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
-import shop.gaship.gashipshoppingmall.order.dto.response.OrderListResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 
 /**
@@ -34,7 +33,7 @@ public interface OrderService {
     /**
      * 주문 결제가 완료되고 주문 상품들의 결제 번호를 주입시키기 위한 메서드입니다.
      *
-     * @param orderNo 주문 번호입니다.
+     * @param orderNo    주문 번호입니다.
      * @param paymentKey 결제 번호입니다.
      */
     void orderPaymentsSuccess(Integer orderNo, String paymentKey);
@@ -49,15 +48,6 @@ public interface OrderService {
      */
     Page<OrderDetailResponseDto> findMemberOrderDetails(Integer memberNo,
                                                         Integer orderNo, Pageable pageable);
-
-    /**
-     * 회원의 모든 주문목록을 불러오기위한 메서드입니다.
-     *
-     * @param memberNo 회원의 번호.
-     * @param pageable 관련 페이지객체.
-     * @return the page 페이징 처리된 전체 주문목록이 출력됩니다.
-     */
-    Page<OrderListResponseDto> findAllMemberOrders(Integer memberNo, Pageable pageable);
 
     /**
      * Find cancel orders page.
