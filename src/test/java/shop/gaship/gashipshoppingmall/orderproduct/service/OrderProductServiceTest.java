@@ -530,7 +530,7 @@ class OrderProductServiceTest {
     void findMemberOrderSuccess() {
         OrderProductDetailResponseDto dto =
             new OrderProductDetailResponseDto(1, 1, "product", 1L, "status", "uuid", "color", "manufacturer"
-                , "korea", "seller", "importer", "qq", "explain");
+                , "korea", "seller", "importer", "qq", "explain", 1);
         given(orderProductRepository.findById(anyInt()))
             .willReturn(Optional.of(OrderProductDummy.dummy()));
         given(orderProductRepository.findOrderProductDetail(anyInt()))

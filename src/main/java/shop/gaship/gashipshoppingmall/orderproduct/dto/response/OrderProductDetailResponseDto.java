@@ -28,6 +28,9 @@ public class OrderProductDetailResponseDto {
     private String qualityAssuranceStandard;
     private String explanation;
 
+    private Integer memberNo;
+
+
     @Setter
     private String filePath;
 
@@ -37,7 +40,8 @@ public class OrderProductDetailResponseDto {
                                          String trackingNo, String color, String manufacturer,
                                          String manufacturerCountry, String seller,
                                          String importer, String qualityAssuranceStandard,
-                                         String explanation) {
+                                         String explanation,
+                                         Integer memberNo) {
         this.productNo = productNo;
         this.orderNo = orderNo;
         this.productName = productName;
@@ -51,5 +55,6 @@ public class OrderProductDetailResponseDto {
         this.importer = importer;
         this.qualityAssuranceStandard = qualityAssuranceStandard;
         this.explanation = explanation;
+        this.memberNo = memberNo;
     }
 }
