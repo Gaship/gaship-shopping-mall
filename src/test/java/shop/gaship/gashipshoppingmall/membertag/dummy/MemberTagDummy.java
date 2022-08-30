@@ -20,9 +20,8 @@ import java.util.stream.IntStream;
  * @since 1.0
  */
 public class MemberTagDummy {
-    public static MemberTagRequestDto memberTagRequestDtoDummy(Integer memberNo, List<Integer> tagIds) {
+    public static MemberTagRequestDto memberTagRequestDtoDummy(List<Integer> tagIds) {
         MemberTagRequestDto memberTagRequestDto = new MemberTagRequestDto();
-        ReflectionTestUtils.setField(memberTagRequestDto,"memberNo",memberNo);
         ReflectionTestUtils.setField(memberTagRequestDto,"tagIds",tagIds);
         
         return memberTagRequestDto;

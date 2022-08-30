@@ -18,7 +18,7 @@ public interface MemberTagService {
      * @param memberTagRequestDto 회원의 id 와 태그들의 id 가 들어있습니다.
      * @author 최정우
      */
-    void deleteAllAndAddAllMemberTags(MemberTagRequestDto memberTagRequestDto);
+    void deleteAllAndAddAllMemberTags(MemberTagRequestDto memberTagRequestDto,Integer memberNo);
 
     /**
      * 회원이 설정한 태그목록을 가져오는 메서드입니다.
