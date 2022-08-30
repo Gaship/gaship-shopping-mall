@@ -1,19 +1,5 @@
 package shop.gaship.gashipshoppingmall.orderproduct.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,13 +11,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
-import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
-import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
 import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
@@ -49,6 +38,19 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.InvalidOrderStatusException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 
 /**
  * 설명작성란
@@ -70,6 +72,9 @@ class OrderProductServiceTest {
 
     @MockBean
     private OrderProductRepository orderProductRepository;
+
+    @MockBean
+    private MemberRepository memberRepository;
 
     @MockBean
     private CouponUsedEventHandler couponUsedEventHandler;
@@ -194,14 +199,14 @@ class OrderProductServiceTest {
 
         given(statusCodeRepository.findByStatusCodeName(OrderStatus.CANCEL_COMPLETE.getValue()))
             .willReturn(Optional.of(StatusCode.builder()
-                    .statusCodeName(OrderStatus.CANCEL_COMPLETE.getValue())
-                    .priority(1)
-                    .groupCodeName("")
-                    .explanation("")
+                .statusCodeName(OrderStatus.CANCEL_COMPLETE.getValue())
+                .priority(1)
+                .groupCodeName("")
+                .explanation("")
                 .build()));
 
         given(orderProductRepository.findAllById(anyList()))
-            .willReturn(IntStream.range(0,5)
+            .willReturn(IntStream.range(0, 5)
                 .mapToObj(value -> OrderProductDummy.dummy())
                 .collect(Collectors.toUnmodifiableList()));
 
@@ -264,11 +269,11 @@ class OrderProductServiceTest {
     @DisplayName("주문 교환 테스트")
     void orderProductChangeTest() {
         OrderProductStatusChangeDto orderProductStatusChangeDto = new OrderProductStatusChangeDto();
-        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1,2,3,4,5));
+        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1, 2, 3, 4, 5));
 
-        List<OrderProduct> dummies = IntStream.range(1,6).mapToObj(i -> {
+        List<OrderProduct> dummies = IntStream.range(1, 6).mapToObj(i -> {
             OrderProduct dummy = OrderProductDummy.dummy();
-            if (i % 2 == 0){
+            if (i % 2 == 0) {
                 StatusCode orderStatus = StatusCode.builder()
                     .statusCodeName(OrderStatus.SHIPPING.getValue())
                     .priority(1)
@@ -322,11 +327,11 @@ class OrderProductServiceTest {
     @DisplayName("주문 교환 테스트")
     void orderProductChangeFailureTest() {
         OrderProductStatusChangeDto orderProductStatusChangeDto = new OrderProductStatusChangeDto();
-        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1,2,3,4,5));
+        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1, 2, 3, 4, 5));
 
-        List<OrderProduct> dummies = IntStream.range(1,6).mapToObj(i -> {
+        List<OrderProduct> dummies = IntStream.range(1, 6).mapToObj(i -> {
             OrderProduct dummy = OrderProductDummy.dummy();
-            if (i % 2 == 0){
+            if (i % 2 == 0) {
                 StatusCode orderStatus = StatusCode.builder()
                     .statusCodeName(OrderStatus.SHIPPING.getValue())
                     .priority(1)
@@ -388,11 +393,11 @@ class OrderProductServiceTest {
                 .mapToObj(value -> {
                     OrderProduct dummy = OrderProductDummy.dummy();
                     ReflectionTestUtils.setField(dummy, "orderStatusCode", StatusCode.builder()
-                            .statusCodeName(OrderStatus.CANCEL_COMPLETE.getValue())
-                            .groupCodeName("")
-                            .priority(1)
-                            .explanation("")
-                            .build());
+                        .statusCodeName(OrderStatus.CANCEL_COMPLETE.getValue())
+                        .groupCodeName("")
+                        .priority(1)
+                        .explanation("")
+                        .build());
 
                     ReflectionTestUtils.setField(dummy, "paymentCancelHistoryNo", 1);
 
@@ -489,5 +494,17 @@ class OrderProductServiceTest {
             orderProductService.restoreOrderProduct(orderProductCancellationFailDto))
             .isInstanceOf(InvalidOrderStatusException.class)
             .hasMessage("해당 주문 상태로는 취소 복구 상태로 변경이 불가능합니다.");
+    }
+
+    @DisplayName("해당 멤버에 해당하는 주문 조회 실패경우")
+    @Test
+    void findMemberOrdersFails() {
+        given(memberRepository.findById(anyInt()))
+            .willReturn(Optional.empty());
+
+        assertThatThrownBy(() ->
+            orderProductService.findMemberOrders(1, PageRequest.of(0, 10)))
+            .isInstanceOf(MemberNotFoundException.class)
+            .hasMessage("해당 멤버를 찾을 수 없습니다");
     }
 }
