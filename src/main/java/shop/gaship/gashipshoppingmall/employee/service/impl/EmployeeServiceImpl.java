@@ -88,7 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             .statusCode(statusCode)
             .email(aes.aesEcbEncode(dto.getEmail()))
             .name(dto.getName())
-            .password(aes.aesEcbEncode(dto.getPassword()))
+            .password(dto.getPassword())
             .encodedEmailForSearch(sha512.encryptPlainText(dto.getEmail()))
             .phoneNo(aes.aesEcbEncode(dto.getPhoneNo()))
             .build();
@@ -110,19 +110,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             .orElseThrow(EmployeeNotFoundException::new);
         AddressLocal addressLocal = localRepository.findById(dto.getAddressNo())
             .orElseThrow(NotExistAddressLocal::new);
-        if (dto.getPassword() != null || !dto.getPassword().equals("")) {
-            employee.modifyEmployee(
-                dto.getName(),
-                aes.aesEcbEncode(dto.getPhoneNo()),
-                aes.aesEcbEncode(dto.getPassword()),
-                addressLocal
-            );
-            return;
-        }
         employee.modifyEmployee(
-            dto.getName(),
-            dto.getPhoneNo(),
-            employee.getPassword(),
+            aes.aesEcbEncode(dto.getName()),
+            aes.aesEcbEncode(dto.getPhoneNo()),
+            dto.getPassword(),
             addressLocal
         );
     }
