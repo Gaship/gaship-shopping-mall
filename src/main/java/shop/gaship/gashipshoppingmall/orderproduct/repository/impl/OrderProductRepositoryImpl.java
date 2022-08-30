@@ -5,15 +5,23 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.jpa.JPQLQuery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.delivery.dto.DeliveryDto;
+import shop.gaship.gashipshoppingmall.member.entity.QMember;
 import shop.gaship.gashipshoppingmall.order.entity.QOrder;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.QOrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepositoryCustom;
+import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
 import shop.gaship.gashipshoppingmall.totalsale.dto.request.TotalSaleRequestDto;
 import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDto;
@@ -136,10 +144,76 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
+    public Optional<OrderProductDetailResponseDto> findOrderProductDetail(Integer orderProductNo) {
+        QOrder order = QOrder.order;
+        QProduct product = QProduct.product;
+        QMember member = QMember.member;
+        QStatusCode statusCode = QStatusCode.statusCode;
+        QOrderProduct orderProduct = QOrderProduct.orderProduct;
+
+
+        return Optional.ofNullable(from(orderProduct)
+            .innerJoin(orderProduct.order, order)
+            .innerJoin(order.member, member)
+            .innerJoin(orderProduct.product, product)
+            .innerJoin(orderProduct.orderStatusCode, statusCode)
+            .select(Projections.constructor(OrderProductDetailResponseDto.class,
+                product.no.as("productNo"),
+                order.no.as("orderNo"),
+                product.name.as("productName"),
+                order.totalOrderAmount,
+                orderProduct.orderStatusCode.statusCodeName.as("orderProductStatus"),
+                orderProduct.trackingNo,
+                product.color,
+                product.manufacturer,
+                product.manufacturerCountry,
+                product.seller,
+                product.importer,
+                product.qualityAssuranceStandard,
+                product.explanation,
+                member.memberNo))
+            .where(orderProduct.no.eq(orderProductNo))
+            .fetchOne());
+
+    }
+
+    @Override
+    public Page<OrderProductResponseDto> findAllOrdersByMemberNo(Integer memberNo, Pageable pageable) {
+        QOrderProduct orderProduct = QOrderProduct.orderProduct;
+        QProduct product = QProduct.product;
+        QStatusCode statusCode = QStatusCode.statusCode;
+        QOrder order = QOrder.order;
+
+        JPQLQuery<OrderProductResponseDto> query = from(orderProduct)
+            .innerJoin(orderProduct.order, order)
+            .innerJoin(orderProduct.product, product)
+            .innerJoin(orderProduct.orderStatusCode, statusCode)
+            .select(Projections.constructor(OrderProductResponseDto.class,
+                orderProduct.no.as("orderProductNo"),
+                order.no.as("orderNo"),
+                product.name.as("productName"),
+                order.totalOrderAmount,
+                order.orderDatetime,
+                order.receiptName,
+                order.receiptPhoneNumber,
+                orderProduct.orderStatusCode.statusCodeName.as("orderStatus"),
+                orderProduct.trackingNo));
+
+        List<OrderProductResponseDto> content = query
+            .where(order.member.memberNo.eq(memberNo))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+
+        return PageableExecutionUtils.getPage(content, pageable,
+            query::fetchCount);
+    }
+
+    @Override
     public Optional<DeliveryDto> findOrderInfo(Integer orderProductNo) {
         QOrderProduct orderProduct = QOrderProduct.orderProduct;
         QOrder order = QOrder.order;
-
         DeliveryDto deliveryDto = from(orderProduct)
             .innerJoin(orderProduct.order, order)
             .where(orderProduct.no.eq(orderProductNo))

@@ -1,5 +1,47 @@
 package shop.gaship.gashipshoppingmall.orderproduct.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
+import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
+import shop.gaship.gashipshoppingmall.order.entity.Order;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
+import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEvent;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEventHandler;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEvent;
+import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEventHandler;
+import shop.gaship.gashipshoppingmall.orderproduct.exception.InvalidOrderCancellationHistoryNo;
+import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductDetailNoValueException;
+import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
+import shop.gaship.gashipshoppingmall.orderproduct.service.impl.OrderProductServiceImpl;
+import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
+import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
+import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.exception.InvalidOrderStatusException;
+import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
+import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,43 +54,6 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-import shop.gaship.gashipshoppingmall.membergrade.dummy.StatusCodeDummy;
-import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
-import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
-import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
-import shop.gaship.gashipshoppingmall.order.entity.Order;
-import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
-import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
-import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
-import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
-import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEvent;
-import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEventHandler;
-import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEvent;
-import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEventHandler;
-import shop.gaship.gashipshoppingmall.orderproduct.exception.InvalidOrderCancellationHistoryNo;
-import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
-import shop.gaship.gashipshoppingmall.orderproduct.service.impl.OrderProductServiceImpl;
-import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
-import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
-import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
-import shop.gaship.gashipshoppingmall.statuscode.exception.InvalidOrderStatusException;
-import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
-import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 
 /**
  * 설명작성란
@@ -57,7 +62,7 @@ import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
  * @since 1.0
  */
 @ExtendWith(SpringExtension.class)
-@Import({OrderProductServiceImpl.class})
+@Import(OrderProductServiceImpl.class)
 class OrderProductServiceTest {
     @Autowired
     private OrderProductService orderProductService;
@@ -72,11 +77,16 @@ class OrderProductServiceTest {
     private OrderProductRepository orderProductRepository;
 
     @MockBean
+    private MemberRepository memberRepository;
+
+    @MockBean
     private CouponUsedEventHandler couponUsedEventHandler;
 
     @MockBean
     private CouponUseCanceledEventHandler couponUseCanceledEventHandler;
 
+    @MockBean
+    private CommonFileRepository commonFileRepository;
 
     @Test
     @DisplayName("주문 상품 등록")
@@ -194,14 +204,14 @@ class OrderProductServiceTest {
 
         given(statusCodeRepository.findByStatusCodeName(OrderStatus.CANCEL_COMPLETE.getValue()))
             .willReturn(Optional.of(StatusCode.builder()
-                    .statusCodeName(OrderStatus.CANCEL_COMPLETE.getValue())
-                    .priority(1)
-                    .groupCodeName("")
-                    .explanation("")
+                .statusCodeName(OrderStatus.CANCEL_COMPLETE.getValue())
+                .priority(1)
+                .groupCodeName("")
+                .explanation("")
                 .build()));
 
         given(orderProductRepository.findAllById(anyList()))
-            .willReturn(IntStream.range(0,5)
+            .willReturn(IntStream.range(0, 5)
                 .mapToObj(value -> OrderProductDummy.dummy())
                 .collect(Collectors.toUnmodifiableList()));
 
@@ -264,11 +274,11 @@ class OrderProductServiceTest {
     @DisplayName("주문 교환 테스트")
     void orderProductChangeTest() {
         OrderProductStatusChangeDto orderProductStatusChangeDto = new OrderProductStatusChangeDto();
-        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1,2,3,4,5));
+        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1, 2, 3, 4, 5));
 
-        List<OrderProduct> dummies = IntStream.range(1,6).mapToObj(i -> {
+        List<OrderProduct> dummies = IntStream.range(1, 6).mapToObj(i -> {
             OrderProduct dummy = OrderProductDummy.dummy();
-            if (i % 2 == 0){
+            if (i % 2 == 0) {
                 StatusCode orderStatus = StatusCode.builder()
                     .statusCodeName(OrderStatus.SHIPPING.getValue())
                     .priority(1)
@@ -322,11 +332,11 @@ class OrderProductServiceTest {
     @DisplayName("주문 교환 테스트")
     void orderProductChangeFailureTest() {
         OrderProductStatusChangeDto orderProductStatusChangeDto = new OrderProductStatusChangeDto();
-        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1,2,3,4,5));
+        ReflectionTestUtils.setField(orderProductStatusChangeDto, "orderProductNos", List.of(1, 2, 3, 4, 5));
 
-        List<OrderProduct> dummies = IntStream.range(1,6).mapToObj(i -> {
+        List<OrderProduct> dummies = IntStream.range(1, 6).mapToObj(i -> {
             OrderProduct dummy = OrderProductDummy.dummy();
-            if (i % 2 == 0){
+            if (i % 2 == 0) {
                 StatusCode orderStatus = StatusCode.builder()
                     .statusCodeName(OrderStatus.SHIPPING.getValue())
                     .priority(1)
@@ -388,11 +398,11 @@ class OrderProductServiceTest {
                 .mapToObj(value -> {
                     OrderProduct dummy = OrderProductDummy.dummy();
                     ReflectionTestUtils.setField(dummy, "orderStatusCode", StatusCode.builder()
-                            .statusCodeName(OrderStatus.CANCEL_COMPLETE.getValue())
-                            .groupCodeName("")
-                            .priority(1)
-                            .explanation("")
-                            .build());
+                        .statusCodeName(OrderStatus.CANCEL_COMPLETE.getValue())
+                        .groupCodeName("")
+                        .priority(1)
+                        .explanation("")
+                        .build());
 
                     ReflectionTestUtils.setField(dummy, "paymentCancelHistoryNo", 1);
 
@@ -490,4 +500,61 @@ class OrderProductServiceTest {
             .isInstanceOf(InvalidOrderStatusException.class)
             .hasMessage("해당 주문 상태로는 취소 복구 상태로 변경이 불가능합니다.");
     }
+
+    @DisplayName("해당 멤버에 해당하는 주문 조회 실패경우")
+    @Test
+    void findMemberOrdersFails() {
+        given(memberRepository.findById(anyInt()))
+            .willReturn(Optional.empty());
+
+        assertThatThrownBy(() ->
+            orderProductService.findMemberOrders(1, PageRequest.of(0, 10)))
+            .isInstanceOf(MemberNotFoundException.class)
+            .hasMessage("해당 멤버를 찾을 수 없습니다");
+    }
+
+    @DisplayName("해당 멤버에 대한 주문 조회시 반환값이 없을경우")
+    @Test
+    void findMemberOrdersFailsByNoValue() {
+        given(orderProductRepository.findById(anyInt()))
+            .willReturn(Optional.of(OrderProductDummy.dummy()));
+        given(orderProductRepository.findOrderProductDetail(anyInt()))
+            .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> orderProductService.findMemberOrderProductDetail(1))
+            .isInstanceOf(OrderProductDetailNoValueException.class);
+    }
+
+    @DisplayName("해당 멤버에 대한 주문 조회시 성공")
+    @Test
+    void findMemberOrderSuccess() {
+        OrderProductDetailResponseDto dto =
+            new OrderProductDetailResponseDto(1, 1, "product", 1L, "status", "uuid", "color", "manufacturer"
+                , "korea", "seller", "importer", "qq", "explain", 1);
+        given(orderProductRepository.findById(anyInt()))
+            .willReturn(Optional.of(OrderProductDummy.dummy()));
+        given(orderProductRepository.findOrderProductDetail(anyInt()))
+            .willReturn(Optional.of(dto));
+        given(commonFileRepository.findPaths(anyInt(), anyString()))
+            .willReturn(List.of("file"));
+
+        Optional<OrderProductDetailResponseDto> productDetail = orderProductRepository.findOrderProductDetail(1);
+        productDetail.ifPresent(a -> {
+            assertThat(a.getProductNo()).isEqualTo(dto.getProductNo());
+            assertThat(a.getOrderNo()).isEqualTo(dto.getOrderNo());
+            assertThat(a.getColor()).isEqualTo(dto.getColor());
+            assertThat(a.getExplanation()).isEqualTo(dto.getExplanation());
+            assertThat(a.getOrderProductStatus()).isEqualTo(dto.getOrderProductStatus());
+            assertThat(a.getImporter()).isEqualTo(dto.getImporter());
+            assertThat(a.getFilePath()).isEqualTo(dto.getFilePath());
+            assertThat(a.getManufacturerCountry()).isEqualTo(dto.getManufacturerCountry());
+            assertThat(a.getManufacturer()).isEqualTo(dto.getManufacturer());
+            assertThat(a.getQualityAssuranceStandard()).isEqualTo(dto.getQualityAssuranceStandard());
+            assertThat(a.getTotalOrderAmount()).isEqualTo(dto.getTotalOrderAmount());
+            assertThat(a.getTrackingNo()).isEqualTo(dto.getTrackingNo());
+        });
+
+    }
+
+
 }

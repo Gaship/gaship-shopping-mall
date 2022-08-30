@@ -1,11 +1,15 @@
 package shop.gaship.gashipshoppingmall.orderproduct.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 
 /**
  * 주문 상품상세의 요구사항의 명세를 구현을 정의하는 클래스입니다.
@@ -21,6 +25,11 @@ public interface OrderProductService {
      * @param orderProductSpecifics 상품의 고유번호, 쿠폰 고유번호, 수리설치 희망일자들을 담은 객체의 리스트 객체입니다.
      */
     void registerOrderProduct(Order order, List<OrderProductSpecificDto> orderProductSpecifics);
+
+    Page<OrderProductResponseDto> findMemberOrders(Integer memberNo,
+                                                   Pageable pageable);
+
+    OrderProductDetailResponseDto findMemberOrderProductDetail(Integer orderProductNo);
 
     /**
      * 주문 상품의 주문 상태를 교환으로 변경합니다.
