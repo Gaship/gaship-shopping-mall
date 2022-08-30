@@ -38,8 +38,11 @@ public class MemberAdapter {
     public ResponseEntity<SuccessReissueResponse> requestSendReissuePassword(
         ReissuePasswordReceiveEmailDto reissuePasswordDto) {
         return WebClient.create(serverConfig.getAuthUrl()).post()
-            .uri("/securities/password/reissue").contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(reissuePasswordDto).accept(MediaType.APPLICATION_JSON).retrieve()
+            .uri("/securities/password/reissue")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(reissuePasswordDto)
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
             .toEntity(SuccessReissueResponse.class).timeout(Duration.ofSeconds(5)).blockOptional()
             .orElseThrow(() -> new NoResponseDataException("Auth 서버로부터 응답이 없습니다."));
     }

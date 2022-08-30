@@ -414,9 +414,8 @@ public class MemberServiceImpl implements MemberService {
         }
 
         String renewalPassword = Objects.requireNonNull(memberAdapter.requestSendReissuePassword(
-                    new ReissuePasswordReceiveEmailDto(
-                        member.getEmail()))
-                .getBody())
+                    new ReissuePasswordReceiveEmailDto(aes.aesEcbDecode(member.getEmail())))
+                        .getBody())
             .getReissuedPassword();
         String hashedPassword = passwordEncoder.encode(renewalPassword);
 
