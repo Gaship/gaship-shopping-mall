@@ -26,7 +26,6 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
 import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 
 /**
@@ -77,9 +76,10 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
      * @return 직원의 정보가 담긴 리스트가 반환됩니다.
      */
     @Override
-    public PageResponse<EmployeeInfoResponseDto> findAllEmployees(Pageable pageable) {
+    public Page<EmployeeInfoResponseDto> findAllEmployees(Pageable pageable) {
         QEmployee employee = QEmployee.employee;
         QAddressLocal addressLocal = QAddressLocal.addressLocal;
+
         JPQLQuery<EmployeeInfoResponseDto> query = from(employee)
             .innerJoin(employee.addressLocal, addressLocal)
             .select(
@@ -98,9 +98,8 @@ public class EmployeeRepositoryImpl extends QuerydslRepositorySupport
                 .fetch();
 
 
-        return new PageResponse<>(PageableExecutionUtils.getPage(content, pageable,
-            () -> query.fetch()
-                .size()));
+        return (PageableExecutionUtils.getPage(content, pageable,
+            query::fetchCount));
     }
 
     /**

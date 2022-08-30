@@ -76,4 +76,11 @@ public interface EmployeeService {
      * @param orderNo    배송완료 요청을 받을 주문 고유번호입니다.
      */
     void completeDelivery(Integer employeeNo, Integer orderNo);
+
+    /**
+     * 직원번호에 해당하는 직원을 삭제하기위한 메서드입니다.
+     *
+     * @param employeeNo 직원번호
+     */
+    void removeEmployee(Integer employeeNo);
 }

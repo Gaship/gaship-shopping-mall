@@ -107,7 +107,7 @@ class EmployeeControllerTest {
     @Test
     void putEmployee() throws Exception {
         //given
-        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, "yhc", "000000", 1);
+        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, "yhc", "yhc", "000000", 1);
 
         //when & then
         doNothing().when(service).modifyEmployee(dto);
@@ -127,7 +127,7 @@ class EmployeeControllerTest {
     @Test
     void putEmployeeFail() throws Exception {
         //given
-        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, null, "000000", 1);
+        ModifyEmployeeRequestDto dto = new ModifyEmployeeRequestDto(1, "test", null, "000000", 1);
 
         //when & then
         doNothing().when(service).modifyEmployee(dto);

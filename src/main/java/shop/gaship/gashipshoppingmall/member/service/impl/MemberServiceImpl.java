@@ -40,7 +40,6 @@ import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundExc
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.MemberStatus;
 import shop.gaship.gashipshoppingmall.util.Events;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * MemberService를 구현하는 클래스입니다.
@@ -170,11 +169,10 @@ public class MemberServiceImpl implements MemberService {
      * @param request 수정된 회원 정보가 담기는 객체
      * @return 중요 정보가 암호화 된 회원정보 객체
      */
-    private MemberModifyRequestDto encodePrivacyUserInformation(
-        MemberModifyRequestDto request) {
-        request.changePassword(aes.aesEcbEncode(request.getPassword()));
-        request.changeName(aes.aesEcbEncode(request.getPassword()));
-        request.changePhoneNumber(aes.aesEcbEncode(request.getPassword()));
+    private MemberModifyRequestDto encodePrivacyUserInformation(MemberModifyRequestDto request) {
+        request.changePassword(passwordEncoder.encode(request.getPassword()));
+        request.changeName(aes.aesEcbEncode(request.getName()));
+        request.changePhoneNumber(aes.aesEcbEncode(request.getPhoneNumber()));
 
         return request;
     }
@@ -281,13 +279,14 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void modifyMember(MemberModifyRequestDto request) {
-        if (memberRepository.existsByNickname(request.getNickname())) {
+        Member member = getDecodedMemberProtectionInformation(request.getMemberNo());
+
+        if (!Objects.equals(member.getNickname(), request.getNickname())
+            && memberRepository.existsByNickname(request.getNickname())) {
             throw new DuplicatedNicknameException();
         }
-
-        Member member = memberRepository.findById(request.getMemberNo())
-            .orElseThrow(MemberNotFoundException::new);
         MemberModifyRequestDto encodedRequest = encodePrivacyUserInformation(request);
+        member.modifyMemberEmail(aes.aesEcbEncode(member.getEmail()));
         member.modifyMember(encodedRequest);
     }
 
@@ -443,5 +442,18 @@ public class MemberServiceImpl implements MemberService {
         signInUserDetailsDto.setEmail(aes.aesEcbDecode(signInUserDetailsDto.getEmail()));
 
         return signInUserDetailsDto;
+    }
+
+    private Member getDecodedMemberProtectionInformation(Integer memberNo){
+        Member member = memberRepository.findById(memberNo)
+            .orElseThrow(MemberNotFoundException::new);
+
+        member.decodeMemberProtectionData(
+            aes.aesEcbDecode(member.getEmail()),
+            aes.aesEcbDecode(member.getPhoneNumber()),
+            aes.aesEcbDecode(member.getName())
+        );
+
+        return member;
     }
 }

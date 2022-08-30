@@ -134,14 +134,12 @@ public interface MemberService {
     default MemberResponseDto entityToMemberResponseDto(Member member, Aes aes) {
         String recommendMemberName = "추천인이없습니다";
         if (Objects.nonNull(member.getRecommendMember())) {
-            recommendMemberName = member.getRecommendMember().getName();
-            aes.aesEcbDecode(recommendMemberName);
+            recommendMemberName = aes.aesEcbDecode(member.getRecommendMember().getName());
         }
 
         String phoneNumber = "휴대폰번호가 등록되어 있지 않습니다.";
         if (Objects.nonNull(member.getPhoneNumber())) {
-            phoneNumber = member.getPhoneNumber();
-            aes.aesEcbDecode(phoneNumber);
+            phoneNumber = aes.aesEcbDecode(member.getPhoneNumber());
         }
         return MemberResponseDto.builder()
                                 .memberNo(member.getMemberNo())
@@ -151,7 +149,7 @@ public interface MemberService {
                                 .email(aes.aesEcbDecode(member.getEmail()))
                                 .authorities(member.getRoleSet().stream()
                                                    .map(Enum::toString).collect(Collectors.toList()))
-                                .phoneNumber(member.getPhoneNumber())
+                                .phoneNumber(phoneNumber)
                                 .nickname(member.getNickname())
                                 .name(aes.aesEcbDecode(member.getName()))
                                 .gender(member.getGender())

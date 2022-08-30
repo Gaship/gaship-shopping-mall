@@ -3,7 +3,6 @@ package shop.gaship.gashipshoppingmall.order.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,15 +14,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
-import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
-import shop.gaship.gashipshoppingmall.order.dto.response.OrderListResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
@@ -97,59 +93,6 @@ class OrderControllerTest {
             .andExpect(jsonPath("$.orderId").value(orderResponse.getOrderId()))
             .andExpect(jsonPath("$.orderName").value(orderResponse.getOrderName()))
             .andExpect(jsonPath("$.customerName").value(orderResponse.getCustomerName()))
-            .andDo(print());
-    }
-
-    @DisplayName("주문의 상세정보를 보여주기위한 controller 테스트입니다.")
-    @Test
-    void orderDetailTest() throws Exception {
-        OrderDetailResponseDto dto =
-            new OrderDetailResponseDto("status", LocalDateTime.now(), "Hochul", "00",
-                "집앞에", 100L, "마산", "11105", 10L, "1", LocalDate.now());
-        PageImpl<OrderDetailResponseDto> page = new PageImpl<>(List.of(dto), pageRequest, 1);
-        when(orderService.findMemberOrderDetails(anyInt(), anyInt(), any(Pageable.class)))
-            .thenReturn(page);
-
-        mockMvc.perform(get("/api/orders/{orderNo}/member/{memberNo}", 1, 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .queryParam("page", objectMapper.writeValueAsString(pageRequest.getPageNumber()))
-                .queryParam("size", objectMapper.writeValueAsString(pageRequest.getPageSize())))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content.[0].statusCodeName").value(dto.getStatusCodeName()))
-            .andExpect(jsonPath("$.content.[0].receiptName").value(dto.getReceiptName()))
-            .andExpect(jsonPath("$.content.[0].receiptPhoneNumber").value(dto.getReceiptPhoneNumber()))
-            .andExpect(jsonPath("$.content.[0].deliveryRequest").value(dto.getDeliveryRequest()))
-            .andExpect(jsonPath("$.content.[0].totalOrderAmount").value(dto.getTotalOrderAmount()))
-            .andExpect(jsonPath("$.content.[0].address").value(dto.getAddress()))
-            .andExpect(jsonPath("$.content.[0].zipCode").value(dto.getZipCode()))
-            .andExpect(jsonPath("$.content.[0].amount").value(dto.getAmount()))
-            .andExpect(jsonPath("$.content.[0].trackingNo").value(dto.getTrackingNo()))
-            .andDo(print());
-    }
-
-    @DisplayName("회원번호를 통해서 관련 주문들을 전부 조회하는 controller 테스트2")
-    @Test
-    void orderListTest() throws Exception {
-        OrderListResponseDto dto = new OrderListResponseDto(1, "마산턱별시",
-            LocalDateTime.now(), "유유", "010", "요청", 100L);
-        PageImpl<OrderListResponseDto> page = new PageImpl<>(List.of(dto), pageRequest, 1);
-
-        when(orderService.findAllMemberOrders(anyInt(), any(Pageable.class)))
-            .thenReturn(page);
-
-        mockMvc.perform(get("/api/orders/member/{memberNo}", 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .queryParam("page", objectMapper.writeValueAsString(pageRequest.getPageNumber()))
-                .queryParam("size", objectMapper.writeValueAsString(pageRequest.getPageSize())))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content.[0].orderNo").value(dto.getOrderNo()))
-            .andExpect(jsonPath("$.content.[0].address").value(dto.getAddress()))
-            .andExpect(jsonPath("$.content.[0].receiptName").value(dto.getReceiptName()))
-            .andExpect(jsonPath("$.content.[0].receiptPhoneNumber").value(dto.getReceiptPhoneNumber()))
-            .andExpect(jsonPath("$.content.[0].deliveryRequest").value(dto.getDeliveryRequest()))
-            .andExpect(jsonPath("$.content.[0].totalOrderAmount").value(dto.getTotalOrderAmount()))
             .andDo(print());
     }
 

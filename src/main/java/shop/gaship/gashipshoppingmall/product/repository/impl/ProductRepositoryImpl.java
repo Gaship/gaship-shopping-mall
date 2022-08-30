@@ -65,6 +65,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 product.explanation,
                 category.level,
                 product.deliveryType.statusCodeName.as("deliveryType"),
+                product.salesStatus.statusCodeName.as("salesStatus"),
                 JPAExpressions.select(upper.name.concat("-").concat(
                         JPAExpressions.select(top.name)
                             .where(top.no.eq(upper.upperCategory.no))
@@ -73,6 +74,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                )
                     .where(upper.no.eq(category.upperCategory.no))
                     .from(upper)))
+                .orderBy(product.registerDatetime.desc())
             .distinct();
 
         List<ProductAllInfoResponseDto> content = productAllQuery
