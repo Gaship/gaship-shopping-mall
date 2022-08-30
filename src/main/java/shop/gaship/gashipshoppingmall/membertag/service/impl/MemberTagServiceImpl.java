@@ -41,7 +41,7 @@ public class MemberTagServiceImpl implements MemberTagService {
      */
     @Transactional
     @Override
-    public void deleteAllAndAddAllMemberTags(MemberTagRequestDto memberTagRequestDto,Integer memberNo) {
+    public void deleteAllAndAddAllMemberTags(MemberTagRequestDto memberTagRequestDto, Integer memberNo) {
         Member member = memberRepository.findById(memberNo)
                 .orElseThrow(MemberNotFoundException::new);
         memberTagRepository.deleteAllByMember_MemberNo(memberNo);
@@ -72,7 +72,7 @@ public class MemberTagServiceImpl implements MemberTagService {
             throw new MemberNotFoundException();
         }
         List<MemberTag> memberTags = memberTagRepository.findAllByMember_MemberNo(memberNo);
-        if (memberTags.size() != 5 || memberTags.size() != 0) {
+        if (memberTags.size() != 5 && memberTags.size() != 0) {
             throw new IllegalTagSelectionException();
         }
         return memberTags.stream().map(this::entityToDto).collect(Collectors.toList());
