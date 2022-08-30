@@ -38,16 +38,16 @@ class MemberTagControllerTest {
     @DisplayName("회원이 등록한 모든 태그를 삭제하고 다시 등록하기 원하는 태그들을 등록하는 메서드를 테스트합니다.")
     @Test
     void memberTagDeleteAllAndAddAll() throws Exception {
-        doNothing().when(memberTagService).deleteAllAndAddAllMemberTags(any());
-        String contentBody = objectMapper.writeValueAsString(MemberTagDummy.memberTagRequestDtoDummy(1, List.of(1,3,5,7,9)));
+        doNothing().when(memberTagService).deleteAllAndAddAllMemberTags(any(),any());
+        String contentBody = objectMapper.writeValueAsString(MemberTagDummy.memberTagRequestDtoDummy(List.of(1,3,5,7,9)));
 
-        mockMvc.perform(post("/api/members/1/member-tag")
+        mockMvc.perform(post("/api/member-tag")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(contentBody))
                 .andExpect(status().isCreated());
 
-        verify(memberTagService,times(1)).deleteAllAndAddAllMemberTags(any(MemberTagRequestDto.class));
+        verify(memberTagService,times(1)).deleteAllAndAddAllMemberTags(any(MemberTagRequestDto.class),any());
     }
 
     @DisplayName("회원이 등록한 모든 태그를 조회하는 메서드를 테스트합니다.")
@@ -55,7 +55,7 @@ class MemberTagControllerTest {
     void memberTagList() throws Exception {
         when(memberTagService.findMemberTags(any())).thenReturn(MemberTagDummy.memberTagResponseDtoListDummy());
 
-        mockMvc.perform(get("/api/members/1/member-tag")
+        mockMvc.perform(get("/api/member-tag")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
