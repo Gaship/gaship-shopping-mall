@@ -73,6 +73,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                )
                     .where(upper.no.eq(category.upperCategory.no))
                     .from(upper)))
+                .orderBy(product.registerDatetime.desc())
             .distinct();
 
         List<ProductAllInfoResponseDto> content = productAllQuery
