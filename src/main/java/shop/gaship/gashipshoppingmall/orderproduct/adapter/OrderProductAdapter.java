@@ -1,7 +1,6 @@
 package shop.gaship.gashipshoppingmall.orderproduct.adapter;
 
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,9 +24,9 @@ public class OrderProductAdapter {
      */
     public void useCouponRequest(List<Integer> couponNos) {
         WebClient.create(serverConfig.getCouponUrl())
-            .post()
-            .uri("/api/coupon-generations-issues/used")
-            .bodyValue(Map.of("couponIssueNumbers", couponNos))
+            .patch()
+            .uri("/api/coupons/coupon-generations-issues/used")
+            .bodyValue(couponNos)
             .retrieve()
             .toEntity(void.class)
             .block();
@@ -40,9 +39,9 @@ public class OrderProductAdapter {
      */
     public void useCancelCouponRequest(List<Integer> couponNos) {
         WebClient.create(serverConfig.getCouponUrl())
-            .post()
-            .uri("/api/coupon-generations-issues/used-to-cancle")
-            .bodyValue(Map.of("couponIssueNumbers", couponNos))
+            .patch()
+            .uri("/api/coupons/coupon-generations-issues/used-to-cancle")
+            .bodyValue(couponNos)
             .retrieve()
             .toEntity(void.class)
             .block();

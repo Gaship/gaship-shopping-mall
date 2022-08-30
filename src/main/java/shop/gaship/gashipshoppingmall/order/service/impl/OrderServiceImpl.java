@@ -26,6 +26,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductEmptyException;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
+import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
@@ -42,6 +43,7 @@ import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
+    private final OrderProductRepository orderProductRepository;
     private final AddressListRepository addressListRepository;
     private final StatusCodeRepository statusCodeRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -90,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderNo)
             .orElseThrow(OrderProductNotFoundException::new);
 
-        String productTitleName = order.getOrderProducts().stream()
+        String productTitleName = orderProductRepository.findOrderProductsByOrder(order).stream()
             .findFirst()
             .orElseThrow(OrderProductEmptyException::new)
             .getProduct()

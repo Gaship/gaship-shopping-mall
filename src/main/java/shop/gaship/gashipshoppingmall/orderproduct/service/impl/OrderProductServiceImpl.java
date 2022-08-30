@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -40,6 +41,7 @@ import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundExc
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 
+
 /**
  * 주문 상품상세 요구사항 명세를 구현하는 클래스입니다.
  *
@@ -66,7 +68,7 @@ public class OrderProductServiceImpl implements OrderProductService {
      * @param orderProducts 구매자가 구매한 주문 상품의 고유번호, 쿠폰 고유번호등 상품의 기본주문 정보를 담은 객체의
      *                      리스트 객체입니다.
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void registerOrderProduct(Order order, List<OrderProductSpecificDto> orderProducts) {
         StatusCode deliveryPrepending =
@@ -79,7 +81,7 @@ public class OrderProductServiceImpl implements OrderProductService {
             .collect(Collectors.toUnmodifiableList());
 
         List<OrderProduct> savedOrderProducts =
-            orderProductRepository.saveAll(orderProductsForSave);
+            orderProductRepository.saveAllAndFlush(orderProductsForSave);
 
         decreaseProductStock(savedOrderProducts);
 
