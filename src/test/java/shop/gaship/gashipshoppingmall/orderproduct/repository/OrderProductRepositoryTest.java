@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.addresslist.entity.AddressList;
 import shop.gaship.gashipshoppingmall.addresslist.repository.AddressListRepository;
@@ -28,6 +30,7 @@ import shop.gaship.gashipshoppingmall.membergrade.entity.MemberGrade;
 import shop.gaship.gashipshoppingmall.membergrade.repository.MemberGradeRepository;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
@@ -85,6 +88,13 @@ class OrderProductRepositoryTest {
         TotalSaleRequestDto requestDto = new TotalSaleRequestDto(startDate, endDate);
         List<TotalSaleResponseDto> totalSale = orderProductRepository.findTotalSale(requestDto);
         assertThat(totalSale).isNotEmpty();
+    }
+
+    @DisplayName("mysql 에서 해당멤버의 주문상품 조회")
+    @Test
+    void findOrderSale() {
+        Page<OrderProductResponseDto> list = orderProductRepository.findAllOrdersByMemberNo(1, PageRequest.of(0, 10));
+        assertThat(list.getSize()).isEqualTo(10);
     }
 
     @Test
