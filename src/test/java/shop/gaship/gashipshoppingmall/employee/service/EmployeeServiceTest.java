@@ -202,6 +202,8 @@ class EmployeeServiceTest {
             .willReturn(employee);
         given(repository.findById(any()))
             .willReturn(Optional.of(employee));
+        given(localRepository.findById(anyInt()))
+            .willReturn(Optional.of(addressLocal));
         //when
         service.modifyEmployee(modifyEmployeeDto);
 
@@ -236,9 +238,14 @@ class EmployeeServiceTest {
             .willReturn(true);
         given(codeRepository.findById(any()))
             .willReturn(Optional.of(code));
-
         given(localRepository.findById(any()))
             .willReturn(Optional.of(addressLocal));
+        given(aes.aesEcbDecode(employee.getEmail()))
+            .willReturn(employee.getEmail());
+        given(aes.aesEcbDecode(employee.getName()))
+            .willReturn(employee.getName());
+        given(aes.aesEcbDecode(employee.getPhoneNo()))
+            .willReturn(employee.getPhoneNo());
         employee.fixLocation(addressLocal);
 
         //when
@@ -252,6 +259,13 @@ class EmployeeServiceTest {
         verify(repository, times(1))
             .findById(any());
 
+        Employee value = captor.getValue();
+
+        assertThat(employee.getEmployeeNo()).isEqualTo(test.getEmployeeNo());
+        assertThat(employee.getAddressLocal().getAddressName()).isEqualTo(value.getAddressLocal().getAddressName());
+        assertThat(employee.getEmail()).isEqualTo(test.getEmail());
+        assertThat(employee.getName()).isEqualTo(test.getName());
+        assertThat(employee.getPhoneNo()).isEqualTo(test.getPhoneNo());
     }
 
     @Test
@@ -263,11 +277,21 @@ class EmployeeServiceTest {
         List<EmployeeInfoResponseDto> list = new ArrayList<>();
         list.add(e1);
         list.add(e2);
-
+        given(aes.aesEcbDecode(e1.getEmail()))
+            .willReturn(e1.getEmail());
+        given(aes.aesEcbDecode(e1.getName()))
+            .willReturn(e1.getName());
+        given(aes.aesEcbDecode(e1.getPhoneNo()))
+            .willReturn(e1.getPhoneNo());
+        given(aes.aesEcbDecode(e2.getEmail()))
+            .willReturn(e2.getEmail());
+        given(aes.aesEcbDecode(e2.getName()))
+            .willReturn(e2.getName());
+        given(aes.aesEcbDecode(e2.getPhoneNo()))
+            .willReturn(e2.getPhoneNo());
         PageImpl<EmployeeInfoResponseDto> page = new PageImpl<>(list, pageRequest, pageRequest.getPageSize());
-        PageResponse<EmployeeInfoResponseDto> response = new PageResponse<>(page);
         given(repository.findAllEmployees(pageRequest))
-            .willReturn(response);
+            .willReturn(page);
 
         //when
         PageResponse<EmployeeInfoResponseDto> allEmployees = service.findEmployees(pageRequest);
