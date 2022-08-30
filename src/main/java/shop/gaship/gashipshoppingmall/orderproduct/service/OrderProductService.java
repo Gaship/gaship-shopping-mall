@@ -29,7 +29,7 @@ public interface OrderProductService {
     Page<OrderProductResponseDto> findMemberOrders(Integer memberNo,
                                                    Pageable pageable);
 
-    OrderProductDetailResponseDto findMemberOrderProductDetail(Integer orderProductNo);
+    OrderProductDetailResponseDto findMemberOrderProductDetail(Integer orderProductNo, Integer memberNo);
 
     /**
      * 주문 상품의 주문 상태를 교환으로 변경합니다.

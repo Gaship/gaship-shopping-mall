@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
@@ -49,9 +50,11 @@ public class OrderProductController {
      * @return the response entity
      */
     @GetMapping("/{orderProductNo}")
-    public ResponseEntity<OrderProductDetailResponseDto> orderProductDetail(@PathVariable("orderProductNo") Integer orderProductNo) {
+    public ResponseEntity<OrderProductDetailResponseDto> orderProductDetail(
+        @PathVariable("orderProductNo") Integer orderProductNo,
+        @RequestParam(value = "memberNo") Integer memberNo) {
         return ResponseEntity.status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(orderProductService.findMemberOrderProductDetail(orderProductNo));
+            .body(orderProductService.findMemberOrderProductDetail(orderProductNo, memberNo));
     }
 }

@@ -144,7 +144,8 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Optional<OrderProductDetailResponseDto> findOrderProductDetail(Integer orderProductNo) {
+    public Optional<OrderProductDetailResponseDto> findOrderProductDetail(Integer orderProductNo,
+                                                                          Integer memberNo) {
         QOrder order = QOrder.order;
         QProduct product = QProduct.product;
         QMember member = QMember.member;
@@ -172,7 +173,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 product.qualityAssuranceStandard,
                 product.explanation,
                 member.memberNo))
-            .where(orderProduct.no.eq(orderProductNo))
+            .where(orderProduct.no.eq(orderProductNo).and(member.memberNo.eq(memberNo)))
             .fetchOne());
 
     }

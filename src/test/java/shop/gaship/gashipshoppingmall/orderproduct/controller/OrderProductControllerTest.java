@@ -78,11 +78,12 @@ class OrderProductControllerTest {
             new OrderProductDetailResponseDto(1, 1, "product", 1L, "status", "uuid", "color", "manufacturer"
                 , "korea", "seller", "importer", "qq", "explain", 1);
         dto.setFilePath("file");
-        when(orderProductService.findMemberOrderProductDetail(anyInt()))
+        when(orderProductService.findMemberOrderProductDetail(anyInt(), anyInt()))
             .thenReturn(dto);
 
         mvc.perform(get("/api/order-products/{orderProductNo}", 1)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .queryParam("memberNo", objectMapper.writeValueAsString(1)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.productNo").value(objectMapper.writeValueAsString(dto.getProductNo())))
             .andExpect(jsonPath("$.orderNo").value(objectMapper.writeValueAsString(dto.getOrderNo())))
@@ -98,6 +99,7 @@ class OrderProductControllerTest {
             .andExpect(jsonPath("$.qualityAssuranceStandard").value((dto.getQualityAssuranceStandard())))
             .andExpect(jsonPath("$.explanation").value((dto.getExplanation())))
             .andExpect(jsonPath("$.filePath").value(("file")))
+            .andExpect(jsonPath("$.memberNo").value(dto.getMemberNo()))
             .andDo(print());
     }
 
