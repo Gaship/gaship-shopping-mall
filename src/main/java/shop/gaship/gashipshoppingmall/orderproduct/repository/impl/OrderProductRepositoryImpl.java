@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.delivery.dto.DeliveryDto;
+import shop.gaship.gashipshoppingmall.member.entity.QMember;
 import shop.gaship.gashipshoppingmall.order.entity.QOrder;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
@@ -146,12 +147,14 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
     public Optional<OrderProductDetailResponseDto> findOrderProductDetail(Integer orderProductNo) {
         QOrder order = QOrder.order;
         QProduct product = QProduct.product;
+        QMember member = QMember.member;
         QStatusCode statusCode = QStatusCode.statusCode;
         QOrderProduct orderProduct = QOrderProduct.orderProduct;
 
 
         return Optional.ofNullable(from(orderProduct)
             .innerJoin(orderProduct.order, order)
+            .innerJoin(order.member, member)
             .innerJoin(orderProduct.product, product)
             .innerJoin(orderProduct.orderStatusCode, statusCode)
             .select(Projections.constructor(OrderProductDetailResponseDto.class,
@@ -167,7 +170,8 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 product.seller,
                 product.importer,
                 product.qualityAssuranceStandard,
-                product.explanation))
+                product.explanation,
+                member.memberNo))
             .where(orderProduct.no.eq(orderProductNo))
             .fetchOne());
 
@@ -210,7 +214,6 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
     public Optional<DeliveryDto> findOrderInfo(Integer orderProductNo) {
         QOrderProduct orderProduct = QOrderProduct.orderProduct;
         QOrder order = QOrder.order;
-
         DeliveryDto deliveryDto = from(orderProduct)
             .innerJoin(orderProduct.order, order)
             .where(orderProduct.no.eq(orderProductNo))
