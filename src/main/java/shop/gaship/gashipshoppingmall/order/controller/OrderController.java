@@ -62,9 +62,9 @@ public class OrderController {
      * @param orderSuccessRequestDto 주문 성공시 결제 이력번호, 주문번호가 담긴 객체입니다.
      * @return 응답 Body 객체가 없고 200 상태를 반환합니다.
      */
-    @MemberAuthority
     @PutMapping("/success")
-    public ResponseEntity<Void> orderSuccess(OrderSuccessRequestDto orderSuccessRequestDto) {
+    public ResponseEntity<Void> orderSuccess(
+            @RequestBody OrderSuccessRequestDto orderSuccessRequestDto) {
         orderService.orderPaymentsSuccess(
             orderSuccessRequestDto.getOrderNo(),
             orderSuccessRequestDto.getPaymentKey());
