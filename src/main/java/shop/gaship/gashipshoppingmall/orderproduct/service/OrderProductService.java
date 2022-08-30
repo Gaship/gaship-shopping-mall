@@ -8,6 +8,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationF
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 
 /**
@@ -27,6 +28,8 @@ public interface OrderProductService {
 
     Page<OrderProductResponseDto> findMemberOrders(Integer memberNo,
                                                    Pageable pageable);
+
+    OrderProductDetailResponseDto findMemberOrderProductDetail(Integer orderProductNo);
 
     /**
      * 주문 상품의 주문 상태를 교환으로 변경합니다.

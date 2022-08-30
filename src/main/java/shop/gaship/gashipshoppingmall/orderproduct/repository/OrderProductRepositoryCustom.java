@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.delivery.dto.DeliveryDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 import shop.gaship.gashipshoppingmall.totalsale.dto.request.TotalSaleRequestDto;
 import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDto;
@@ -21,6 +22,8 @@ import shop.gaship.gashipshoppingmall.totalsale.dto.response.TotalSaleResponseDt
 public interface OrderProductRepositoryCustom {
 
     List<TotalSaleResponseDto> findTotalSale(TotalSaleRequestDto dto);
+
+    Optional<OrderProductDetailResponseDto> findOrderProductDetail(Integer orderProductNo);
 
     Page<OrderProductResponseDto> findAllOrdersByMemberNo(Integer memberNo, Pageable pageable);
 

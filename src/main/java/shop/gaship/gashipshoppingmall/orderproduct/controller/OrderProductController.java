@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
@@ -39,5 +40,18 @@ public class OrderProductController {
         return ResponseEntity.status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
             .body(new PageResponse<>(content));
+    }
+
+    /**
+     * Order product detail response entity.
+     *
+     * @param orderProductNo the order product no
+     * @return the response entity
+     */
+    @GetMapping("/{orderProductNo}")
+    public ResponseEntity<OrderProductDetailResponseDto> orderProductDetail(@PathVariable("orderProductNo") Integer orderProductNo) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(orderProductService.findMemberOrderProductDetail(orderProductNo));
     }
 }

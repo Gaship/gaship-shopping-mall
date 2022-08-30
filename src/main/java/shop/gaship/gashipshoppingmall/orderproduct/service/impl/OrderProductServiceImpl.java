@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
@@ -19,11 +20,13 @@ import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto.CancelOrderInfo;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.InvalidOrderCancellationHistoryNo;
+import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductDetailNoValueException;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
@@ -54,6 +57,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final MemberRepository memberRepository;
 
+    private final CommonFileRepository commonFileRepository;
 
     /**
      * {@inheritDoc}
@@ -145,6 +149,22 @@ public class OrderProductServiceImpl implements OrderProductService {
         }
 
         return orderProductRepository.findAllOrdersByMemberNo(memberNo, pageable);
+    }
+
+    @Override
+    public OrderProductDetailResponseDto findMemberOrderProductDetail(Integer orderProductNo) {
+        if (orderProductRepository.findById(orderProductNo).isEmpty()) {
+            throw new OrderProductNotFoundException();
+        }
+
+        OrderProductDetailResponseDto responseDto = orderProductRepository
+            .findOrderProductDetail(orderProductNo)
+            .orElseThrow(OrderProductDetailNoValueException::new);
+
+        responseDto.setFilePath(commonFileRepository
+            .findPaths(responseDto.getProductNo(), "product").get(0));
+
+        return responseDto;
     }
 
     /**
