@@ -32,12 +32,6 @@ class OrderRepositoryTest {
         pageRequest = PageRequest.of(0, 10);
     }
 
-    @DisplayName("member no 를통해서 order 를 조회하기위한 테스스입니다.")
-    @Test
-    void findAllOrders() {
-        orderRepository.findAllOrders(1, pageRequest);
-
-    }
 
     @DisplayName("member no 를 통해서 취소된 것들을 조회")
     @Test
@@ -50,4 +44,5 @@ class OrderRepositoryTest {
     void findOrderDetail() {
         orderRepository.findOrderDetails(1, 1, pageRequest);
     }
+
 }

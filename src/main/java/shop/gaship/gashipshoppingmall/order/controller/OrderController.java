@@ -20,7 +20,6 @@ import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
-import shop.gaship.gashipshoppingmall.order.dto.response.OrderListResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
@@ -51,7 +50,7 @@ public class OrderController {
     @MemberOnlyAuthority
     @PostMapping
     public ResponseEntity<OrderResponseDto> doOrder(@Valid @RequestBody
-                                                        OrderRegisterRequestDto orderRequest) {
+                                                    OrderRegisterRequestDto orderRequest) {
         Integer orderNo = orderService.insertOrder(orderRequest);
         return ResponseEntity.ok(orderService.findOrderForPayments(orderNo));
     }
@@ -134,29 +133,6 @@ public class OrderController {
         Pageable pageable) {
         Page<OrderDetailResponseDto> content =
             orderService.findMemberOrderDetails(orderNo, memberNo, pageable);
-
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(new PageResponse<>(content));
-    }
-
-    /**
-     * GET Mapping
-     * 회원 번호를 통해 회원의 주문햇던 목록을 보여주기위한 GET 요청.
-     *
-     * @param memberNo 회원번호
-     * @param pageable 페이징요청값
-     * @return 주문했던 내용들이 전부기입됩니다.
-     */
-    @MemberOnlyAuthority
-    @GetMapping("/member/{memberNo}")
-    public ResponseEntity<PageResponse<OrderListResponseDto>> orderList(
-        @PathVariable("memberNo") Integer memberNo,
-        Pageable pageable) {
-
-        Page<OrderListResponseDto> content =
-            orderService.findAllMemberOrders(memberNo, pageable);
 
         return ResponseEntity
             .status(HttpStatus.OK)

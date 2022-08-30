@@ -9,11 +9,11 @@ import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.addresslist.entity.QAddressList;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
-import shop.gaship.gashipshoppingmall.order.dto.response.OrderListResponseDto;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.entity.QOrder;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepositoryCustom;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.QOrderProduct;
+import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
 
 /**
@@ -47,15 +47,18 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport
         QAddressList addressList = QAddressList.addressList;
         QOrderProduct orderProduct = QOrderProduct.orderProduct;
         QStatusCode statusCode = QStatusCode.statusCode;
+        QProduct product = QProduct.product;
 
         List<OrderDetailResponseDto> content = from(order)
             .innerJoin(order.orderProducts, orderProduct)
+            .innerJoin(orderProduct.product, product)
             .innerJoin(order.addressList, addressList)
-            .innerJoin(order.addressList.statusCode, statusCode)
+            .innerJoin(orderProduct.orderStatusCode, statusCode)
             .where(order.member.memberNo.eq(memberNo)
                 .and(order.no.eq(orderNo)))
             .select(Projections.constructor(OrderDetailResponseDto.class,
-                order.addressList.statusCode.statusCodeName,
+                product.name.as("productName"),
+                orderProduct.orderStatusCode.statusCodeName,
                 order.orderDatetime,
                 order.receiptName,
                 order.receiptPhoneNumber,
@@ -74,35 +77,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport
 
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Page<OrderListResponseDto> findAllOrders(Integer memberNo, Pageable pageable) {
-        //내 order_no, 주소지(address_list), 주문일자, 실수령자명, 실주령자 전화번호, 배송요청사항(delivery request)
-        //총 구매가격 --> 집계함수 쓰라는 건가?
-        //member 를 통해서
-        QOrder order = QOrder.order;
-        QAddressList addressList = QAddressList.addressList;
-
-        List<OrderListResponseDto> content = from(order)
-            .innerJoin(order.addressList, addressList)
-            .where(order.member.memberNo.eq(memberNo))
-            .select(Projections.constructor(OrderListResponseDto.class,
-                order.no.as("orderNo"),
-                order.addressList.address,
-                order.orderDatetime,
-                order.receiptName,
-                order.receiptPhoneNumber,
-                order.deliveryRequest,
-                order.totalOrderAmount))
-            .limit(pageable.getPageSize())
-            .offset(pageable.getOffset())
-            .fetch();
-
-        return PageableExecutionUtils.getPage(content, pageable, content::size);
-    }
 
     /**
      * {@inheritDoc}

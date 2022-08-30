@@ -26,7 +26,6 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
-import shop.gaship.gashipshoppingmall.order.dto.response.OrderListResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
@@ -43,12 +42,10 @@ import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -131,32 +128,6 @@ class OrderServiceImplTest {
         verify(orderRepository, times(1)).findById(1);
     }
 
-    @DisplayName("전체 주문조회")
-    @Test
-    void findOrdersAll() {
-        Order order = OrderDummy.createOrderDummy();
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        OrderListResponseDto dto = new OrderListResponseDto(1, "마산턱별시",
-            LocalDateTime.now(), "유유", "010", "요청", 100L);
-        PageImpl<OrderListResponseDto> page = new PageImpl<>(List.of(dto), pageRequest, 1);
-
-        ReflectionTestUtils.setField(order, "orderProducts",
-            List.of(OrderProductDummy.dummy()));
-        given(memberRepository.findById(anyInt()))
-            .willReturn(Optional.of(MemberDummy.dummy()));
-        given(orderRepository.findAllOrders(anyInt(), any()))
-            .willReturn(page);
-
-        Page<OrderListResponseDto> result = orderService.findAllMemberOrders(1, pageRequest);
-        assertThat(result.getContent().get(0).getOrderNo()).isEqualTo(dto.getOrderNo());
-        assertThat(result.getContent().get(0).getOrderDatetime().getYear()).isEqualTo(dto.getOrderDatetime().getYear());
-        assertThat(result.getContent().get(0).getAddress()).isEqualTo(dto.getAddress());
-        assertThat(result.getContent().get(0).getTotalOrderAmount()).isEqualTo(dto.getTotalOrderAmount());
-        assertThat(result.getContent().get(0).getReceiptName()).isEqualTo(dto.getReceiptName());
-        assertThat(result.getContent().get(0).getDeliveryRequest()).isEqualTo(dto.getDeliveryRequest());
-        assertThat(result.getContent().get(0).getReceiptPhoneNumber()).isEqualTo(dto.getReceiptPhoneNumber());
-    }
-
     @DisplayName("실패된 주문들조회")
     @Test
     void findCancelOrdersTest() {
@@ -187,7 +158,7 @@ class OrderServiceImplTest {
     @Test
     void findOrderDetailsTest() {
         OrderDetailResponseDto dto =
-            new OrderDetailResponseDto("status", LocalDateTime.now(), "Hochul", "00",
+            new OrderDetailResponseDto("상품", "status", LocalDateTime.now(), "Hochul", "00",
                 "집앞에", 100L, "마산", "11105", 10L, "1", LocalDate.now());
         PageImpl<OrderDetailResponseDto> page = new PageImpl<>(List.of(dto), PageRequest.of(1, 10), 1);
         given(memberRepository.findById(anyInt()))
