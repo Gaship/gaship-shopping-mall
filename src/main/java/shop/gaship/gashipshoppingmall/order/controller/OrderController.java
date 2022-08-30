@@ -81,7 +81,7 @@ public class OrderController {
     @MemberAuthority
     @PutMapping("/cancel")
     public ResponseEntity<Void> orderCancelRefundProduct(
-        OrderProductStatusCancelDto orderProductStatusCancelDto) {
+        @RequestBody OrderProductStatusCancelDto orderProductStatusCancelDto) {
         orderProductService.updateOrderProductStatusToCancel(orderProductStatusCancelDto);
 
         return ResponseEntity.ok().build();
@@ -96,7 +96,7 @@ public class OrderController {
     @MemberAuthority
     @PutMapping("/change")
     public ResponseEntity<Void> orderChangeProduct(
-        OrderProductStatusChangeDto orderProductStatusChangeDto) {
+        @RequestBody OrderProductStatusChangeDto orderProductStatusChangeDto) {
         orderProductService.updateOrderProductStatusToChange(orderProductStatusChangeDto);
 
         return ResponseEntity.ok().build();
@@ -108,10 +108,9 @@ public class OrderController {
      * @param orderProductCancellationFailDto 주문 취소 실패로 복구해야하는 주문 상품정보가 담긴 객체입니다.
      * @return 응답 Body객체가 없고 200 상태를 반환합니다.
      */
-    @MemberAuthority
     @PutMapping("/restore")
     public ResponseEntity<Void> orderRestoreProduct(
-        OrderProductCancellationFailDto orderProductCancellationFailDto) {
+        @RequestBody OrderProductCancellationFailDto orderProductCancellationFailDto) {
         orderProductService.restoreOrderProduct(orderProductCancellationFailDto);
 
         return ResponseEntity.ok().build();

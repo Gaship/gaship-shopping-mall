@@ -113,7 +113,7 @@ class OrderProductServiceTest {
 
         then(orderProductRepository)
             .should(times(1))
-            .saveAll(anyList());
+            .saveAllAndFlush(anyList());
 
         then(couponUsedEventHandler)
             .should(never())
@@ -160,7 +160,7 @@ class OrderProductServiceTest {
 
         then(orderProductRepository)
             .should(times(1))
-            .saveAll(anyList());
+            .saveAllAndFlush(anyList());
 
         then(couponUsedEventHandler)
             .should(times(1))

@@ -36,6 +36,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.dummy.OrderProductDummy;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.event.OrderProductRegisteredEventHandler;
+import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
@@ -85,6 +86,9 @@ class OrderServiceImplTest {
     @MockBean
     private StatusCodeRepository statusCodeRepository;
 
+    @MockBean
+    private OrderProductRepository orderProductRepository;
+
     @Test
     @DisplayName("주문 등록 테스트")
     void insertOrderTest() {
@@ -117,6 +121,8 @@ class OrderServiceImplTest {
 
         given(orderRepository.findById(anyInt()))
             .willReturn(Optional.of(orderDummy));
+        given(orderProductRepository.findOrderProductsByOrder(any()))
+                .willReturn(List.of(OrderProductDummy.dummy()));
 
         OrderResponseDto orderResponse = orderService.findOrderForPayments(1);
         assertThat(orderResponse.getOrderId())
