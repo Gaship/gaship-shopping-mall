@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,13 +63,27 @@ public class EmployeeController {
      * @param dto 직원을 수정하기위한 기본정보들이 포함되어있습니다.
      * @author 유호철
      */
-    @ManagerAuthority
+    @AdminAuthority
     @PutMapping("/{employeeNo}")
     public ResponseEntity<Void> modifyEmployee(@PathVariable("employeeNo") Integer employeeNo,
                                                @Valid @RequestBody ModifyEmployeeRequestDto dto) {
 
         employeeService.modifyEmployee(dto);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * delete 요청이 왔을경우 직원을 삭제하기 위한 메서드입니다.
+     *
+     * @param employeeNo 직원 번호가 기입됩니다.
+     */
+    @AdminAuthority
+    @DeleteMapping("/{employeeNo}")
+    public ResponseEntity<Void> employeeRemove(@PathVariable("employeeNo") Integer employeeNo) {
+        employeeService.removeEmployee(employeeNo);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .build();
     }
 
     /**

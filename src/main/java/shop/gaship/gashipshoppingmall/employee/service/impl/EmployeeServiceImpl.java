@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.addresslocal.entity.AddressLocal;
+import shop.gaship.gashipshoppingmall.addresslocal.exception.NotExistAddressLocal;
 import shop.gaship.gashipshoppingmall.addresslocal.repository.AddressLocalRepository;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Sha512;
@@ -87,7 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             .statusCode(statusCode)
             .email(aes.aesEcbEncode(dto.getEmail()))
             .name(dto.getName())
-            .password((dto.getPassword()))
+            .password(aes.aesEcbEncode(dto.getPassword()))
             .encodedEmailForSearch(sha512.encryptPlainText(dto.getEmail()))
             .phoneNo(aes.aesEcbEncode(dto.getPhoneNo()))
             .build();
@@ -107,9 +108,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void modifyEmployee(ModifyEmployeeRequestDto dto) {
         Employee employee = repository.findById(dto.getEmployeeNo())
             .orElseThrow(EmployeeNotFoundException::new);
+        AddressLocal addressLocal = localRepository.findById(dto.getAddressNo())
+            .orElseThrow(NotExistAddressLocal::new);
+        if (dto.getPassword() != null || !dto.getPassword().equals("")) {
+            employee.modifyEmployee(
+                dto.getName(),
+                aes.aesEcbEncode(dto.getPhoneNo()),
+                aes.aesEcbEncode(dto.getPassword()),
+                addressLocal
+            );
+            return;
+        }
         employee.modifyEmployee(
-            aes.aesEcbEncode(dto.getName()),
-            aes.aesEcbEncode(dto.getPhoneNo()));
+            dto.getName(),
+            dto.getPhoneNo(),
+            employee.getPassword(),
+            addressLocal
+        );
     }
 
     /**
@@ -128,8 +143,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new EmployeeInfoResponseDto(
             aes.aesEcbDecode(employee.getName()),
             aes.aesEcbDecode(employee.getEmail()),
-            employee.getPassword(),
-            employee.getAddressLocal().getAddressName(), 1);
+            aes.aesEcbDecode(employee.getPhoneNo()),
+            aes.aesEcbDecode(employee.getAddressLocal().getAddressName()),
+            employee.getEmployeeNo()
+        );
     }
 
     /**
@@ -140,7 +157,21 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public PageResponse<EmployeeInfoResponseDto> findEmployees(Pageable pageable) {
-        return repository.findAllEmployees(pageable);
+
+        Page<EmployeeInfoResponseDto> page = repository.findAllEmployees(pageable);
+        PageResponse<EmployeeInfoResponseDto> response = new PageResponse<>(page);
+        List<EmployeeInfoResponseDto> decodeEmployees = page.getContent()
+            .stream()
+            .map(employee ->
+                new EmployeeInfoResponseDto(
+                    employee.getName(),
+                    aes.aesEcbDecode(employee.getEmail()),
+                    aes.aesEcbDecode(employee.getPhoneNo()),
+                    employee.getAddress(),
+                    employee.getEmployeeNo())
+            ).collect(Collectors.toList());
+        response.decodeContent(decodeEmployees);
+        return response;
     }
 
     /**
@@ -227,6 +258,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @throws EmployeeNotFoundException 직원이 존재하지않을경우 예외를 발생.
+     */
+    @Transactional
+    @Override
+    public void removeEmployee(Integer employeeNo) {
+        Employee employee = repository.findById(employeeNo).orElseThrow(EmployeeNotFoundException::new);
+        repository.delete(employee);
+    }
+
+    /**
      * 배송타입이 시공타입인지 비교연산하는 메서드입니다.
      *
      * @param constructionStatusCode 배송타입 상태코드입니다.
@@ -248,4 +291,5 @@ public class EmployeeServiceImpl implements EmployeeService {
     private boolean isEqualDeliveredEmployee(Employee employee, OrderProduct orderProduct) {
         return Objects.equals(employee, orderProduct.getEmployee());
     }
+
 }
