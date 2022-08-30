@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.order.service.impl;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,6 @@ import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
-import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
@@ -152,34 +150,6 @@ class OrderServiceImplTest {
         assertThat(result.getContent().get(0).getCancellationAmount()).isEqualTo(dto.getCancellationAmount());
         assertThat(result.getContent().get(0).getCancellationReason()).isEqualTo(dto.getCancellationReason());
         assertThat(result.getContent().get(0).getCancellationDatetime()).isEqualTo(dto.getCancellationDatetime());
-    }
-
-    @DisplayName("주문 상세 내용 조회")
-    @Test
-    void findOrderDetailsTest() {
-        OrderDetailResponseDto dto =
-            new OrderDetailResponseDto("상품", "status", LocalDateTime.now(), "Hochul", "00",
-                "집앞에", 100L, "마산", "11105", 10L, "1", LocalDate.now());
-        PageImpl<OrderDetailResponseDto> page = new PageImpl<>(List.of(dto), PageRequest.of(1, 10), 1);
-        given(memberRepository.findById(anyInt()))
-            .willReturn(Optional.of(MemberDummy.dummy()));
-        given(orderRepository.findById(anyInt()))
-            .willReturn(Optional.of(OrderDummy.createOrderDummy()));
-        given(orderRepository.findOrderDetails(anyInt(), anyInt(), any(Pageable.class)))
-            .willReturn(page);
-
-        Page<OrderDetailResponseDto> result = orderService.findMemberOrderDetails(1, 1, PageRequest.of(1, 10));
-
-        assertThat(result.getContent().get(0).getAddress()).isEqualTo(dto.getAddress());
-        assertThat(result.getContent().get(0).getOrderDatetime()).isEqualTo(dto.getOrderDatetime());
-        assertThat(result.getContent().get(0).getAmount()).isEqualTo(dto.getAmount());
-        assertThat(result.getContent().get(0).getReceiptName()).isEqualTo(dto.getReceiptName());
-        assertThat(result.getContent().get(0).getReceiptPhoneNumber()).isEqualTo(dto.getReceiptPhoneNumber());
-        assertThat(result.getContent().get(0).getDeliveryRequest()).isEqualTo(dto.getDeliveryRequest());
-        assertThat(result.getContent().get(0).getTotalOrderAmount()).isEqualTo(dto.getTotalOrderAmount());
-        assertThat(result.getContent().get(0).getZipCode()).isEqualTo(dto.getZipCode());
-        assertThat(result.getContent().get(0).getTrackingNo()).isEqualTo(dto.getTrackingNo());
-        assertThat(result.getContent().get(0).getHopeDate()).isEqualTo(dto.getHopeDate());
     }
 
     @Test
