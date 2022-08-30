@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.delivery.dto.DeliveryDto;
 import shop.gaship.gashipshoppingmall.order.entity.QOrder;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.QOrderProduct;
@@ -139,6 +140,37 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
         return new CaseBuilder()
             .when(statusCodeNo)
             .then(orderProduct);
+    }
+
+    @Override
+    public Optional<OrderProductDetailResponseDto> findOrderProductDetail(Integer orderProductNo) {
+        QOrder order = QOrder.order;
+        QProduct product = QProduct.product;
+        QStatusCode statusCode = QStatusCode.statusCode;
+        QOrderProduct orderProduct = QOrderProduct.orderProduct;
+
+
+        return Optional.ofNullable(from(orderProduct)
+            .innerJoin(orderProduct.order, order)
+            .innerJoin(orderProduct.product, product)
+            .innerJoin(orderProduct.orderStatusCode, statusCode)
+            .select(Projections.constructor(OrderProductDetailResponseDto.class,
+                product.no.as("productNo"),
+                order.no.as("orderNo"),
+                product.name.as("productName"),
+                order.totalOrderAmount,
+                orderProduct.orderStatusCode.statusCodeName.as("orderProductStatus"),
+                orderProduct.trackingNo,
+                product.color,
+                product.manufacturer,
+                product.manufacturerCountry,
+                product.seller,
+                product.importer,
+                product.qualityAssuranceStandard,
+                product.explanation))
+            .where(orderProduct.no.eq(orderProductNo))
+            .fetchOne());
+
     }
 
     @Override
