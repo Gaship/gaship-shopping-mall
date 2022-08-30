@@ -152,13 +152,13 @@ public class OrderProductServiceImpl implements OrderProductService {
     }
 
     @Override
-    public OrderProductDetailResponseDto findMemberOrderProductDetail(Integer orderProductNo) {
+    public OrderProductDetailResponseDto findMemberOrderProductDetail(Integer orderProductNo, Integer memberNo) {
         if (orderProductRepository.findById(orderProductNo).isEmpty()) {
             throw new OrderProductNotFoundException();
         }
 
         OrderProductDetailResponseDto responseDto = orderProductRepository
-            .findOrderProductDetail(orderProductNo)
+            .findOrderProductDetail(orderProductNo, memberNo)
             .orElseThrow(OrderProductDetailNoValueException::new);
 
         responseDto.setFilePath(commonFileRepository

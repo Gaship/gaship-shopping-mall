@@ -518,10 +518,10 @@ class OrderProductServiceTest {
     void findMemberOrdersFailsByNoValue() {
         given(orderProductRepository.findById(anyInt()))
             .willReturn(Optional.of(OrderProductDummy.dummy()));
-        given(orderProductRepository.findOrderProductDetail(anyInt()))
+        given(orderProductRepository.findOrderProductDetail(anyInt(), anyInt()))
             .willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> orderProductService.findMemberOrderProductDetail(1))
+        assertThatThrownBy(() -> orderProductService.findMemberOrderProductDetail(1, 1))
             .isInstanceOf(OrderProductDetailNoValueException.class);
     }
 
@@ -533,12 +533,12 @@ class OrderProductServiceTest {
                 , "korea", "seller", "importer", "qq", "explain", 1);
         given(orderProductRepository.findById(anyInt()))
             .willReturn(Optional.of(OrderProductDummy.dummy()));
-        given(orderProductRepository.findOrderProductDetail(anyInt()))
+        given(orderProductRepository.findOrderProductDetail(anyInt(), anyInt()))
             .willReturn(Optional.of(dto));
         given(commonFileRepository.findPaths(anyInt(), anyString()))
             .willReturn(List.of("file"));
 
-        Optional<OrderProductDetailResponseDto> productDetail = orderProductRepository.findOrderProductDetail(1);
+        Optional<OrderProductDetailResponseDto> productDetail = orderProductRepository.findOrderProductDetail(1, 1);
         productDetail.ifPresent(a -> {
             assertThat(a.getProductNo()).isEqualTo(dto.getProductNo());
             assertThat(a.getOrderNo()).isEqualTo(dto.getOrderNo());

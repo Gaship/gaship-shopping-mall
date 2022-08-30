@@ -94,7 +94,7 @@ class OrderProductRepositoryTest {
     @DisplayName("mysql 에서 상품주문번호 상세 조회")
     @Test
     void findOrderProduct() {
-        Optional<OrderProductDetailResponseDto> productDetail = orderProductRepository.findOrderProductDetail(1);
+        Optional<OrderProductDetailResponseDto> productDetail = orderProductRepository.findOrderProductDetail(1, 1);
         assertThat(productDetail).isPresent();
     }
 

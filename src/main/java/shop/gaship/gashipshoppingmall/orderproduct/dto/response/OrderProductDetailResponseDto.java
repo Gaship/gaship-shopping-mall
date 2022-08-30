@@ -27,7 +27,6 @@ public class OrderProductDetailResponseDto {
     private String importer;
     private String qualityAssuranceStandard;
     private String explanation;
-
     private Integer memberNo;
 
 
