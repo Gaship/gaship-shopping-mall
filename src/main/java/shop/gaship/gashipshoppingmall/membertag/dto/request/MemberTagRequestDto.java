@@ -14,10 +14,6 @@ import lombok.Getter;
  */
 @Getter
 public class MemberTagRequestDto {
-    @Min(value = 1, message = "memberNo 는 최소값이 1입니다.")
-    @NotNull(message = "memberNo 는 필수 입력값입니다.")
-    private Integer memberNo;
-
     @Size(min = 5, max = 5, message = "태그가 5개 선택 되지 않았습니다.")
     @NotNull(message = "태그를 선택해주세요.")
     private List<Integer> tagIds;

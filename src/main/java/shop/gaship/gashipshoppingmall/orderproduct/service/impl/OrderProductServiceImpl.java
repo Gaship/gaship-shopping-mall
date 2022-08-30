@@ -7,19 +7,27 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
+import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
+import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusCancelDto.CancelOrderInfo;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductStatusChangeDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
+import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.InvalidOrderCancellationHistoryNo;
+import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductDetailNoValueException;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
@@ -49,7 +57,9 @@ public class OrderProductServiceImpl implements OrderProductService {
     private final StatusCodeRepository statusCodeRepository;
     private final OrderProductRepository orderProductRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final MemberRepository memberRepository;
 
+    private final CommonFileRepository commonFileRepository;
 
     /**
      * {@inheritDoc}
@@ -92,9 +102,9 @@ public class OrderProductServiceImpl implements OrderProductService {
     /**
      * 주문 상품을 생성합니다.
      *
-     * @param order                 주문상품의 주문입니다.
-     * @param statusCode            주문 초기 상태입니다.
-     * @param orderProductSpecific  주문 상품에 등록될 정보입니다.
+     * @param order                주문상품의 주문입니다.
+     * @param statusCode           주문 초기 상태입니다.
+     * @param orderProductSpecific 주문 상품에 등록될 정보입니다.
      * @return 새로 생성할 주문 상품입니다.
      */
     private OrderProduct makeOrderProduct(Order order, StatusCode statusCode,
@@ -133,6 +143,32 @@ public class OrderProductServiceImpl implements OrderProductService {
         });
     }
 
+    @Override
+    public Page<OrderProductResponseDto> findMemberOrders(Integer memberNo,
+                                                          Pageable pageable) {
+        if (memberRepository.findById(memberNo).isEmpty()) {
+            throw new MemberNotFoundException();
+        }
+
+        return orderProductRepository.findAllOrdersByMemberNo(memberNo, pageable);
+    }
+
+    @Override
+    public OrderProductDetailResponseDto findMemberOrderProductDetail(Integer orderProductNo, Integer memberNo) {
+        if (orderProductRepository.findById(orderProductNo).isEmpty()) {
+            throw new OrderProductNotFoundException();
+        }
+
+        OrderProductDetailResponseDto responseDto = orderProductRepository
+            .findOrderProductDetail(orderProductNo, memberNo)
+            .orElseThrow(OrderProductDetailNoValueException::new);
+
+        responseDto.setFilePath(commonFileRepository
+            .findPaths(responseDto.getProductNo(), "product").get(0));
+
+        return responseDto;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -160,7 +196,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     /**
      * {@inheritDoc}
      *
-     * @param orderProductStatusCancelDto   주문 취소, 반품 상품의 정보입니다.
+     * @param orderProductStatusCancelDto 주문 취소, 반품 상품의 정보입니다.
      * @throws InvalidOrderStatusException 주문 상태가 배송준비, 배송중, 배송완료가 아닌 경우 예외를 던집니다.
      */
     @Transactional
@@ -168,8 +204,8 @@ public class OrderProductServiceImpl implements OrderProductService {
     public void updateOrderProductStatusToCancel(
         OrderProductStatusCancelDto orderProductStatusCancelDto) {
         StatusCode cancellationCode = statusCodeRepository
-                .findByStatusCodeName(OrderStatus.CANCEL_COMPLETE.getValue())
-                .orElseThrow(StatusCodeNotFoundException::new);
+            .findByStatusCodeName(OrderStatus.CANCEL_COMPLETE.getValue())
+            .orElseThrow(StatusCodeNotFoundException::new);
 
         orderProductStatusCancelDto.getCancelOrderInfos()
             .forEach(cancelOrderInfo -> {
@@ -189,7 +225,7 @@ public class OrderProductServiceImpl implements OrderProductService {
             });
 
         List<OrderProduct> orderProducts = orderProductRepository
-                .findAllById(convertCancellationProductNos(orderProductStatusCancelDto));
+            .findAllById(convertCancellationProductNos(orderProductStatusCancelDto));
 
         boolean isUsedCoupon = orderProducts.stream()
             .anyMatch(orderProduct -> Objects.nonNull(orderProduct.getMemberCouponNo()));
@@ -231,7 +267,7 @@ public class OrderProductServiceImpl implements OrderProductService {
         List<Integer> orderProductNos = orderProductCancellationFailDto.getRestoreOrderProductNos();
         List<OrderProduct> orderProducts = orderProductRepository.findAllById(orderProductNos);
         StatusCode deliveryPendingStatus = statusCodeRepository.findByStatusCodeName(
-            OrderStatus.DELIVERY_PREPARING.getValue())
+                OrderStatus.DELIVERY_PREPARING.getValue())
             .orElseThrow(StatusCodeNotFoundException::new);
 
         orderProducts.forEach(orderProduct -> {

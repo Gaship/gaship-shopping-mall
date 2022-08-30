@@ -24,7 +24,7 @@ import shop.gaship.gashipshoppingmall.membertag.service.MemberTagService;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members/{memberNo}/member-tag")
+@RequestMapping("/api/member-tag")
 public class MemberTagController {
     private final MemberTagService memberTagService;
 
@@ -35,10 +35,11 @@ public class MemberTagController {
      * @return the response entity
      * @author 최정우
      */
-    @PostMapping
+    @PostMapping("/{memberNo}")
     public ResponseEntity<Void> memberTagDeleteAllAndAddAll(
-            @Valid @RequestBody MemberTagRequestDto memberTagRequestDto) {
-        memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto);
+            @Valid @RequestBody MemberTagRequestDto memberTagRequestDto,
+            @PathVariable Integer memberNo) {
+        memberTagService.deleteAllAndAddAllMemberTags(memberTagRequestDto,memberNo);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
@@ -51,7 +52,7 @@ public class MemberTagController {
      * @return 회원이 그 태그를 선택했는지의 여부가 있는 태그 목록이 보입니다.
      * @author 최정우
      */
-    @GetMapping
+    @GetMapping("/{memberNo}")
     public ResponseEntity<List<MemberTagResponseDto>> memberTagList(
             @PathVariable Integer memberNo) {
         return ResponseEntity.status(HttpStatus.OK)

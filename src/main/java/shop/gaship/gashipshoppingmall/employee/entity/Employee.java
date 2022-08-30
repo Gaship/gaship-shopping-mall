@@ -57,52 +57,6 @@ public class Employee {
     private String encodedEmailForSearch;
 
     /**
-     * 직원에대한 지역을 수정하기위한 메서드입니다.
-     *
-     * @param addressLocal 수정되어야할 지역정보가 담겨져있습니다.
-     * @author 유호철
-     */
-    public void fixLocation(AddressLocal addressLocal) {
-        this.addressLocal = addressLocal;
-    }
-
-
-    /**
-     * 직원 정보를 수정하기위한 메서드입니다.
-     *
-     * @param name    암호화된 이름
-     * @param phoneNo 암호화된 번호
-     */
-    public void modifyEmployee(String name,
-                               String phoneNo) {
-        this.name = name;
-        this.phoneNo = phoneNo;
-    }
-
-    /**
-     * 직원에 있는 공통코드의 권한을 변경하기위한 메서드입니다.
-     *
-     * @param code 변경되어야할 권한이 들어옵니다.
-     * @author 유호철
-     */
-    public void fixCode(StatusCode code) {
-        this.statusCode = code;
-    }
-
-    /**
-     * 직원생성을 위한 메서드니다.
-     *
-     * @param dto 직원생성을위한 정보들이 담겨있습니다.
-     * @author 유호철
-     */
-    public void registerEmployee(CreateEmployeeRequestDto dto) {
-        this.name = dto.getName();
-        this.phoneNo = dto.getPhoneNo();
-        this.email = dto.getEmail();
-        this.password = dto.getPassword();
-    }
-
-    /**
      * 직원을 생성하기위한 builder 입니다.
      *
      * @param statusCode            the status code
@@ -126,5 +80,55 @@ public class Employee {
         this.password = password;
         this.phoneNo = phoneNo;
         this.encodedEmailForSearch = encodedEmailForSearch;
+    }
+
+    /**
+     * 직원에대한 지역을 수정하기위한 메서드입니다.
+     *
+     * @param addressLocal 수정되어야할 지역정보가 담겨져있습니다.
+     * @author 유호철
+     */
+    public void fixLocation(AddressLocal addressLocal) {
+        this.addressLocal = addressLocal;
+    }
+
+    /**
+     * 직원 정보를 수정하기위한 메서드입니다.
+     *
+     * @param name    암호화된 이름
+     * @param phoneNo 암호화된 번호
+     */
+    public void modifyEmployee(String name,
+                               String phoneNo,
+                               String password,
+                               AddressLocal addressLocal) {
+        this.name = name;
+        this.phoneNo = phoneNo;
+        this.addressLocal = addressLocal;
+        this.password = password;
+
+    }
+
+    /**
+     * 직원에 있는 공통코드의 권한을 변경하기위한 메서드입니다.
+     *
+     * @param code 변경되어야할 권한이 들어옵니다.
+     * @author 유호철
+     */
+    public void fixCode(StatusCode code) {
+        this.statusCode = code;
+    }
+
+    /**
+     * 직원생성을 위한 메서드니다.
+     *
+     * @param dto 직원생성을위한 정보들이 담겨있습니다.
+     * @author 유호철
+     */
+    public void registerEmployee(CreateEmployeeRequestDto dto) {
+        this.name = dto.getName();
+        this.phoneNo = dto.getPhoneNo();
+        this.email = dto.getEmail();
+        this.password = dto.getPassword();
     }
 }

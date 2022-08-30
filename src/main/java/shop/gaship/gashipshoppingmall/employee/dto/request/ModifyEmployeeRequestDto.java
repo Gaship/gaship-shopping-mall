@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.employee.dto.request;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,9 @@ public class ModifyEmployeeRequestDto {
     @Min(1)
     @NotNull(message = "직원번호를 입력해주세요")
     private Integer employeeNo;
+
+    @Nullable
+    private String password;
 
     @NotNull(message = "이름을 입력해주세요")
     private String name;

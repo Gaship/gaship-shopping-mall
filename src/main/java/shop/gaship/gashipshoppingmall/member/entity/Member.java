@@ -142,7 +142,18 @@ public class Member extends BaseEntity {
     public void modifyMemberPassword(String hashedPassword) {
         this.password = hashedPassword;
     }
-    
+
+
+    /**
+     * 회원의 비밀번호 변경.
+     *
+     * @param encodedEmail 암호화된 이메일입니다.
+     */
+    public void modifyMemberEmail(String encodedEmail) {
+        this.email = encodedEmail;
+    }
+
+
     /**
      * 회원의 등급 정보 수정.
      *
@@ -154,5 +165,12 @@ public class Member extends BaseEntity {
         this.memberGrades = memberGrade;
         this.nextRenewalGradeDate = nextRenewalGradeDate;
         this.accumulatePurchaseAmount = 0L;
+    }
+
+    public void decodeMemberProtectionData(String decodedEmail, String decodedPhoneNumber,
+                                           String decodedName){
+        this.email = decodedEmail;
+        this.phoneNumber = decodedPhoneNumber;
+        this.name = decodedName;
     }
 }

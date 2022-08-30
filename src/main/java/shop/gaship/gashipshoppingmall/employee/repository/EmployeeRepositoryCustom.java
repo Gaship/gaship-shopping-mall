@@ -7,7 +7,6 @@ import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.employee.dto.response.EmployeeInfoResponseDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.SignInUserDetailsDto;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 
 /**
@@ -29,7 +28,7 @@ public interface EmployeeRepositoryCustom {
      * @param pageable 페이징 정보가 들어옵니다.
      * @return 직원의 정보가 담긴 리스트가 반환됩니다.
      */
-    PageResponse<EmployeeInfoResponseDto> findAllEmployees(Pageable pageable);
+    Page<EmployeeInfoResponseDto> findAllEmployees(Pageable pageable);
 
     /**
      * 주문을 기반으로 직원이 설치배송해야하는 주문건수들을 가입시 지정되었던 지역과 같은 주문들을 조회합니다.
