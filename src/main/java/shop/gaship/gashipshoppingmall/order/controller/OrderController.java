@@ -19,7 +19,6 @@ import shop.gaship.gashipshoppingmall.aspact.anntation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
-import shop.gaship.gashipshoppingmall.order.dto.response.OrderDetailResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
@@ -114,30 +113,6 @@ public class OrderController {
         orderProductService.restoreOrderProduct(orderProductCancellationFailDto);
 
         return ResponseEntity.ok().build();
-    }
-
-    /**
-     * GET Mapping
-     * 주문번호와 멤버번호를 토대로 상세주문 정보를 얻기위한 GET 요청 입니다.
-     *
-     * @param orderNo  조회할 멤버의 상품번호.
-     * @param memberNo 조회할 대상자.
-     * @param pageable 페이징 객체.
-     * @return ResponseEntity body 상세한 상품들의내용을 PageResponse 형태로 가집니다 응답은 200 ok.
-     */
-    @MemberOnlyAuthority
-    @GetMapping("/{orderNo}/member/{memberNo}")
-    public ResponseEntity<PageResponse<OrderDetailResponseDto>> orderDetails(
-        @PathVariable("orderNo") Integer orderNo,
-        @PathVariable("memberNo") Integer memberNo,
-        Pageable pageable) {
-        Page<OrderDetailResponseDto> content =
-            orderService.findMemberOrderDetails(orderNo, memberNo, pageable);
-
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(new PageResponse<>(content));
     }
 
     /**

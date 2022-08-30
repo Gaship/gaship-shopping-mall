@@ -39,10 +39,4 @@ class OrderRepositoryTest {
         orderRepository.findCancelOrders(1, "취소완료", pageRequest);
     }
 
-    @DisplayName("order 상세조회")
-    @Test
-    void findOrderDetail() {
-        orderRepository.findOrderDetails(1, 1, pageRequest);
-    }
-
 }
