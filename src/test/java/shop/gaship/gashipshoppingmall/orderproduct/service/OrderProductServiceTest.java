@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.orderproduct.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -530,7 +531,7 @@ class OrderProductServiceTest {
     void findMemberOrderSuccess() {
         OrderProductDetailResponseDto dto =
             new OrderProductDetailResponseDto(1, 1, "product", 1L, "status", "uuid", "color", "manufacturer"
-                , "korea", "seller", "importer", "qq", "explain", 1);
+                , "korea", "seller", "importer", "qq", "explain", 1, "address", "zipCode", "name", "010", "0101", LocalDateTime.now(), 10L, "");
         given(orderProductRepository.findById(anyInt()))
             .willReturn(Optional.of(OrderProductDummy.dummy()));
         given(orderProductRepository.findOrderProductDetail(anyInt(), anyInt()))

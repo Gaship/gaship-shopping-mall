@@ -172,7 +172,15 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 product.importer,
                 product.qualityAssuranceStandard,
                 product.explanation,
-                member.memberNo))
+                member.memberNo,
+                order.addressList.address,
+                order.addressList.zipCode,
+                order.receiptName,
+                order.receiptPhoneNumber,
+                order.receiptSubPhoneNumber,
+                orderProduct.cancellationDatetime,
+                orderProduct.cancellationAmount,
+                orderProduct.cancellationReason))
             .where(orderProduct.no.eq(orderProductNo).and(member.memberNo.eq(memberNo)))
             .fetchOne());
 
@@ -199,7 +207,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 order.receiptPhoneNumber,
                 orderProduct.orderStatusCode.statusCodeName.as("orderStatus"),
                 orderProduct.trackingNo))
-                .orderBy(order.orderDatetime.desc());
+            .orderBy(order.orderDatetime.desc());
 
         List<OrderProductResponseDto> content = query
             .where(order.member.memberNo.eq(memberNo))

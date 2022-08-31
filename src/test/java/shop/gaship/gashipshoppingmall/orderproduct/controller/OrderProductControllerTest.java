@@ -76,7 +76,7 @@ class OrderProductControllerTest {
     void orderProductDetail() throws Exception {
         OrderProductDetailResponseDto dto =
             new OrderProductDetailResponseDto(1, 1, "product", 1L, "status", "uuid", "color", "manufacturer"
-                , "korea", "seller", "importer", "qq", "explain", 1);
+                , "korea", "seller", "importer", "qq", "explain", 1, "address", "zipCode", "name", "010", "0101", LocalDateTime.now(), 10L, "");
         dto.setFilePath("file");
         when(orderProductService.findMemberOrderProductDetail(anyInt(), anyInt()))
             .thenReturn(dto);
