@@ -41,7 +41,7 @@ public class CategoryController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-    @AdminAuthority
+//    @AdminAuthority
     @PostMapping
     public ResponseEntity<Void> categoryAdd(
             @Valid @RequestBody CategoryCreateRequestDto createRequest) {
@@ -63,7 +63,7 @@ public class CategoryController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-    @AdminAuthority
+//    @AdminAuthority
     @PutMapping("/{categoryNo}")
     public ResponseEntity<Void> categoryModify(
             @Valid @RequestBody CategoryModifyRequestDto modifyRequest,
@@ -128,7 +128,7 @@ public class CategoryController {
      * @return response entity 응답 바디는 없습니다.
      * @author 김보민
      */
-    @AdminAuthority
+//    @AdminAuthority
     @DeleteMapping("/{categoryNo}")
     public ResponseEntity<Void> categoryRemove(@PathVariable("categoryNo") Integer categoryNo) {
         categoryService.removeCategory(categoryNo);
