@@ -198,7 +198,8 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 order.receiptName,
                 order.receiptPhoneNumber,
                 orderProduct.orderStatusCode.statusCodeName.as("orderStatus"),
-                orderProduct.trackingNo));
+                orderProduct.trackingNo))
+                .orderBy(order.orderDatetime.desc());
 
         List<OrderProductResponseDto> content = query
             .where(order.member.memberNo.eq(memberNo))

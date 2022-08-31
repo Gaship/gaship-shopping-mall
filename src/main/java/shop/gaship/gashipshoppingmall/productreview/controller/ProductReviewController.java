@@ -40,7 +40,7 @@ public class ProductReviewController {
      * @param createRequest 상품평 등록 요청 dto
      * @return responseEntity 응답 바디는 없습니다.
      */
-    @MemberAuthority
+//    @MemberAuthority
     @PostMapping("/reviews")
     public ResponseEntity<Void> productReviewAdd(
             @RequestPart(value = "image", required = false) MultipartFile file,
@@ -60,7 +60,7 @@ public class ProductReviewController {
      * @param orderProductNo 수정할 상품평 번호
      * @return responseEntity 응답 바디는 없습니다.
      */
-    @MemberAuthority
+//    @MemberAuthority
     @PutMapping("/reviews/{orderProductNo}")
     public ResponseEntity<Void> productReviewModify(
             @RequestPart(value = "image", required = false) MultipartFile file,
@@ -79,7 +79,7 @@ public class ProductReviewController {
      * @param orderProductNo 삭제할 상품평 번호
      * @return responseEntity 응답 바디는 없습니다.
      */
-    @MemberAuthority
+//    @MemberAuthority
     @DeleteMapping("/reviews/{orderProductNo}")
     public ResponseEntity<Void> productReviewRemove(
             @PathVariable("orderProductNo") Integer orderProductNo) {

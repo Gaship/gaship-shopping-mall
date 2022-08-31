@@ -32,7 +32,7 @@ public class RenewalPeriodRestController {
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 OK.
      * @author 김세미
      */
-    @AdminAuthority
+//    @AdminAuthority
     @PutMapping(params = "value")
     public ResponseEntity<Void> renewalPeriodModify(@RequestParam Integer value) {
         statusCodeService.modifyRenewalPeriod(value);
@@ -46,7 +46,7 @@ public class RenewalPeriodRestController {
      *
      * @return 갱신기간 응답 dto 를 body 가진 status OK 의 ResponseEntity 를 반환합니다.
      */
-    @AdminAuthority
+//    @AdminAuthority
     @GetMapping
     public ResponseEntity<RenewalPeriodResponseDto> renewalPeriodDetails() {
 

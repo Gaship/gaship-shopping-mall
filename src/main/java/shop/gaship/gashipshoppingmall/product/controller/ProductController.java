@@ -46,7 +46,7 @@ public class ProductController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-    @AdminAuthority
+//    @AdminAuthority
     @PostMapping
     public ResponseEntity<Void> productAdd(@RequestPart("image") List<MultipartFile> files,
                                            @RequestPart ProductRequestDto createRequest) {
@@ -65,7 +65,7 @@ public class ProductController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-    @AdminAuthority
+//    @AdminAuthority
     @PutMapping("/{productNo}")
     public ResponseEntity<Void> productModify(@RequestPart("image") List<MultipartFile> files,
                                               @RequestPart ProductRequestDto modifyRequest,

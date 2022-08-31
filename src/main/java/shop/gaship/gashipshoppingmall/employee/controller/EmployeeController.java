@@ -127,7 +127,7 @@ public class EmployeeController {
      * @param pageable   페이징 객체입니다.
      * @return 지역의 상태는 배송준비중이자 설치주문들을 조회합니다. 주문일자를 기준, 오름차순으로 정렬합니다.
      */
-    @ManagerOnlyAuthority
+//    @ManagerOnlyAuthority
     @GetMapping("/{employeeNo}/orders")
     public ResponseEntity<InstallOrderPageableDto> employeeInstallOrdersFind(
         @PathVariable Integer employeeNo, Pageable pageable) {
@@ -152,7 +152,7 @@ public class EmployeeController {
      * @return 200 상태이고 body는 비어있는 응답객체를 반환합니다.
      * @throws NotMatchRequestData path variable과 body 객체에 담긴 정보가 다를 경우 해당 예외를 던집니다.
      */
-    @ManagerOnlyAuthority
+//    @ManagerOnlyAuthority
     @PostMapping("/{employeeNo}/orders/{orderNo}")
     public ResponseEntity<Void> acceptInstallOrder(
         @PathVariable Integer employeeNo, @PathVariable Integer orderNo,
@@ -173,7 +173,7 @@ public class EmployeeController {
      * @param installOrderRequestDto 요청한 설치 주문 정보입니다.
      * @return 요청이 완료되면 200 상태와 body는 비어있는 응답객체를 반환합니다.
      */
-    @ManagerAuthority
+//    @ManagerAuthority
     @PutMapping("/{employeeNo}/orders/{orderNo}")
     public ResponseEntity<Void> deliveryComplete(
         @PathVariable Integer employeeNo, @PathVariable Integer orderNo,
