@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
+import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewExistsResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.service.ProductReviewService;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
@@ -150,5 +151,13 @@ public class ProductReviewController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new PageResponse<>(productReviewService.findReviewsByMemberNo(
                         memberNo, pageable)));
+    }
+
+    @GetMapping("/reviews/{orderProductNo}/exists")
+    public ResponseEntity<ProductReviewExistsResponseDto> productReviewExists(
+            @PathVariable Integer orderProductNo) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(productReviewService.existsReview(orderProductNo));
     }
 }

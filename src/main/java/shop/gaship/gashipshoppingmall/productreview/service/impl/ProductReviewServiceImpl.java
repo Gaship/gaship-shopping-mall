@@ -23,6 +23,7 @@ import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewViewRequestDto;
+import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewExistsResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.entity.ProductReview;
 import shop.gaship.gashipshoppingmall.productreview.event.ProductReviewDeleteEvent;
@@ -197,6 +198,12 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                         .build());
         findFilePath(reviewResponseDtos);
         return reviewResponseDtos;
+    }
+
+    @Override
+    public ProductReviewExistsResponseDto existsReview(Integer orderProductNo) {
+        return new ProductReviewExistsResponseDto(productReviewRepository.findById(orderProductNo)
+                .isPresent());
     }
 
     /**

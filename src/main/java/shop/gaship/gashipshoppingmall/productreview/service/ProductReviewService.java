@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
+import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewExistsResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
 
 /**
@@ -69,4 +70,6 @@ public interface ProductReviewService {
      * @return page 조회한 상품평들의 응답 dto를 포함하는 페이지
      */
     Page<ProductReviewResponseDto> findReviewsByMemberNo(Integer memberNo, Pageable pageable);
+
+    ProductReviewExistsResponseDto existsReview(Integer orderProductNo);
 }
