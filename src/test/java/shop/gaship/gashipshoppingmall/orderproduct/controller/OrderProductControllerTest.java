@@ -73,7 +73,7 @@ class OrderProductControllerTest {
     void orderProductDetail() throws Exception {
         PageRequest pageRequest = PageRequest.of(0, 10);
         OrderProductDetailResponseDto dto =
-            new OrderProductDetailResponseDto(1, 1, "product", 1L, "status", "uuid", "color", "manufacturer"
+            new OrderProductDetailResponseDto(1, 1, 1, "product", 1L, "status", "uuid", "color", "manufacturer"
                 , "korea", "seller", "importer", "qq", "explain", 1, "address", "zipCode", "name", "010", "0101", LocalDateTime.now(), 10L, "");
         dto.setFilePath("file");
         List<OrderProductDetailResponseDto> list = List.of(dto);
