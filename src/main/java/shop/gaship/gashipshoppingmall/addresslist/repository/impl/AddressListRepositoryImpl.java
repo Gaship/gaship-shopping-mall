@@ -45,7 +45,7 @@ public class AddressListRepositoryImpl
                         .where(addressList.statusCode.statusCodeName
                                 .eq(AddressStatus.USE.getValue())
                                 .and(addressList.member.memberNo.eq(memberNo)))
-                        .limit(Math.min(pageable.getPageSize(), 10))
+                        .limit(pageable.getPageSize())
                         .offset(pageable.getOffset())
                         .orderBy(addressList.addressListsNo.desc())
                         .select(Projections.constructor(AddressListResponseDto.class,
@@ -60,6 +60,9 @@ public class AddressListRepositoryImpl
         return PageableExecutionUtils.getPage(content,
                 pageable,
                 () -> from(addressList)
+                        .where(addressList.statusCode.statusCodeName
+                                .eq(AddressStatus.USE.getValue())
+                                .and(addressList.member.memberNo.eq(memberNo)))
                         .fetch()
                         .size());
     }
