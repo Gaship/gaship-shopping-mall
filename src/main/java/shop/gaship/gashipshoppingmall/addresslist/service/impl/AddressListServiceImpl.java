@@ -24,6 +24,8 @@ import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundExc
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.AddressStatus;
 
+import java.util.List;
+
 /**
  * 배송지 목록의 service interface 의 구현체입니다.
  *
@@ -144,5 +146,10 @@ public class AddressListServiceImpl implements AddressListService {
             addressListRepository.findAddressListByMemberId(memberNo, pageable);
 
         return new PageResponse<>(page);
+    }
+
+    @Override
+    public List<AddressListResponseDto> findAllAddressList(Integer memberId) {
+        return addressListRepository.findAllAddressListByMemberId(memberId);
     }
 }

@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.orderproduct.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
@@ -518,10 +522,10 @@ class OrderProductServiceTest {
     void findMemberOrdersFailsByNoValue() {
         given(orderProductRepository.findById(anyInt()))
             .willReturn(Optional.of(OrderProductDummy.dummy()));
-        given(orderProductRepository.findOrderProductDetail(anyInt(), anyInt()))
-            .willReturn(Optional.empty());
+        given(orderProductRepository.findOrderProductDetail(anyInt(), anyInt(), any(Pageable.class)))
+            .willReturn(Page.empty());
 
-        assertThatThrownBy(() -> orderProductService.findMemberOrderProductDetail(1, 1))
+        assertThatThrownBy(() -> orderProductService.findMemberOrderProductDetail(1, 1, PageRequest.of(0, 10)))
             .isInstanceOf(OrderProductDetailNoValueException.class);
     }
 
@@ -529,31 +533,41 @@ class OrderProductServiceTest {
     @Test
     void findMemberOrderSuccess() {
         OrderProductDetailResponseDto dto =
-            new OrderProductDetailResponseDto(1, 1, "product", 1L, "status", "uuid", "color", "manufacturer"
-                , "korea", "seller", "importer", "qq", "explain", 1);
+            new OrderProductDetailResponseDto(1, 1, 1, "product", 1L, "status", "uuid", "color", "manufacturer"
+                , "korea", "seller", "importer", "qq", "explain", 1, "address", "zipCode", "name", "010", "0101", LocalDateTime.now(), 10L, "");
         given(orderProductRepository.findById(anyInt()))
             .willReturn(Optional.of(OrderProductDummy.dummy()));
-        given(orderProductRepository.findOrderProductDetail(anyInt(), anyInt()))
-            .willReturn(Optional.of(dto));
+        given(orderProductRepository.findOrderProductDetail(anyInt(), anyInt(), any(Pageable.class)))
+            .willReturn(new PageImpl<>(List.of(dto)));
         given(commonFileRepository.findPaths(anyInt(), anyString()))
             .willReturn(List.of("file"));
 
-        Optional<OrderProductDetailResponseDto> productDetail = orderProductRepository.findOrderProductDetail(1, 1);
-        productDetail.ifPresent(a -> {
-            assertThat(a.getProductNo()).isEqualTo(dto.getProductNo());
-            assertThat(a.getOrderNo()).isEqualTo(dto.getOrderNo());
-            assertThat(a.getColor()).isEqualTo(dto.getColor());
-            assertThat(a.getExplanation()).isEqualTo(dto.getExplanation());
-            assertThat(a.getOrderProductStatus()).isEqualTo(dto.getOrderProductStatus());
-            assertThat(a.getImporter()).isEqualTo(dto.getImporter());
-            assertThat(a.getFilePath()).isEqualTo(dto.getFilePath());
-            assertThat(a.getManufacturerCountry()).isEqualTo(dto.getManufacturerCountry());
-            assertThat(a.getManufacturer()).isEqualTo(dto.getManufacturer());
-            assertThat(a.getQualityAssuranceStandard()).isEqualTo(dto.getQualityAssuranceStandard());
-            assertThat(a.getTotalOrderAmount()).isEqualTo(dto.getTotalOrderAmount());
-            assertThat(a.getTrackingNo()).isEqualTo(dto.getTrackingNo());
-        });
+        Page<OrderProductDetailResponseDto> page = orderProductRepository.findOrderProductDetail(1, 1, PageRequest.of(0, 10));
 
+        OrderProductDetailResponseDto orderProductDetailResponseDto = page.getContent().get(0);
+
+        assertThat(orderProductDetailResponseDto.getOrderNo()).isEqualTo(dto.getOrderNo());
+        assertThat(orderProductDetailResponseDto.getProductNo()).isEqualTo(dto.getProductNo());
+        assertThat(orderProductDetailResponseDto.getOrderProductStatus()).isEqualTo(dto.getOrderProductStatus());
+        assertThat(orderProductDetailResponseDto.getTrackingNo()).isEqualTo(dto.getTrackingNo());
+        assertThat(orderProductDetailResponseDto.getManufacturer()).isEqualTo(dto.getManufacturer());
+        assertThat(orderProductDetailResponseDto.getTotalOrderAmount()).isEqualTo(dto.getTotalOrderAmount());
+        assertThat(orderProductDetailResponseDto.getQualityAssuranceStandard()).isEqualTo(dto.getQualityAssuranceStandard());
+        assertThat(orderProductDetailResponseDto.getFilePath()).isEqualTo(dto.getFilePath());
+        assertThat(orderProductDetailResponseDto.getImporter()).isEqualTo(dto.getImporter());
+        assertThat(orderProductDetailResponseDto.getZipCode()).isEqualTo(dto.getZipCode());
+        assertThat(orderProductDetailResponseDto.getColor()).isEqualTo(dto.getColor());
+        assertThat(orderProductDetailResponseDto.getManufacturerCountry()).isEqualTo(dto.getManufacturerCountry());
+        assertThat(orderProductDetailResponseDto.getSeller()).isEqualTo(dto.getSeller());
+        assertThat(orderProductDetailResponseDto.getExplanation()).isEqualTo(dto.getExplanation());
+        assertThat(orderProductDetailResponseDto.getMemberNo()).isEqualTo(dto.getMemberNo());
+        assertThat(orderProductDetailResponseDto.getAddress()).isEqualTo(dto.getAddress());
+        assertThat(orderProductDetailResponseDto.getReceiptName()).isEqualTo(dto.getReceiptName());
+        assertThat(orderProductDetailResponseDto.getReceiptPhoneNumber()).isEqualTo(dto.getReceiptPhoneNumber());
+        assertThat(orderProductDetailResponseDto.getReceiptSubPhoneNumber()).isEqualTo(dto.getReceiptSubPhoneNumber());
+        assertThat(orderProductDetailResponseDto.getCancellationAmount()).isEqualTo(dto.getCancellationAmount());
+        assertThat(orderProductDetailResponseDto.getCancellationDatetime().getYear()).isEqualTo(dto.getCancellationDatetime().getYear());
+        assertThat(orderProductDetailResponseDto.getCancellationReason()).isEqualTo(dto.getCancellationReason());
     }
 
 

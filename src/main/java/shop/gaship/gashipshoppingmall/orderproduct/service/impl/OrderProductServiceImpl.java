@@ -72,7 +72,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Override
     public void registerOrderProduct(Order order, List<OrderProductSpecificDto> orderProducts) {
         StatusCode deliveryPrepending =
-            statusCodeRepository.findByStatusCodeName(OrderStatus.DELIVERY_PREPARING.getValue())
+            statusCodeRepository.findByStatusCodeName(OrderStatus.WAITING_PAYMENT.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         List<OrderProduct> orderProductsForSave = orderProducts.stream()
@@ -154,19 +154,21 @@ public class OrderProductServiceImpl implements OrderProductService {
     }
 
     @Override
-    public OrderProductDetailResponseDto findMemberOrderProductDetail(Integer orderProductNo, Integer memberNo) {
-        if (orderProductRepository.findById(orderProductNo).isEmpty()) {
-            throw new OrderProductNotFoundException();
+    public Page<OrderProductDetailResponseDto> findMemberOrderProductDetail(Integer orderNo, Integer memberNo, Pageable pageable) {
+
+        Page<OrderProductDetailResponseDto> orderProductDetailResponseDtoPage = orderProductRepository
+            .findOrderProductDetail(orderNo, memberNo, pageable);
+
+        if (orderProductDetailResponseDtoPage.isEmpty()) {
+            throw new OrderProductDetailNoValueException();
         }
+        orderProductDetailResponseDtoPage.getContent()
+            .forEach(orderProductDetailResponseDto ->
+                orderProductDetailResponseDto.setFilePath(commonFileRepository
+                    .findPaths(orderProductDetailResponseDto.getProductNo(),
+                        "product").get(0)));
 
-        OrderProductDetailResponseDto responseDto = orderProductRepository
-            .findOrderProductDetail(orderProductNo, memberNo)
-            .orElseThrow(OrderProductDetailNoValueException::new);
-
-        responseDto.setFilePath(commonFileRepository
-            .findPaths(responseDto.getProductNo(), "product").get(0));
-
-        return responseDto;
+        return orderProductDetailResponseDtoPage;
     }
 
     /**

@@ -27,6 +27,7 @@ import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
+import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
@@ -249,14 +250,10 @@ class ProductServiceTest {
             .willReturn(List.of(productTag.getTag().getTitle()));
         //when
 
-        Page<ProductAllInfoResponseDto> result = service.findProductByCode("c1", pageRequest);
+        Page<ProductAllInfoResponseDto> result = service.findProductByCode("cd", pageRequest);
 
         //then
-        verify(repository, times(1))
-            .findProduct(requestDto);
-
-        checkContent(result);
-
+        assertThat(result).isEmpty();
     }
 
     @DisplayName("상품단건 조회 테스트")

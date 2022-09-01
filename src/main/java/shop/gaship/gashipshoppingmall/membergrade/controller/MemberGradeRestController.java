@@ -45,7 +45,7 @@ public class MemberGradeRestController {
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
      * @author 김세미
      */
-    @AdminAuthority
+//    @AdminAuthority
     @PostMapping
     public ResponseEntity<Void>
         memberGradeAdd(@Valid @RequestBody MemberGradeAddRequestDto requestDto) {
@@ -64,7 +64,7 @@ public class MemberGradeRestController {
      * @return response entity
      * @author 김세미
      */
-    @AdminAuthority
+//    @AdminAuthority
     @PutMapping("/{memberGradeNo}")
     public ResponseEntity<Void> memberGradeModify(@PathVariable Integer memberGradeNo,
         @Valid @RequestBody MemberGradeModifyRequestDto requestDto) {
@@ -81,7 +81,7 @@ public class MemberGradeRestController {
      * @return responseEntity
      * @author 김세미
      */
-    @AdminAuthority
+//    @AdminAuthority
     @DeleteMapping("/{memberGradeNo}")
     public ResponseEntity<Void> memberGradeRemove(@PathVariable Integer memberGradeNo) {
         memberGradeService.removeMemberGrade(memberGradeNo);
@@ -97,7 +97,7 @@ public class MemberGradeRestController {
      * @return responseEntity
      * @author 김세미
      */
-    @MemberAuthority
+//    @MemberAuthority
     @GetMapping("/{memberGradeNo}")
     public ResponseEntity<MemberGradeResponseDto>
         memberGradeDetails(@PathVariable Integer memberGradeNo) {
@@ -114,7 +114,7 @@ public class MemberGradeRestController {
      * @return responseEntity
      * @author 김세미
      */
-    @AdminAuthority
+//    @AdminAuthority
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<PageResponse<MemberGradeResponseDto>>
         memberGradeList(Pageable pageable) {

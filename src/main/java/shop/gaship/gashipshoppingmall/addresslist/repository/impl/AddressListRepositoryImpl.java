@@ -20,6 +20,7 @@ import shop.gaship.gashipshoppingmall.statuscode.status.AddressStatus;
  * 배송지목록 custom repository 구현체.
  *
  * @author 최정우
+ * @author 김세미
  * @since 1.0
  */
 @Repository
@@ -45,7 +46,7 @@ public class AddressListRepositoryImpl
                         .where(addressList.statusCode.statusCodeName
                                 .eq(AddressStatus.USE.getValue())
                                 .and(addressList.member.memberNo.eq(memberNo)))
-                        .limit(Math.min(pageable.getPageSize(), 10))
+                        .limit(pageable.getPageSize())
                         .offset(pageable.getOffset())
                         .orderBy(addressList.addressListsNo.desc())
                         .select(Projections.constructor(AddressListResponseDto.class,
@@ -60,7 +61,35 @@ public class AddressListRepositoryImpl
         return PageableExecutionUtils.getPage(content,
                 pageable,
                 () -> from(addressList)
+                        .where(addressList.statusCode.statusCodeName
+                                .eq(AddressStatus.USE.getValue())
+                                .and(addressList.member.memberNo.eq(memberNo)))
                         .fetch()
                         .size());
+    }
+
+    @Override
+    public List<AddressListResponseDto> findAllAddressListByMemberId(Integer memberId) {
+        QAddressList addressList = QAddressList.addressList;
+        QAddressLocal addressLocal = QAddressLocal.addressLocal;
+        QStatusCode statusCode = QStatusCode.statusCode;
+        QMember member = QMember.member;
+
+        return from(addressList)
+                        .innerJoin(addressList.addressLocal, addressLocal)
+                        .innerJoin(addressList.statusCode, statusCode)
+                        .innerJoin(addressList.member, member)
+                        .where(addressList.statusCode.statusCodeName
+                                .eq(AddressStatus.USE.getValue())
+                                .and(addressList.member.memberNo.eq(memberId)))
+                        .orderBy(addressList.addressListsNo.desc())
+                        .select(Projections.constructor(AddressListResponseDto.class,
+                                addressList.addressListsNo.as("addressListNo"),
+                                addressList.addressLocal.addressName,
+                                addressList.addressLocal.allowDelivery,
+                                addressList.address,
+                                addressList.addressDetail,
+                                addressList.zipCode))
+                        .fetch();
     }
 }

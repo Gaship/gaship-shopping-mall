@@ -46,7 +46,7 @@ public class OrderController {
      * @param orderRequest 주문 요청 정보 객체입니다.
      * @return 주문 완료시 반환되는 가격, 주문번호, 실수령자 이름 등이 담긴 객체입니다.
      */
-    @MemberOnlyAuthority
+//    @MemberOnlyAuthority
     @PostMapping
     public ResponseEntity<OrderResponseDto> doOrder(@Valid @RequestBody
                                                     OrderRegisterRequestDto orderRequest) {
@@ -76,7 +76,7 @@ public class OrderController {
      * @param orderProductStatusCancelDto 주문 취소, 반품에 대한 요청정보가 담긴 객체입니다.
      * @return 응답 Body객체가 없고 200 상태를 반환합니다.
      */
-    @MemberAuthority
+//    @MemberAuthority
     @PutMapping("/cancel")
     public ResponseEntity<Void> orderCancelRefundProduct(
         @RequestBody OrderProductStatusCancelDto orderProductStatusCancelDto) {
@@ -91,7 +91,7 @@ public class OrderController {
      * @param orderProductStatusChangeDto 주문 교환을 실행 할 주문 상품번호들이 담긴 객체입니다.
      * @return 응답 Body객체가 없고 200 상태를 반환합니다.
      */
-    @MemberAuthority
+//    @MemberAuthority
     @PutMapping("/change")
     public ResponseEntity<Void> orderChangeProduct(
         @RequestBody OrderProductStatusChangeDto orderProductStatusChangeDto) {
@@ -123,7 +123,7 @@ public class OrderController {
      * @param pageable   페이징 처리하기위한 값입니다.
      * @return ResponseEntity body 로 취소된 상품들에대한 값을 PageResponse 형태로 가집니다 응답은 200 ok.
      */
-    @MemberOnlyAuthority
+//    @MemberOnlyAuthority
     @GetMapping(value = "/member/{memberNo}/status/{status}")
     public ResponseEntity<PageResponse<OrderCancelResponseDto>> orderCancelList(
         @PathVariable("memberNo") Integer memberNo,

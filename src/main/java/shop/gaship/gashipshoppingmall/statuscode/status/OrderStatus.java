@@ -13,7 +13,7 @@ import shop.gaship.gashipshoppingmall.statuscode.exception.InvalidOrderStatusExc
  */
 @Getter
 public enum OrderStatus {
-    DELIVERY_PREPARING("배송준비중"), SHIPPING("배송중"), DELIVERY_COMPLETE("배송완료"),
+    WAITING_PAYMENT("결제대기"), DELIVERY_PREPARING("배송준비중"), SHIPPING("배송중"), DELIVERY_COMPLETE("배송완료"),
     EXCHANGE_RECEPTION("교환접수"), CANCELLATION("취소접수"), RETURN_RECEPTION("반품접수"),
     EXCHANGE_COMPLETE("교환완료"), CANCEL_COMPLETE("취소완료"), RETURN_COMPLETE("반품완료"),
     PURCHASE_CONFIRMATION("구매확정");

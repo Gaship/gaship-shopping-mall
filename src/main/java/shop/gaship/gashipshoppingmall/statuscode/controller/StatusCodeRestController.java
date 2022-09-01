@@ -34,7 +34,7 @@ public class StatusCodeRestController {
      * @return responseEntity body 로 상태코드명과 우선순위 값을 담은 StatusCodeResponse List 를 가지며 응답 status 는 OK.
      * @author 김세미
      */
-    @MemberAuthority
+//    @MemberAuthority
     @GetMapping("/{groupCodeName}")
     public ResponseEntity<List<StatusCodeResponseDto>> statusCodeList(
         @PathVariable String groupCodeName) {
