@@ -2,6 +2,7 @@ package shop.gaship.gashipshoppingmall.delivery.service.impl;
 
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import shop.gaship.gashipshoppingmall.dataprotection.util.Aes;
 import shop.gaship.gashipshoppingmall.delivery.adaptor.DeliveryAdaptor;
@@ -26,12 +27,19 @@ import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
  */
 @Service
 @RequiredArgsConstructor
+@ConfigurationProperties(prefix = "eggplant-target")
 public class DeliveryServiceImpl implements DeliveryService {
 
     private final OrderProductRepository orderProductRepository;
     private final StatusCodeRepository statusCodeRepository;
     private final DeliveryAdaptor deliveryAdaptor;
     private final Aes aes;
+
+    private String successUrl;
+
+    public void setSuccessUrl(String successUrl) {
+        this.successUrl = successUrl;
+    }
 
     /**
      * 운송장 번호를 요청할때 필요한 비즈니스 로직이 포함된 메서드 입니다.
@@ -44,6 +52,8 @@ public class DeliveryServiceImpl implements DeliveryService {
         DeliveryDto deliveryDto =
             orderProductRepository.findOrderInfo(orderProductNo)
                                   .orElseThrow(OrderProductNotFoundException::new);
+
+        deliveryDto.setSuccessHost(successUrl);
 
 //        deliveryDto.decodingReceiverAddress(aes.aesEcbDecode(deliveryDto.getReceiverAddress()));
 //        deliveryDto.decodingReceiverDetailAddress(aes.aesEcbDecode(deliveryDto.getReceiverDetailAddress()));

@@ -65,7 +65,7 @@ class DeliveryControllerTest {
 
         // when then
         mockMvc.perform(
-                   post("/eggplant/tracking-no")
+                   post("/api/delivery/add-tracking-no")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(content))
                .andExpect(status().isOk());
@@ -91,7 +91,7 @@ class DeliveryControllerTest {
 
         // when then
         mockMvc.perform(
-                   patch("/eggplant/delivery-info")
+                   patch("/api/delivery/change-delivery-info")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(content))
                .andExpect(status().isOk());

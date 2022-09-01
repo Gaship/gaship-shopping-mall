@@ -58,7 +58,7 @@ class DeliveryServiceImplTest {
     void createTrackingNo() {
 
         // given
-        DeliveryDto deliveryDto = new DeliveryDto("유민철", "창원", "집", "0101231234", 1);
+        DeliveryDto deliveryDto = new DeliveryDto("유민철", "창원", "집", "01012341234", 1);
 
         when(orderProductRepository.findOrderInfo(any())).thenReturn(Optional.of(deliveryDto));
 
