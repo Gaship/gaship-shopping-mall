@@ -161,6 +161,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
             .innerJoin(orderProduct.product, product)
             .innerJoin(orderProduct.orderStatusCode, statusCode)
             .select(Projections.constructor(OrderProductDetailResponseDto.class,
+                orderProduct.no.as("orderProductNo"),
                 product.no.as("productNo"),
                 order.no.as("orderNo"),
                 product.name.as("productName"),
