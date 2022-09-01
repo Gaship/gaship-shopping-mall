@@ -72,7 +72,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Override
     public void registerOrderProduct(Order order, List<OrderProductSpecificDto> orderProducts) {
         StatusCode deliveryPrepending =
-            statusCodeRepository.findByStatusCodeName(OrderStatus.DELIVERY_PREPARING.getValue())
+            statusCodeRepository.findByStatusCodeName(OrderStatus.WAITING_PAYMENT.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         List<OrderProduct> orderProductsForSave = orderProducts.stream()

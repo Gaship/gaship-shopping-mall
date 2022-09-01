@@ -5,10 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListResponseDto;
 
+import java.util.List;
+
 /**
  * 레포지토리 커스텀.
  *
  * @author 최정우
+ * @author 김세미
  * @since 1.0
  */
 @NoRepositoryBean
@@ -22,4 +25,6 @@ public interface AddressListRepositoryCustom {
      * @return 페이지
      */
     Page<AddressListResponseDto> findAddressListByMemberId(Integer memberNo, Pageable pageable);
+
+    List<AddressListResponseDto> findAllAddressListByMemberId(Integer memberId);
 }

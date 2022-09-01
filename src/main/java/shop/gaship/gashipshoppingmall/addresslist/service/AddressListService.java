@@ -10,6 +10,8 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
+import java.util.List;
+
 /**
  * 배송지목록의 service interface 입니다.
  *
@@ -131,4 +133,6 @@ public interface AddressListService {
                 .zipCode(addressList.getZipCode())
                 .build();
     }
+
+    List<AddressListResponseDto> findAllAddressList(Integer memberId);
 }
