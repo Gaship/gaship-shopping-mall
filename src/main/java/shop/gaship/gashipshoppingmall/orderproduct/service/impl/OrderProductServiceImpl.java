@@ -154,19 +154,24 @@ public class OrderProductServiceImpl implements OrderProductService {
     }
 
     @Override
-    public OrderProductDetailResponseDto findMemberOrderProductDetail(Integer orderProductNo, Integer memberNo) {
+    public Page<OrderProductDetailResponseDto> findMemberOrderProductDetail(Integer orderProductNo, Integer memberNo, Pageable pageable) {
         if (orderProductRepository.findById(orderProductNo).isEmpty()) {
             throw new OrderProductNotFoundException();
         }
 
-        OrderProductDetailResponseDto responseDto = orderProductRepository
-            .findOrderProductDetail(orderProductNo, memberNo)
-            .orElseThrow(OrderProductDetailNoValueException::new);
+        Page<OrderProductDetailResponseDto> orderProductDetailResponseDtoPage = orderProductRepository
+            .findOrderProductDetail(orderProductNo, memberNo, pageable);
 
-        responseDto.setFilePath(commonFileRepository
-            .findPaths(responseDto.getProductNo(), "product").get(0));
+        if (orderProductDetailResponseDtoPage.isEmpty()) {
+            throw new OrderProductDetailNoValueException();
+        }
+        orderProductDetailResponseDtoPage.getContent()
+            .forEach(orderProductDetailResponseDto ->
+                orderProductDetailResponseDto.setFilePath(commonFileRepository
+                    .findPaths(orderProductDetailResponseDto.getProductNo(),
+                        "product").get(0)));
 
-        return responseDto;
+        return orderProductDetailResponseDtoPage;
     }
 
     /**

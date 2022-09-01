@@ -23,7 +23,7 @@ public interface OrderProductRepositoryCustom {
 
     List<TotalSaleResponseDto> findTotalSale(TotalSaleRequestDto dto);
 
-    Optional<OrderProductDetailResponseDto> findOrderProductDetail(Integer orderProductNo, Integer memberNo);
+    Page<OrderProductDetailResponseDto> findOrderProductDetail(Integer orderProductNo, Integer memberNo, Pageable pageable);
 
     Page<OrderProductResponseDto> findAllOrdersByMemberNo(Integer memberNo, Pageable pageable);
 
