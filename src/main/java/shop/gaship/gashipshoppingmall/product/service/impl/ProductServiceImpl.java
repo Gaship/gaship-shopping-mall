@@ -152,6 +152,9 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductAllInfoResponseDto> findProductByCode(String productCode,
                                                              Pageable pageable) {
         List<ElasticProduct> elasticProducts = elasticProductRepository.findByCode(productCode);
+        if (elasticProducts.isEmpty()) {
+            return Page.empty();
+        }
 
         ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
             .pageable(pageable)
