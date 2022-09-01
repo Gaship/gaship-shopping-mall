@@ -1,6 +1,5 @@
 package shop.gaship.gashipshoppingmall.delivery.controller;
 
-import co.elastic.clients.elasticsearch.nodes.Http;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,15 +46,22 @@ public class DeliveryController {
      * @param trackingNoResponseDto 운송장 번호와 해당 주문 상품 번호를 담은 dto 객체 입니다.
      * @return 운송장 번호를 잘 받았다는 응답을 반환 합니다.
      */
-    @PostMapping(value = "/eggplant/tracking-no")
+    @PostMapping(value = "/api/delivery/add-tracking-no")
     public ResponseEntity<Void> addTrackingNo(@RequestBody TrackingNoResponseDto trackingNoResponseDto) {
         deliveryService.addTrackingNo(trackingNoResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PatchMapping(value = "/eggplant/delivery-info")
-    public ResponseEntity<Void> changeDeliveryStatus(@RequestBody DeliveryInfoStatusResponseDto deliveryInfoStatusResponseDto) {
+    /**
+     * 배송 서버에서 배송 상태가 변경 되었을때 변경 요청을 받아서 처리하는 메서드 입니다.
+     *
+     * @param deliveryInfoStatusResponseDto 배송 정보 상태 dto.
+     * @return 배송 변경 상태 이력을 잘 변경했다는 응답을 반환 합니다.
+     */
+    @PatchMapping(value = "/api/delivery/change-delivery-info")
+    public ResponseEntity<Void> changeDeliveryStatus(
+        @RequestBody DeliveryInfoStatusResponseDto deliveryInfoStatusResponseDto) {
         deliveryService.changeDeliveryStatus(deliveryInfoStatusResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).build();

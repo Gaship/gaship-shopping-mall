@@ -24,6 +24,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
  */
 public class OrderRepositoryImpl extends QuerydslRepositorySupport
     implements OrderRepositoryCustom {
+
     public OrderRepositoryImpl() {
         super(Order.class);
     }
@@ -34,8 +35,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport
      */
     @Override
     public Page<OrderCancelResponseDto> findCancelOrders(Integer memberNo,
-                                                         String statusName,
-                                                         Pageable pageable) {
+        String statusName,
+        Pageable pageable) {
         //주문 취소/교환 조회
         //취소금액, 취소사유
 
@@ -49,7 +50,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport
             .innerJoin(order.addressList, addressList)
             .innerJoin(orderProduct.orderStatusCode, statusCode)
             .where(order.member.memberNo.eq(memberNo)
-                .and(statusCode.statusCodeName.eq(statusName)))
+                                        .and(statusCode.statusCodeName.eq(statusName)))
             .select(Projections.constructor(OrderCancelResponseDto.class,
                 order.no.as("orderNo"),
                 order.addressList.address,
