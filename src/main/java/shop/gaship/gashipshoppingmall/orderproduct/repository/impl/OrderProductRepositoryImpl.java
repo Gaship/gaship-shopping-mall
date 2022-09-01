@@ -62,7 +62,8 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
         //커버링 인덱스 적용
         List<Integer> orderList = from(order)
             .select(order.no)
-            .where(order.orderDatetime.between(dto.getStartDate(), dto.getEndDate())).fetch();
+            .where(order.orderDatetime.between(dto.getStartDate(), dto.getEndDate()))
+            .fetch();
 
         if (orderList.isEmpty()) {
             return new ArrayList<>();
@@ -144,16 +145,16 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Optional<OrderProductDetailResponseDto> findOrderProductDetail(Integer orderProductNo,
-                                                                          Integer memberNo) {
+    public Page<OrderProductDetailResponseDto> findOrderProductDetail(Integer orderNo,
+                                                                      Integer memberNo,
+                                                                      Pageable pageable) {
         QOrder order = QOrder.order;
         QProduct product = QProduct.product;
         QMember member = QMember.member;
         QStatusCode statusCode = QStatusCode.statusCode;
         QOrderProduct orderProduct = QOrderProduct.orderProduct;
 
-
-        return Optional.ofNullable(from(orderProduct)
+        JPQLQuery<OrderProductDetailResponseDto> query = from(orderProduct)
             .innerJoin(orderProduct.order, order)
             .innerJoin(order.member, member)
             .innerJoin(orderProduct.product, product)
@@ -181,32 +182,28 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 orderProduct.cancellationDatetime,
                 orderProduct.cancellationAmount,
                 orderProduct.cancellationReason))
-            .where(orderProduct.no.eq(orderProductNo).and(member.memberNo.eq(memberNo)))
-            .fetchOne());
+            .where(order.no.eq(orderNo)
+                .and(member.memberNo.eq(memberNo)));
 
+        List<OrderProductDetailResponseDto> content = query
+            .limit(pageable.getPageSize())
+            .offset(pageable.getOffset())
+            .fetch();
+
+        return PageableExecutionUtils.getPage(content, pageable, query::fetchCount);
     }
 
     @Override
     public Page<OrderProductResponseDto> findAllOrdersByMemberNo(Integer memberNo, Pageable pageable) {
-        QOrderProduct orderProduct = QOrderProduct.orderProduct;
-        QProduct product = QProduct.product;
-        QStatusCode statusCode = QStatusCode.statusCode;
         QOrder order = QOrder.order;
 
-        JPQLQuery<OrderProductResponseDto> query = from(orderProduct)
-            .innerJoin(orderProduct.order, order)
-            .innerJoin(orderProduct.product, product)
-            .innerJoin(orderProduct.orderStatusCode, statusCode)
+        JPQLQuery<OrderProductResponseDto> query = from(order)
             .select(Projections.constructor(OrderProductResponseDto.class,
-                orderProduct.no.as("orderProductNo"),
                 order.no.as("orderNo"),
-                product.name.as("productName"),
                 order.totalOrderAmount,
                 order.orderDatetime,
                 order.receiptName,
-                order.receiptPhoneNumber,
-                orderProduct.orderStatusCode.statusCodeName.as("orderStatus"),
-                orderProduct.trackingNo))
+                order.receiptPhoneNumber))
             .orderBy(order.orderDatetime.desc());
 
         List<OrderProductResponseDto> content = query
@@ -214,7 +211,6 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
-
 
         return PageableExecutionUtils.getPage(content, pageable,
             query::fetchCount);

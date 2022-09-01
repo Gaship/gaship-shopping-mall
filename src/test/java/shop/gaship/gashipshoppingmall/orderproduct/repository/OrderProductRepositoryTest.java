@@ -94,15 +94,16 @@ class OrderProductRepositoryTest {
     @DisplayName("mysql 에서 상품주문번호 상세 조회")
     @Test
     void findOrderProduct() {
-        Optional<OrderProductDetailResponseDto> productDetail = orderProductRepository.findOrderProductDetail(1, 1);
-        assertThat(productDetail).isPresent();
+        Page<OrderProductDetailResponseDto> orderDetails
+            = orderProductRepository.findOrderProductDetail(1, 1, PageRequest.of(0, 10));
+
+        orderDetails.forEach(System.out::println);
     }
 
     @DisplayName("mysql 에서 해당멤버의 주문상품 조회")
     @Test
     void findOrderSale() {
         Page<OrderProductResponseDto> list = orderProductRepository.findAllOrdersByMemberNo(1, PageRequest.of(0, 10));
-        assertThat(list.getSize()).isEqualTo(10);
     }
 
     @Test

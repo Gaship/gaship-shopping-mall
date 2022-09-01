@@ -50,11 +50,15 @@ public class OrderProductController {
      * @return the response entity
      */
     @GetMapping("/{orderProductNo}")
-    public ResponseEntity<OrderProductDetailResponseDto> orderProductDetail(
+    public ResponseEntity<PageResponse<OrderProductDetailResponseDto>> orderProductDetail(
         @PathVariable("orderProductNo") Integer orderProductNo,
-        @RequestParam(value = "memberNo") Integer memberNo) {
+        @RequestParam(value = "memberNo") Integer memberNo,
+        Pageable pageable) {
+        Page<OrderProductDetailResponseDto> page = orderProductService
+            .findMemberOrderProductDetail(orderProductNo, memberNo, pageable);
+
         return ResponseEntity.status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(orderProductService.findMemberOrderProductDetail(orderProductNo, memberNo));
+            .body(new PageResponse<>(page));
     }
 }

@@ -14,13 +14,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class OrderProductResponseDto {
-    private Integer orderProductNo;
     private Integer orderNo;
-    private String productName;
     private Long totalOrderAmount;
     private LocalDateTime orderDatetime;
     private String receiptName;
     private String receiptPhoneNumber;
-    private String orderStatus;
-    private String trackingNo;
 }
