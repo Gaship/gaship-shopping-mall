@@ -154,13 +154,10 @@ public class OrderProductServiceImpl implements OrderProductService {
     }
 
     @Override
-    public Page<OrderProductDetailResponseDto> findMemberOrderProductDetail(Integer orderProductNo, Integer memberNo, Pageable pageable) {
-        if (orderProductRepository.findById(orderProductNo).isEmpty()) {
-            throw new OrderProductNotFoundException();
-        }
+    public Page<OrderProductDetailResponseDto> findMemberOrderProductDetail(Integer orderNo, Integer memberNo, Pageable pageable) {
 
         Page<OrderProductDetailResponseDto> orderProductDetailResponseDtoPage = orderProductRepository
-            .findOrderProductDetail(orderProductNo, memberNo, pageable);
+            .findOrderProductDetail(orderNo, memberNo, pageable);
 
         if (orderProductDetailResponseDtoPage.isEmpty()) {
             throw new OrderProductDetailNoValueException();
