@@ -36,6 +36,7 @@ import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.PURCH
 import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.RETURN_COMPLETE;
 import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.RETURN_RECEPTION;
 import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.SHIPPING;
+import static shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus.WAITING_PAYMENT;
 
 
 /**
@@ -164,7 +165,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 product.no.as("productNo"),
                 order.no.as("orderNo"),
                 product.name.as("productName"),
-                order.totalOrderAmount,
+                product.amount.as("totalOrderAmount"),
                 orderProduct.orderStatusCode.statusCodeName.as("orderProductStatus"),
                 orderProduct.trackingNo,
                 product.color,
@@ -184,7 +185,8 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 orderProduct.cancellationAmount,
                 orderProduct.cancellationReason))
             .where(order.no.eq(orderNo)
-                .and(member.memberNo.eq(memberNo)));
+                .and(member.memberNo.eq(memberNo))
+                .and(statusCode.statusCodeName.ne(WAITING_PAYMENT.getValue())));
 
         // 결재취소 --> 부분추가
         List<OrderProductDetailResponseDto> content = query
