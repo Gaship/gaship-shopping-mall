@@ -48,18 +48,35 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
         BooleanBuilder builder = new BooleanBuilder();
         setBuilder(inquirySearchRequestDto, inquiry, builder);
 
-        query.offset(pageable.getOffset())
-            .limit(Math.min(pageable.getPageSize(), 30))
-            .orderBy(inquiry.inquiryNo.desc()).where(builder);
-        List<InquiryListResponseDto> content = query.fetch();
+        JPQLQuery<Integer> idsQuery = from(inquiry)
+            .select(inquiry.inquiryNo)
+            .where(builder)
+            .orderBy(inquiry.inquiryNo.desc())
+            .offset(pageable.getOffset())
+            .limit(Math.min(pageable.getPageSize(), 30));
 
+        List<Integer> ids = idsQuery.fetch();
+
+        query.where(inquiry.inquiryNo.in(ids))
+            .orderBy(inquiry.inquiryNo.desc());
+
+        List<InquiryListResponseDto> content = query.fetch();
         return PageableExecutionUtils.getPage(content, pageable,
-            () -> from(inquiry).where(builder).fetch().size());
+            () -> idsQuery.fetchCount());
+
+//        query.offset(pageable.getOffset())
+//            .limit(Math.min(pageable.getPageSize(), 30))
+//            .orderBy(inquiry.inquiryNo.desc()).where(builder);
+//        List<InquiryListResponseDto> content = query.fetch();
+//
+//        return PageableExecutionUtils.getPage(content, pageable,
+//            () -> query.fetchCount());
     }
 
     private JPQLQuery<InquiryListResponseDto> getQuery(QInquiry inquiry, QMember member,
                                                        QStatusCode statusCode) {
-        return from(inquiry).innerJoin(inquiry.member, member)
+        return from(inquiry)
+            .innerJoin(inquiry.member, member)
             .innerJoin(inquiry.processStatusCode, statusCode)
             .select(Projections.fields(InquiryListResponseDto.class, inquiry.inquiryNo, member.memberNo,
                 member.nickname.as("memberNickname"), statusCode.statusCodeName.as("processStatus"),
