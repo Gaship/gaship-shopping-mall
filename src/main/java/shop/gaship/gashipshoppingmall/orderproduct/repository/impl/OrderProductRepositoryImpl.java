@@ -185,6 +185,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
             .where(order.no.eq(orderNo)
                 .and(member.memberNo.eq(memberNo)));
 
+        // 결재취소 --> 부분추가
         List<OrderProductDetailResponseDto> content = query
             .limit(pageable.getPageSize())
             .offset(pageable.getOffset())
