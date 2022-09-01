@@ -20,10 +20,13 @@ import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListRespon
 import shop.gaship.gashipshoppingmall.addresslist.service.AddressListService;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 
+import java.util.List;
+
 /**
  * 배송지목록의 restController 입니다.
  *
  * @author 최정우
+ * @author 김세미
  * @since 1.0
  */
 @RestController
@@ -102,7 +105,7 @@ public class AddressListController {
      * @param pageable 배송지목록 중 조회하길 원하는 페이지의 정보를 담고있는 매개변수입니다.
      * @return responseEntity body 는 조회하길 원하는 배송지목록 페이지정보를 담고있는 dto, 응답 status 는 OK.
      */
-    @GetMapping
+    @GetMapping(params = {"page", "size"})
     public ResponseEntity<PageResponse<AddressListResponseDto>> addressListList(
             @PathVariable Integer memberId, Pageable pageable) {
         PageResponse<AddressListResponseDto> pageResponse =
@@ -110,5 +113,12 @@ public class AddressListController {
 
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
                 .body(pageResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AddressListResponseDto>> addressListAll(
+            @PathVariable Integer memberId) {
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+                .body(addressListService.findAllAddressList(memberId));
     }
 }

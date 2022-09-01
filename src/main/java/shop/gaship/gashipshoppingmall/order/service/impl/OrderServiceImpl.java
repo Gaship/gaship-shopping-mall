@@ -31,6 +31,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
+import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 
 /**
  * 주문에 관한 요구사항 정의를 구현하는 클래스입니다.
@@ -128,8 +129,14 @@ public class OrderServiceImpl implements OrderService {
         StatusCode parcelDeliveryType =
             statusCodeRepository.findByStatusCodeName(DeliveryType.PARCEL.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
+        StatusCode deliveryPreparingType =
+                statusCodeRepository.findByStatusCodeName(OrderStatus.DELIVERY_PREPARING.getValue())
+                        .orElseThrow(StatusCodeNotFoundException::new);
 
         order.updateOrderPaymentKey(paymentKey);
+
+        order.getOrderProducts().forEach(orderProduct ->
+                    orderProduct.changeOrderStatusCode(deliveryPreparingType));
 
         boolean hasParcelDeliveryProduct = order.getOrderProducts().stream()
             .anyMatch(orderProduct ->
