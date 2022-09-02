@@ -167,7 +167,7 @@ public class Inquiry {
      * @param inquiryAnswerRequestDto 문의 답변 추가에 필요한 정보를 담고 있는 DTO 객체입니다.
      * @author 최겸준
      */
-    public void modifyAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto) {
+    public void modifyAnswer(InquiryAnswerRequestDto inquiryAnswerRequestDto, Employee employee) {
         if (!inquiryAnswerRequestDto.getInquiryNo().equals(this.inquiryNo)) {
             throw new DifferentInquiryException();
         }
@@ -177,12 +177,7 @@ public class Inquiry {
             throw new NoRegisteredAnswerException();
         }
 
-        if (!Objects.equals(inquiryAnswerRequestDto.getEmployeeNo(),
-            this.employee.getEmployeeNo())) {
-            throw new DifferentEmployeeWriterAboutInquiryAnswerException();
-        }
-
-
+        this.employee = employee;
         this.answerContent = inquiryAnswerRequestDto.getAnswerContent();
         this.answerModifyDatetime = LocalDateTime.now();
     }
