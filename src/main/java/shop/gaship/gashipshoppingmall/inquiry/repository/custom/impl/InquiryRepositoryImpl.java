@@ -43,7 +43,6 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
         QMember member = QMember.member;
         QStatusCode statusCode = QStatusCode.statusCode;
 
-        JPQLQuery<InquiryListResponseDto> query = getQuery(inquiry, member, statusCode);
 
         BooleanBuilder builder = new BooleanBuilder();
         setBuilder(inquirySearchRequestDto, inquiry, builder);
@@ -57,6 +56,7 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport
 
         List<Integer> ids = idsQuery.fetch();
 
+        JPQLQuery<InquiryListResponseDto> query = getQuery(inquiry, member, statusCode);
         query.where(inquiry.inquiryNo.in(ids))
             .orderBy(inquiry.inquiryNo.desc());
 

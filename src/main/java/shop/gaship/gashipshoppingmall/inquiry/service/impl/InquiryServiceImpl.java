@@ -130,7 +130,8 @@ public class InquiryServiceImpl implements InquiryService {
         Inquiry inquiry = inquiryRepository.findById(inquiryAnswerRequestDto.getInquiryNo())
             .orElseThrow(InquiryNotFoundException::new);
 
-        inquiry.modifyAnswer(inquiryAnswerRequestDto);
+        Employee employee = employeeRepository.findById(inquiryAnswerRequestDto.getEmployeeNo()).orElseThrow(EmployeeNotFoundException::new);
+        inquiry.modifyAnswer(inquiryAnswerRequestDto, employee);
     }
 
     /**
