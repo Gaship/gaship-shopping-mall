@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReissuePasswordReceiveEmailDto {
-    @Email
-    @NotNull
+    @Email(message = "이메일 형식에 맞지 않습니다.")
+    @NotNull(message = "memberNo 는 필수 입력값입니다.")
     private String email;
 }

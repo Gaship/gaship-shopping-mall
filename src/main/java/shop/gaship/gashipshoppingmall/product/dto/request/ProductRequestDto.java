@@ -20,15 +20,15 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductRequestDto {
-    @Min(1)
+    @Min(value = 1, message = "no 는 0 이하일 수 없습니다.")
     @NotNull
     private Integer no;
 
-    @Min(1)
+    @Min(value = 1, message = "categoryNo 는 0 이하일 수 없습니다.")
     @NotNull
     private Integer categoryNo;
 
-    @Min(1)
+    @Min(value = 1, message = "deliveryTypeNo 는 0 이하일 수 없습니다.")
     @NotNull
     private Integer deliveryTypeNo;
 

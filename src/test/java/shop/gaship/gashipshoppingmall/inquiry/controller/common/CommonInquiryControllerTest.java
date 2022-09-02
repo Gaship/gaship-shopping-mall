@@ -502,7 +502,7 @@ class CommonInquiryControllerTest {
                 .value("inquiryContent 는 필수 입력값입니다."));
     }
 
-    @DisplayName("상품문의 추가를 요청 dto값으로 isProduct만 null일시에 validation 400 예외와 message값이 발생한다.")
+    @DisplayName("상품문의 추가를 요청 dto값으로 isProduct만 null일시에 400 상태코드가 발생한다.")
     @Test
     void inquiryAdd_product_success_validation_productNo() throws Exception {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "productNo", null);
@@ -511,12 +511,12 @@ class CommonInquiryControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated());
+            .andExpect(status().is4xxClientError());
     }
 
 
 
-    @DisplayName("상품문의 추가를 요청 dto값으로 productNo는 null이더라도 아무 예외 발생하지 않고 처리임무를 수행한다.")
+    @DisplayName("상품문의 추가를 요청 dto값으로 productNo는 null이면 예외가 발생하여 400 상태코드가 반환된다. ")
     @Test
     void inquiryAdd_product_fail_validation_isProduct() throws Exception {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "productNo", null);
@@ -525,7 +525,8 @@ class CommonInquiryControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated());
+            .andExpect(status().is4xxClientError());
+
     }
 
     @DisplayName("문의 단건조회요청을 잘 받고 service에 위임하여 반환된 InquiryDetailsResponseDto를 ResponseEntity의 body에 넣어서 반환한다. 상태코드 200")

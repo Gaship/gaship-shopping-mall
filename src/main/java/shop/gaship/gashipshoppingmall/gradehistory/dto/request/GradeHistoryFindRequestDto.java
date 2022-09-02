@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.gradehistory.dto.request;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,8 +18,10 @@ public class GradeHistoryFindRequestDto {
     private final Integer memberNo;
 
     @NotNull(message = "page 는 필수 값입니다.")
+    @Min(value = 0, message = "page 는 0보다 작을 수 없습니다.")
     private final Integer page;
 
     @NotNull(message = "size 는 필수 값입니다.")
+    @Min(value = 1, message = "size 는 1보다 작을 수 없습니다.")
     private final Integer size;
 }
