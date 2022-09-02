@@ -37,15 +37,11 @@ public class DeliveryAdaptorImpl implements DeliveryAdaptor {
     public void createTrackingNo(DeliveryDto deliveryDto) {
         WebClient webClient = WebClient.builder().baseUrl(deliveryUrl).build();
 
-        log.warn("운송장 번호 요청 로그 테스트 {}", deliveryDto.getSuccessHost());
-
         webClient.post()
             .uri(uriBuilder -> uriBuilder.path("/eggplant-delivery/tracking-no").build())
             .bodyValue(deliveryDto)
             .retrieve()
             .toEntity(Void.class)
             .block();
-
-        log.error("eggplant delivery에 요청을 잘 하는지 테스트 로그");
     }
 }
