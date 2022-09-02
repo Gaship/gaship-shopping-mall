@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.delivery.adaptor.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,6 +13,7 @@ import shop.gaship.gashipshoppingmall.delivery.dto.DeliveryDto;
  * @author : 조재철
  * @since 1.0
  */
+@Slf4j
 @Component
 @ConfigurationProperties(prefix = "eggplant-server")
 public class DeliveryAdaptorImpl implements DeliveryAdaptor {
