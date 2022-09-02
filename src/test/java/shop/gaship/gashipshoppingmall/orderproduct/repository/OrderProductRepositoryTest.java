@@ -33,6 +33,7 @@ import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductByCategoryResponseDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
@@ -104,6 +105,13 @@ class OrderProductRepositoryTest {
     @Test
     void findOrderSale() {
         Page<OrderProductResponseDto> list = orderProductRepository.findAllOrdersByMemberNo(1, PageRequest.of(0, 10));
+    }
+
+    @Test
+    void productTest() {
+        Page<ProductByCategoryResponseDto> page = productRepository.findProductByCategory(1, PageRequest.of(0, 10));
+
+        page.getContent().forEach(System.out::println);
     }
 
     @Test
