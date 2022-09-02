@@ -20,8 +20,6 @@ public class DeliveryEventHandler {
 
     @TransactionalEventListener
     public void publishDeliveryRequest(DeliveryEvent event) {
-        log.error("이벤트 리스너가 동작하는지 테스트 : {}", event.getOrderProductNos());
         event.getOrderProductNos().forEach(deliveryService::createTrackingNo);
-        log.error("이벤트 리스너가 동작하는지 테스트2 : {}", event.getOrderProductNos());
     }
 }
