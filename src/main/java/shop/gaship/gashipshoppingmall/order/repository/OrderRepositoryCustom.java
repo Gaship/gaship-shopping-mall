@@ -1,7 +1,9 @@
 package shop.gaship.gashipshoppingmall.order.repository;
 
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 
 /**
@@ -23,4 +25,6 @@ public interface OrderRepositoryCustom {
     Page<OrderCancelResponseDto> findCancelOrders(Integer memberNo,
                                                   String statusName,
                                                   Pageable pageable);
+
+    Optional<CancelOrderResponseDto> findOrderForCancel(Integer orderNo);
 }

@@ -17,9 +17,11 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
+import shop.gaship.gashipshoppingmall.order.exception.OrderNotFoundException;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
@@ -167,5 +169,11 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return orderRepository.findCancelOrders(memberNo, statusName, pageable);
+    }
+
+    @Override
+    public CancelOrderResponseDto findOrderForCancelPayment(Integer orderNo) {
+        return orderRepository.findOrderForCancel(orderNo)
+                .orElseThrow(OrderNotFoundException::new);
     }
 }

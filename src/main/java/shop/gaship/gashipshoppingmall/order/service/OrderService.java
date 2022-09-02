@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.order.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 
@@ -49,4 +50,5 @@ public interface OrderService {
                                                         String statusName,
                                                         Pageable pageable);
 
+    CancelOrderResponseDto findOrderForCancelPayment(Integer orderNo);
 }

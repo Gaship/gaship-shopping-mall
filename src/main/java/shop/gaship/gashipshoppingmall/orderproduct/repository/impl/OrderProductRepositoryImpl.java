@@ -165,7 +165,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 product.no.as("productNo"),
                 order.no.as("orderNo"),
                 product.name.as("productName"),
-                product.amount.as("totalOrderAmount"),
+                orderProduct.amount.as("totalOrderAmount"),
                 orderProduct.orderStatusCode.statusCodeName.as("orderProductStatus"),
                 orderProduct.trackingNo,
                 product.color,
