@@ -15,6 +15,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class OrderProductDetailResponseDto {
+    private Integer orderProductNo;
     private Integer productNo;
     private Integer orderNo;
     private String productName;
@@ -48,7 +49,7 @@ public class OrderProductDetailResponseDto {
     @Setter
     private String filePath;
 
-    public OrderProductDetailResponseDto(Integer productNo, Integer orderNo,
+    public OrderProductDetailResponseDto(Integer orderProductNo, Integer productNo, Integer orderNo,
                                          String productName, Long totalOrderAmount,
                                          String orderProductStatus, String trackingNo,
                                          String color, String manufacturer,
@@ -59,6 +60,7 @@ public class OrderProductDetailResponseDto {
                                          String receiptPhoneNumber, String receiptSubPhoneNumber,
                                          LocalDateTime cancellationDatetime, Long cancellationAmount,
                                          String cancellationReason) {
+        this.orderProductNo = orderProductNo;
         this.productNo = productNo;
         this.orderNo = orderNo;
         this.productName = productName;

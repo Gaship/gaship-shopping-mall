@@ -37,6 +37,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductReposi
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
+import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -168,6 +169,8 @@ class OrderServiceImplTest {
         given(orderRepository.findById(anyInt())).willReturn(Optional.of(orderDummy));
         given(statusCodeRepository.findByStatusCodeName(DeliveryType.PARCEL.getValue()))
             .willReturn(Optional.of(orderProductDummy.getProduct().getDeliveryType()));
+        given(statusCodeRepository.findByStatusCodeName(OrderStatus.DELIVERY_PREPARING.getValue()))
+                .willReturn(Optional.of(orderProductDummy.getProduct().getDeliveryType()));
 
         willDoNothing().given(deliveryEventHandler).publishDeliveryRequest(any(DeliveryEvent.class));
 

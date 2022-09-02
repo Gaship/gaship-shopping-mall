@@ -17,9 +17,11 @@ import shop.gaship.gashipshoppingmall.member.entity.Member;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
+import shop.gaship.gashipshoppingmall.order.exception.OrderNotFoundException;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepository;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
@@ -31,6 +33,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.DeliveryType;
+import shop.gaship.gashipshoppingmall.statuscode.status.OrderStatus;
 
 /**
  * 주문에 관한 요구사항 정의를 구현하는 클래스입니다.
@@ -128,8 +131,14 @@ public class OrderServiceImpl implements OrderService {
         StatusCode parcelDeliveryType =
             statusCodeRepository.findByStatusCodeName(DeliveryType.PARCEL.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
+        StatusCode deliveryPreparingType =
+                statusCodeRepository.findByStatusCodeName(OrderStatus.DELIVERY_PREPARING.getValue())
+                        .orElseThrow(StatusCodeNotFoundException::new);
 
         order.updateOrderPaymentKey(paymentKey);
+
+        order.getOrderProducts().forEach(orderProduct ->
+                    orderProduct.changeOrderStatusCode(deliveryPreparingType));
 
         boolean hasParcelDeliveryProduct = order.getOrderProducts().stream()
             .anyMatch(orderProduct ->
@@ -160,5 +169,11 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return orderRepository.findCancelOrders(memberNo, statusName, pageable);
+    }
+
+    @Override
+    public CancelOrderResponseDto findOrderForCancelPayment(Integer orderNo) {
+        return orderRepository.findOrderForCancel(orderNo)
+                .orElseThrow(OrderNotFoundException::new);
     }
 }

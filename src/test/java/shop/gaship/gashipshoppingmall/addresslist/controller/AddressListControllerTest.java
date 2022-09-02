@@ -93,6 +93,8 @@ class AddressListControllerTest {
         when(addressListService.findAddressLists(any(Integer.class), any(Pageable.class))).thenReturn(AddressListDummy.addressListPageResponseDtoDummy());
 
         mockMvc.perform(get("/api/members/1/addressLists")
+                        .queryParam("page","0")
+                        .queryParam("size", "10")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

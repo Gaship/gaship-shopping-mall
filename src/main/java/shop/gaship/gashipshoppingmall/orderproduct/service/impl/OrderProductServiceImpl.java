@@ -72,7 +72,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Override
     public void registerOrderProduct(Order order, List<OrderProductSpecificDto> orderProducts) {
         StatusCode deliveryPrepending =
-            statusCodeRepository.findByStatusCodeName(OrderStatus.DELIVERY_PREPARING.getValue())
+            statusCodeRepository.findByStatusCodeName(OrderStatus.WAITING_PAYMENT.getValue())
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         List<OrderProduct> orderProductsForSave = orderProducts.stream()
@@ -154,13 +154,10 @@ public class OrderProductServiceImpl implements OrderProductService {
     }
 
     @Override
-    public Page<OrderProductDetailResponseDto> findMemberOrderProductDetail(Integer orderProductNo, Integer memberNo, Pageable pageable) {
-        if (orderProductRepository.findById(orderProductNo).isEmpty()) {
-            throw new OrderProductNotFoundException();
-        }
+    public Page<OrderProductDetailResponseDto> findMemberOrderProductDetail(Integer orderNo, Integer memberNo, Pageable pageable) {
 
         Page<OrderProductDetailResponseDto> orderProductDetailResponseDtoPage = orderProductRepository
-            .findOrderProductDetail(orderProductNo, memberNo, pageable);
+            .findOrderProductDetail(orderNo, memberNo, pageable);
 
         if (orderProductDetailResponseDtoPage.isEmpty()) {
             throw new OrderProductDetailNoValueException();
@@ -227,6 +224,9 @@ public class OrderProductServiceImpl implements OrderProductService {
                     orderProductStatusCancelDto.getPaymentCancelHistoryNo(),
                     LocalDateTime.now()
                 );
+
+                Product cancelProductTarget = orderProduct.getProduct();
+                cancelProductTarget.updateStockQuantity(cancelProductTarget.getStockQuantity() + 1);
             });
 
         List<OrderProduct> orderProducts = orderProductRepository
