@@ -40,7 +40,7 @@ public class OrderProductAdapter {
     public void useCancelCouponRequest(List<Integer> couponNos) {
         WebClient.create(serverConfig.getCouponUrl())
             .patch()
-            .uri("/api/coupons/coupon-generations-issues/used-to-cancle")
+            .uri("/api/coupons/coupon-generations-issues/used-to-cancel")
             .bodyValue(couponNos)
             .retrieve()
             .toEntity(void.class)
