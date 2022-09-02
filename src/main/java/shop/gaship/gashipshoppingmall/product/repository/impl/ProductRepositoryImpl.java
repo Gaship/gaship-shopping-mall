@@ -9,10 +9,13 @@ import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductByCategoryResponseDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
@@ -41,11 +44,45 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
      * {@inheritDoc}
      */
     @Override
+    public Page<ProductByCategoryResponseDto> findProductByCategory(Integer categoryNo, Pageable pageable) {
+        QCategory lower = new QCategory("lower");
+
+        // 필요정보 상품이름, 상품번호, 상품가격
+        List<Integer> list = from(category)
+            .innerJoin(category.lowerCategories, lower)
+            .select(category.no)
+            .where(category.no.eq(categoryNo))
+            .fetch();
+
+        if (list.isEmpty()) {
+            return Page.empty();
+        }
+
+        JPQLQuery<ProductByCategoryResponseDto> query = from(product)
+            .innerJoin(product.category, category)
+            .select(Projections.constructor(ProductByCategoryResponseDto.class,
+                product.no.as("productNo"),
+                product.name.as("productName"),
+                product.amount.as("productPrice")
+            ))
+            .where(product.category.no.eq(categoryNo))
+            .distinct();
+
+        List<ProductByCategoryResponseDto> content = query
+            .limit(pageable.getPageSize())
+            .offset(pageable.getOffset())
+            .fetch();
+
+        return PageableExecutionUtils.getPage(content, pageable, query::fetchCount);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Page<ProductAllInfoResponseDto> findProduct(ProductRequestViewDto requestDto) {
         QCategory upper = new QCategory("upper");
         QCategory top = new QCategory("top");
-
-
         JPQLQuery<ProductAllInfoResponseDto> productAllQuery = productQuery(requestDto)
             .select(Projections.constructor(ProductAllInfoResponseDto.class,
                 product.no.as("productNo"),
@@ -67,20 +104,19 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 product.deliveryType.statusCodeName.as("deliveryType"),
                 product.salesStatus.statusCodeName.as("salesStatus"),
                 JPAExpressions.select(upper.name.concat("-").concat(
-                        JPAExpressions.select(top.name)
-                            .where(top.no.eq(upper.upperCategory.no))
-                            .from(top)
-                    ).as("upperName")
-               )
-                    .where(upper.no.eq(category.upperCategory.no))
+                            JPAExpressions.select(top.name)
+                                .where(top.no.eq(upper.upperCategory.no))
+                                .from(top)
+                        ).as("upperName")
+                    ).where(upper.no.eq(category.upperCategory.no))
                     .from(upper)))
-                .orderBy(product.registerDatetime.desc())
+            .orderBy(product.registerDatetime.desc())
             .distinct();
 
         List<ProductAllInfoResponseDto> content = productAllQuery
-                .offset(requestDto.getPageable().getOffset())
-                .limit(requestDto.getPageable().getPageSize())
-                .fetch();
+            .offset(requestDto.getPageable().getOffset())
+            .limit(requestDto.getPageable().getPageSize())
+            .fetch();
 
         return new PageImpl<>(content, requestDto.getPageable(), productAllQuery.fetchCount());
     }
