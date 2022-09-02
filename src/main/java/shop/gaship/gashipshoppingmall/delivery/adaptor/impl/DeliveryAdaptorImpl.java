@@ -45,5 +45,7 @@ public class DeliveryAdaptorImpl implements DeliveryAdaptor {
             .retrieve()
             .toEntity(Void.class)
             .block();
+
+        log.error("eggplant delivery에 요청을 잘 하는지 테스트 로그");
     }
 }
