@@ -7,17 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
 import shop.gaship.gashipshoppingmall.aspact.anntation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
@@ -31,6 +26,9 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
  * 주문을 실행하거나 취소, 환불, 교환등을 수행하는 주문 컨트롤러 클래스입니다.
  *
  * @author 김민수
+ * @author 김세미
+ * @author 유호철
+ *
  * @since 1.0
  */
 @RequiredArgsConstructor
@@ -138,4 +136,22 @@ public class OrderController {
             .contentType(MediaType.APPLICATION_JSON)
             .body(new PageResponse<>(content));
     }
+
+    /**
+     * 취소할 주문의 결제 식별키값 조회 요청을 처리합니다.
+     *
+     * @param orderNo 조회할 주문의 식별번호입니다.
+     * @return 취소할 주문의 결제 식별키를 body 로 가지는 상태 200 의 ResponseEntity 를 반환합니다.
+     * @author 김세미
+     */
+    @GetMapping(params = "orderNo")
+    public ResponseEntity<CancelOrderResponseDto> cancelOrderDetails(
+            @RequestParam Integer orderNo) {
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(orderService.findOrderForCancelPayment(orderNo));
+    }
+
 }

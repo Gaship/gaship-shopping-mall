@@ -2,11 +2,13 @@ package shop.gaship.gashipshoppingmall.order.repository.custom.impl;
 
 import com.querydsl.core.types.Projections;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.addresslist.entity.QAddressList;
+import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.entity.QOrder;
@@ -17,7 +19,7 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
 /**
  * 쿼리 DSL 을 통해 주문에 관한 커스텀 쿼리를 구현시 사용하는 클래스입니다.
  *
- * @author : 유호철
+ * @author : 유호철, 김세미
  * @see QuerydslRepositorySupport
  * @see OrderRepositoryCustom
  * @since 1.0
@@ -70,5 +72,14 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport
         return PageableExecutionUtils.getPage(content, pageable, content::size);
     }
 
+    @Override
+    public Optional<CancelOrderResponseDto> findOrderForCancel(Integer orderNo) {
+        QOrder order = QOrder.order;
 
+        return Optional.ofNullable(from(order)
+                .select(Projections.constructor(CancelOrderResponseDto.class,
+                        order.orderPaymentKey))
+                        .where(order.no.eq(orderNo))
+                .fetchOne());
+    }
 }
