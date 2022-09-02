@@ -99,7 +99,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
 
         List<Member> content =
                 from(member)
-                        .limit(Math.min(pageable.getPageSize(), 30))
+                        .limit(Math.min(pageable.getPageSize(), 10))
                         .offset(pageable.getOffset())
                         .orderBy(member.memberNo.desc())
                         .select(member)
