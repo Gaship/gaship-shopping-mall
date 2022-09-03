@@ -19,7 +19,7 @@ public class DailyRepairInstallSchedule {
     /**
      * 매일 자정, 평일마다 각 지역의 최대 배송건수를 초기화 시킵니다.
      */
-    @Scheduled(cron = "0 0 * * 1-5")
+    @Scheduled(cron = "0 0 0 ? * MON-FRI")
     public void fillDailyRepairInstallSchedule() {
         repairScheduleService.initializeDailyRepairInstallSchedule();
     }
