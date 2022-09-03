@@ -200,6 +200,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
     @Override
     public Page<OrderProductResponseDto> findAllOrdersByMemberNo(Integer memberNo, Pageable pageable) {
         QOrder order = QOrder.order;
+        QOrderProduct orderProduct = QOrderProduct.orderProduct;
 
         JPQLQuery<OrderProductResponseDto> query = from(order)
             .select(Projections.constructor(OrderProductResponseDto.class,
@@ -211,7 +212,10 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
             .orderBy(order.orderDatetime.desc());
 
         List<OrderProductResponseDto> content = query
-            .where(order.member.memberNo.eq(memberNo))
+                .innerJoin(order.orderProducts, orderProduct)
+            .where(order.member.memberNo.eq(memberNo)
+                    .and(orderProduct.orderStatusCode.statusCodeName
+                            .ne(WAITING_PAYMENT.getValue())))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
