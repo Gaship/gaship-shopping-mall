@@ -15,7 +15,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ModifyEmployeeRequestDto {
-    @Min(1)
+    @Min(value = 1, message = "employeeNo 는 0 이하일 수 없습니다.")
     @NotNull(message = "직원번호를 입력해주세요")
     private Integer employeeNo;
 
@@ -28,7 +28,7 @@ public class ModifyEmployeeRequestDto {
     @NotNull(message = "휴대폰번호를 입력해주세요")
     private String phoneNo;
 
-    @NotNull
+    @NotNull(message = "주소번호를 입력해주세요")
     private Integer addressNo;
 
 }

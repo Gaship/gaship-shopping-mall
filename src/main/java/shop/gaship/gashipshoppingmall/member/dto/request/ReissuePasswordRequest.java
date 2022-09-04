@@ -16,12 +16,12 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @AllArgsConstructor
 public class ReissuePasswordRequest {
-    @NotBlank
+    @NotBlank(message = "email 는 필수값 입니다.")
     @Length(max = 255)
     @Email
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "name 는 필수값 입니다.")
     @Length(max = 100)
     @Pattern(regexp = "^[가-힣]+", message = "이름을 정확히 입력하여주십시오.")
     private String name;

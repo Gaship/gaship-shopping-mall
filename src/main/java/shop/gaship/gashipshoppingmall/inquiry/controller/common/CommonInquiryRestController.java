@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.inquiry.controller.common;
 
+import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
+import shop.gaship.gashipshoppingmall.inquiry.exception.CustomerInquiryHasProductNoException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.ProductInquiryHasNullProductNoException;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 
 /**
@@ -38,6 +41,14 @@ public class CommonInquiryRestController {
      */
     @PostMapping
     public ResponseEntity<Void> inquiryAdd(@Valid @RequestBody InquiryAddRequestDto inquiryDto) {
+        if (inquiryDto.getIsProduct().equals(true)
+                && Objects.isNull(inquiryDto.getProductNo())) {
+            throw new ProductInquiryHasNullProductNoException();
+        }
+
+        if (inquiryDto.getIsProduct().equals(false) && Objects.nonNull(inquiryDto.getProductNo())) {
+            throw new CustomerInquiryHasProductNoException();
+        }
         inquiryService.addInquiry(inquiryDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

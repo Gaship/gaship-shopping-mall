@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
@@ -61,5 +62,6 @@ public class MemberCreationRequest {
     @NotBlank(message = "이메일 인증이 필요합니다.")
     private String verifyCode;
 
+    @NotNull
     private String encodedEmailForSearch;
 }

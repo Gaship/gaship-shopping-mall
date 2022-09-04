@@ -19,7 +19,7 @@ public class CreateScheduleRequestDto {
 
     @NotNull(message = "일자를 기입해주세요")
     private LocalDate date;
-    @Min(1)
+    @Min(value = 1, message = "localNo 는 0 이하일 수 없습니다.")
     @NotNull(message = "지역번호를 기입해주세요")
     private Integer localNo;
 

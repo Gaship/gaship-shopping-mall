@@ -23,6 +23,7 @@ public class ProductReviewRequestDto {
     @Size(max = 100, message = "상품평 제목은 100자를 넘을 수 없습니다.")
     private String title;
 
+    @Size(max = 100, message = "상품평은 ??자를 넘을 수 없습니다.")
     private String content;
 
     @Min(value = 1, message = "별점은 1이상 5이하여야 합니다.")

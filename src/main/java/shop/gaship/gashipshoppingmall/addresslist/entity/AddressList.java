@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,24 +38,30 @@ public class AddressList {
     private Integer addressListsNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_local_no", nullable = false)
+    @JoinColumn(name = "address_local_no")
+    @NotNull
     private AddressLocal addressLocal;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_no", nullable = false)
+    @JoinColumn(name = "member_no")
+    @NotNull
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "address_status_no", nullable = false)
+    @JoinColumn(name = "address_status_no")
+    @NotNull
     private StatusCode statusCode;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String address;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String addressDetail;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String zipCode;
 
     /**

@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FixDayLaborRequestDto {
-    @Min(1)
+    @Min(value = 1, message = "localNo 는 0 이하일 수 없습니다.")
     @NotNull(message = "지역번호를 입력하세요")
     private Integer localNo;
-    @Min(0)
+    @Min(value = 0, message = "maxLabor 는 0 미만일 수 없습니다.")
     @NotNull(message = "최대물량을 입력하세요")
     private Integer maxLabor;
 }

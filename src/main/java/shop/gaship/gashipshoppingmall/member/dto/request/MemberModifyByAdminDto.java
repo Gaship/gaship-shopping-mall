@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MemberModifyByAdminDto {
-    @NotNull
+    @NotNull(message = "memberNo 는 필수 입력값입니다.")
     @Min(value = 0, message = "정확한 회원 정보를 입력해주세요.")
     private Integer memberNo;
 

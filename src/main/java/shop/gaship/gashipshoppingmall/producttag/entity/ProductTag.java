@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,11 +35,13 @@ public class ProductTag {
     @MapsId(value = "productNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no")
+    @NotNull
     private Product product;
 
     @MapsId(value = "tagNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_no")
+    @NotNull
     private Tag tag;
 
     /**

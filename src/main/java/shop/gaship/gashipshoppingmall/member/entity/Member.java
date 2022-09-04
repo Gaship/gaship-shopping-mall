@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -103,6 +104,7 @@ public class Member extends BaseEntity {
     @Builder.Default
     private List<MembersRole> roleSet = new ArrayList<>();
 
+    @NotBlank(message = "encodedEmailForSearch 는 필수값 입니다.")
     private String encodedEmailForSearch;
 
     @Builder.Default
