@@ -17,6 +17,7 @@ import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
 import shop.gaship.gashipshoppingmall.producttag.entity.QProductTag;
+import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 
 
@@ -32,6 +33,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
     QCategory category = QCategory.category;
     QTag tag = QTag.tag;
     QProductTag productTag = QProductTag.productTag;
+
+    QStatusCode statusCode = QStatusCode.statusCode;
 
     public ProductRepositoryImpl() {
         super(Product.class);
@@ -67,20 +70,20 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 product.deliveryType.statusCodeName.as("deliveryType"),
                 product.salesStatus.statusCodeName.as("salesStatus"),
                 JPAExpressions.select(upper.name.concat("-").concat(
-                        JPAExpressions.select(top.name)
-                            .where(top.no.eq(upper.upperCategory.no))
-                            .from(top)
-                    ).as("upperName")
-               )
+                            JPAExpressions.select(top.name)
+                                .where(top.no.eq(upper.upperCategory.no))
+                                .from(top)
+                        ).as("upperName")
+                    )
                     .where(upper.no.eq(category.upperCategory.no))
                     .from(upper)))
-                .orderBy(product.registerDatetime.desc())
+            .orderBy(product.registerDatetime.desc())
             .distinct();
 
         List<ProductAllInfoResponseDto> content = productAllQuery
-                .offset(requestDto.getPageable().getOffset())
-                .limit(requestDto.getPageable().getPageSize())
-                .fetch();
+            .offset(requestDto.getPageable().getOffset())
+            .limit(requestDto.getPageable().getPageSize())
+            .fetch();
 
         return new PageImpl<>(content, requestDto.getPageable(), productAllQuery.fetchCount());
     }
@@ -92,6 +95,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
             .innerJoin(productTag)
             .on(product.productTags.contains(productTag))
             .innerJoin(productTag.tag, tag)
+            .innerJoin(product.salesStatus, statusCode)
+            .innerJoin(product.deliveryType, statusCode)
             .where(eqCategory(requestDto.getCategoryNo()),
                 eqPrice(requestDto.getMinAmount(), requestDto.getMaxAmount()),
                 eqTagNo(requestDto.getTagNo()),
