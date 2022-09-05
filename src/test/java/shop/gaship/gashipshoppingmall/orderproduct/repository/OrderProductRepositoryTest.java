@@ -109,7 +109,7 @@ class OrderProductRepositoryTest {
 
     @Test
     void productTest() {
-        Page<ProductByCategoryResponseDto> page = productRepository.findProductByCategory(1, PageRequest.of(0, 10));
+        Page<ProductByCategoryResponseDto> page = productRepository.findProductByCategory(1, 0L, 1000L, PageRequest.of(0, 10));
 
         page.getContent().forEach(System.out::println);
     }
