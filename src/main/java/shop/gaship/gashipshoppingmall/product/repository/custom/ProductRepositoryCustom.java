@@ -16,7 +16,7 @@ import shop.gaship.gashipshoppingmall.product.dto.response.ProductByCategoryResp
 @NoRepositoryBean
 public interface ProductRepositoryCustom {
 
-    Page<ProductByCategoryResponseDto> findProductByCategory(Integer categoryNo, Pageable pageable);
+    Page<ProductByCategoryResponseDto> findProductByCategory(Integer categoryNo, Long minPrice, Long maxPrice, Pageable pageable);
 
     /**
      * 조건을 통해 상품들을 조회하기위한 메서드입니다.

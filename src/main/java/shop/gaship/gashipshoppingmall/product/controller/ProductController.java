@@ -187,10 +187,12 @@ public class ProductController {
     public ResponseEntity<PageResponse<ProductByCategoryResponseDto>> productCategoryList(
         @PathVariable("categoryNo") Integer categoryNo,
         @RequestParam("isUpper") boolean isUpper,
+        @RequestParam(value = "minPrice", required = false) Long minPrice,
+        @RequestParam(value = "maxPrice", required = false) Long maxPrice,
         Pageable pageable) {
         Page<ProductByCategoryResponseDto> page = null;
         if (isUpper) {
-            page = service.findProductByUpperCategoryNo(categoryNo, pageable);
+            page = service.findProductByUpperCategoryNo(categoryNo, minPrice, maxPrice, pageable);
         } else {
             page = service.findProductByLowerCategory(categoryNo, pageable);
 

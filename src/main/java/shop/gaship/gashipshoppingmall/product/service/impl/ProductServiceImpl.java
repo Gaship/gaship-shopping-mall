@@ -195,8 +195,8 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductAllInfoResponseDto> findProductByPrice(Long min, Long max,
                                                               Pageable pageable) {
         ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
-            .minAmount(min)
-            .maxAmount(max)
+            .minAmount(Objects.isNull(min) ? 0L : min)
+            .maxAmount(Objects.isNull(max) ? 0L : max)
             .pageable(pageable)
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
@@ -211,12 +211,12 @@ public class ProductServiceImpl implements ProductService {
      * @throws CategoryNotFoundException 카테고리값이 없을시 발생한다.
      */
     @Override
-    public Page<ProductByCategoryResponseDto> findProductByLowerCategory(Integer no, Pageable pageable) {
-        if (categoryRepository.findById(no).isEmpty()) {
+    public Page<ProductByCategoryResponseDto> findProductByLowerCategory(Integer categoryNo, Pageable pageable) {
+        if (categoryRepository.findById(categoryNo).isEmpty()) {
             throw new CategoryNotFoundException();
         }
         ProductRequestViewDto requestDto = ProductRequestViewDto.builder()
-            .categoryNo(no)
+            .categoryNo(categoryNo)
             .pageable(pageable)
             .build();
         Page<ProductAllInfoResponseDto> products = repository.findProduct(requestDto);
@@ -260,12 +260,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductByCategoryResponseDto> findProductByUpperCategoryNo(Integer categoryNo,
+                                                                           Long minPrice,
+                                                                           Long maxPrice,
                                                                            Pageable pageable) {
         if (categoryRepository.findById(categoryNo).isEmpty()) {
             throw new CategoryNotFoundException();
         }
-        Page<ProductByCategoryResponseDto> page = repository.findProductByCategory(categoryNo, pageable);
-        page.getContent().forEach(p -> p.setFilePath(commonFileRepository.findPaths(p.getProductNo(), Product.SERVICE).get(0))
+        Page<ProductByCategoryResponseDto> page = repository
+            .findProductByCategory(categoryNo, minPrice, maxPrice, pageable);
+        page.getContent().forEach(p -> p.setFilePath(commonFileRepository
+            .findPaths(p.getProductNo(), Product.SERVICE).get(0))
         );
         return page;
     }

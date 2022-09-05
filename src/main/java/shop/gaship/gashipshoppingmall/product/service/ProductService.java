@@ -80,12 +80,13 @@ public interface ProductService {
     /**
      * 카테고리를 통해 알맞은 상품을 조회하는 메서드입니다.
      *
-     * @param no       카테고리 no 가 입력이된다.
-     * @param pageable 페이징을 하기위한 값이들어갑니다.
+     * @param categoryNo 카테고리 no 가 입력이된다.
+     * @param pageable   페이징을 하기위한 값이들어갑니다.
      * @return list 같은 카테고리의 no 를 가진 제품들이 반환된다.
      * @author 유호철
      */
-    Page<ProductByCategoryResponseDto> findProductByLowerCategory(Integer no, Pageable pageable);
+    Page<ProductByCategoryResponseDto> findProductByLowerCategory(Integer categoryNo,
+                                                                  Pageable pageable);
 
     /**
      * 이름을 통해 알맞은 상품을 조회하는 메서드입니다.
@@ -98,6 +99,8 @@ public interface ProductService {
     Page<ProductAllInfoResponseDto> findProductByName(String name, Pageable pageable);
 
     Page<ProductByCategoryResponseDto> findProductByUpperCategoryNo(Integer categoryNo,
+                                                                    Long minPrice,
+                                                                    Long maxPrice,
                                                                     Pageable pageable);
 
     /**

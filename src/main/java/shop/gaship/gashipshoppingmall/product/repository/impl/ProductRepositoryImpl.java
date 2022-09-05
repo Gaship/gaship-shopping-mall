@@ -20,6 +20,8 @@ import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
 import shop.gaship.gashipshoppingmall.producttag.entity.QProductTag;
+import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 
 
@@ -44,9 +46,9 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductByCategoryResponseDto> findProductByCategory(Integer categoryNo, Pageable pageable) {
+    public Page<ProductByCategoryResponseDto> findProductByCategory(Integer categoryNo, Long min, Long max, Pageable pageable) {
         QCategory lower = new QCategory("lower");
-
+        QStatusCode statusCode = QStatusCode.statusCode;
         // 필요정보 상품이름, 상품번호, 상품가격
         List<Integer> list = from(category)
             .innerJoin(category.lowerCategories, lower)
@@ -60,12 +62,15 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
 
         JPQLQuery<ProductByCategoryResponseDto> query = from(product)
             .innerJoin(product.category, category)
+            .innerJoin(product.salesStatus, statusCode)
             .select(Projections.constructor(ProductByCategoryResponseDto.class,
                 product.no.as("productNo"),
                 product.name.as("productName"),
                 product.amount.as("productPrice")
             ))
-            .where(product.category.no.eq(categoryNo))
+            .where(product.category.no.eq(categoryNo)
+                    .and(statusCode.statusCodeName.ne(SalesStatus.HIDING.getValue())),
+                eqPrice(min, max))
             .distinct();
 
         List<ProductByCategoryResponseDto> content = query
