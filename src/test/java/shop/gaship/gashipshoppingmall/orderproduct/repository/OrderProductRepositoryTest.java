@@ -109,9 +109,11 @@ class OrderProductRepositoryTest {
 
     @Test
     void productTest() {
-        Page<ProductByCategoryResponseDto> page = productRepository.findProductByCategory(1, 0L, 1000L, PageRequest.of(0, 10));
+        Page<ProductByCategoryResponseDto> level_2 = productRepository.findProductByCategory(7, 0L, 1000000L, PageRequest.of(0, 10));
+        Page<ProductByCategoryResponseDto> level_1 = productRepository.findProductByCategory(1, 0L, 1000000L, PageRequest.of(0, 10));
 
-        page.getContent().forEach(System.out::println);
+        assertThat(level_2).isNotEmpty();
+        assertThat(level_1).isNotEmpty();
     }
 
     @Test
