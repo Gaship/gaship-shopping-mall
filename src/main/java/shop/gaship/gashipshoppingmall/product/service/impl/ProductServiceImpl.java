@@ -267,7 +267,11 @@ public class ProductServiceImpl implements ProductService {
             throw new CategoryNotFoundException();
         }
         Page<ProductByCategoryResponseDto> page = repository
-            .findProductByCategory(categoryNo, minPrice, maxPrice, pageable);
+            .findProductByCategory(
+                categoryNo,
+                Objects.isNull(minPrice) ? 0L : minPrice,
+                Objects.isNull(maxPrice) ? 0L : maxPrice,
+                pageable);
         page.getContent().forEach(p -> p.setFilePath(commonFileRepository
             .findPaths(p.getProductNo(), Product.SERVICE).get(0))
         );
