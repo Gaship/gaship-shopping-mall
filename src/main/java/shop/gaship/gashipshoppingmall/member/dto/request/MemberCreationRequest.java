@@ -62,6 +62,5 @@ public class MemberCreationRequest {
     @NotBlank(message = "이메일 인증이 필요합니다.")
     private String verifyCode;
 
-    @NotNull
     private String encodedEmailForSearch;
 }

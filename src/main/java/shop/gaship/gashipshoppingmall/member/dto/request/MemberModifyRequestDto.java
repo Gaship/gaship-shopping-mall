@@ -43,7 +43,7 @@ public class MemberModifyRequestDto {
 
     @NotBlank(message = "gender 는 필수값 입니다.")
     @Length(max = 1)
-    @Pattern(regexp = "^[남|녀]$", message = "성별을 정확히 작성해여주십시오.")
+    @Pattern(regexp = "^[남|여]$", message = "성별을 정확히 작성해여주십시오.")
     private String gender;
 
     public void changePassword(String password) {
