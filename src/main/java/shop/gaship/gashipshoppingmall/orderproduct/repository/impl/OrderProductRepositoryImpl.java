@@ -209,6 +209,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport
                 order.orderDatetime,
                 order.receiptName,
                 order.receiptPhoneNumber))
+                .distinct()
             .orderBy(order.orderDatetime.desc());
 
         List<OrderProductResponseDto> content = query
