@@ -20,6 +20,8 @@ import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameExcepti
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
+import shop.gaship.gashipshoppingmall.orderproduct.exception.CouponProcessException;
+import shop.gaship.gashipshoppingmall.product.exception.NoMoreProductException;
 
 /**
  * 예외를 잡기위한 Advice 클래스입니다.
@@ -79,5 +81,13 @@ public class ExceptionAdviceController {
 
         return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)
             .body(new ErrorResponse(exception.getMessage()));
+    }
+
+    @ExceptionHandler({CouponProcessException.class, NoMoreProductException.class})
+    public ResponseEntity<ErrorResponse> orderRequestProcessExceptionAdvice(Exception exception) {
+        log.error("error : {}", ExceptionUtils.getStackTrace(exception));
+
+        return ResponseEntity.status(401).contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorResponse(exception.getMessage()));
     }
 }
