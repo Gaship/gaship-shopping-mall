@@ -192,3 +192,6 @@ __2022년 9월 8일 (목) 기준 83.7%__
 <br/><img src="https://img.shields.io/badge/github-181717?style=for-the-badge&amp;logo=github&amp;logoColor=white"> ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
 
 ## 팀원
+<a href="https://github.com/gaship/gaship-shopping-mall/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=gaship/gaship-shopping-mall" />
+</a>
