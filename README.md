@@ -7,13 +7,21 @@ MSA 기반의 가구 쇼핑몰 서비스
 ## 서비스 플로우
 ### shopping mall 아키텍처
 
+![쇼핑몰 아키텍처](https://user-images.githubusercontent.com/60546275/188952522-840e4830-a055-4dbd-aeb5-fb8b40b31704.jpg)
 
-![쇼핑몰 아키텍처](https://user-images.githubusercontent.com/60546275/185783063-17fde0bb-c980-46f1-bde2-7150f6eb5a43.jpg)
 
 - - -
 ### CI/CD 아키텍처
 
-![CI-CD](https://user-images.githubusercontent.com/60546275/185783068-930ceb48-9e1f-473b-8bab-3c49f44de6e6.jpg)
+![CI-CD](https://user-images.githubusercontent.com/60546275/188952662-479c5f5a-2d79-4d1c-9608-f95b54e0c063.jpg)
+
+---
+
+### 테스트 커버리지
+목표 : 쇼핑몰 서버 라인 커버리지 80% 이상
+
+__2022년 9월 8일 (목) 기준 83.7%__
+![image](https://user-images.githubusercontent.com/60546275/188953361-ec119cbd-fed6-4399-a1f6-2dca3769caf7.png)
 
 ## 주요 기능
 
