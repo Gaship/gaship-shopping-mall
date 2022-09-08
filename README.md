@@ -12,7 +12,7 @@ MSA 기반의 가구 쇼핑몰 서비스
 - - -
 ### CI/CD 아키텍처
 
-![CI-CD](https://user-images.githubusercontent.com/60546275/188952662-479c5f5a-2d79-4d1c-9608-f95b54e0c063.jpg)
+![CI-CD](https://user-images.githubusercontent.com/60546275/189019779-cf67ca28-fc22-40fc-a74f-8acdd44cf669.jpg)
 
 ---
 
