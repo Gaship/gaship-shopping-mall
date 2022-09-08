@@ -22,6 +22,8 @@ import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
 import shop.gaship.gashipshoppingmall.producttag.entity.QProductTag;
+import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 
 
@@ -149,11 +151,11 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 product.deliveryType.statusCodeName.as("deliveryType"),
                 product.salesStatus.statusCodeName.as("salesStatus"),
                 JPAExpressions.select(upper.name.concat("-").concat(
-                        JPAExpressions.select(top.name)
-                            .where(top.no.eq(upper.upperCategory.no))
-                            .from(top)
-                    ).as("upperName")
-               )
+                            JPAExpressions.select(top.name)
+                                .where(top.no.eq(upper.upperCategory.no))
+                                .from(top)
+                        ).as("upperName")
+                    )
                     .where(upper.no.eq(category.upperCategory.no))
                     .from(upper)))
             .orderBy(product.registerDatetime.desc())
