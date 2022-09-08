@@ -18,11 +18,11 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SalesStatusModifyRequestDto {
-    @Min(1)
-    @NotNull
+    @Min(value = 1, message = "productNo 는 0 이하일 수 없습니다.")
+    @NotNull(message = "productNo 는 필수 입력값입니다.")
     private Integer productNo;
 
     @Length(max = 20, message = "상태코드명은 20자 이하여야 합니다.")
-    @NotBlank
+    @NotBlank(message = "statusCodeName 는 필수 입력값입니다.")
     private String statusCodeName;
 }

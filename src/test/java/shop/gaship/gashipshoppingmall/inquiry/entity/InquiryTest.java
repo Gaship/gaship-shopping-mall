@@ -54,7 +54,7 @@ class InquiryTest {
             InquiryDummy.statusCodeCompleteDummy());
 
         ReflectionTestUtils.setField(inquiryAnswerRequestDto, "inquiryNo", 223);
-        assertThatThrownBy(() -> inquiry.modifyAnswer(inquiryAnswerRequestDto))
+        assertThatThrownBy(() -> inquiry.modifyAnswer(inquiryAnswerRequestDto, new Employee()))
             .isInstanceOf(DifferentInquiryException.class)
             .hasMessageContaining(DifferentInquiryException.MESSAGE);
     }

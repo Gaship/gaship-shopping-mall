@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
@@ -53,8 +54,8 @@ public class MemberCreationRequest {
     @NotBlank
     @Length(max = 1)
     @Pattern(
-            regexp = "^[남|녀]$",
-            message = "성별은 남, 녀만 입력이 가능합니다."
+            regexp = "^[남|여]$",
+            message = "성별은 남, 여만 입력이 가능합니다."
     )
     private String gender;
 

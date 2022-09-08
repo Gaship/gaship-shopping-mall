@@ -13,12 +13,12 @@ import lombok.Getter;
 @Getter
 @Builder
 public class FileRequestDto {
-    @NotNull
+    @NotNull(message = "path 는 필수 입력값입니다.")
     private String path;
 
-    @NotNull
+    @NotNull(message = "originalName 는 필수 입력값입니다.")@NotNull
     private String originalName;
 
-    @NotNull
+    @NotNull(message = "extension 는 필수 입력값입니다.")
     private String extension;
 }

@@ -1,7 +1,7 @@
 package shop.gaship.gashipshoppingmall.member.dto;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReissuePasswordReceiveEmailDto {
-    @Email
-    @NotNull
+    @Email(message = "이메일 형식에 맞지 않습니다.")
+    @NotBlank(message = "memberNo 는 필수 입력값입니다.")
     private String email;
 }

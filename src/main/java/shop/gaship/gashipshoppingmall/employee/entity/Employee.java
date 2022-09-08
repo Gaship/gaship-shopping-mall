@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,22 +37,28 @@ public class Employee {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_authority_no")
+    @NotNull
     private StatusCode statusCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "responsibility_address_no")
+    @NotNull
     private AddressLocal addressLocal;
 
     @Column(name = "name", unique = true)
+    @NotNull
     private String name;
 
     @Column(name = "email", unique = true)
+    @NotNull
     private String email;
 
     @Column(name = "password")
+    @NotNull
     private String password;
 
     @Column(name = "phone_number", unique = true)
+    @NotNull
     private String phoneNo;
 
     private String encodedEmailForSearch;

@@ -9,15 +9,19 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.gaship.gashipshoppingmall.inquiry.exception.AlreadyCompleteInquiryAnswerException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.CustomerInquiryHasProductNoException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentEmployeeWriterAboutInquiryAnswerException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentInquiryException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquirySearchBadRequestException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.NoRegisteredAnswerException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.ProductInquiryHasNullProductNoException;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.exception.SignUpDenyException;
+import shop.gaship.gashipshoppingmall.orderproduct.exception.CouponProcessException;
+import shop.gaship.gashipshoppingmall.product.exception.NoMoreProductException;
 
 /**
  * 예외를 잡기위한 Advice 클래스입니다.
@@ -39,7 +43,8 @@ public class ExceptionAdviceController {
         AlreadyCompleteInquiryAnswerException.class,
         DifferentEmployeeWriterAboutInquiryAnswerException.class,
         InquiryNotFoundException.class, NoRegisteredAnswerException.class,
-        DifferentInquiryException.class, InquirySearchBadRequestException.class
+        DifferentInquiryException.class, InquirySearchBadRequestException.class,
+            ProductInquiryHasNullProductNoException.class, CustomerInquiryHasProductNoException.class
     })
     public ResponseEntity<ErrorResponse> declaredExceptionAdvice(RuntimeException exception) {
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON)
@@ -76,5 +81,13 @@ public class ExceptionAdviceController {
 
         return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)
             .body(new ErrorResponse(exception.getMessage()));
+    }
+
+    @ExceptionHandler({CouponProcessException.class, NoMoreProductException.class})
+    public ResponseEntity<ErrorResponse> orderRequestProcessExceptionAdvice(Exception exception) {
+        log.error("error : {}", ExceptionUtils.getStackTrace(exception));
+
+        return ResponseEntity.status(401).contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorResponse(exception.getMessage()));
     }
 }

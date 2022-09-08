@@ -2,9 +2,11 @@ package shop.gaship.gashipshoppingmall.orderproduct.adapter;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import shop.gaship.gashipshoppingmall.config.ServerConfig;
+import shop.gaship.gashipshoppingmall.orderproduct.exception.CouponProcessException;
 
 /**
  * 주문상품에서 타 서버에 요청을 하기위한 어댑터 클래스입니다.
@@ -28,6 +30,9 @@ public class OrderProductAdapter {
             .uri("/api/coupons/coupon-generations-issues/used")
             .bodyValue(couponNos)
             .retrieve()
+                .onStatus(HttpStatus::isError, clientResponse -> {
+                    throw new CouponProcessException();
+                })
             .toEntity(void.class)
             .block();
     }
@@ -40,7 +45,7 @@ public class OrderProductAdapter {
     public void useCancelCouponRequest(List<Integer> couponNos) {
         WebClient.create(serverConfig.getCouponUrl())
             .patch()
-            .uri("/api/coupons/coupon-generations-issues/used-to-cancle")
+            .uri("/api/coupons/coupon-generations-issues/used-to-cancel")
             .bodyValue(couponNos)
             .retrieve()
             .toEntity(void.class)

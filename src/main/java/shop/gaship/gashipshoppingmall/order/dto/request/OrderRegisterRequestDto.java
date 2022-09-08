@@ -20,9 +20,11 @@ import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductSpecificDto;
 @Getter
 public class OrderRegisterRequestDto {
     @Min(value = 0, message = "주소를 등록한 뒤 결제 요청을 해주세요.")
+    @NotNull(message = "addressListNo 는 필수 입력값입니다.")
     private Integer addressListNo;
 
     @Min(value = 0, message = "올바르지 못한 회원정보 요청입니다.")
+    @NotNull(message = "memberNo 는 필수 입력값입니다.")
     private Integer memberNo;
 
     @NotNull(message = "적어도 하나 이상의 상품을 주문하여야합니다.")

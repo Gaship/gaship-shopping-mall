@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.employee.dto.request;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 /**
@@ -12,7 +13,9 @@ import lombok.Getter;
 @Getter
 public class InstallOrderRequestDto {
     @Min(value = 1, message = "직원고유번호를 확인해주세요.")
+    @NotNull(message = "employeeNo 는 필수 입력값입니다.")
     private Integer employeeNo;
     @Min(value = 1, message = "주문고유번호를 확인해주세요.")
+    @NotNull(message = "orderNo 는 필수 입력값입니다.")
     private Integer orderNo;
 }

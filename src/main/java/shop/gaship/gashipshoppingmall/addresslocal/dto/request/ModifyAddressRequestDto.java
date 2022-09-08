@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ModifyAddressRequestDto {
-
-    @Min(1)
+    @Min(value = 1, message = "localNo 는 0보다 작을 수 없습니다.")
     @NotNull(message = "지역을 입력하세요")
     private Integer localNo;
+
     @NotNull(message = "가능여부를 입력하세요")
     private boolean isDelivery;
 }

@@ -299,6 +299,8 @@ class InquiryServiceImplTest {
         given(inquiryRepository.findById(anyInt()))
             .willReturn(Optional.ofNullable(inquiry));
 
+        given(employeeRepository.findById(any()))
+            .willReturn(Optional.ofNullable(employee));
         // when then
         assertThat(inquiry.getAnswerContent())
             .isNull();
@@ -335,6 +337,9 @@ class InquiryServiceImplTest {
         given(inquiryRepository.findById(anyInt()))
             .willReturn(Optional.ofNullable(inquiry));
 
+        given(employeeRepository.findById(any()))
+            .willReturn(Optional.ofNullable(employee));
+
         // when then
         assertThatThrownBy(() -> inquiryService.modifyInquiryAnswer(inquiryAnswerRequestDto))
             .isInstanceOf(NoRegisteredAnswerException.class)
@@ -357,8 +362,8 @@ class InquiryServiceImplTest {
 
         // when then
         assertThatThrownBy(() -> inquiryService.modifyInquiryAnswer(inquiryAnswerRequestDto))
-            .isInstanceOf(DifferentEmployeeWriterAboutInquiryAnswerException.class)
-            .hasMessageContaining(DifferentEmployeeWriterAboutInquiryAnswerException.MESSAGE);
+            .isInstanceOf(EmployeeNotFoundException.class)
+            .hasMessageContaining(EmployeeNotFoundException.MESSAGE);
     }
 
     @DisplayName("문의가 존재할때 문의삭제 요청이 잘 이루어진다.")

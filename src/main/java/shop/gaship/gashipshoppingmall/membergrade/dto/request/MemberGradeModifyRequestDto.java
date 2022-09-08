@@ -15,7 +15,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Setter
 public class MemberGradeModifyRequestDto {
-    @Length(min = 1, max = 10)
+    @Length(min = 1, max = 10, message = "name 의 길이는 최소 1 최대 10 입니다.")
     @NotBlank(message = "name 은 필수 입력값입니다.")
     private String name;
     @NotNull(message = "accumulateAmount 는 필수 입력값입니다.")

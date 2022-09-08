@@ -7,13 +7,20 @@ MSA 기반의 가구 쇼핑몰 서비스
 ## 서비스 플로우
 ### shopping mall 아키텍처
 
-
-![쇼핑몰 아키텍처](https://user-images.githubusercontent.com/60546275/185783063-17fde0bb-c980-46f1-bde2-7150f6eb5a43.jpg)
+![쇼핑몰 아키텍처](https://user-images.githubusercontent.com/60546275/189018773-11a9b49b-ec35-4e04-ab15-8aebeb337bc8.jpg)
 
 - - -
 ### CI/CD 아키텍처
 
-![CI-CD](https://user-images.githubusercontent.com/60546275/185783068-930ceb48-9e1f-473b-8bab-3c49f44de6e6.jpg)
+![CI-CD](https://user-images.githubusercontent.com/60546275/189019779-cf67ca28-fc22-40fc-a74f-8acdd44cf669.jpg)
+
+---
+
+### 테스트 커버리지
+목표 : 쇼핑몰 서버 라인 커버리지 80% 이상
+
+__2022년 9월 8일 (목) 기준 83.7%__
+![image](https://user-images.githubusercontent.com/60546275/188953361-ec119cbd-fed6-4399-a1f6-2dca3769caf7.png)
 
 ## 주요 기능
 
@@ -184,3 +191,6 @@ MSA 기반의 가구 쇼핑몰 서비스
 <br/><img src="https://img.shields.io/badge/github-181717?style=for-the-badge&amp;logo=github&amp;logoColor=white"> ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
 
 ## 팀원
+<a href="https://github.com/gaship/gaship-shopping-mall/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=gaship/gaship-shopping-mall" />
+</a>

@@ -224,6 +224,9 @@ public class OrderProductServiceImpl implements OrderProductService {
                     orderProductStatusCancelDto.getPaymentCancelHistoryNo(),
                     LocalDateTime.now()
                 );
+
+                Product cancelProductTarget = orderProduct.getProduct();
+                cancelProductTarget.updateStockQuantity(cancelProductTarget.getStockQuantity() + 1);
             });
 
         List<OrderProduct> orderProducts = orderProductRepository
