@@ -69,7 +69,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .select(Projections.constructor(ProductByCategoryResponseDto.class,
                     product.no.as("productNo"),
                     product.name.as("productName"),
-                    product.amount.as("productPrice")
+                    product.amount
                 ))
                 .where(product.category.no.in(lowerList
                             .stream()
@@ -104,7 +104,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
             .select(Projections.constructor(ProductByCategoryResponseDto.class,
                 product.no.as("productNo"),
                 product.name.as("productName"),
-                product.amount.as("productPrice")
+                product.amount
             ))
             .where(product.category.no.in(lastCategory)
                     .and(statusCode.statusCodeName.ne(SalesStatus.HIDING.getValue())),

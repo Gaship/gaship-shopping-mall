@@ -1,5 +1,6 @@
 package shop.gaship.gashipshoppingmall.product.dto.response;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,14 +17,14 @@ import lombok.Setter;
 public class ProductByCategoryResponseDto {
     private Integer productNo;
     private String productName;
-    private Long productPrice;
+    private Long amount;
     @Setter
-    private String filePath;
+    private List<String> filePaths;
 
     public ProductByCategoryResponseDto(Integer productNo,
                                         String productName, Long productPrice) {
         this.productNo = productNo;
         this.productName = productName;
-        this.productPrice = productPrice;
+        this.amount = productPrice;
     }
 }
