@@ -232,8 +232,8 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toUnmodifiableList());
 
         upperCategoryProducts.forEach(productByCategoryResponseDto ->
-            productByCategoryResponseDto.setFilePath(commonFileRepository.findPaths(
-                productByCategoryResponseDto.getProductNo(), Product.SERVICE).get(0)));
+            productByCategoryResponseDto.setFilePaths(commonFileRepository.findPaths(
+                productByCategoryResponseDto.getProductNo(), Product.SERVICE)));
 
         return new PageImpl<>(upperCategoryProducts, pageable, products.getTotalPages());
     }
@@ -272,8 +272,8 @@ public class ProductServiceImpl implements ProductService {
                 Objects.isNull(minPrice) ? 0L : minPrice,
                 Objects.isNull(maxPrice) ? 0L : maxPrice,
                 pageable);
-        page.getContent().forEach(p -> p.setFilePath(commonFileRepository
-            .findPaths(p.getProductNo(), Product.SERVICE).get(0))
+        page.getContent().forEach(p -> p.setFilePaths(commonFileRepository
+            .findPaths(p.getProductNo(), Product.SERVICE))
         );
         return page;
     }
