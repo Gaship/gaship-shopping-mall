@@ -7,8 +7,7 @@ MSA 기반의 가구 쇼핑몰 서비스
 ## 서비스 플로우
 ### shopping mall 아키텍처
 
-![쇼핑몰 아키텍처](https://user-images.githubusercontent.com/60546275/188952522-840e4830-a055-4dbd-aeb5-fb8b40b31704.jpg)
-
+![쇼핑몰 아키텍처](https://user-images.githubusercontent.com/60546275/189018773-11a9b49b-ec35-4e04-ab15-8aebeb337bc8.jpg)
 
 - - -
 ### CI/CD 아키텍처
