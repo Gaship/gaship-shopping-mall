@@ -105,12 +105,15 @@ class OrderProductRepositoryTest {
     @Test
     void findOrderSale() {
         Page<OrderProductResponseDto> list = orderProductRepository.findAllOrdersByMemberNo(1, PageRequest.of(0, 10));
+
+        assertThat(list.getContent()).isNotEmpty();
     }
 
     @Test
     void productTest() {
-        Page<ProductByCategoryResponseDto> level_2 = productRepository.findProductByCategory(7, 0L, 1000000L, PageRequest.of(0, 10));
+        Page<ProductByCategoryResponseDto> level_2 = productRepository.findProductByCategory(7, 0L, 100000000000L, PageRequest.of(0, 10));
         Page<ProductByCategoryResponseDto> level_1 = productRepository.findProductByCategory(1, 0L, 1000000L, PageRequest.of(0, 10));
+
 
         assertThat(level_2).isNotEmpty();
         assertThat(level_1).isNotEmpty();

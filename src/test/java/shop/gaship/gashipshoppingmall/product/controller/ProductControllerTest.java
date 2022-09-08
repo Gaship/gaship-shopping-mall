@@ -285,7 +285,7 @@ class ProductControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content[0].productName").value(responseDto.getProductName()))
             .andExpect(jsonPath("$.content[0].productNo").value(responseDto.getProductNo()))
-            .andExpect(jsonPath("$.content[0].productPrice").value(responseDto.getProductPrice()))
+            .andExpect(jsonPath("$.content[0].amount").value(responseDto.getAmount()))
             .andDo(print());
 
         verify(service, times(1)).findProductByLowerCategory(response.getProductNo(), pageRequest);
