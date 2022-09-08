@@ -27,7 +27,6 @@ import shop.gaship.gashipshoppingmall.category.repository.CategoryRepository;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
-import shop.gaship.gashipshoppingmall.elastic.documents.ElasticProduct;
 import shop.gaship.gashipshoppingmall.elastic.repository.ElasticProductRepository;
 import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
 import shop.gaship.gashipshoppingmall.member.dummy.StatusCodeDummy;
@@ -35,6 +34,7 @@ import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductByCategoryResponseDto;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.exception.ProductNotFoundException;
@@ -42,13 +42,13 @@ import shop.gaship.gashipshoppingmall.product.repository.ProductRepository;
 import shop.gaship.gashipshoppingmall.product.service.impl.ProductServiceImpl;
 import shop.gaship.gashipshoppingmall.producttag.entity.ProductTag;
 import shop.gaship.gashipshoppingmall.producttag.repository.ProductTagRepository;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 import shop.gaship.gashipshoppingmall.tag.entity.Tag;
 import shop.gaship.gashipshoppingmall.tag.repository.TagRepository;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -344,7 +344,7 @@ class ProductServiceTest {
         given(categoryRepository.findById(any(Integer.class)))
             .willReturn(Optional.empty());
         //when
-        assertThatThrownBy(() -> service.findProductByCategory(product.getNo(),
+        assertThatThrownBy(() -> service.findProductByLowerCategory(product.getNo(),
             pageRequest))
             .isInstanceOf(CategoryNotFoundException.class);
     }
@@ -364,16 +364,21 @@ class ProductServiceTest {
             .willReturn(List.of(tag.getTitle()));
         given(categoryRepository.findById(any()))
             .willReturn(Optional.of(category));
+        given(commonFileRepository.findPaths(anyInt(), any()))
+            .willReturn(List.of("aa"));
 
         //when
-        Page<ProductAllInfoResponseDto> result = service.findProductByCategory(1, pageRequest);
+        Page<ProductByCategoryResponseDto> result = service.findProductByLowerCategory(1, pageRequest);
 
         //then
         verify(repository, times(1)).findProduct(any());
-        verify(productTagRepository, times(1)).findTagsByProductNo(tag.getTagNo());
+        verify(commonFileRepository, times(2)).findPaths(anyInt(), any());
         verify(categoryRepository, times(1)).findById(any());
 
-        checkContent(result);
+        List<ProductByCategoryResponseDto> content = result.getContent();
+
+        assertThat(content.size()).isEqualTo(1);
+
     }
 
     @DisplayName("제품이름으로 조회하기")

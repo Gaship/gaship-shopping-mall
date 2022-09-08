@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductByCategoryResponseDto;
 
 /**
  * 상품 서비스 인터페이스 입니다.
@@ -79,12 +80,13 @@ public interface ProductService {
     /**
      * 카테고리를 통해 알맞은 상품을 조회하는 메서드입니다.
      *
-     * @param no       카테고리 no 가 입력이된다.
-     * @param pageable 페이징을 하기위한 값이들어갑니다.
+     * @param categoryNo 카테고리 no 가 입력이된다.
+     * @param pageable   페이징을 하기위한 값이들어갑니다.
      * @return list 같은 카테고리의 no 를 가진 제품들이 반환된다.
      * @author 유호철
      */
-    Page<ProductAllInfoResponseDto> findProductByCategory(Integer no, Pageable pageable);
+    Page<ProductByCategoryResponseDto> findProductByLowerCategory(Integer categoryNo,
+                                                                  Pageable pageable);
 
     /**
      * 이름을 통해 알맞은 상품을 조회하는 메서드입니다.
@@ -95,6 +97,11 @@ public interface ProductService {
      * @author 유호철
      */
     Page<ProductAllInfoResponseDto> findProductByName(String name, Pageable pageable);
+
+    Page<ProductByCategoryResponseDto> findProductByUpperCategoryNo(Integer categoryNo,
+                                                                    Long minPrice,
+                                                                    Long maxPrice,
+                                                                    Pageable pageable);
 
     /**
      * 알맞은 상품들의 정보들을 반환합니다.
