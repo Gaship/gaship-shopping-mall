@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductByCategoryResponseDto;
 import shop.gaship.gashipshoppingmall.product.service.ProductService;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 
@@ -184,11 +184,19 @@ public class ProductController {
      * @author 유호철
      */
     @GetMapping("/category/{categoryNo}")
-    public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productCategoryList(
+    public ResponseEntity<PageResponse<ProductByCategoryResponseDto>> productCategoryList(
         @PathVariable("categoryNo") Integer categoryNo,
+        @RequestParam("isUpper") boolean isUpper,
+        @RequestParam(value = "minPrice", required = false) Long minPrice,
+        @RequestParam(value = "maxPrice", required = false) Long maxPrice,
         Pageable pageable) {
-        Page<ProductAllInfoResponseDto> page =
-            service.findProductByCategory(categoryNo, pageable);
+        Page<ProductByCategoryResponseDto> page = null;
+        if (isUpper) {
+            page = service.findProductByUpperCategoryNo(categoryNo, minPrice, maxPrice, pageable);
+        } else {
+            page = service.findProductByLowerCategory(categoryNo, pageable);
+
+        }
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_JSON)
@@ -225,9 +233,9 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<PageResponse<ProductAllInfoResponseDto>> productListAll(
         Pageable pageable,
-        @RequestParam(required = false, value ="category") String category,
-        @RequestParam(required = false, value ="minAmount") String minAmount,
-        @RequestParam(required = false, value ="maxAmount") String maxAmount) {
+        @RequestParam(required = false, value = "category") String category,
+        @RequestParam(required = false, value = "minAmount") String minAmount,
+        @RequestParam(required = false, value = "maxAmount") String maxAmount) {
         Page<ProductAllInfoResponseDto> page = service.findProductsInfo(pageable, category, minAmount, maxAmount);
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -246,10 +254,10 @@ public class ProductController {
     public ResponseEntity<List<ProductAllInfoResponseDto>> productNosList(
         @RequestParam("productNos") List<Integer> productNos) {
         List<ProductAllInfoResponseDto> result;
-        if(productNos.size() > 0){
+        if (!productNos.isEmpty()) {
             result = service.findProductByProductNos(
-                    productNos, PageRequest.of(0, productNos.size())).getContent();
-        }else{
+                productNos, PageRequest.of(0, productNos.size())).getContent();
+        } else {
             result = List.of();
         }
         return ResponseEntity
@@ -276,5 +284,4 @@ public class ProductController {
             .contentType(MediaType.APPLICATION_JSON)
             .body(new PageResponse<>(page));
     }
-
 }

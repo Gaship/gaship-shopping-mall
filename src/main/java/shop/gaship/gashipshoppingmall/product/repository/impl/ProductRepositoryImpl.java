@@ -7,17 +7,23 @@ import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
+import shop.gaship.gashipshoppingmall.category.entity.Category;
 import shop.gaship.gashipshoppingmall.category.entity.QCategory;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductByCategoryResponseDto;
 import shop.gaship.gashipshoppingmall.product.entity.Product;
 import shop.gaship.gashipshoppingmall.product.entity.QProduct;
 import shop.gaship.gashipshoppingmall.product.repository.custom.ProductRepositoryCustom;
 import shop.gaship.gashipshoppingmall.producttag.entity.QProductTag;
 import shop.gaship.gashipshoppingmall.statuscode.entity.QStatusCode;
+import shop.gaship.gashipshoppingmall.statuscode.status.SalesStatus;
 import shop.gaship.gashipshoppingmall.tag.entity.QTag;
 
 
@@ -38,6 +44,81 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
 
     public ProductRepositoryImpl() {
         super(Product.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductByCategoryResponseDto> findProductByCategory(Integer categoryNo, Long min, Long max, Pageable pageable) {
+        QCategory lower = new QCategory("lower");
+        QStatusCode statusCode = QStatusCode.statusCode;
+        // 필요정보 상품이름, 상품번호, 상품가격
+        List<Category> lowerList = from(category)
+            .innerJoin(category.lowerCategories, lower)
+            .where(lower.upperCategory.no.eq(categoryNo))
+            .select(lower)
+            .fetch();
+
+        if (lowerList.isEmpty()) {
+            return Page.empty();
+        }
+
+        if (lowerList.get(0).getLevel() == 3) {
+            JPQLQuery<ProductByCategoryResponseDto> query = from(product)
+                .innerJoin(product.category, category)
+                .innerJoin(product.salesStatus, statusCode)
+                .select(Projections.constructor(ProductByCategoryResponseDto.class,
+                    product.no.as("productNo"),
+                    product.name.as("productName"),
+                    product.amount
+                ))
+                .where(product.category.no.in(lowerList
+                            .stream()
+                            .map(Category::getNo)
+                            .collect(Collectors.toUnmodifiableList()))
+                        .and(statusCode.statusCodeName.ne(SalesStatus.HIDING.getValue())),
+                    eqPrice(min, max))
+                .distinct();
+
+            List<ProductByCategoryResponseDto> content = query
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+            return PageableExecutionUtils.getPage(content, pageable, query::fetchCount);
+        }
+
+        List<Integer> lastCategory = from(category)
+            .select(category.no)
+            .where(category.upperCategory.no.in(lowerList.stream()
+                    .map(Category::getNo)
+                    .collect(Collectors.toUnmodifiableList()))
+                .and(category.level.eq(3)))
+            .fetch();
+
+        if (lastCategory.isEmpty()) {
+            return Page.empty();
+        }
+
+        JPQLQuery<ProductByCategoryResponseDto> query = from(product)
+            .innerJoin(product.category, category)
+            .innerJoin(product.salesStatus, statusCode)
+            .select(Projections.constructor(ProductByCategoryResponseDto.class,
+                product.no.as("productNo"),
+                product.name.as("productName"),
+                product.amount
+            ))
+            .where(product.category.no.in(lastCategory)
+                    .and(statusCode.statusCodeName.ne(SalesStatus.HIDING.getValue())),
+                eqPrice(min, max))
+            .distinct();
+
+        List<ProductByCategoryResponseDto> content = query
+            .limit(pageable.getPageSize())
+            .offset(pageable.getOffset())
+            .fetch();
+
+        return PageableExecutionUtils.getPage(content, pageable, query::fetchCount);
     }
 
     /**

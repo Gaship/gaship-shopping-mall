@@ -1,9 +1,11 @@
 package shop.gaship.gashipshoppingmall.product.repository.custom;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestViewDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
+import shop.gaship.gashipshoppingmall.product.dto.response.ProductByCategoryResponseDto;
 
 /**
  * QueryDsl 을 하기위한 인터페이스 클래스입니다.
@@ -13,6 +15,8 @@ import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoRespons
  */
 @NoRepositoryBean
 public interface ProductRepositoryCustom {
+
+    Page<ProductByCategoryResponseDto> findProductByCategory(Integer categoryNo, Long minPrice, Long maxPrice, Pageable pageable);
 
     /**
      * 조건을 통해 상품들을 조회하기위한 메서드입니다.

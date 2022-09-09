@@ -54,14 +54,13 @@ public class MemberCreationRequest {
     @NotBlank
     @Length(max = 1)
     @Pattern(
-            regexp = "^[남|녀]$",
-            message = "성별은 남, 녀만 입력이 가능합니다."
+            regexp = "^[남|여]$",
+            message = "성별은 남, 여만 입력이 가능합니다."
     )
     private String gender;
 
     @NotBlank(message = "이메일 인증이 필요합니다.")
     private String verifyCode;
 
-    @NotNull
     private String encodedEmailForSearch;
 }
