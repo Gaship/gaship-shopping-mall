@@ -39,7 +39,6 @@ import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDt
 import shop.gaship.gashipshoppingmall.inquiry.dummy.InquiryDummy;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.AlreadyCompleteInquiryAnswerException;
-import shop.gaship.gashipshoppingmall.inquiry.exception.DifferentEmployeeWriterAboutInquiryAnswerException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.NoRegisteredAnswerException;
 import shop.gaship.gashipshoppingmall.inquiry.repository.InquiryRepository;
@@ -54,6 +53,8 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
+import shop.gaship.gashipshoppingmall.tablecount.entity.TableCount;
+import shop.gaship.gashipshoppingmall.tablecount.service.TableCountService;
 
 /**
  * InquiryServiceImpl test
@@ -82,6 +83,9 @@ class InquiryServiceImplTest {
 
     @MockBean
     private EmployeeRepository employeeRepository;
+
+    @MockBean
+    private TableCountService tableCountService;
 
     private InquiryAddRequestDto inquiryAddRequestDtoWhenCustomer;
 
@@ -203,6 +207,10 @@ class InquiryServiceImplTest {
         given(statusCodeRepository.findByStatusCodeName(anyString()))
             .willReturn(Optional.ofNullable(InquiryDummy.statusCodeHolderDummy()));
 
+        TableCount tableCount = mock(TableCount.class);
+        when(tableCount.getCount()).thenReturn(0L);
+        given(tableCountService.findByName(anyString()))
+            .willReturn(tableCount);
         // when then
         assertThatNoException().isThrownBy(
             () -> inquiryService.addInquiryAnswer(inquiryAnswerRequestDto));
@@ -372,6 +380,18 @@ class InquiryServiceImplTest {
         given(inquiryRepository.existsById(anyInt()))
             .willReturn(Boolean.TRUE);
 
+        InquiryDetailsResponseDto inquiryDetailsResponseDto = mock(InquiryDetailsResponseDto.class);
+
+        when(inquiryDetailsResponseDto.getEmployeeName())
+            .thenReturn(null);
+        given(inquiryRepository.findDetailsById(1))
+            .willReturn(Optional.ofNullable(inquiryDetailsResponseDto));
+
+        TableCount tableCount = mock(TableCount.class);
+        when(tableCount.getCount()).thenReturn(0L);
+        given(tableCountService.findByName(anyString()))
+            .willReturn(tableCount);
+
         assertThatNoException().isThrownBy(() -> inquiryService.deleteInquiryManager(1));
         verify(inquiryRepository).deleteById(1);
     }
@@ -398,6 +418,11 @@ class InquiryServiceImplTest {
 
         given(statusCodeRepository.findByStatusCodeName(anyString()))
             .willReturn(Optional.ofNullable(InquiryDummy.statusCodeHolderDummy()));
+
+        TableCount tableCount = mock(TableCount.class);
+        when(tableCount.getCount()).thenReturn(0L);
+        given(tableCountService.findByName(anyString()))
+            .willReturn(tableCount);
 
         assertThat(inquiry.getProcessStatusCode().getStatusCodeNo())
             .isEqualTo(InquiryDummy.statusCodeCompleteDummy().getStatusCodeNo());
@@ -468,11 +493,11 @@ class InquiryServiceImplTest {
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "inquiryNo"));
         Page<InquiryListResponseDto> page = new PageImpl<>(Collections.EMPTY_LIST, pageRequest, 10);
         given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
-            any(InquiryListSearch.class)))
+            any(InquiryListSearch.class), any()))
             .willReturn(page);
 
         // when then
-        assertThat(inquiryService.findInquiries(pageRequest, Boolean.TRUE))
+        assertThat(inquiryService.findProductInquiriesAll(pageRequest, Boolean.TRUE))
             .isEqualTo(page);
     }
 
@@ -490,7 +515,7 @@ class InquiryServiceImplTest {
         given(statusCodeRepository.findByStatusCodeName(ProcessStatus.WAITING.getValue()))
             .willReturn(Optional.ofNullable(statusCode));
         given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
-            any(InquiryListSearch.class)))
+            any(InquiryListSearch.class), any()))
             .willReturn(page);
 
         // when then
@@ -528,7 +553,7 @@ class InquiryServiceImplTest {
         given(memberRepository.existsById(anyInt()))
             .willReturn(Boolean.TRUE);
         given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
-            any(InquiryListSearch.class)))
+            any(InquiryListSearch.class), any()))
             .willReturn(page);
 
         // when then
@@ -563,7 +588,7 @@ class InquiryServiceImplTest {
         given(productRepository.existsById(anyInt()))
             .willReturn(Boolean.TRUE);
         given(inquiryRepository.findAllThroughSearchDto(any(PageRequest.class),
-            any(InquiryListSearch.class)))
+            any(InquiryListSearch.class), any()))
             .willReturn(page);
 
         // when then

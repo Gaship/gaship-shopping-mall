@@ -304,7 +304,7 @@ class InquiryRepositoryTest {
 
         // when
         Page<InquiryListResponseDto> page =
-            inquiryRepository.findAllThroughSearchDto(pageable, dto);
+            inquiryRepository.findAllThroughSearchDto(pageable, dto, null);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -390,7 +390,8 @@ class InquiryRepositoryTest {
 
         // when
         Page<InquiryListResponseDto> page =
-            inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
+            inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto,
+                null);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -440,7 +441,7 @@ class InquiryRepositoryTest {
 
         // when
         Page<InquiryListResponseDto> page =
-            inquiryRepository.findAllThroughSearchDto(pageable, dto);
+            inquiryRepository.findAllThroughSearchDto(pageable, dto, null);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -488,7 +489,7 @@ class InquiryRepositoryTest {
 
         // when
         Page<InquiryListResponseDto> page =
-            inquiryRepository.findAllThroughSearchDto(pageable, dto);
+            inquiryRepository.findAllThroughSearchDto(pageable, dto, null);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -570,7 +571,7 @@ class InquiryRepositoryTest {
 
         // when
         Page<InquiryListResponseDto> page =
-            inquiryRepository.findAllThroughSearchDto(pageable, dto);
+            inquiryRepository.findAllThroughSearchDto(pageable, dto, null);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -656,7 +657,8 @@ class InquiryRepositoryTest {
 
         // when
         Page<InquiryListResponseDto> page =
-            inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
+            inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto,
+                null);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -706,7 +708,7 @@ class InquiryRepositoryTest {
 
         // when
         Page<InquiryListResponseDto> page =
-            inquiryRepository.findAllThroughSearchDto(pageable, dto);
+            inquiryRepository.findAllThroughSearchDto(pageable, dto, null);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -754,7 +756,7 @@ class InquiryRepositoryTest {
 
         // when
         Page<InquiryListResponseDto> page =
-            inquiryRepository.findAllThroughSearchDto(pageable, dto);
+            inquiryRepository.findAllThroughSearchDto(pageable, dto, null);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -806,7 +808,7 @@ class InquiryRepositoryTest {
 
         // when
         Page<InquiryListResponseDto> page =
-            inquiryRepository.findAllThroughSearchDto(pageable, dto);
+            inquiryRepository.findAllThroughSearchDto(pageable, dto, null);
         List<InquiryListResponseDto> content = page.getContent();
 
         long totalElement = page.getTotalElements();
@@ -852,7 +854,8 @@ class InquiryRepositoryTest {
                 null, null, product.getNo());
 
         // when then
-        assertThatThrownBy(() -> inquiryRepository.findAllThroughSearchDto(pageable, dto))
+        assertThatThrownBy(() -> inquiryRepository.findAllThroughSearchDto(pageable, dto,
+            null))
             .isInstanceOf(InquirySearchBadRequestException.class)
             .hasMessageContaining(InquirySearchBadRequestException.MESSAGE);
     }
