@@ -132,6 +132,10 @@ class InquiryServiceImplTest {
         given(memberRepository.findById(anyInt()))
             .willReturn(Optional.ofNullable(MemberDummy.dummy()));
 
+        TableCount tableCount = mock(TableCount.class);
+        when(tableCount.getCount()).thenReturn(1L);
+        given(tableCountService.findByName(anyString()))
+            .willReturn(tableCount);
         // when then
         assertThatNoException().isThrownBy(() -> inquiryService.addInquiry(
             inquiryAddRequestDtoWhenCustomer));
