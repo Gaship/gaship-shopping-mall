@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberModifyByAdminDto;
 import shop.gaship.gashipshoppingmall.member.dto.response.MemberResponseDtoByAdmin;
 import shop.gaship.gashipshoppingmall.member.service.MemberService;
@@ -35,6 +36,7 @@ public class MemberByAdminController {
      * @param request 변경하고싶은 회원의 상태, 닉네임 정보가있는 객체입니다.
      * @return body 데이터는 없고, 응답 상태는 200을 반환합니다.
      */
+    @AdminAuthority
     @PutMapping("/{memberNo}")
     public ResponseEntity<Void> memberModifyByAdmin(
             @Valid @RequestBody MemberModifyByAdminDto request) {
@@ -49,6 +51,7 @@ public class MemberByAdminController {
      * @param memberNo 멤버 고유번호
      * @return 조회된 멤버의 상세정보를 반환하고 응답 상태는 200을 반환합니다.
      */
+    @AdminAuthority
     @GetMapping("/{memberNo}")
     public ResponseEntity<MemberResponseDtoByAdmin> memberDetailsByAdmin(
             @PathVariable Integer memberNo) {
@@ -63,6 +66,7 @@ public class MemberByAdminController {
      * @param pageable page와 size가 쿼리 파라미터로 담긴 객체입니다.
      * @return body 는 조회된 멤버들의 정보, 응답 상태는 200을 반환합니다.
      */
+    @AdminAuthority
     @GetMapping
     public ResponseEntity<PageResponse<MemberResponseDtoByAdmin>> memberList(
             Pageable pageable) {

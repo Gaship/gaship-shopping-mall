@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.aspact.anntation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.member.dto.request.FindMemberEmailRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
@@ -135,6 +136,7 @@ public class MemberController {
      * @param memberModifyRequestDto 수정하려는 멤버의 정보를 가지고있는 DTO입니다.
      * @return http body data가 없고 응답 상태는 200을 반환합니다.
      */
+    @MemberOnlyAuthority
     @PutMapping("/{memberNo}")
     public ResponseEntity<Void> memberModify(
             @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
@@ -150,6 +152,7 @@ public class MemberController {
      * @param memberNo 멤버의 고유번호입니다.
      * @return http body data가 없고 응답 상태는 200을 반환합니다.
      */
+    @MemberOnlyAuthority
     @DeleteMapping("/{memberNo}")
     public ResponseEntity<Void> memberRemove(@PathVariable Integer memberNo) {
         memberService.removeMember(memberNo);
@@ -163,6 +166,7 @@ public class MemberController {
      * @param memberNo 멤버 고유번호
      * @return 조회된 맴버의 상세정보를 반환하고 응답 상태는 200을 반환합니다.
      */
+    @MemberOnlyAuthority
     @GetMapping("/{memberNo}")
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable Integer memberNo) {
         MemberResponseDto memberResponseDto = memberService.findMember(memberNo);

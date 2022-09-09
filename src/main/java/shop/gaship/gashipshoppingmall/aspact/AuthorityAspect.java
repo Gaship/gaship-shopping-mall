@@ -3,6 +3,7 @@ package shop.gaship.gashipshoppingmall.aspact;
 import java.util.Objects;
 import java.util.function.Predicate;
 import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import shop.gaship.gashipshoppingmall.aspact.exception.InvalidAuthorityException;
+import shop.gaship.gashipshoppingmall.member.entity.MembersRole;
 
 /**
  * 권한에 관한 관심사 종단을 체크하는 AOP 클래스입니다.
@@ -21,10 +23,8 @@ import shop.gaship.gashipshoppingmall.aspact.exception.InvalidAuthorityException
  */
 @Aspect
 @Component
+@Slf4j
 public class AuthorityAspect {
-    private static final String MEMBER_AUTHORITY = "ROLE_MEMBER";
-    private static final String MANAGER_AUTHORITY = "ROLE_MANAGER";
-    private static final String ADMIN_AUTHORITY = "ROLE_ADMIN";
 
     /**
      * 멤버 이상의 권한을 가진 멤버만 접근 가능합니다.
@@ -93,7 +93,9 @@ public class AuthorityAspect {
             (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
         String authority = request.getHeader("X-AUTH-ROLE");
-
+        log.debug("-------------------------------------------------");
+        log.debug("토큰아토큰아 나와라 토큰 : {} ",authority);
+        log.debug("-------------------------------------------------");
         if (isExecutable(qualifyAuthority, request, authority)) {
             try {
                 return pjp.proceed(pjp.getArgs());
@@ -119,8 +121,9 @@ public class AuthorityAspect {
      * @return 메서드 접근 허용 결과를 반환합니다.
      */
     private boolean checkMemberAuthority(String authority) {
-        return authority.equals(MEMBER_AUTHORITY) || authority.equals(MANAGER_AUTHORITY)
-            || authority.equals(ADMIN_AUTHORITY);
+        return authority.equals(MembersRole.ROLE_USER.getRole())
+            || authority.equals(MembersRole.ROLE_MANAGER.getRole())
+            || authority.equals(MembersRole.ROLE_ADMIN.getRole());
     }
 
     /**
@@ -130,7 +133,7 @@ public class AuthorityAspect {
      * @return 메서드 접근 허용 결과를 반환합니다.
      */
     private boolean checkManagerAuthority(String authority) {
-        return authority.equals(MANAGER_AUTHORITY) || authority.equals(ADMIN_AUTHORITY);
+        return authority.equals(MembersRole.ROLE_MANAGER.getRole()) || authority.equals(MembersRole.ROLE_ADMIN.getRole());
     }
 
     /**
@@ -140,7 +143,7 @@ public class AuthorityAspect {
      * @return 메서드 접근 허용 결과를 반환합니다.
      */
     private boolean checkAdminAuthority(String authority) {
-        return authority.equals(ADMIN_AUTHORITY);
+        return authority.equals(MembersRole.ROLE_ADMIN.getRole());
     }
 
     /**
@@ -150,7 +153,7 @@ public class AuthorityAspect {
      * @return 메서드 접근 허용 결과를 반환합니다.
      */
     private boolean checkMemberOnlyAuthority(String authority) {
-        return authority.equals(MEMBER_AUTHORITY);
+        return authority.equals(MembersRole.ROLE_USER.getRole());
     }
 
     /**
@@ -160,6 +163,6 @@ public class AuthorityAspect {
      * @return 메서드 접근 허용 결과를 반환합니다.
      */
     private boolean checkManagerOnlyAuthority(String authority) {
-        return authority.equals(MANAGER_AUTHORITY);
+        return authority.equals(MembersRole.ROLE_MANAGER.getRole());
     }
 }
