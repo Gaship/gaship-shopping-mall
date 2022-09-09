@@ -1,6 +1,9 @@
 package shop.gaship.gashipshoppingmall.inquiry.service.impl;
 
-import java.util.List;
+import static shop.gaship.gashipshoppingmall.inquiry.repository.custom.impl.InquiryRepositoryImpl.ANSWER_COMPLETE_NO;
+import static shop.gaship.gashipshoppingmall.tablecount.nameenum.TableName.CUSTOMER_INQUIRY_ALL_TABLE_COUNT_NAME;
+import static shop.gaship.gashipshoppingmall.tablecount.nameenum.TableName.CUSTOMER_INQUIRY_ANSWER_COMPLETE_TABLE_COUNT_NAME;
+
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,6 +34,8 @@ import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.repository.StatusCodeRepository;
 import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
+import shop.gaship.gashipshoppingmall.tablecount.entity.TableCount;
+import shop.gaship.gashipshoppingmall.tablecount.service.TableCountService;
 
 /**
  * InquiryService 인터페이스의 구현체입니다.
@@ -50,6 +55,10 @@ public class InquiryServiceImpl implements InquiryService {
     private final ProductRepository productRepository;
     private final EmployeeRepository employeeRepository;
 
+    private final TableCountService tableCountService;
+
+    private static final Long COUNT_UP_AND_DOWN_NUMBER = 1L;
+
     /**
      * {@inheritDoc}
      */
@@ -62,9 +71,13 @@ public class InquiryServiceImpl implements InquiryService {
         Inquiry inquiry =
             this.inquiryAddRequestDtoToInquiryEntityWhenCreation(inquiryAddRequestDto, statusCode);
 
-
         setMember(inquiryAddRequestDto, inquiry);
         saveOrSetProduct(inquiryAddRequestDto, inquiry);
+
+        if (Boolean.TRUE.equals(inquiry.getIsProduct())) {
+            return;
+        }
+        plusCustomerInquiryAllCount();
     }
 
     /**
@@ -119,6 +132,11 @@ public class InquiryServiceImpl implements InquiryService {
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         inquiry.addAnswer(inquiryAnswerRequestDto, employee, processStatusCode);
+
+        if (Boolean.TRUE.equals(inquiry.getIsProduct())) {
+            return;
+        }
+        plusCustomerInquiryAnswerCount();
     }
 
     /**
@@ -147,6 +165,8 @@ public class InquiryServiceImpl implements InquiryService {
         }
 
         inquiryRepository.deleteById(inquiryNo);
+
+        minusTableCount(inquiry);
     }
 
     /**
@@ -159,7 +179,10 @@ public class InquiryServiceImpl implements InquiryService {
             throw new InquiryNotFoundException();
         }
 
+        InquiryDetailsResponseDto inquiry = inquiryRepository.findDetailsById(inquiryNo).orElseThrow(InquiryNotFoundException::new);
         inquiryRepository.deleteById(inquiryNo);
+
+        minusTableCount(inquiry);
     }
 
     /**
@@ -176,17 +199,80 @@ public class InquiryServiceImpl implements InquiryService {
                 .orElseThrow(StatusCodeNotFoundException::new);
 
         inquiry.deleteAnswer(processStatusCode, inquiryNo);
+
+        if (Boolean.TRUE.equals(inquiry.getIsProduct())) {
+            return;
+        }
+        minusCustomerInquiryAnswerCount();
+    }
+
+    private void plusCustomerInquiryAllCount() {
+        TableCount tableCount = tableCountService.findByName(
+            CUSTOMER_INQUIRY_ALL_TABLE_COUNT_NAME.getValue());
+        if (Objects.equals(tableCount.getCount(), 0L)) {
+            long totalCount = inquiryRepository.getCustomerInquiryCount(new InquiryListSearch(false, null, null, null));
+            tableCount.setCount(totalCount + COUNT_UP_AND_DOWN_NUMBER);
+            return;
+        }
+        tableCount.setCount(tableCount.getCount() + COUNT_UP_AND_DOWN_NUMBER);
+    }
+
+    private void plusCustomerInquiryAnswerCount() {
+        TableCount tableCount = tableCountService.findByName(
+            CUSTOMER_INQUIRY_ANSWER_COMPLETE_TABLE_COUNT_NAME.getValue());
+        if (Objects.equals(tableCount.getCount(), 0L)) {
+            long totalCount = inquiryRepository.getCustomerInquiryCount(new InquiryListSearch(false, 15, null, null));
+            tableCount.setCount(totalCount + COUNT_UP_AND_DOWN_NUMBER);
+            return;
+        }
+        tableCount.setCount(tableCount.getCount() + COUNT_UP_AND_DOWN_NUMBER);
+    }
+
+    private void minusCustomerInquiryAllCount() {
+        TableCount tableCount = tableCountService.findByName(
+            CUSTOMER_INQUIRY_ALL_TABLE_COUNT_NAME.getValue());
+        if (Objects.equals(tableCount.getCount(), 0L)) {
+            long totalCount = inquiryRepository.getCustomerInquiryCount(new InquiryListSearch(false, null, null, null));
+            tableCount.setCount(totalCount - COUNT_UP_AND_DOWN_NUMBER);
+            return;
+        }
+        tableCount.setCount(tableCount.getCount() - COUNT_UP_AND_DOWN_NUMBER);
+    }
+
+    private void minusCustomerInquiryAnswerCount() {
+        TableCount tableCount = tableCountService.findByName(
+            CUSTOMER_INQUIRY_ANSWER_COMPLETE_TABLE_COUNT_NAME.getValue());
+        if (Objects.equals(tableCount.getCount(), 0L)) {
+            long totalCount = inquiryRepository.getCustomerInquiryCount(new InquiryListSearch(false, 15, null, null));
+            tableCount.setCount(totalCount - COUNT_UP_AND_DOWN_NUMBER);
+            return;
+        }
+        tableCount.setCount(tableCount.getCount() - COUNT_UP_AND_DOWN_NUMBER);
+    }
+
+    private void minusTableCount(InquiryDetailsResponseDto inquiry) {
+        if (Objects.nonNull(inquiry.getProductNo())) {
+            return;
+        }
+
+        minusCustomerInquiryAllCount();
+        if (Objects.isNull(inquiry.getEmployeeName())) {
+            return;
+        }
+
+        minusCustomerInquiryAnswerCount();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Page<InquiryListResponseDto> findInquiries(Pageable pageable, Boolean isProduct) {
+    public Page<InquiryListResponseDto> findProductInquiriesAll(Pageable pageable, Boolean isProduct) {
         InquiryListSearch inquirySearchRequestDto =
-            new InquiryListSearch(isProduct, null, null, null);
+            new InquiryListSearch(Boolean.TRUE, null, null, null);
 
-        return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
+        return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto,
+            null);
     }
 
     /**
@@ -202,7 +288,40 @@ public class InquiryServiceImpl implements InquiryService {
         InquiryListSearch inquirySearchRequestDto =
             new InquiryListSearch(isProduct, statusCode.getStatusCodeNo(), null, null);
 
-        return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
+        if (Objects.equals(inquirySearchRequestDto.getIsProduct(), Boolean.FALSE)
+            && Objects.equals(inquirySearchRequestDto.getStatusCodeNo(), ANSWER_COMPLETE_NO)) {
+
+            TableCount tableCount = tableCountService.findByName(CUSTOMER_INQUIRY_ANSWER_COMPLETE_TABLE_COUNT_NAME.getValue());
+            return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto, tableCount.getCount());
+        }
+
+        return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto, null);
+    }
+
+    @Override
+    public Page<InquiryListResponseDto> findCustomerInquiriesAllOrStatusComplete(Pageable pageable,
+                                                                                 InquiryListSearch inquiryListSearch) {
+        TableCount tableCount = getTableCount(inquiryListSearch);
+
+        return inquiryRepository.customerInquiryAllOrStatusCompleteFindAll(pageable, tableCount.getCount(), inquiryListSearch);
+    }
+
+
+    @Override
+    public Page<InquiryListResponseDto> findCustomerInquiriesAllOrStatusCompletePrevPage(
+        Pageable pageable, Integer inquiryNo,
+        InquiryListSearch inquiryListSearch) {
+        TableCount tableCount = getTableCount(inquiryListSearch);
+
+        return inquiryRepository.customerInquiryAllOrStatusCompletePrevFindAll(pageable, inquiryNo, tableCount.getCount(), inquiryListSearch);
+    }
+
+    @Override
+    public Page<InquiryListResponseDto> findCustomerInquiriesAllOrStatusCompleteNextPage(
+        Pageable pageable, Integer inquiryNo, InquiryListSearch inquiryListSearch) {
+        TableCount tableCount = getTableCount(inquiryListSearch);
+
+        return inquiryRepository.customerInquiryAllOrStatusCompleteNextFindAll(pageable, inquiryNo, tableCount.getCount(), inquiryListSearch);
     }
 
     /**
@@ -219,7 +338,8 @@ public class InquiryServiceImpl implements InquiryService {
         InquiryListSearch inquirySearchRequestDto =
             new InquiryListSearch(isProduct, null, memberNo, null);
 
-        return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
+        return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto,
+            null);
     }
 
     /**
@@ -236,7 +356,8 @@ public class InquiryServiceImpl implements InquiryService {
             new InquiryListSearch(InquiryType.PRODUCT_INQUIRY.getValue(), null, null,
                 productNo);
 
-        return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto);
+        return inquiryRepository.findAllThroughSearchDto(pageable, inquirySearchRequestDto,
+            null);
     }
 
     /**
@@ -247,5 +368,15 @@ public class InquiryServiceImpl implements InquiryService {
 
         return inquiryRepository.findDetailsById(inquiryNo)
             .orElseThrow(InquiryNotFoundException::new);
+    }
+
+    private TableCount getTableCount(InquiryListSearch inquiryListSearch) {
+        TableCount tableCount;
+        if (Objects.isNull(inquiryListSearch.getStatusCodeNo())) {
+            tableCount = tableCountService.findByName(CUSTOMER_INQUIRY_ALL_TABLE_COUNT_NAME.getValue());
+        } else {
+            tableCount = tableCountService.findByName(CUSTOMER_INQUIRY_ANSWER_COMPLETE_TABLE_COUNT_NAME.getValue());
+        }
+        return tableCount;
     }
 }
