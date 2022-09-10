@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.HandlerMapping;
+import shop.gaship.gashipshoppingmall.aspact.exception.InvalidIdException;
 
 /**
  * 설명작성란
@@ -37,7 +38,7 @@ public class MemberValidAspect {
             return pjp.proceed();
         }
 
-        throw new RuntimeException("jwt인증실패");
+        throw new InvalidIdException();
     }
 
     private String getMemberNo(HttpServletRequest request) {

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.membertag.dto.request.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dto.response.MemberTagResponseDto;
 import shop.gaship.gashipshoppingmall.membertag.service.MemberTagService;
@@ -35,6 +36,7 @@ public class MemberTagController {
      * @return the response entity
      * @author 최정우
      */
+//    @MemberValid
     @PostMapping("/{memberNo}")
     public ResponseEntity<Void> memberTagDeleteAllAndAddAll(
             @Valid @RequestBody MemberTagRequestDto memberTagRequestDto,
@@ -52,6 +54,7 @@ public class MemberTagController {
      * @return 회원이 그 태그를 선택했는지의 여부가 있는 태그 목록이 보입니다.
      * @author 최정우
      */
+//    @MemberValid
     @GetMapping("/{memberNo}")
     public ResponseEntity<List<MemberTagResponseDto>> memberTagList(
             @PathVariable Integer memberNo) {

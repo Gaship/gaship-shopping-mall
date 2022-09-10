@@ -137,6 +137,7 @@ public class MemberController {
      * @return http body data가 없고 응답 상태는 200을 반환합니다.
      */
     @PutMapping("/{memberNo}")
+    @MemberValid
     public ResponseEntity<Void> memberModify(
             @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
         memberService.modifyMember(memberModifyRequestDto);
@@ -152,6 +153,7 @@ public class MemberController {
      * @return http body data가 없고 응답 상태는 200을 반환합니다.
      */
     @DeleteMapping("/{memberNo}")
+    @MemberValid
     public ResponseEntity<Void> memberRemove(@PathVariable Integer memberNo) {
         memberService.removeMember(memberNo);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
