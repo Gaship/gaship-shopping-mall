@@ -94,7 +94,7 @@ public class AuthorityAspect {
         HttpServletRequest request = requestAttributes.getRequest();
         String authority = request.getHeader("X-AUTH-ROLE");
         log.debug("-------------------------------------------------");
-        log.debug("토큰아토큰아 나와라 토큰 : {} ",authority);
+        log.debug("토큰 : {} ",authority);
         log.debug("-------------------------------------------------");
         if (isExecutable(qualifyAuthority, request, authority)) {
             try {

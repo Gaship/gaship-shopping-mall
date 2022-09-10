@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
+import shop.gaship.gashipshoppingmall.aspact.anntation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewExistsResponseDto;
 import shop.gaship.gashipshoppingmall.productreview.dto.response.ProductReviewResponseDto;
@@ -143,6 +144,7 @@ public class ProductReviewController {
      * @param pageable 페이지 정보
      * @return responseEntity 조회한 상품평들의 페이지 응답 객체를 포함하고 있습니다.
      */
+    @MemberOnlyAuthority
     @GetMapping("/members/{memberNo}/reviews")
     public ResponseEntity<PageResponse<ProductReviewResponseDto>> productReviewListByMember(
             @PathVariable("memberNo") Integer memberNo,

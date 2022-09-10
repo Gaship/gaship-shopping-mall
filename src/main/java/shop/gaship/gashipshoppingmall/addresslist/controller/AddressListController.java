@@ -18,6 +18,7 @@ import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListAddRequ
 import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListModifyRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.service.AddressListService;
+import shop.gaship.gashipshoppingmall.aspact.anntation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import java.util.List;
@@ -43,6 +44,7 @@ public class AddressListController {
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
      * @author 최정우
      */
+    @MemberOnlyAuthority
     @PostMapping
     public ResponseEntity<Void> addressListAdd(
             @RequestBody @Valid AddressListAddRequestDto request) {
@@ -61,6 +63,7 @@ public class AddressListController {
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 CREATED.
      * @author 최정우
      */
+    @MemberOnlyAuthority
     @PutMapping("/{addressListNo}")
     public ResponseEntity<Void> addressListModifyAndAdd(
             @RequestBody @Valid AddressListModifyRequestDto request) {
@@ -76,6 +79,7 @@ public class AddressListController {
      * @param addressListId 배송지목록의 상태를 delete 로 만들 id 값입니다.
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 OK.
      */
+    @MemberOnlyAuthority
     @DeleteMapping("/{addressListId}")
     public ResponseEntity<Void> addressListRemove(@PathVariable Integer addressListId) {
         addressListService.removeAddressList(addressListId);
@@ -89,6 +93,7 @@ public class AddressListController {
      * @param addressListId 배송지목록 중 조회하길 원하는 id 값입니다.
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 OK.
      */
+    @MemberOnlyAuthority
     @GetMapping("/{addressListId}")
     public ResponseEntity<AddressListResponseDto> addressListDetails(
             @PathVariable Integer addressListId) {
@@ -105,6 +110,7 @@ public class AddressListController {
      * @param pageable 배송지목록 중 조회하길 원하는 페이지의 정보를 담고있는 매개변수입니다.
      * @return responseEntity body 는 조회하길 원하는 배송지목록 페이지정보를 담고있는 dto, 응답 status 는 OK.
      */
+    @MemberOnlyAuthority
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<PageResponse<AddressListResponseDto>> addressListList(
             @PathVariable Integer memberId, Pageable pageable) {
@@ -115,6 +121,7 @@ public class AddressListController {
                 .body(pageResponse);
     }
 
+    @MemberOnlyAuthority
     @GetMapping
     public ResponseEntity<List<AddressListResponseDto>> addressListAll(
             @PathVariable Integer memberId) {
