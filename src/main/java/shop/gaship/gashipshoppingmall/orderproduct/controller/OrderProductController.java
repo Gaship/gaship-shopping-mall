@@ -35,7 +35,7 @@ public class OrderProductController {
      * @param pageable the pageable
      * @return the response entity
      */
-//    @MemberValid
+    @MemberValid
     @GetMapping("/member/{memberNo}")
     public ResponseEntity<PageResponse<OrderProductResponseDto>> orderProductByMember(@PathVariable("memberNo") Integer memberNo,
                                                                                       Pageable pageable) {
@@ -51,7 +51,6 @@ public class OrderProductController {
      * @param orderNo the order product no
      * @return the response entity
      */
-//    @MemberValid
     @GetMapping("/{orderNo}")
     public ResponseEntity<PageResponse<OrderProductDetailResponseDto>> orderProductDetail(
         @PathVariable("orderNo") Integer orderNo,

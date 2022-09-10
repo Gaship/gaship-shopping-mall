@@ -7,8 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
@@ -121,7 +127,6 @@ public class OrderController {
      * @return ResponseEntity body 로 취소된 상품들에대한 값을 PageResponse 형태로 가집니다 응답은 200 ok.
      */
 //    @MemberOnlyAuthority
-//    @MemberValid
     @GetMapping(value = "/member/{memberNo}/status/{status}")
     public ResponseEntity<PageResponse<OrderCancelResponseDto>> orderCancelList(
         @PathVariable("memberNo") Integer memberNo,
