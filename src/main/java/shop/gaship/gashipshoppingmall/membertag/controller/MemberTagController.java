@@ -36,7 +36,7 @@ public class MemberTagController {
      * @return the response entity
      * @author 최정우
      */
-//    @MemberValid
+    @MemberValid
     @PostMapping("/{memberNo}")
     public ResponseEntity<Void> memberTagDeleteAllAndAddAll(
             @Valid @RequestBody MemberTagRequestDto memberTagRequestDto,
@@ -54,7 +54,7 @@ public class MemberTagController {
      * @return 회원이 그 태그를 선택했는지의 여부가 있는 태그 목록이 보입니다.
      * @author 최정우
      */
-//    @MemberValid
+    @MemberValid
     @GetMapping("/{memberNo}")
     public ResponseEntity<List<MemberTagResponseDto>> memberTagList(
             @PathVariable Integer memberNo) {

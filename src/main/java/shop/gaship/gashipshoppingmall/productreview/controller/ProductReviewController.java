@@ -143,7 +143,7 @@ public class ProductReviewController {
      * @param pageable 페이지 정보
      * @return responseEntity 조회한 상품평들의 페이지 응답 객체를 포함하고 있습니다.
      */
-//    @MemberValid
+    @MemberValid
     @GetMapping("/members/{memberNo}/reviews")
     public ResponseEntity<PageResponse<ProductReviewResponseDto>> productReviewListByMember(
             @PathVariable("memberNo") Integer memberNo,
