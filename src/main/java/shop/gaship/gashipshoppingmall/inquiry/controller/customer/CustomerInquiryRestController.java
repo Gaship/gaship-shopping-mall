@@ -95,7 +95,7 @@ public class CustomerInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-//    @MemberValid
+    @MemberValid
     @GetMapping(value = "/member/{memberNo}/customer-inquiries")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryMemberList(
         Pageable pageable, @PathVariable Integer memberNo) {
