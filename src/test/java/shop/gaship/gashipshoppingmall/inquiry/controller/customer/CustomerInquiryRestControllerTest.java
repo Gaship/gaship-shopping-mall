@@ -16,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +32,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import shop.gaship.gashipshoppingmall.inquiry.controller.customer.CustomerInquiryRestController;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
-import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
+import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
 
@@ -111,7 +108,6 @@ class CustomerInquiryRestControllerTest {
     }
 
 
-
     @DisplayName("고객문의 목록을 요청받았을시에 PageResponse 객체를 body에 담아서 ResponseEntity를 반환한다. status : 200")
     @Test
     void customerInquiryList() throws Exception {
@@ -134,7 +130,8 @@ class CustomerInquiryRestControllerTest {
         list.add(customerInquiryBeautiful);
 
         Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
-        given(inquiryService.findInquiries(any(Pageable.class), anyBoolean()))
+        given(inquiryService.findCustomerInquiriesAllOrStatusComplete(any(Pageable.class), any(
+            InquiryListSearch.class)))
             .willReturn(page);
 
         mvc.perform(get("/api/inquiries/customer-inquiries")
@@ -151,8 +148,6 @@ class CustomerInquiryRestControllerTest {
             .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
             .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
             .andExpect(jsonPath("$.number").value(0));
-
-        verify(inquiryService).findInquiries(any(Pageable.class), eq(false));
     }
 
 
@@ -222,7 +217,8 @@ class CustomerInquiryRestControllerTest {
         list.add(customerInquiryBeautiful);
 
         Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
-        given(inquiryService.findInquiriesByStatusCodeNo(any(Pageable.class), anyBoolean(), anyString()))
+        given(inquiryService.findCustomerInquiriesAllOrStatusComplete(any(Pageable.class), any(
+            InquiryListSearch.class)))
             .willReturn(page);
 
         mvc.perform(get("/api/inquiries/customer-inquiries/status-complete")
@@ -239,9 +235,6 @@ class CustomerInquiryRestControllerTest {
             .andExpect(jsonPath("$.content[1].processStatus").value(customerInquiryBeautiful.getProcessStatus()))
             .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
             .andExpect(jsonPath("$.number").value(0));
-
-        verify(inquiryService).findInquiriesByStatusCodeNo(any(Pageable.class), eq(false),
-            eq(ProcessStatus.COMPLETE.getValue()));
     }
 
 

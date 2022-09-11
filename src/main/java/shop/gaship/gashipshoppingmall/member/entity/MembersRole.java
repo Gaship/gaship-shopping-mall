@@ -7,5 +7,15 @@ package shop.gaship.gashipshoppingmall.member.entity;
  * @since 1.0
  */
 public enum MembersRole {
-    ROLE_USER, ROLE_MANAGER, ROLE_ADMIN
+    ROLE_USER("ROLE_USER"), ROLE_MANAGER("ROLE_MANAGER"), ROLE_ADMIN("ROLE_ADMIN");
+
+    private final String role;
+
+    MembersRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
+    }
 }

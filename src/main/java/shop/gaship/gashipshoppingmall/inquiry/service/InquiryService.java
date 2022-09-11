@@ -8,6 +8,7 @@ import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDt
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
+import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.statuscode.entity.StatusCode;
 
 /**
@@ -74,7 +75,7 @@ public interface InquiryService {
      * @return PageImpl 객체를 반환합니다.
      * @author 최겸준
      */
-    Page<InquiryListResponseDto> findInquiries(Pageable pageable, Boolean isProduct);
+    Page<InquiryListResponseDto> findProductInquiriesAll(Pageable pageable, Boolean isProduct);
 
     /**
      * 답변상태를 통해서 상품문의 및 고객문의를 찾는 기능입니다.
@@ -137,4 +138,14 @@ public interface InquiryService {
     }
 
 
+    Page<InquiryListResponseDto> findCustomerInquiriesAllOrStatusCompletePrevPage(Pageable pageable,
+                                                                                  Integer inquiryNo,
+                                                                                  InquiryListSearch inquiryListSearch);
+
+    Page<InquiryListResponseDto> findCustomerInquiriesAllOrStatusCompleteNextPage(Pageable pageable,
+                                                                                  Integer inquiryNo,
+                                                                                  InquiryListSearch inquiryListSearch);
+
+    Page<InquiryListResponseDto> findCustomerInquiriesAllOrStatusComplete(Pageable pageable,
+                                                                          InquiryListSearch inquiryListSearch);
 }

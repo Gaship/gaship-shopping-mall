@@ -40,7 +40,7 @@ public class ProductInquiryRestController {
     public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryList(
         Pageable pageable) {
         Page<InquiryListResponseDto> inquiriesPage =
-            inquiryService.findInquiries(pageable, InquiryType.PRODUCT_INQUIRY.getValue());
+            inquiryService.findProductInquiriesAll(pageable, InquiryType.PRODUCT_INQUIRY.getValue());
 
         PageResponse<InquiryListResponseDto> pageResponse = new PageResponse<>(inquiriesPage);
 

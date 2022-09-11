@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.membertag.dto.request.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dto.response.MemberTagResponseDto;
@@ -37,6 +38,7 @@ public class MemberTagController {
      * @author 최정우
      */
     @MemberValid
+    @MemberOnlyAuthority
     @PostMapping("/{memberNo}")
     public ResponseEntity<Void> memberTagDeleteAllAndAddAll(
             @Valid @RequestBody MemberTagRequestDto memberTagRequestDto,
@@ -55,6 +57,7 @@ public class MemberTagController {
      * @author 최정우
      */
     @MemberValid
+    @MemberOnlyAuthority
     @GetMapping("/{memberNo}")
     public ResponseEntity<List<MemberTagResponseDto>> memberTagList(
             @PathVariable Integer memberNo) {

@@ -22,12 +22,27 @@ public interface InquiryRepositoryCustom {
      *
      * @param pageable 페이징처리하기위한 정보가 들어있는 객체입니다.
      * @param inquirySearchRequestDto 검색에 필요한 조건정보가 들어있는 객체입니다.
+     * @param count
      * @return InquiryListResponseDto타입을 List로 담는 Page객체를 반환합니다.
      * @author 최겸준
      */
     Page<InquiryListResponseDto> findAllThroughSearchDto(Pageable pageable,
-                                                         InquiryListSearch inquirySearchRequestDto);
+                                                         InquiryListSearch inquirySearchRequestDto,
+                                                         Long count);
 
+    Page<InquiryListResponseDto> customerInquiryAllOrStatusCompleteFindAll(Pageable pageable,
+                                                                           Long count,
+                                                                           InquiryListSearch inquiryListSearch);
+
+    Page<InquiryListResponseDto> customerInquiryAllOrStatusCompletePrevFindAll(Pageable pageable,
+                                                                               Integer inquiryNo,
+                                                                               Long count,
+                                                                               InquiryListSearch inquiryListSearch);
+
+    Page<InquiryListResponseDto> customerInquiryAllOrStatusCompleteNextFindAll(Pageable pageable,
+                                                                               Integer inquiryNo,
+                                                                               Long count,
+                                                                               InquiryListSearch inquiryListSearch);
     /**
      * 문의를 상세조회하는 기능입니다.
      *
@@ -36,4 +51,8 @@ public interface InquiryRepositoryCustom {
      * @author 최겸준
      */
     Optional<InquiryDetailsResponseDto> findDetailsById(int inquiryNo);
+
+    Long getCustomerInquiryCount(InquiryListSearch inquiryListSearch);
+
+
 }

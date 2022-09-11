@@ -18,6 +18,7 @@ import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListAddRequ
 import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListModifyRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dto.response.AddressListResponseDto;
 import shop.gaship.gashipshoppingmall.addresslist.service.AddressListService;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 
@@ -45,6 +46,7 @@ public class AddressListController {
      * @author 최정우
      */
     @MemberValid
+    @MemberOnlyAuthority
     @PostMapping
     public ResponseEntity<Void> addressListAdd(
             @RequestBody @Valid AddressListAddRequestDto request) {
@@ -64,6 +66,7 @@ public class AddressListController {
      * @author 최정우
      */
     @MemberValid
+    @MemberOnlyAuthority
     @PutMapping("/{addressListNo}")
     public ResponseEntity<Void> addressListModifyAndAdd(
             @RequestBody @Valid AddressListModifyRequestDto request) {
@@ -80,6 +83,7 @@ public class AddressListController {
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 OK.
      */
     @MemberValid
+    @MemberOnlyAuthority
     @DeleteMapping("/{addressListId}")
     public ResponseEntity<Void> addressListRemove(@PathVariable Integer addressListId) {
         addressListService.removeAddressList(addressListId);
@@ -94,6 +98,7 @@ public class AddressListController {
      * @return responseEntity body 는 가지고 있지 않으며 응답 status 는 OK.
      */
     @MemberValid
+    @MemberOnlyAuthority
     @GetMapping("/{addressListId}")
     public ResponseEntity<AddressListResponseDto> addressListDetails(
             @PathVariable Integer addressListId) {
@@ -111,6 +116,7 @@ public class AddressListController {
      * @return responseEntity body 는 조회하길 원하는 배송지목록 페이지정보를 담고있는 dto, 응답 status 는 OK.
      */
     @MemberValid
+    @MemberOnlyAuthority
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<PageResponse<AddressListResponseDto>> addressListList(
             @PathVariable Integer memberNo, Pageable pageable) {
@@ -122,6 +128,7 @@ public class AddressListController {
     }
 
     @MemberValid
+    @MemberOnlyAuthority
     @GetMapping
     public ResponseEntity<List<AddressListResponseDto>> addressListAll(
             @PathVariable Integer memberNo) {

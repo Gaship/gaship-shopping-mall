@@ -16,15 +16,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,11 +32,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import shop.gaship.gashipshoppingmall.inquiry.controller.customer.CustomerInquiryRestController;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
-import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
 import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
@@ -133,7 +127,7 @@ class ProductInquiryRestControllerTest {
         list.add(customerInquiryBeautiful);
 
         Page page = new PageImpl(list, PageRequest.of(0, 5), 10);
-        given(inquiryService.findInquiries(any(Pageable.class), anyBoolean()))
+        given(inquiryService.findProductInquiriesAll(any(Pageable.class), anyBoolean()))
             .willReturn(page);
 
         mvc.perform(get("/api/inquiries/product-inquiries")
@@ -151,7 +145,7 @@ class ProductInquiryRestControllerTest {
             .andExpect(jsonPath("$.content[1].title").value(customerInquiryBeautiful.getTitle()))
             .andExpect(jsonPath("$.number").value(0));
 
-        verify(inquiryService).findInquiries(any(Pageable.class), eq(true));
+        verify(inquiryService).findProductInquiriesAll(any(Pageable.class), eq(true));
     }
 
     @DisplayName("상품문의중 답변대기상태의 목록을 요청받았을시에 대기상태의 value값을 전달인자로 추가하여 서비스에 위임하며 PageResponse 객체를 body에 담아서 ResponseEntity를 반환한다. status : 200")
