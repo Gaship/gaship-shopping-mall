@@ -32,7 +32,7 @@ public class AuthorityAspect {
      * @param pjp 실제 실행될 메서드 객체입니다.
      * @return 메서드의 실행결과를 반환합니다.
      */
-    @Around("@annotation(shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority)")
+    @Around("@annotation(shop.gaship.gashipshoppingmall.aspact.annotation.MemberAuthority)")
     public Object inspectMemberAuthority(ProceedingJoinPoint pjp) {
         return compareAuthority(pjp, this::checkMemberAuthority);
     }
@@ -44,7 +44,7 @@ public class AuthorityAspect {
      * @return 메서드의 실행결과를 반환합니다.
      */
 
-    @Around("@annotation(shop.gaship.gashipshoppingmall.aspact.anntation.ManagerAuthority)")
+    @Around("@annotation(shop.gaship.gashipshoppingmall.aspact.annotation.ManagerAuthority)")
     public Object inspectManagerAuthority(ProceedingJoinPoint pjp) {
         return compareAuthority(pjp, this::checkManagerAuthority);
     }
@@ -55,7 +55,7 @@ public class AuthorityAspect {
      * @param pjp 실제 실행될 메서드 객체입니다.
      * @return 메서드의 실행결과를 반환합니다.
      */
-    @Around("@annotation(shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority)")
+    @Around("@annotation(shop.gaship.gashipshoppingmall.aspact.annotation.AdminAuthority)")
     public Object inspectAdminAuthority(ProceedingJoinPoint pjp) {
         return compareAuthority(pjp, this::checkAdminAuthority);
     }
@@ -66,7 +66,7 @@ public class AuthorityAspect {
      * @param pjp 실제 실행될 메서드 객체입니다.
      * @return 메서드의 실행결과를 반환합니다.
      */
-    @Around("@annotation(shop.gaship.gashipshoppingmall.aspact.anntation.MemberOnlyAuthority)")
+    @Around("@annotation(shop.gaship.gashipshoppingmall.aspact.annotation.MemberOnlyAuthority)")
     public Object inspectMemberOnlyAuthority(ProceedingJoinPoint pjp) {
         return compareAuthority(pjp, this::checkMemberOnlyAuthority);
     }
@@ -77,7 +77,7 @@ public class AuthorityAspect {
      * @param pjp 실제 실행될 메서드 객체입니다.
      * @return 메서드의 실행결과를 반환합니다.
      */
-    @Around("@annotation(shop.gaship.gashipshoppingmall.aspact.anntation.ManagerOnlyAuthority)")
+    @Around("@annotation(shop.gaship.gashipshoppingmall.aspact.annotation.ManagerOnlyAuthority)")
     public Object inspectManagerOnlyAuthority(ProceedingJoinPoint pjp) {
         return compareAuthority(pjp, this::checkManagerOnlyAuthority);
     }

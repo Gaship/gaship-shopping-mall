@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
-import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeAddRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.request.MemberGradeModifyRequestDto;
 import shop.gaship.gashipshoppingmall.membergrade.dto.response.CouponTargetMemberGradeResponseDto;

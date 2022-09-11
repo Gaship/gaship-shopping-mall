@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductDetailResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.response.OrderProductResponseDto;
 import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
@@ -35,6 +36,7 @@ public class OrderProductController {
      * @param pageable the pageable
      * @return the response entity
      */
+    @MemberValid
     @MemberAuthority
     @GetMapping("/member/{memberNo}")
     public ResponseEntity<PageResponse<OrderProductResponseDto>> orderProductByMember(@PathVariable("memberNo") Integer memberNo,

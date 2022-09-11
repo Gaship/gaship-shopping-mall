@@ -1,6 +1,6 @@
 package shop.gaship.gashipshoppingmall.inquiry.controller.customer;
 
-import static shop.gaship.gashipshoppingmall.inquiry.inquiryenum.InquiryType.*;
+import static shop.gaship.gashipshoppingmall.inquiry.inquiryenum.InquiryType.CUSTOMER_INQUIRY;
 import static shop.gaship.gashipshoppingmall.inquiry.repository.custom.impl.InquiryRepositoryImpl.ANSWER_COMPLETE_NO;
 
 import javax.validation.Valid;
@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
-import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.AdminAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
-import shop.gaship.gashipshoppingmall.util.PageResponse;
 import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
+import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 /**
  * 고객문의에 대한 요청을 처리하는 클래스입니다.
@@ -35,6 +36,7 @@ import shop.gaship.gashipshoppingmall.statuscode.status.ProcessStatus;
 @RequiredArgsConstructor
 public class CustomerInquiryRestController {
     private final InquiryService inquiryService;
+
 
     /**
      * 고객문의 목록을 조회하는 요청을 처리하는 기능입니다.
@@ -169,6 +171,7 @@ public class CustomerInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
+    @MemberValid
     @MemberAuthority
     @GetMapping(value = "/member/{memberNo}/customer-inquiries")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryMemberList(

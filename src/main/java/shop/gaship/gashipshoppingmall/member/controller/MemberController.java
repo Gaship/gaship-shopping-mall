@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shop.gaship.gashipshoppingmall.aspact.anntation.MemberOnlyAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberOnlyAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.member.dto.request.FindMemberEmailRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequestOauth;
@@ -138,6 +139,7 @@ public class MemberController {
      */
     @MemberOnlyAuthority
     @PutMapping("/{memberNo}")
+    @MemberValid
     public ResponseEntity<Void> memberModify(
             @Valid @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
         memberService.modifyMember(memberModifyRequestDto);
@@ -154,6 +156,7 @@ public class MemberController {
      */
     @MemberOnlyAuthority
     @DeleteMapping("/{memberNo}")
+    @MemberValid
     public ResponseEntity<Void> memberRemove(@PathVariable Integer memberNo) {
         memberService.removeMember(memberNo);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
@@ -168,6 +171,7 @@ public class MemberController {
      */
     @MemberOnlyAuthority
     @GetMapping("/{memberNo}")
+    @MemberValid
     public ResponseEntity<MemberResponseDto> memberDetails(@PathVariable Integer memberNo) {
         MemberResponseDto memberResponseDto = memberService.findMember(memberNo);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
