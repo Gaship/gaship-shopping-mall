@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderPaymentResponseDto;
 
 /**
  * querydsl 을 쓰기위한 인터페이스입니다.
@@ -27,4 +28,6 @@ public interface OrderRepositoryCustom {
                                                   Pageable pageable);
 
     Optional<CancelOrderResponseDto> findOrderForCancel(Integer orderNo);
+
+    Optional<OrderPaymentResponseDto> findOrderForPayment(Integer orderNo);
 }
