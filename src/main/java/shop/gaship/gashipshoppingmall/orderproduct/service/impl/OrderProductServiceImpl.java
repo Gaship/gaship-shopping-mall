@@ -27,7 +27,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.InvalidOrderCancellationHistoryNo;
-import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductDetailNoValueException;
+import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductDetailNoFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.service.OrderProductService;
@@ -160,7 +160,7 @@ public class OrderProductServiceImpl implements OrderProductService {
             .findOrderProductDetail(orderNo, memberNo, pageable);
 
         if (orderProductDetailResponseDtoPage.isEmpty()) {
-            throw new OrderProductDetailNoValueException();
+            throw new OrderProductDetailNoFoundException();
         }
         orderProductDetailResponseDtoPage.getContent()
             .forEach(orderProductDetailResponseDto ->

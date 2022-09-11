@@ -12,7 +12,6 @@ import lombok.Getter;
 @Getter
 public class ErrorResponse {
     private String message;
-    private Object data;
 
     public ErrorResponse(String message) {
         this.message = message;
