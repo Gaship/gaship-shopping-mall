@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
+import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
 import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
@@ -92,6 +94,7 @@ public class CustomerInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
+    @AdminAuthority
     @GetMapping(value = "/customer-inquiries/status-hold")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusHoldList(
         @PageableDefault Pageable pageable) {
@@ -104,6 +107,7 @@ public class CustomerInquiryRestController {
         return ResponseEntity.ok(pageResponse);
     }
 
+    @AdminAuthority
     @GetMapping(value = "/customer-inquiries/status-complete")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusCompleteList(
         @PageableDefault Pageable pageable) {
@@ -125,6 +129,7 @@ public class CustomerInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
+    @AdminAuthority
     @GetMapping(value = "/customer-inquiries/status-complete/prev-page")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusCompleteListPrevPage(
         @PageableDefault Pageable pageable,
@@ -139,6 +144,7 @@ public class CustomerInquiryRestController {
         return ResponseEntity.ok(pageResponse);
     }
 
+    @AdminAuthority
     @GetMapping(value = "/customer-inquiries/status-complete/next-page")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusCompleteListNextPage(
         @PageableDefault Pageable pageable,
@@ -163,6 +169,7 @@ public class CustomerInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
+    @MemberAuthority
     @GetMapping(value = "/member/{memberNo}/customer-inquiries")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryMemberList(
         @PageableDefault Pageable pageable, @PathVariable Integer memberNo) {
