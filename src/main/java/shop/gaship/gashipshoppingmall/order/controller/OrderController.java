@@ -8,12 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.gaship.gashipshoppingmall.aspact.anntation.MemberAuthority;
-import shop.gaship.gashipshoppingmall.aspact.anntation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderSuccessRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderPaymentResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.service.OrderService;
 import shop.gaship.gashipshoppingmall.orderproduct.dto.OrderProductCancellationFailDto;
@@ -140,18 +139,34 @@ public class OrderController {
     /**
      * 취소할 주문의 결제 식별키값 조회 요청을 처리합니다.
      *
-     * @param orderNo 조회할 주문의 식별번호입니다.
+     * @param cancelOrderNo 조회할 주문의 식별번호입니다.
      * @return 취소할 주문의 결제 식별키를 body 로 가지는 상태 200 의 ResponseEntity 를 반환합니다.
      * @author 김세미
      */
-    @GetMapping(params = "orderNo")
+    @GetMapping(params = "cancelOrderNo")
     public ResponseEntity<CancelOrderResponseDto> cancelOrderDetails(
-            @RequestParam Integer orderNo) {
+            @RequestParam Integer cancelOrderNo) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(orderService.findOrderForCancelPayment(orderNo));
+                .body(orderService.findOrderForCancelPayment(cancelOrderNo));
+    }
+
+    /**
+     * 결제 서버에서 결제 승인을 위해 주문 정보를 조회하기 위한 요청을 처리합니다.
+     *
+     * @param orderNo 조회할 주문의 식별번호입니다.
+     * @return 결제 승인할 주문에 대한 정보를 body 로 갖는 상태 200의 ResponseEntity 를 반환합니다.
+     * @author 김세미
+     */
+    @GetMapping(params = "orderNo")
+    public ResponseEntity<OrderPaymentResponseDto> orderDetailsForPayment(
+        @RequestParam Integer orderNo) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(orderService.findOrderDetailsForPayment(orderNo));
     }
 
 }

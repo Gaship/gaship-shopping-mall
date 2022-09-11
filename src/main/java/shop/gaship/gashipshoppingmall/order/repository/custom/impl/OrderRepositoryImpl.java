@@ -10,6 +10,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import shop.gaship.gashipshoppingmall.addresslist.entity.QAddressList;
 import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderPaymentResponseDto;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.entity.QOrder;
 import shop.gaship.gashipshoppingmall.order.repository.OrderRepositoryCustom;
@@ -81,5 +82,28 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport
                         order.orderPaymentKey))
                         .where(order.no.eq(orderNo))
                 .fetchOne());
+    }
+
+    @Override
+    public Optional<OrderPaymentResponseDto> findOrderForPayment(Integer orderNo) {
+        QOrder order = QOrder.order;
+        QOrderProduct orderProduct = QOrderProduct.orderProduct;
+
+        OrderPaymentResponseDto orderPaymentResponseDto
+                = from(order)
+                .select(Projections.bean(OrderPaymentResponseDto.class,
+                        order.no,
+                        order.totalOrderAmount))
+                .where(order.no.eq(orderNo))
+                .fetchOne();
+
+        orderPaymentResponseDto.setOrderProductNos(
+                from(orderProduct)
+                        .select(orderProduct.no)
+                        .where(orderProduct.order.no.eq(orderNo))
+                        .fetch()
+        );
+
+        return Optional.ofNullable(orderPaymentResponseDto);
     }
 }

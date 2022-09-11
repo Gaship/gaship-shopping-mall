@@ -19,6 +19,7 @@ import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.order.dto.request.OrderRegisterRequestDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.CancelOrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderCancelResponseDto;
+import shop.gaship.gashipshoppingmall.order.dto.response.OrderPaymentResponseDto;
 import shop.gaship.gashipshoppingmall.order.dto.response.OrderResponseDto;
 import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.order.exception.OrderNotFoundException;
@@ -174,6 +175,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public CancelOrderResponseDto findOrderForCancelPayment(Integer orderNo) {
         return orderRepository.findOrderForCancel(orderNo)
+                .orElseThrow(OrderNotFoundException::new);
+    }
+
+    @Override
+    public OrderPaymentResponseDto findOrderDetailsForPayment(Integer orderNo) {
+        return orderRepository.findOrderForPayment(orderNo)
                 .orElseThrow(OrderNotFoundException::new);
     }
 }
