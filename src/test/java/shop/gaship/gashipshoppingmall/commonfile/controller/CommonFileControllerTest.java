@@ -14,11 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 
 /**
  * 공통파일 컨트롤러 테스트입니다.
@@ -27,12 +30,16 @@ import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
  * @since 1.0
  */
 @WebMvcTest(CommonFileController.class)
+@Import({ExceptionAdviceController.class})
 class CommonFileControllerTest {
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
     CommonFileService commonFileService;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @DisplayName("파일 다운로드 성공 테스트")
     @Test

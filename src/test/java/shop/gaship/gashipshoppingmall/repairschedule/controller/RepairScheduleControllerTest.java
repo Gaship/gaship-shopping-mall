@@ -10,12 +10,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.CreateScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.ModifyScheduleRequestDto;
 import shop.gaship.gashipshoppingmall.repairschedule.dto.request.RepairScheduleRequestDto;
@@ -49,10 +52,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 2022/07/14       유호철       최초 생성
  */
 @WebMvcTest(RepairScheduleController.class)
+@Import({ExceptionAdviceController.class})
 class RepairScheduleControllerTest {
 
     @Autowired
     MockMvc mvc;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
+
 
     @MockBean
     RepairScheduleService service;

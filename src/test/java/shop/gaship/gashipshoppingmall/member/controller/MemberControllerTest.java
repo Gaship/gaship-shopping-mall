@@ -18,10 +18,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 import shop.gaship.gashipshoppingmall.member.dto.request.FindMemberEmailRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.MemberCreationRequest;
 import shop.gaship.gashipshoppingmall.member.dto.request.ReissuePasswordRequest;
@@ -52,10 +55,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * 2022/07/12           김민수               최초 생성                         <br/>
  */
 @WebMvcTest(MemberController.class)
+@Import({ExceptionAdviceController.class})
 @Slf4j
 class MemberControllerTest {
     @Autowired
     MockMvc mockMvc;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @MockBean
     MemberService memberService;

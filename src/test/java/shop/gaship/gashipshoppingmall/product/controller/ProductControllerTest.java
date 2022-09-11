@@ -27,6 +27,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
@@ -59,13 +61,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @MockBean(JpaMetamodelMappingContext.class)
 @WebMvcTest(ProductController.class)
-@Import(ProductServiceImpl.class)
+@Import({ProductServiceImpl.class, ExceptionAdviceController.class})
 class ProductControllerTest {
     @Autowired
     private MockMvc mvc;
 
     @MockBean
     private ProductService service;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @Autowired
     private ObjectMapper objectMapper;

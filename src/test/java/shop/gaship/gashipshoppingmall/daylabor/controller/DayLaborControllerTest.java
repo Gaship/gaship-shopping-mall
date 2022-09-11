@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
@@ -20,6 +21,8 @@ import shop.gaship.gashipshoppingmall.daylabor.dummy.CreateDayLaborRequestDtoDum
 import shop.gaship.gashipshoppingmall.daylabor.dummy.FixDayLaborRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.daylabor.dummy.GetDayLaborResponseDtoDummy;
 import shop.gaship.gashipshoppingmall.daylabor.service.DayLaborService;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -42,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 최초 생성
  */
 @WebMvcTest(DayLaborController.class)
+@Import({ExceptionAdviceController.class})
 class DayLaborControllerTest {
 
     @Autowired
@@ -52,6 +56,9 @@ class DayLaborControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @DisplayName("지역별 물량 등록 테스트")
     @Test
