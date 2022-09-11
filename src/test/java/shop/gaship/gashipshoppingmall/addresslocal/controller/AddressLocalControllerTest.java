@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.addresslocal.dto.request.ModifyAddressRequestDto;
@@ -16,6 +17,8 @@ import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressSubLocalR
 import shop.gaship.gashipshoppingmall.addresslocal.dto.response.AddressUpperLocalResponseDto;
 import shop.gaship.gashipshoppingmall.addresslocal.dummy.ModifyAddressRequestDtoDummy;
 import shop.gaship.gashipshoppingmall.addresslocal.service.AddressLocalService;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -42,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @WebMvcTest(AddressLocalController.class)
+@Import({ExceptionAdviceController.class})
 class AddressLocalControllerTest {
 
     @Autowired
@@ -53,6 +57,9 @@ class AddressLocalControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @DisplayName("지역 배달가능 불가능 여부 수정 테스트")
     @Test

@@ -12,9 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 import shop.gaship.gashipshoppingmall.inquiry.controller.common.CommonInquiryRestController;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
@@ -33,12 +36,16 @@ import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
  * @since 1.0
  */
 @WebMvcTest(CommonInquiryRestController.class)
+@Import({ExceptionAdviceController.class})
 class InquiryRestControllerAdviceTest {
     @Autowired
     private CommonInquiryRestController commonInquiryRestController;
 
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @MockBean
     private InquiryService inquiryService;
@@ -123,7 +130,7 @@ class InquiryRestControllerAdviceTest {
             new InquiryNotFoundException());
 
         mvc.perform(delete("/api/inquiries/1/manager").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message").value(InquiryNotFoundException.MESSAGE));
     }
 

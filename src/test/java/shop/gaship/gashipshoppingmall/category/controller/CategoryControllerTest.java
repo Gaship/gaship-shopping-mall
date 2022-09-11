@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
@@ -16,6 +17,8 @@ import shop.gaship.gashipshoppingmall.category.exception.CategoryNotFoundExcepti
 import shop.gaship.gashipshoppingmall.category.service.CategoryService;
 
 import java.util.List;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -23,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest({ CategoryController.class })
+@Import({ExceptionAdviceController.class})
 class CategoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -32,6 +36,9 @@ class CategoryControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @Test
     @DisplayName("root 카테고리 생성 post 요청")
@@ -179,7 +186,7 @@ class CategoryControllerTest {
         when(categoryService.findCategory(categoryNo)).thenThrow(exception);
 
         mockMvc.perform(get("/api/categories/{categoryNo}", categoryNo))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value(exception.getMessage()))
                 .andDo(print());

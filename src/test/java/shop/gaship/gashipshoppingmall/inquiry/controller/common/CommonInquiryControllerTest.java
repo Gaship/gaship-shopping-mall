@@ -22,10 +22,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
@@ -36,6 +39,7 @@ import shop.gaship.gashipshoppingmall.inquiry.service.InquiryService;
  * @since 1.0
  */
 @WebMvcTest(CommonInquiryRestController.class)
+@Import({ExceptionAdviceController.class})
 class CommonInquiryControllerTest {
     @Autowired
     private MockMvc mvc;
@@ -45,6 +49,9 @@ class CommonInquiryControllerTest {
 
     @MockBean
     private InquiryService inquiryService;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     private InquiryAddRequestDto inquiryAddRequestDtoWhenCustomer;
 

@@ -7,8 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 import shop.gaship.gashipshoppingmall.membertag.dto.request.MemberTagRequestDto;
 import shop.gaship.gashipshoppingmall.membertag.dummy.MemberTagDummy;
 import shop.gaship.gashipshoppingmall.membertag.service.MemberTagService;
@@ -25,12 +28,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 1.0
  */
 @WebMvcTest(MemberTagController.class)
+@Import({ExceptionAdviceController.class})
 class MemberTagControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
     @Autowired
     MockMvc mockMvc;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @MockBean
     MemberTagService memberTagService;
