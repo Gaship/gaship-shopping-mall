@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.inquiry.controller.customer;
 
 import static shop.gaship.gashipshoppingmall.inquiry.inquiryenum.InquiryType.CUSTOMER_INQUIRY;
+import static shop.gaship.gashipshoppingmall.inquiry.repository.custom.impl.InquiryRepositoryImpl.ANSWER_COMPLETE_NO;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.aspact.annotation.AdminAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberAuthority;
 import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
