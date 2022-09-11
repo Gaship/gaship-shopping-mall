@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.aspact.anntation.AdminAuthority;
+import shop.gaship.gashipshoppingmall.aspact.anntation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
@@ -39,6 +41,7 @@ public class CommonInquiryRestController {
      * @return 성공시 201인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
+    @MemberOnlyAuthority
     @PostMapping
     public ResponseEntity<Void> inquiryAdd(@Valid @RequestBody InquiryAddRequestDto inquiryDto) {
         if (inquiryDto.getIsProduct().equals(true)
@@ -60,6 +63,7 @@ public class CommonInquiryRestController {
      * @return 성공시 201인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
+    @AdminAuthority
     @PostMapping("/inquiry-answer")
     public ResponseEntity<Void> inquiryAnswerAdd(
         @Valid @RequestBody InquiryAnswerRequestDto inquiryAnswerAddRequestDto) {
@@ -74,6 +78,7 @@ public class CommonInquiryRestController {
      * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
+    @AdminAuthority
     @PutMapping("/{inquiryNo}/inquiry-answer")
     public ResponseEntity<Void> inquiryAnswerModify(
         @Valid @RequestBody InquiryAnswerRequestDto inquiryAnswerModifyRequestDto) {
@@ -89,6 +94,7 @@ public class CommonInquiryRestController {
      * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
+    @MemberOnlyAuthority
     @DeleteMapping(value = "/{inquiryNo}", params = "memberNo")
     public ResponseEntity<Void> inquiryDelete(@PathVariable Integer inquiryNo, Integer memberNo) {
         inquiryService.deleteInquiry(inquiryNo, memberNo);
@@ -103,6 +109,7 @@ public class CommonInquiryRestController {
      * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
+    @AdminAuthority
     @DeleteMapping(value = "/{inquiryNo}/manager")
     public ResponseEntity<Void> inquiryDeleteManager(@PathVariable Integer inquiryNo) {
         inquiryService.deleteInquiryManager(inquiryNo);
@@ -119,6 +126,7 @@ public class CommonInquiryRestController {
      * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
+    @AdminAuthority
     @DeleteMapping("/{inquiryNo}/inquiry-answer")
     public ResponseEntity<Void> inquiryAnswerDelete(@PathVariable Integer inquiryNo) {
         inquiryService.deleteInquiryAnswer(inquiryNo);
