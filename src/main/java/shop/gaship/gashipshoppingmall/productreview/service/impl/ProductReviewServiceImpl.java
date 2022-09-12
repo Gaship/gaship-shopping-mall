@@ -10,10 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import shop.gaship.gashipshoppingmall.aspact.exception.InvalidIdException;
 import shop.gaship.gashipshoppingmall.commonfile.entity.CommonFile;
 import shop.gaship.gashipshoppingmall.commonfile.repository.CommonFileRepository;
 import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.file.dto.FileRequestDto;
+import shop.gaship.gashipshoppingmall.member.entity.MembersRole;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
@@ -57,10 +59,13 @@ public class ProductReviewServiceImpl implements ProductReviewService {
      */
     @Transactional
     @Override
-    public void addProductReview(MultipartFile file, ProductReviewRequestDto createRequest) {
+    public void addProductReview(MultipartFile file, ProductReviewRequestDto createRequest,
+                                 Integer requestMemberNo) {
         OrderProduct orderProduct = orderProductRepository
                 .findById(createRequest.getOrderProductNo())
                 .orElseThrow(OrderProductNotFoundException::new);
+
+        checkMemberValid(requestMemberNo, orderProduct);
 
         ProductReview review = createProductReview(createRequest, orderProduct);
 
@@ -80,9 +85,12 @@ public class ProductReviewServiceImpl implements ProductReviewService {
      */
     @Transactional
     @Override
-    public void modifyProductReview(MultipartFile file, ProductReviewRequestDto modifyRequest) {
+    public void modifyProductReview(MultipartFile file, ProductReviewRequestDto modifyRequest,
+                                    Integer requestMemberNo) {
         ProductReview review = productReviewRepository.findById(modifyRequest.getOrderProductNo())
                 .orElseThrow(ProductReviewNotFoundException::new);
+
+        checkMemberValid(requestMemberNo, review.getOrderProduct());
 
         ProductReviewSaveUpdateEvent event =
                 new ProductReviewSaveUpdateEvent(review.getReviewImages());
@@ -106,9 +114,14 @@ public class ProductReviewServiceImpl implements ProductReviewService {
      */
     @Transactional
     @Override
-    public void removeProductReview(Integer orderProductNo) {
+    public void removeProductReview(Integer orderProductNo, Integer requestMemberNo,
+                                    String requestRole) {
         ProductReview review = productReviewRepository.findById(orderProductNo)
                 .orElseThrow(ProductReviewNotFoundException::new);
+
+        if (!Objects.equals(requestRole, MembersRole.ROLE_ADMIN.getRole())) {
+            checkMemberValid(requestMemberNo, review.getOrderProduct());
+        }
 
         productReviewRepository.deleteById(orderProductNo);
 
@@ -233,5 +246,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         productReviews.getContent().forEach(review -> review.getFilePaths()
                 .addAll(commonFileRepository.findPaths(review.getOrderProductNo(),
                         ProductReview.SERVICE)));
+    }
+
+    private void checkMemberValid(Integer requestMemberNo, OrderProduct orderProduct) {
+        if (!Objects.equals(requestMemberNo, orderProduct.getOrder().getMember().getMemberNo())) {
+            throw new InvalidIdException();
+        }
     }
 }

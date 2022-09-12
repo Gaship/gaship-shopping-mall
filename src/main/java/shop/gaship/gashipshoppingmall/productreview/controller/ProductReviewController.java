@@ -1,7 +1,9 @@
 package shop.gaship.gashipshoppingmall.productreview.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,6 +37,7 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
 @RequiredArgsConstructor
 public class ProductReviewController {
     private final ProductReviewService productReviewService;
+    private static final String HEADER_ID = "X-AUTH-ID";
 
     /**
      * 상품평 post 요청 매핑 메서드입니다.
@@ -47,8 +50,10 @@ public class ProductReviewController {
     @PostMapping("/reviews")
     public ResponseEntity<Void> productReviewAdd(
             @RequestPart(value = "image", required = false) MultipartFile file,
-            @Valid @RequestPart ProductReviewRequestDto createRequest) {
-        productReviewService.addProductReview(file, createRequest);
+            @Valid @RequestPart ProductReviewRequestDto createRequest,
+            HttpServletRequest request) {
+        productReviewService.addProductReview(file, createRequest,
+                NumberUtils.createInteger(request.getHeader(HEADER_ID)));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -66,8 +71,10 @@ public class ProductReviewController {
     @PutMapping("/reviews/{orderProductNo}")
     public ResponseEntity<Void> productReviewModify(
             @RequestPart(value = "image", required = false) MultipartFile file,
-            @Valid @RequestPart ProductReviewRequestDto modifyRequest) {
-        productReviewService.modifyProductReview(file, modifyRequest);
+            @Valid @RequestPart ProductReviewRequestDto modifyRequest,
+            HttpServletRequest request) {
+        productReviewService.modifyProductReview(file, modifyRequest,
+                NumberUtils.createInteger(request.getHeader(HEADER_ID)));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -83,8 +90,11 @@ public class ProductReviewController {
     @MemberAuthority
     @DeleteMapping("/reviews/{orderProductNo}")
     public ResponseEntity<Void> productReviewRemove(
-            @PathVariable("orderProductNo") Integer orderProductNo) {
-        productReviewService.removeProductReview(orderProductNo);
+            @PathVariable("orderProductNo") Integer orderProductNo,
+            HttpServletRequest request) {
+        productReviewService.removeProductReview(orderProductNo,
+                NumberUtils.createInteger(request.getHeader(HEADER_ID)),
+                request.getHeader("X-AUTH-ROLE"));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

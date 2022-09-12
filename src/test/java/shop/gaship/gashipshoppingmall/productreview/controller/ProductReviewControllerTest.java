@@ -123,13 +123,10 @@ class ProductReviewControllerTest {
     void productReviewRemove() throws Exception {
         Integer orderProductNo = 1;
 
-        doNothing().when(productReviewService).removeProductReview(orderProductNo);
-
         mockMvc.perform(delete("/api/reviews/{orderProductNo}", orderProductNo))
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(productReviewService).removeProductReview(orderProductNo);
     }
 
     @DisplayName("상품평 단건조회 get 요청 테스트")
