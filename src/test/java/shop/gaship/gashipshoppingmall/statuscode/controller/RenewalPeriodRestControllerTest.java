@@ -5,9 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 import shop.gaship.gashipshoppingmall.statuscode.advisor.StatusCodeAdvisor;
 import shop.gaship.gashipshoppingmall.statuscode.exception.StatusCodeNotFoundException;
 import shop.gaship.gashipshoppingmall.statuscode.service.StatusCodeService;
@@ -29,11 +32,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 1.0
  */
 @WebMvcTest(RenewalPeriodRestController.class)
+@Import({ExceptionAdviceController.class,})
 class RenewalPeriodRestControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
     private StatusCodeService statusCodeService;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @BeforeEach
     void setUp() {

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,6 +14,8 @@ import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListAddRequ
 import shop.gaship.gashipshoppingmall.addresslist.dto.request.AddressListModifyRequestDto;
 import shop.gaship.gashipshoppingmall.addresslist.dummy.AddressListDummy;
 import shop.gaship.gashipshoppingmall.addresslist.service.AddressListService;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -25,7 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 1.0
  */
 
-@WebMvcTest(AddressListController.class)
+@WebMvcTest({AddressListController.class})
+@Import({ExceptionAdviceController.class})
 class AddressListControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -35,6 +39,9 @@ class AddressListControllerTest {
 
     @MockBean
     AddressListService addressListService;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @DisplayName("배송지 목록 등록 테스트")
     @Test

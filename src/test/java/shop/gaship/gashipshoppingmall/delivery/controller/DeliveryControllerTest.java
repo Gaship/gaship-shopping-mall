@@ -16,12 +16,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.gaship.gashipshoppingmall.delivery.dto.response.DeliveryInfoStatusResponseDto;
 import shop.gaship.gashipshoppingmall.delivery.dto.response.TrackingNoResponseDto;
 import shop.gaship.gashipshoppingmall.delivery.service.impl.DeliveryServiceImpl;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 
 /**
  * 배송 관련 controller 테스트 클래스 입니다.
@@ -30,6 +33,7 @@ import shop.gaship.gashipshoppingmall.delivery.service.impl.DeliveryServiceImpl;
  * @since 1.0
  */
 @WebMvcTest(DeliveryController.class)
+@Import({ExceptionAdviceController.class})
 class DeliveryControllerTest {
 
     @Autowired
@@ -37,6 +41,9 @@ class DeliveryControllerTest {
 
     @MockBean
     DeliveryServiceImpl deliveryService;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @Test
     void createTrackingNo() throws Exception {

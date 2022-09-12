@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,8 @@ import shop.gaship.gashipshoppingmall.employee.dto.response.InstallOrderResponse
 import shop.gaship.gashipshoppingmall.employee.dummy.CreateEmployeeDtoDummy;
 import shop.gaship.gashipshoppingmall.employee.dummy.GetEmployeeDummy;
 import shop.gaship.gashipshoppingmall.employee.service.EmployeeService;
+import shop.gaship.gashipshoppingmall.error.ExceptionAdviceController;
+import shop.gaship.gashipshoppingmall.error.adapter.LogAndCrashAdapter;
 import shop.gaship.gashipshoppingmall.util.PageResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,6 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * ----------------------------------------------------------- 2022/07/10        유호철       최초 생성
  */
 @WebMvcTest(EmployeeController.class)
+@Import({ExceptionAdviceController.class})
 class EmployeeControllerTest {
 
     @Autowired
@@ -60,6 +64,9 @@ class EmployeeControllerTest {
 
     @MockBean
     EmployeeService service;
+
+    @MockBean
+    LogAndCrashAdapter logAndCrashAdapter;
 
     @Autowired
     ObjectMapper objectMapper;

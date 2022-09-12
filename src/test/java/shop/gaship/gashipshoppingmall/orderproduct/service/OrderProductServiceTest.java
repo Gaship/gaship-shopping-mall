@@ -36,7 +36,7 @@ import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUseCanceledEventH
 import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEvent;
 import shop.gaship.gashipshoppingmall.orderproduct.event.CouponUsedEventHandler;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.InvalidOrderCancellationHistoryNo;
-import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductDetailNoValueException;
+import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductDetailNoFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
 import shop.gaship.gashipshoppingmall.orderproduct.service.impl.OrderProductServiceImpl;
 import shop.gaship.gashipshoppingmall.product.dummy.ProductDummy;
@@ -526,7 +526,7 @@ class OrderProductServiceTest {
             .willReturn(Page.empty());
 
         assertThatThrownBy(() -> orderProductService.findMemberOrderProductDetail(1, 1, PageRequest.of(0, 10)))
-            .isInstanceOf(OrderProductDetailNoValueException.class);
+            .isInstanceOf(OrderProductDetailNoFoundException.class);
     }
 
     @DisplayName("해당 멤버에 대한 주문 조회시 성공")
