@@ -20,7 +20,8 @@ public interface ProductReviewService {
      * @param file          상품평 이미지
      * @param createRequest 상품평 생성 요청 dto
      */
-    void addProductReview(MultipartFile file, ProductReviewRequestDto createRequest);
+    void addProductReview(MultipartFile file, ProductReviewRequestDto createRequest,
+                          Integer requestMemberNo);
 
     /**
      * 상품평 수정 서비스 메서드입니다.
@@ -28,14 +29,15 @@ public interface ProductReviewService {
      * @param file          상품평 이미지
      * @param modifyRequest 상품평 수정 요청 dto
      */
-    void modifyProductReview(MultipartFile file, ProductReviewRequestDto modifyRequest);
+    void modifyProductReview(MultipartFile file, ProductReviewRequestDto modifyRequest,
+                             Integer requestMemberNo);
 
     /**
      * 상품평 제거 서비스 메서드입니다.
      *
      * @param orderProductNo 삭제할 상품평 번호
      */
-    void removeProductReview(Integer orderProductNo);
+    void removeProductReview(Integer orderProductNo, Integer requestMemberNo, String requestRole);
 
     /**
      * 상품평 단건 조회 서비스 메서드입니다.

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.aspact.annotation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryCreateRequestDto;
 import shop.gaship.gashipshoppingmall.category.dto.request.CategoryModifyRequestDto;
 import shop.gaship.gashipshoppingmall.category.dto.response.CategoryResponseDto;
@@ -40,7 +41,7 @@ public class CategoryController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-//    @AdminAuthority
+    @AdminAuthority
     @PostMapping
     public ResponseEntity<Void> categoryAdd(
             @Valid @RequestBody CategoryCreateRequestDto createRequest) {
@@ -62,11 +63,10 @@ public class CategoryController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-//    @AdminAuthority
+    @AdminAuthority
     @PutMapping("/{categoryNo}")
     public ResponseEntity<Void> categoryModify(
-            @Valid @RequestBody CategoryModifyRequestDto modifyRequest,
-            @PathVariable String categoryNo) {
+            @Valid @RequestBody CategoryModifyRequestDto modifyRequest) {
         categoryService.modifyCategory(modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -127,7 +127,7 @@ public class CategoryController {
      * @return response entity 응답 바디는 없습니다.
      * @author 김보민
      */
-//    @AdminAuthority
+    @AdminAuthority
     @DeleteMapping("/{categoryNo}")
     public ResponseEntity<Void> categoryRemove(@PathVariable("categoryNo") Integer categoryNo) {
         categoryService.removeCategory(categoryNo);

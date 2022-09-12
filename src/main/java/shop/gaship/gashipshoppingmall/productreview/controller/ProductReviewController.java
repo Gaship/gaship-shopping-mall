@@ -1,7 +1,9 @@
 package shop.gaship.gashipshoppingmall.productreview.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberAuthority;
 import shop.gaship.gashipshoppingmall.aspact.annotation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.productreview.dto.request.ProductReviewRequestDto;
@@ -34,6 +37,7 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
 @RequiredArgsConstructor
 public class ProductReviewController {
     private final ProductReviewService productReviewService;
+    private static final String HEADER_ID = "X-AUTH-ID";
 
     /**
      * 상품평 post 요청 매핑 메서드입니다.
@@ -42,12 +46,14 @@ public class ProductReviewController {
      * @param createRequest 상품평 등록 요청 dto
      * @return responseEntity 응답 바디는 없습니다.
      */
-//    @MemberAuthority
+    @MemberAuthority
     @PostMapping("/reviews")
     public ResponseEntity<Void> productReviewAdd(
             @RequestPart(value = "image", required = false) MultipartFile file,
-            @Valid @RequestPart ProductReviewRequestDto createRequest) {
-        productReviewService.addProductReview(file, createRequest);
+            @Valid @RequestPart ProductReviewRequestDto createRequest,
+            HttpServletRequest request) {
+        productReviewService.addProductReview(file, createRequest,
+                NumberUtils.createInteger(request.getHeader(HEADER_ID)));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -59,16 +65,16 @@ public class ProductReviewController {
      *
      * @param file           이미지 파일
      * @param modifyRequest  상품평 수정 요청 dto
-     * @param orderProductNo 수정할 상품평 번호
      * @return responseEntity 응답 바디는 없습니다.
      */
-//    @MemberAuthority
+    @MemberAuthority
     @PutMapping("/reviews/{orderProductNo}")
     public ResponseEntity<Void> productReviewModify(
             @RequestPart(value = "image", required = false) MultipartFile file,
             @Valid @RequestPart ProductReviewRequestDto modifyRequest,
-            @PathVariable Integer orderProductNo) {
-        productReviewService.modifyProductReview(file, modifyRequest);
+            HttpServletRequest request) {
+        productReviewService.modifyProductReview(file, modifyRequest,
+                NumberUtils.createInteger(request.getHeader(HEADER_ID)));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -81,11 +87,14 @@ public class ProductReviewController {
      * @param orderProductNo 삭제할 상품평 번호
      * @return responseEntity 응답 바디는 없습니다.
      */
-//    @MemberAuthority
+    @MemberAuthority
     @DeleteMapping("/reviews/{orderProductNo}")
     public ResponseEntity<Void> productReviewRemove(
-            @PathVariable("orderProductNo") Integer orderProductNo) {
-        productReviewService.removeProductReview(orderProductNo);
+            @PathVariable("orderProductNo") Integer orderProductNo,
+            HttpServletRequest request) {
+        productReviewService.removeProductReview(orderProductNo,
+                NumberUtils.createInteger(request.getHeader(HEADER_ID)),
+                request.getHeader("X-AUTH-ROLE"));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

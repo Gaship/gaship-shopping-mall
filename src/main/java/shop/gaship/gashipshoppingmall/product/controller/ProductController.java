@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import shop.gaship.gashipshoppingmall.aspact.annotation.AdminAuthority;
 import shop.gaship.gashipshoppingmall.product.dto.request.ProductRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.request.SalesStatusModifyRequestDto;
 import shop.gaship.gashipshoppingmall.product.dto.response.ProductAllInfoResponseDto;
@@ -46,7 +47,7 @@ public class ProductController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-//    @AdminAuthority
+    @AdminAuthority
     @PostMapping
     public ResponseEntity<Void> productAdd(@RequestPart("image") List<MultipartFile> files,
                                            @RequestPart ProductRequestDto createRequest) {
@@ -65,11 +66,10 @@ public class ProductController {
      * @return responseEntity 응답 바디는 없습니다.
      * @author 김보민
      */
-//    @AdminAuthority
+    @AdminAuthority
     @PutMapping("/{productNo}")
     public ResponseEntity<Void> productModify(@RequestPart("image") List<MultipartFile> files,
-                                              @RequestPart ProductRequestDto modifyRequest,
-                                              @PathVariable("productNo") Integer productNo) {
+                                              @RequestPart ProductRequestDto modifyRequest) {
         service.modifyProduct(files, modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -86,8 +86,7 @@ public class ProductController {
      */
     @PutMapping("/{productNo}/sales-status")
     public ResponseEntity<Void> salesStatusModify(
-        @RequestBody SalesStatusModifyRequestDto salesStatusModifyRequest,
-        @PathVariable("productNo") Integer productNo) {
+        @RequestBody SalesStatusModifyRequestDto salesStatusModifyRequest) {
         service.modifyProductSalesStatus(salesStatusModifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)

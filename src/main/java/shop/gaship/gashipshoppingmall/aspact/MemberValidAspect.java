@@ -36,7 +36,7 @@ public class MemberValidAspect {
 
         String jwtMemberNo = request.getHeader(HEADER_ID);
         if (Objects.equals(jwtMemberNo, getMemberNo(request))
-                || Objects.equals(jwtMemberNo, request.getParameter("memberNo"))) {
+                || Objects.equals(jwtMemberNo, request.getParameter(ATTRIBUTE_ID))) {
             return pjp.proceed();
         }
 

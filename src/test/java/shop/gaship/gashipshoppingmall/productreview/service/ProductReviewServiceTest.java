@@ -34,6 +34,8 @@ import shop.gaship.gashipshoppingmall.commonfile.service.CommonFileService;
 import shop.gaship.gashipshoppingmall.member.dummy.MemberDummy;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
 import shop.gaship.gashipshoppingmall.member.repository.MemberRepository;
+import shop.gaship.gashipshoppingmall.order.dummy.OrderDummy;
+import shop.gaship.gashipshoppingmall.order.entity.Order;
 import shop.gaship.gashipshoppingmall.orderproduct.entity.OrderProduct;
 import shop.gaship.gashipshoppingmall.orderproduct.exception.OrderProductNotFoundException;
 import shop.gaship.gashipshoppingmall.orderproduct.repository.OrderProductRepository;
@@ -86,11 +88,12 @@ class ProductReviewServiceTest {
     OrderProduct orderProduct;
     MockMultipartFile multipartFile;
     Pageable pageable;
-    String uploadDir =  File.separator + "reviews";
 
     @BeforeEach
     void setUp() throws IOException {
+        Order order = OrderDummy.createOrderDummy();
         orderProduct = OrderProduct.builder()
+                .order(order)
                 .warrantyExpirationDate(LocalDate.now())
                 .amount(10000L)
                 .build();
@@ -113,18 +116,15 @@ class ProductReviewServiceTest {
         when(orderProductRepository.findById(createRequest.getOrderProductNo()))
                 .thenReturn(Optional.of(orderProduct));
         when(fileService.createCommonFile(any())).thenReturn(new CommonFile());
-//        when(fileUploadUtil.uploadFile(uploadDir, List.of(multipartFile)))
-//                .thenReturn(List.of(multipartFile.getOriginalFilename()));
         when(productReviewRepository.save(any(ProductReview.class)))
                 .thenReturn(review);
 
-        productReviewService.addProductReview(multipartFile, createRequest);
+        productReviewService.addProductReview(multipartFile, createRequest, null);
 
         assertProductReview(createRequest);
 
         verify(orderProductRepository).findById(createRequest.getOrderProductNo());
         verify(fileService).createCommonFile(any());
-//        verify(fileUploadUtil).uploadFile(uploadDir, List.of(multipartFile));
         verify(productReviewRepository).save(any(ProductReview.class));
     }
 
@@ -134,7 +134,7 @@ class ProductReviewServiceTest {
         when(orderProductRepository.findById(createRequest.getOrderProductNo()))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> productReviewService.addProductReview(multipartFile, createRequest))
+        assertThatThrownBy(() -> productReviewService.addProductReview(multipartFile, createRequest, null))
                 .isInstanceOf(OrderProductNotFoundException.class);
 
         verify(orderProductRepository).findById(createRequest.getOrderProductNo());
@@ -148,7 +148,7 @@ class ProductReviewServiceTest {
         when(productReviewRepository.findById(modifyRequest.getOrderProductNo()))
                 .thenReturn(Optional.of(review));
         when(fileService.createCommonFile(any())).thenReturn(new CommonFile());
-        productReviewService.modifyProductReview(multipartFile, modifyRequest);
+        productReviewService.modifyProductReview(multipartFile, modifyRequest, null);
 
         assertProductReview(modifyRequest);
 
@@ -162,7 +162,7 @@ class ProductReviewServiceTest {
         when(productReviewRepository.findById(modifyRequest.getOrderProductNo()))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> productReviewService.modifyProductReview(multipartFile, modifyRequest))
+        assertThatThrownBy(() -> productReviewService.modifyProductReview(multipartFile, modifyRequest, null))
                 .isInstanceOf(ProductReviewNotFoundException.class);
 
         verify(productReviewRepository).findById(modifyRequest.getOrderProductNo());
@@ -178,7 +178,7 @@ class ProductReviewServiceTest {
                 .thenReturn(Optional.of(review));
         doNothing().when(productReviewRepository).deleteById(orderProductNo);
 
-        productReviewService.removeProductReview(orderProductNo);
+        productReviewService.removeProductReview(orderProductNo, null, null);
 
         verify(productReviewRepository).findById(modifyRequest.getOrderProductNo());
         verify(productReviewRepository).deleteById(orderProductNo);
@@ -192,7 +192,7 @@ class ProductReviewServiceTest {
         when(productReviewRepository.findById(orderProductNo))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> productReviewService.removeProductReview(orderProductNo))
+        assertThatThrownBy(() -> productReviewService.removeProductReview(orderProductNo, null, null))
                 .isInstanceOf(ProductReviewNotFoundException.class);
 
         verify(productReviewRepository).findById(orderProductNo);
