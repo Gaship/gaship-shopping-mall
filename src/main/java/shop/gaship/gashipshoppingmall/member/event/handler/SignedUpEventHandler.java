@@ -11,7 +11,7 @@ import shop.gaship.gashipshoppingmall.member.event.domain.SignedUpEvent;
 /**
  * 이벤트를 받아서 핸들링하는 클래스입니다.
  *
- * @author : 최겸준
+ * @author 최겸준
  * @since 1.0
  */
 @Service
@@ -24,7 +24,7 @@ public class SignedUpEventHandler {
      *
      * @param event 요청시 필요한 추천인번호를 들고있는 클래스입니다.
      */
-    @Async
+    @Async("BasicThreadPoolTaskExecutor")
     @TransactionalEventListener(
         classes = SignedUpEvent.class,
         phase = TransactionPhase.AFTER_COMMIT

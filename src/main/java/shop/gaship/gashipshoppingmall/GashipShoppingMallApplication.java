@@ -20,7 +20,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @EnableAspectJAutoProxy
-@EnableAsync
 public class GashipShoppingMallApplication {
 
     public static void main(String[] args) {
