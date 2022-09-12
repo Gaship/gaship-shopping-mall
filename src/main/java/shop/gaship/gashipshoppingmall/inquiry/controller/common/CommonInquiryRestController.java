@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shop.gaship.gashipshoppingmall.aspact.annotation.AdminAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.ManagerAuthority;
 import shop.gaship.gashipshoppingmall.aspact.annotation.MemberOnlyAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAddRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.request.InquiryAnswerRequestDto;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsResponseDto;
@@ -42,12 +43,17 @@ public class CommonInquiryRestController {
      * @author 최겸준
      */
     @MemberOnlyAuthority
-    @PostMapping
-    public ResponseEntity<Void> inquiryAdd(@Valid @RequestBody InquiryAddRequestDto inquiryDto) {
+    @MemberValid
+    @PostMapping(params = "memberNo")
+    public ResponseEntity<Void> inquiryAdd(@Valid @RequestBody InquiryAddRequestDto inquiryDto,
+                                           Integer memberNo) {
+
         if (inquiryDto.getIsProduct().equals(true)
                 && Objects.isNull(inquiryDto.getProductNo())) {
             throw new ProductInquiryHasNullProductNoException();
         }
+
+        inquiryDto.setMemberNo(memberNo);
 
         if (inquiryDto.getIsProduct().equals(false) && Objects.nonNull(inquiryDto.getProductNo())) {
             throw new CustomerInquiryHasProductNoException();
@@ -63,7 +69,7 @@ public class CommonInquiryRestController {
      * @return 성공시 201인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
-    @AdminAuthority
+    @ManagerAuthority
     @PostMapping("/inquiry-answer")
     public ResponseEntity<Void> inquiryAnswerAdd(
         @Valid @RequestBody InquiryAnswerRequestDto inquiryAnswerAddRequestDto) {
@@ -78,7 +84,7 @@ public class CommonInquiryRestController {
      * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
-    @AdminAuthority
+    @ManagerAuthority
     @PutMapping("/{inquiryNo}/inquiry-answer")
     public ResponseEntity<Void> inquiryAnswerModify(
         @Valid @RequestBody InquiryAnswerRequestDto inquiryAnswerModifyRequestDto) {
@@ -95,6 +101,7 @@ public class CommonInquiryRestController {
      * @author 최겸준
      */
     @MemberOnlyAuthority
+    @MemberValid
     @DeleteMapping(value = "/{inquiryNo}", params = "memberNo")
     public ResponseEntity<Void> inquiryDelete(@PathVariable Integer inquiryNo, Integer memberNo) {
         inquiryService.deleteInquiry(inquiryNo, memberNo);
@@ -109,7 +116,7 @@ public class CommonInquiryRestController {
      * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
-    @AdminAuthority
+    @ManagerAuthority
     @DeleteMapping(value = "/{inquiryNo}/manager")
     public ResponseEntity<Void> inquiryDeleteManager(@PathVariable Integer inquiryNo) {
         inquiryService.deleteInquiryManager(inquiryNo);
@@ -126,7 +133,7 @@ public class CommonInquiryRestController {
      * @return 성공시 200인 statusCode, body에는 void 값을 담은 객체를 반환합니다.
      * @author 최겸준
      */
-    @AdminAuthority
+    @ManagerAuthority
     @DeleteMapping("/{inquiryNo}/inquiry-answer")
     public ResponseEntity<Void> inquiryAnswerDelete(@PathVariable Integer inquiryNo) {
         inquiryService.deleteInquiryAnswer(inquiryNo);
@@ -134,12 +141,13 @@ public class CommonInquiryRestController {
     }
 
     /**
-     * 문의 상세조회 요청을 처리하는 기능입니다.
+     * 직원 또는 관리자의 문의 상세조회 요청을 처리하는 기능입니다.
      *
      * @param inquiryNo 조회의 기준이 되는 문의번호입니다.
      * @return ResponseEntity body에 InquiryDetailsResponseDto라는 상세조회에 필요한 정보가 담긴 객체를 넣어서 반환합니다.
      * @author 최겸준
      */
+    @ManagerAuthority
     @GetMapping(value = "/{inquiryNo}")
     public ResponseEntity<InquiryDetailsResponseDto> inquiryDetails(
         @PathVariable Integer inquiryNo) {
@@ -147,4 +155,41 @@ public class CommonInquiryRestController {
         InquiryDetailsResponseDto inquiry = inquiryService.findInquiry(inquiryNo);
         return ResponseEntity.ok(inquiry);
     }
+
+    /**
+     * 본인의 상품문의 상세조회 요청을 처리하는 기능입니다.
+     *
+     * @param inquiryNo 조회의 기준이 되는 문의번호입니다.
+     * @return ResponseEntity body에 InquiryDetailsResponseDto라는 상세조회에 필요한 정보가 담긴 객체를 넣어서 반환합니다.
+     * @author 최겸준
+     */
+    @MemberOnlyAuthority
+    @GetMapping(value = "/{inquiryNo}/member-self/product")
+    public ResponseEntity<InquiryDetailsResponseDto> inquiryDetailsMemberSelf(
+        @PathVariable Integer inquiryNo) {
+
+        InquiryDetailsResponseDto inquiry = inquiryService.findProductInquiryMemberSelf(inquiryNo);
+        return ResponseEntity.ok(inquiry);
+    }
+
+
+
+    /**
+     * 본인의 고객문의 상세조회 요청을 처리하는 기능입니다.
+     *
+     * @param inquiryNo 조회의 기준이 되는 문의번호입니다.
+     * @param memberNo 작성자의 번호와 요청한 사람의 번호가 일치하는지 확인하기 위한 기준번호입니다.
+     * @return ResponseEntity body에 InquiryDetailsResponseDto라는 상세조회에 필요한 정보가 담긴 객체를 넣어서 반환합니다.
+     * @author 최겸준
+     */
+    @MemberOnlyAuthority
+    @MemberValid
+    @GetMapping(value = "/{inquiryNo}/member-self/customer", params = "memberNo")
+    public ResponseEntity<InquiryDetailsResponseDto> inquiryDetailsMemberSelf(
+        @PathVariable Integer inquiryNo, Integer memberNo) {
+
+        InquiryDetailsResponseDto inquiry = inquiryService.findCustomerInquiryMemberSelf(inquiryNo, memberNo);
+        return ResponseEntity.ok(inquiry);
+    }
+
 }

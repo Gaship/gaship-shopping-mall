@@ -111,6 +111,7 @@ class CommonInquiryControllerTest {
         InquiryAddRequestDto failDto = new InquiryAddRequestDto();
 
         MvcResult result = mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(failDto))
                 .accept(MediaType.APPLICATION_JSON))
@@ -122,7 +123,6 @@ class CommonInquiryControllerTest {
         String body = result.getResponse().getContentAsString();
 
         assertThat(body)
-            .contains("memberNo")
             .contains("title")
             .contains("inquiryContent")
             .contains("isProduct");
@@ -132,6 +132,7 @@ class CommonInquiryControllerTest {
     @Test
     void inquiryAdd_customer_success_customer() throws Exception {
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenCustomer))
                 .accept(MediaType.APPLICATION_JSON))
@@ -140,18 +141,17 @@ class CommonInquiryControllerTest {
         verify(inquiryService).addInquiry(any(InquiryAddRequestDto.class));
     }
 
-    @DisplayName("고객문의 추가를 요청 dto값으로 memberNo만 null일시에 validation 400 예외와 message값이 발생한다.")
+    @DisplayName("고객문의 추가를 요청 dto값으로 memberNo만 null일시에 201이 나온다")
     @Test
     void inquiryAdd_customer_fail_validation_memberNo() throws Exception {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "memberNo", null);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenCustomer))
                 .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message")
-                .value("memberNo 는 필수 입력값입니다."));
+            .andExpect(status().isCreated());
     }
 
     @DisplayName("고객문의 추가를 요청 dto값으로 title만 null일시에 validation 400 예외와 message값이 발생한다.")
@@ -160,6 +160,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "title", null);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenCustomer))
                 .accept(MediaType.APPLICATION_JSON))
@@ -174,6 +175,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "title", "");
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenCustomer))
                 .accept(MediaType.APPLICATION_JSON))
@@ -188,6 +190,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "title", " ");
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenCustomer))
                 .accept(MediaType.APPLICATION_JSON))
@@ -202,6 +205,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "inquiryContent", null);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenCustomer))
                 .accept(MediaType.APPLICATION_JSON))
@@ -216,6 +220,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "productNo", null);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenCustomer))
                 .accept(MediaType.APPLICATION_JSON))
@@ -228,6 +233,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenCustomer, "productNo", null);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenCustomer))
                 .accept(MediaType.APPLICATION_JSON))
@@ -397,18 +403,17 @@ class CommonInquiryControllerTest {
         verify(inquiryService).deleteInquiryAnswer(anyInt());
     }
 
-    @DisplayName("상품문의 추가를 요청 dto값으로 memberNo만 null일시에 validation 400 예외와 message값이 발생한다.")
+    @DisplayName("상품문의 추가를 요청 dto값으로 memberNo만 null일시에 201이 나온다")
     @Test
     void inquiryAdd_product_fail_validation_memberNo_null() throws Exception {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "memberNo", null);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message")
-                .value("memberNo 는 필수 입력값입니다."));
+            .andExpect(status().isCreated());
     }
 
     @DisplayName("상품문의 추가를 요청 dto값으로 productNo가 1미만 일시에 validation 400 예외와 message값이 발생한다.")
@@ -417,6 +422,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "productNo", 0);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))
@@ -429,6 +435,7 @@ class CommonInquiryControllerTest {
     @Test
     void inquiryAdd_product_success_product() throws Exception {
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))
@@ -439,26 +446,13 @@ class CommonInquiryControllerTest {
 
 
 
-    @DisplayName("상품문의 추가를 요청 dto값으로 memberNo가 1미만 일시에 validation 400 예외와 message값이 발생한다.")
-    @Test
-    void inquiryAdd_product_fail_validation_memberNo_min() throws Exception {
-        ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "memberNo", 0);
-
-        mvc.perform(post("/api/inquiries")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message")
-                .value("memberNo 는 최소값이 1입니다."));
-    }
-
     @DisplayName("상품문의 추가를 요청 dto값으로 title만 null일시에 validation 400 예외와 message값이 발생한다.")
     @Test
     void inquiryAdd_product_fail_validation_title_null() throws Exception {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "title", null);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))
@@ -473,6 +467,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "title", "");
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))
@@ -487,6 +482,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "title", " ");
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))
@@ -501,6 +497,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "inquiryContent", null);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))
@@ -515,6 +512,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "productNo", null);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))
@@ -529,6 +527,7 @@ class CommonInquiryControllerTest {
         ReflectionTestUtils.setField(inquiryAddRequestDtoWhenProduct, "productNo", null);
 
         mvc.perform(post("/api/inquiries")
+                .queryParam("memberNo", String.valueOf(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inquiryAddRequestDtoWhenProduct))
                 .accept(MediaType.APPLICATION_JSON))

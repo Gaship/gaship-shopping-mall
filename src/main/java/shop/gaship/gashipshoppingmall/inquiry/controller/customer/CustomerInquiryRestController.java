@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.gaship.gashipshoppingmall.aspact.annotation.AdminAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.ManagerAuthority;
 import shop.gaship.gashipshoppingmall.aspact.annotation.MemberAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
@@ -37,7 +39,6 @@ import shop.gaship.gashipshoppingmall.util.PageResponse;
 public class CustomerInquiryRestController {
     private final InquiryService inquiryService;
 
-
     /**
      * 고객문의 목록을 조회하는 요청을 처리하는 기능입니다.
      *
@@ -45,6 +46,7 @@ public class CustomerInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
+    @ManagerAuthority
     @GetMapping(value = "/customer-inquiries")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryList(
         @PageableDefault Pageable pageable) {
@@ -58,6 +60,7 @@ public class CustomerInquiryRestController {
         return ResponseEntity.ok(pageResponse);
     }
 
+    @ManagerAuthority
     @GetMapping(value = "/customer-inquiries/prev-page")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryListPrevPage(
         @PageableDefault Pageable pageable,
@@ -73,7 +76,7 @@ public class CustomerInquiryRestController {
         return ResponseEntity.ok(pageResponse);
     }
 
-
+    @ManagerAuthority
     @GetMapping(value = "/customer-inquiries/next-page")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryListNextPage(
         @PageableDefault Pageable pageable,
@@ -96,7 +99,7 @@ public class CustomerInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-    @AdminAuthority
+    @ManagerAuthority
     @GetMapping(value = "/customer-inquiries/status-hold")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusHoldList(
         @PageableDefault Pageable pageable) {
@@ -109,7 +112,7 @@ public class CustomerInquiryRestController {
         return ResponseEntity.ok(pageResponse);
     }
 
-    @AdminAuthority
+    @ManagerAuthority
     @GetMapping(value = "/customer-inquiries/status-complete")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusCompleteList(
         @PageableDefault Pageable pageable) {
@@ -131,7 +134,7 @@ public class CustomerInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
-    @AdminAuthority
+    @ManagerAuthority
     @GetMapping(value = "/customer-inquiries/status-complete/prev-page")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusCompleteListPrevPage(
         @PageableDefault Pageable pageable,
@@ -146,7 +149,7 @@ public class CustomerInquiryRestController {
         return ResponseEntity.ok(pageResponse);
     }
 
-    @AdminAuthority
+    @ManagerAuthority
     @GetMapping(value = "/customer-inquiries/status-complete/next-page")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryStatusCompleteListNextPage(
         @PageableDefault Pageable pageable,
@@ -171,8 +174,8 @@ public class CustomerInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
+    @MemberOnlyAuthority
     @MemberValid
-    @MemberAuthority
     @GetMapping(value = "/member/{memberNo}/customer-inquiries")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> customerInquiryMemberList(
         @PageableDefault Pageable pageable, @PathVariable Integer memberNo) {

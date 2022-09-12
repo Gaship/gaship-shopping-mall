@@ -5,6 +5,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import net.bytebuddy.utility.nullability.AlwaysNull;
+import org.springframework.lang.Nullable;
 
 /**
  * 문의와 관련된 요청이나 반환시 정보를 담는 dto입니다.
@@ -16,8 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InquiryAddRequestDto {
 
-    @Min(value = 1, message = "memberNo 는 최소값이 1입니다.")
-    @NotNull(message = "memberNo 는 필수 입력값입니다.")
+    @Setter
+    @Nullable
     private Integer memberNo;
 
     @Min(value = 1, message = "productNo 는 최소값이 1입니다.")

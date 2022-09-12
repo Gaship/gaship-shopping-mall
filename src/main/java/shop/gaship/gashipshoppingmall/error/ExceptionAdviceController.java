@@ -37,6 +37,7 @@ import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquirySearchBadRequestException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.NoRegisteredAnswerException;
 import shop.gaship.gashipshoppingmall.inquiry.exception.ProductInquiryHasNullProductNoException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.WrongInquiryApproachException;
 import shop.gaship.gashipshoppingmall.member.exception.DuplicatedNicknameException;
 import shop.gaship.gashipshoppingmall.member.exception.InvalidReissueQualificationException;
 import shop.gaship.gashipshoppingmall.member.exception.MemberNotFoundException;
@@ -95,7 +96,8 @@ public class ExceptionAdviceController {
         MemberGradeInUseException.class, NotMatchRequestData.class,
         IllegalTagSelectionException.class, InvalidOrderCancellationHistoryNo.class,
         NoMoreProductException.class, AlreadyExistSchedule.class,
-        DuplicatedTagTitleException.class, LocalDateMaxYearException.class
+        DuplicatedTagTitleException.class, LocalDateMaxYearException.class,
+        WrongInquiryApproachException.class
         })
     public ResponseEntity<ErrorResponse> declaredExceptionAdvice(RuntimeException exception) {
         log.error("Custom Exception (사용자 정의 예외 처리) : {}", ExceptionUtils.getStackTrace(exception));
