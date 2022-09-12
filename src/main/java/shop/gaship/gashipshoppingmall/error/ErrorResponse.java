@@ -1,6 +1,7 @@
 package shop.gaship.gashipshoppingmall.error;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 에러를 반환하기위한 객체입니다.
@@ -10,6 +11,7 @@ import lombok.Getter;
  */
 
 @Getter
+@NoArgsConstructor
 public class ErrorResponse {
     private String message;
 

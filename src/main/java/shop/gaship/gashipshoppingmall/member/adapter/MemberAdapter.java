@@ -55,7 +55,7 @@ public class MemberAdapter {
      */
     public void requestSendRecommendMemberCouponGenerationIssue(Integer recommendMemberNo) {
         WebClient.create(serverConfig.getCouponUrl()).post()
-            .uri("/api/coupon-generations-issues/{recommendMemberNo}", recommendMemberNo)
+            .uri("/api/coupons/coupon-generations-issues/{recommendMemberNo}", recommendMemberNo)
             .retrieve()
             .onStatus(HttpStatus::isError, clientResponse ->
                 clientResponse.bodyToMono(ErrorResponse.class)
