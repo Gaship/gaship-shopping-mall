@@ -113,13 +113,34 @@ public interface InquiryService {
     Page<InquiryListResponseDto> findInquiriesByProductNo(Pageable pageable, Integer productNo);
 
     /**
-     * 문의를 상세조회하는 기능입니다.
+     * 직원 또는 관리자가 문의를 상세조회하는 기능입니다.
      *
      * @param inquiryNo 조회시 기준이 될 문의번호입니다.
      * @return 상세조회 후 반환된 entity에서 필요한 정보만 담은 dto가 반환됩니다.
      * @author 최겸준
      */
     InquiryDetailsResponseDto findInquiry(int inquiryNo);
+
+    /**
+     * 본인고객의 상품문의를 상세조회하는 기능입니다.
+     * 상품문의는 본인의 상품이 아니더라도 조회가 가능함으로 memberNo가 필요 없습니다.
+     *
+     * @param inquiryNo 조회시 기준이 될 문의번호입니다.
+     * @return 상세조회 후 반환된 entity에서 필요한 정보만 담은 dto가 반환됩니다.
+     * @author 최겸준
+     */
+    InquiryDetailsResponseDto findProductInquiryMemberSelf(Integer inquiryNo);
+
+    /**
+     * 본인고객의 고객문의를 상세조회하는 기능입니다.
+     * 고객문의는 본인의 문의만 조회가능함으로 memberNo가 필요합니다.
+     *
+     * @param inquiryNo 조회시 기준이 될 문의번호입니다.
+     * @param memberNo 작성자의 번호와 요청한 사람의 번호가 일치하는지 확인하기 위한 기준번호입니다.
+     * @return 상세조회 후 반환된 entity에서 필요한 정보만 담은 dto가 반환됩니다.
+     * @author 최겸준
+     */
+    InquiryDetailsResponseDto findCustomerInquiryMemberSelf(Integer inquiryNo, Integer memberNo);
 
     /**
      * 문의등록 요청시에 넘어온 requestDto객체를 이용하여 영속화되지 않은 entity를 반환하는 기능입니다.
@@ -148,4 +169,5 @@ public interface InquiryService {
 
     Page<InquiryListResponseDto> findCustomerInquiriesAllOrStatusComplete(Pageable pageable,
                                                                           InquiryListSearch inquiryListSearch);
+
 }

@@ -17,7 +17,7 @@ import shop.gaship.gashipshoppingmall.aspact.exception.InvalidIdException;
 /**
  * 설명작성란
  *
- * @author : 김보민
+ * @author  김보민
  * @since 1.0
  */
 @Component
@@ -34,7 +34,9 @@ public class MemberValidAspect {
                 (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
 
-        if (Objects.equals(request.getHeader(HEADER_ID), getMemberNo(request))) {
+        String jwtMemberNo = request.getHeader(HEADER_ID);
+        if (Objects.equals(jwtMemberNo, getMemberNo(request))
+                || Objects.equals(jwtMemberNo, request.getParameter("memberNo"))) {
             return pjp.proceed();
         }
 
@@ -42,6 +44,7 @@ public class MemberValidAspect {
     }
 
     private String getMemberNo(HttpServletRequest request) {
+
         return (String) objectMapper.convertValue(
                 request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE), Map.class)
                 .get(ATTRIBUTE_ID);

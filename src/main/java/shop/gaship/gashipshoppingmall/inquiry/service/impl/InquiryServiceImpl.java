@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.gaship.gashipshoppingmall.aspact.exception.InvalidIdException;
 import shop.gaship.gashipshoppingmall.employee.entity.Employee;
 import shop.gaship.gashipshoppingmall.employee.exception.EmployeeNotFoundException;
 import shop.gaship.gashipshoppingmall.employee.repository.EmployeeRepository;
@@ -20,6 +21,7 @@ import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryDetailsRespons
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.entity.Inquiry;
 import shop.gaship.gashipshoppingmall.inquiry.exception.InquiryNotFoundException;
+import shop.gaship.gashipshoppingmall.inquiry.exception.WrongInquiryApproachException;
 import shop.gaship.gashipshoppingmall.inquiry.inquiryenum.InquiryType;
 import shop.gaship.gashipshoppingmall.inquiry.repository.InquiryRepository;
 import shop.gaship.gashipshoppingmall.inquiry.search.InquiryListSearch;
@@ -368,6 +370,42 @@ public class InquiryServiceImpl implements InquiryService {
 
         return inquiryRepository.findDetailsById(inquiryNo)
             .orElseThrow(InquiryNotFoundException::new);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InquiryDetailsResponseDto findProductInquiryMemberSelf(Integer inquiryNo) {
+
+        InquiryDetailsResponseDto details =
+            inquiryRepository.findDetailsById(inquiryNo)
+                .orElseThrow(InquiryNotFoundException::new);
+
+        if (Objects.isNull(details.getProductNo())) {
+            throw new WrongInquiryApproachException();
+        }
+        return details;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public InquiryDetailsResponseDto findCustomerInquiryMemberSelf(Integer inquiryNo, Integer memberNo) {
+
+        InquiryDetailsResponseDto details =
+            inquiryRepository.findDetailsById(inquiryNo)
+                .orElseThrow(InquiryNotFoundException::new);
+
+        if (Objects.nonNull(details.getProductNo())) {
+            throw new WrongInquiryApproachException();
+        }
+
+        if (!Objects.equals(details.getMemberNo(), memberNo)) {
+            throw new InvalidIdException();
+        }
+        return details;
     }
 
     private TableCount getTableCount(InquiryListSearch inquiryListSearch) {

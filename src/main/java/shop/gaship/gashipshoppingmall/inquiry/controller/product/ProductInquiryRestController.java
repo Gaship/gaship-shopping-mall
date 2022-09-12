@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.gaship.gashipshoppingmall.aspact.annotation.ManagerAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberAuthority;
+import shop.gaship.gashipshoppingmall.aspact.annotation.MemberOnlyAuthority;
 import shop.gaship.gashipshoppingmall.aspact.annotation.MemberValid;
 import shop.gaship.gashipshoppingmall.inquiry.dto.response.InquiryListResponseDto;
 import shop.gaship.gashipshoppingmall.inquiry.inquiryenum.InquiryType;
@@ -36,6 +39,7 @@ public class ProductInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
+    @ManagerAuthority
     @GetMapping(value = "/product-inquiries")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryList(
         Pageable pageable) {
@@ -54,6 +58,7 @@ public class ProductInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
+    @ManagerAuthority
     @GetMapping(value = "/product-inquiries/status-hold")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryStatusHoldList(
         Pageable pageable) {
@@ -73,6 +78,7 @@ public class ProductInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
+    @ManagerAuthority
     @GetMapping(value = "/product-inquiries/status-complete")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryStatusCompleteList(
         Pageable pageable) {
@@ -94,6 +100,7 @@ public class ProductInquiryRestController {
      * @return 200 status code와 함께 PageResponse에 목록들을 body로 담아서 ResponseEntity를 반환합니다.
      * @author 최겸준
      */
+    @MemberOnlyAuthority
     @MemberValid
     @GetMapping(value = "/member/{memberNo}/product-inquiries")
     public ResponseEntity<PageResponse<InquiryListResponseDto>> productInquiryMemberList(
@@ -127,6 +134,4 @@ public class ProductInquiryRestController {
 
         return ResponseEntity.ok(pageResponse);
     }
-
-
 }
