@@ -23,6 +23,6 @@ public class CategoryModifyRequestDto {
     private Integer no;
 
     @NotBlank(message = "카테고리 이름은 필수 입력 값입니다.")
-    @Length(min = 1, max = 20, message = "name 의 길이는 최소 1 최대 10 입니다.")
+    @Length(min = 1, max = 20, message = "name 의 길이는 최소 1 최대 20 입니다.")
     private String name;
 }

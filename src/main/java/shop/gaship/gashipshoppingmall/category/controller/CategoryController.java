@@ -65,8 +65,7 @@ public class CategoryController {
 //    @AdminAuthority
     @PutMapping("/{categoryNo}")
     public ResponseEntity<Void> categoryModify(
-            @Valid @RequestBody CategoryModifyRequestDto modifyRequest,
-            @PathVariable String categoryNo) {
+            @Valid @RequestBody CategoryModifyRequestDto modifyRequest) {
         categoryService.modifyCategory(modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)

@@ -59,15 +59,13 @@ public class ProductReviewController {
      *
      * @param file           이미지 파일
      * @param modifyRequest  상품평 수정 요청 dto
-     * @param orderProductNo 수정할 상품평 번호
      * @return responseEntity 응답 바디는 없습니다.
      */
 //    @MemberAuthority
     @PutMapping("/reviews/{orderProductNo}")
     public ResponseEntity<Void> productReviewModify(
             @RequestPart(value = "image", required = false) MultipartFile file,
-            @Valid @RequestPart ProductReviewRequestDto modifyRequest,
-            @PathVariable Integer orderProductNo) {
+            @Valid @RequestPart ProductReviewRequestDto modifyRequest) {
         productReviewService.modifyProductReview(file, modifyRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
