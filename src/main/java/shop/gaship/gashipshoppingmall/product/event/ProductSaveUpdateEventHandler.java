@@ -29,7 +29,7 @@ public class ProductSaveUpdateEventHandler {
      * @throws FileDeleteFailureException 파일 삭제에 오류가 발생하였을 때 에외를 던집니다.
      * @author 김보민
      */
-    @Async
+    @Async("basicThreadPoolTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
     public void handleRollback(ProductSaveUpdateEvent event) {
         event.getImageLinks().stream().map(FileRequestDto::getPath).forEach(fileService::delete);
@@ -41,7 +41,7 @@ public class ProductSaveUpdateEventHandler {
      *
      * @param event 상품 생성 및 수정 이벤트
      */
-    @Async
+    @Async("basicThreadPoolTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommit(ProductSaveUpdateEvent event) {
         event.getBeforeImages().stream().map(CommonFile::getPath)
