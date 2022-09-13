@@ -24,7 +24,7 @@ public class SignedUpEventHandler {
      *
      * @param event 요청시 필요한 추천인번호를 들고있는 클래스입니다.
      */
-    @Async("BasicThreadPoolTaskExecutor")
+    @Async("basicThreadPoolTaskExecutor")
     @TransactionalEventListener(
         classes = SignedUpEvent.class,
         phase = TransactionPhase.AFTER_COMMIT

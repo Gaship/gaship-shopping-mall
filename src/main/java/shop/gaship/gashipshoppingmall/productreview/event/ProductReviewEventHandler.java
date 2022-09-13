@@ -25,7 +25,7 @@ public class ProductReviewEventHandler {
      *
      * @param event 상품평 생성, 수정 이벤트
      */
-    @Async
+    @Async("basicThreadPoolTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
     public void handleSaveUpdateRollback(ProductReviewSaveUpdateEvent event) {
         fileService.delete(event.getImagePath().getPath());
@@ -37,7 +37,7 @@ public class ProductReviewEventHandler {
      *
      * @param event 상품평 생성, 수정 이벤트
      */
-    @Async
+    @Async("basicThreadPoolTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleSaveUpdateCommit(ProductReviewSaveUpdateEvent event) {
         event.getBeforeImages().stream().map(CommonFile::getPath)
@@ -50,7 +50,7 @@ public class ProductReviewEventHandler {
      *
      * @param event 상품평 삭제 이벤트
      */
-    @Async
+    @Async("basicThreadPoolTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleDeleteCommit(ProductReviewDeleteEvent event) {
         event.getImagePaths().forEach(fileService::delete);

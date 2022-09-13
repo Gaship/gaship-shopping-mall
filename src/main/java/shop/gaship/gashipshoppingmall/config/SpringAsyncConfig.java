@@ -1,4 +1,4 @@
-package shop.gaship.gashipshoppingmall.async;
+package shop.gaship.gashipshoppingmall.config;
 
 import java.util.concurrent.Executor;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 public class SpringAsyncConfig {
 
     @Bean
-    public Executor BasicThreadPoolTaskExecutor() {
+    public Executor basicThreadPoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(30);
         executor.setQueueCapacity(100);
