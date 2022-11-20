@@ -55,40 +55,4 @@ class AuthorityAspectTest {
             .andExpect(status().isCreated())
             .andDo(print());
     }
-
-    @Disabled
-    @Test
-    void inspectAdminAuthorityNoAuthorityTest() throws Exception {
-        CreateEmployeeRequestDto dto =
-            new CreateEmployeeRequestDto(1, 1, "홍길동", "abc@naver.com", "password", "01011112222");
-
-        String body = new ObjectMapper().writeValueAsString(dto);
-
-        doNothing().when(employeeService).addEmployee(dto);
-
-        mockMvc.perform(post("/api/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(body))
-            .andExpect(status().isForbidden())
-            .andExpect(jsonPath("$.message").value("접근권한이 없습니다."))
-            .andDo(print());
-    }
-
-
-    @Disabled
-    @Test
-    void inspectAdminAuthorityAuthorityMemberTest() throws Exception {
-        CreateEmployeeRequestDto dto =
-            new CreateEmployeeRequestDto(1, 1, "홍길동", "abc@naver.com", "password", "01011112222");
-
-        String body = new ObjectMapper().writeValueAsString(dto);
-
-        mockMvc.perform(post("/api/employees").header("X-AUTH-ROLE", "ROLE_MEMBER")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(body))
-            .andExpect(status().is4xxClientError())
-            .andDo(print());
-    }
 }
